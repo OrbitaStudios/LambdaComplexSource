@@ -1,0 +1,399 @@
+// MultiVMR9.idl : IDL source for helper library MultiVMR9
+// Copyright (c) 1999 - 2002, Microsoft Corporation.  All rights reserved.
+
+import "unknwn.idl";
+
+cpp_quote("#if 0")
+// This is temporary workaround to to persuade
+// MIDL to allow forward declarations.
+typedef LPVOID*  IBaseFilter;
+typedef LPVOID*  IFilterGraph;
+typedef LPVOID*  LPDIRECT3DTEXTURE9;
+typedef LPVOID*  IDirect3DDevice9;
+typedef LPVOID*  IVMRSurfaceAllocator9;
+typedef LPVOID*  IVMRImagePresenter9;
+typedef LPVOID*  IVMRSurfaceAllocatorNotify;
+
+// This is temporary workaround for VC6
+typedef DWORD DWORD_PTR;
+
+cpp_quote("#endif")
+cpp_quote("#include <d3d9.h>")
+cpp_quote("#include <dshow.h>")
+cpp_quote("#include <vmr9.h>")
+
+cpp_quote("#ifndef VIDEO_SOURCE_TAG")
+cpp_quote("#define VIDEO_SOURCE_TAG 0x12345")
+cpp_quote("#endif")
+
+cpp_quote("#ifndef DWORD_PTR")
+cpp_quote("#define DWORD_PTR DWORD")
+cpp_quote("#endif")
+
+// public interfaces supported by MultiVMR9
+interface IMultiVMR9Wizard;
+interface IMultiVMR9RenderEngine;
+interface IMultiVMR9UILayer;
+interface IMultiVMR9MixerControl;
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//   IMultiVMR9Wizard
+//
+//////////////////////////////////////////////////////////////////////////////
+[
+    local,
+    object,
+    uuid(3A54122C-1180-4468-B997-3A427841D6DE),
+    helpstring("IMultiVMR9Wizard Interface"),
+    pointer_default(unique)
+]
+interface IMultiVMR9Wizard : IUnknown{
+
+    // configure and initialize internal structures
+    HRESULT Initialize(
+        [in] DWORD dwFlags,
+        [in] HWND hWnd,
+        [in] IMultiVMR9RenderEngine *pRenderEngine
+        );
+
+    // terminate wizard
+    HRESULT Terminate(
+        );
+
+    // attach subgraph to the wizard
+    HRESULT Attach(
+        [in] IBaseFilter* pVMR, 
+        [out] DWORD_PTR* pdwID
+        );
+
+    // Detaches VMR of particular subgraph (identified by dwID) and 
+    // unadvises custom allocator-presenter
+    HRESULT Detach(
+        [in] DWORD_PTR dwID
+        );
+
+    // Returns S_OK if provided dwID is registered in the wizard, and
+    // VFW_E_NOT_FOUND otherwise
+    HRESULT VerifyID(
+        [in] DWORD_PTR dwID
+        );
+
+    // Returns pointer to IGraphBuilder interface of the sub-graph identified by dwID
+    HRESULT GetGraph(
+        [in] DWORD_PTR dwID,
+        [out] IFilterGraph** ppGraph
+        );
+
+    // obtain actively used render engine object
+    HRESULT GetRenderEngine(
+        [out] IMultiVMR9RenderEngine** ppRenderEngine
+        );
+
+    // obtain actively used mixer control object
+    HRESULT GetMixerControl(
+        [out] IMultiVMR9MixerControl** ppMixerControl
+        );
+
+    HRESULT GetTexture(
+        [in] DWORD_PTR dwID,
+        [out] LPDIRECT3DTEXTURE9* ppTexture );
+
+    HRESULT GetVideoSize(
+        [in] DWORD_PTR dwID,
+        [out] LONG* plWidth,
+        [out] LONG* plHeight
+        );
+};
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//   IMultiVMR9RenderEngine
+//
+//////////////////////////////////////////////////////////////////////////////
+[
+    local,
+    object,
+    uuid(476B9DBC-D303-4E71-A568-2738F81E58AE),
+    helpstring("IMultiVMR9RenderEngine Interface"),
+    pointer_default(unique)
+]
+interface IMultiVMR9RenderEngine : IUnknown{
+    
+    // creates and initializes IDirect3Ddevice9 and configures Direct3D environment
+    HRESULT Initialize(
+        [in] HWND hWnd, 
+        [in] DWORD dwFlags,
+        [in] IMultiVMR9MixerControl* pMixerControl,
+        [in] IMultiVMR9UILayer* pUILayer
+        );
+
+    // terminate render engine
+    HRESULT Terminate(
+        );
+    
+    // draws primitives in Direct3D environment
+    HRESULT Render(
+        void
+        );
+
+    // returns IMultiVMR9UILayer object currently used by Render engine
+    HRESULT GetUILayer(
+        [out] IMultiVMR9UILayer** ppUILayer
+        );
+    
+    // set desired frames-per-second rate
+    HRESULT SetFrameRate(
+        [in] int nFramesPerSecBy100
+        );
+    
+    // obtain currently used frame rate (instant from the last rendering)
+    HRESULT GetFrameRate(
+        [out] int* pnFramesPerSecBy100
+        );
+
+    // obtain currently used frame rate (smoothed average from previous renderings)
+    HRESULT GetFrameRateAvg(
+        [out] int* pnFramesPerSecBy100
+        );
+
+
+    // obtain currently used mixing preferences
+    HRESULT GetMixingPrefs(
+        [out] DWORD* pdwPrefs
+        );
+
+    // called by IMultiVMR9Wizard when this render engine is advised 
+    // to the wizard by SetRenderEngine() method
+    HRESULT SetWizardOwner(
+        [in] IMultiVMR9Wizard* pWizard
+        );
+
+    // obtain pointer to the IMultiVMR9Wizard object that owns this render engine
+    HRESULT GetWizardOwner(
+        [out] IMultiVMR9Wizard** ppWizard
+        );
+
+    // obtain pointer to IMultiVMR9MixerControl object currently used by this render engine
+    HRESULT GetMixerControl(
+        [out] IMultiVMR9MixerControl** ppMixerControl
+        );
+
+    // obtain pointer to IDirect3DDevice9
+    HRESULT Get3DDevice( 
+        [out] IDirect3DDevice9 ** ppDevice 
+        );
+
+    // obtain handle to the video window
+    HRESULT GetVideoWindow(
+        [out] HWND* phwnd
+        );
+
+};
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//   IMultiVMR9UILayer
+//
+//////////////////////////////////////////////////////////////////////////////
+[
+    local,
+    object,
+    uuid(102A1639-48DA-4C93-8B2E-EFF597B01E01),
+    helpstring("IMultiVMR9UILayer Interface"),
+    pointer_default(unique)
+]
+interface IMultiVMR9UILayer : IUnknown{
+    
+    // provides application-specific initialization of the UI layer
+    HRESULT Initialize(
+        [in] IDirect3DDevice9* pDevice
+        );
+
+    // this method is called by the video window message processing thread.
+    // customize user interface implementation based on Win32 messages of video window
+    HRESULT ProcessMessage(
+        [in] UINT msg, 
+        [in] UINT wParam, 
+        [in] LONG lParam
+        );
+
+    // render user interface layer
+    HRESULT Render(
+        [in] IDirect3DDevice9* pDevice
+        );
+
+    // method is called by the render engine during IMultiVMR9RenderEngine::SetUILayer
+    HRESULT SetRenderEngineOwner(
+        [in] IMultiVMR9RenderEngine* pRenderEngine
+        );
+
+    // obtain pointer to IMultiVMR9RenderEngine that owns this UI layer
+    HRESULT GetRenderEngineOwner(
+        [out] IMultiVMR9RenderEngine** ppRenderEngine
+        );
+};
+
+cpp_quote("#if 0")
+//
+//  Normalized relative rectangle
+//  Coordinate ranges: x=[0...1) y=[0...1)
+//  Where the output window goes from 0,0 (closed inclusive lower bound)
+//  to 1,1 (open exclusive upper bound)
+//
+typedef struct _NORMALIZEDRECT
+{
+    float left;
+    float top;
+    float right;
+    float bottom;
+} NORMALIZEDRECT, *PNORMALIZEDRECT;
+cpp_quote("#endif")
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//   IMultiVMR9MixerControl
+//
+//////////////////////////////////////////////////////////////////////////////
+[
+    local,
+    object,
+    uuid(35CE8FF4-3673-42F8-A2FF-544F3AFA2DE2),
+    helpstring("IMultiVMR9MixerControl Interface"),
+    pointer_default(unique)
+]
+interface IMultiVMR9MixerControl : IUnknown{
+    
+    HRESULT SetRenderEngineOwner(
+        [in] IMultiVMR9RenderEngine* pRenderEngine
+        );
+
+    HRESULT GetRenderEngineOwner(
+        [out] IMultiVMR9RenderEngine** ppRenderEngine
+        );
+
+    HRESULT Initialize(
+        [in] IDirect3DDevice9 *pDevice
+        );
+
+    HRESULT Compose(
+        [in] void *lpParam
+        );
+
+    HRESULT Render(
+        [in] IDirect3DDevice9 *pDevice,
+        [in] void *lpParam
+        );
+
+    HRESULT GetOutputRect(
+        [in] DWORD_PTR dwID, 
+        [out] NORMALIZEDRECT* lpNormRect
+        );
+
+    HRESULT SetOutputRect(
+        [in] DWORD_PTR dwID, 
+        [in] NORMALIZEDRECT* lpNormRect
+        );
+
+    HRESULT GetIdealOutputRect(
+        [in]  DWORD_PTR dwID,
+        [in]  DWORD dwWidth,
+        [in]  DWORD dwHeight,
+        [out] NORMALIZEDRECT* lpNormRect
+        );
+
+    HRESULT GetZOrder(
+        [in] DWORD_PTR dwID, 
+        [out] DWORD* pdwZOrder
+        );
+
+    HRESULT SetZOrder(
+        [in] DWORD_PTR dwID, 
+        [in] DWORD dwZOrder
+        );
+
+    HRESULT GetAlpha(
+        [in] DWORD_PTR dwID, 
+        [out] float* pAlpha
+        );
+
+    HRESULT SetAlpha(
+        [in] DWORD_PTR dwID, 
+        [in] float Alpha
+        );
+
+    HRESULT GetBackgroundColor(
+        [out] COLORREF* pColor
+        );
+
+    HRESULT SetBackgroundColor(
+        [in] COLORREF Color
+        );
+
+    // regard addition of new video source
+    HRESULT AddVideoSource(
+        [in] DWORD_PTR dwID,
+        [in] LONG lImageWidth,
+        [in] LONG lImageHeight,
+        [in] LONG lTextureWidth,
+        [in] LONG lTextureHeight
+        );
+
+    // regard deletion of a video source
+    HRESULT DeleteVideoSource(
+        [in] DWORD_PTR dwID
+        );
+};
+
+//////////////////////////////////////////////////////////////////////////////
+//
+//   Library and objects
+//
+//////////////////////////////////////////////////////////////////////////////
+[
+    uuid(52CCE217-77CF-4108-9D55-CCBAAF2896D7),
+    version(1.0),
+    helpstring("MultiVMR9 1.0 Type Library")
+]
+library MultiVMR9Lib
+{
+    // MultiVMR9Wizard
+    [
+        uuid(CE8ED243-0078-41A2-B56C-EC9CF0E887C2),
+        helpstring("MultiVMR9Wizard Class")
+    ]
+    coclass MultiVMR9Wizard
+    {
+        [default] interface IMultiVMR9Wizard;
+    };
+
+    // MultiVMR9RenderEngine
+    [
+        uuid(8BBB5505-250D-486D-BB49-F74141880490),
+        helpstring("MultiVMR9RenderEngine Class")
+    ]
+    coclass MultiVMR9RenderEngine
+    {
+        [default] interface IMultiVMR9RenderEngine;
+    };
+
+    // MultiVMR9UILayer
+    [
+        uuid(70A2E5FE-981E-4518-83C7-9324DC957DA4),
+        helpstring("MultiVMR9UILayer Class")
+    ]
+    coclass MultiVMR9UILayer
+    {
+        [default] interface IMultiVMR9UILayer;
+    };
+
+    // MultiVMR9MixerControl
+    [
+        uuid(BB22E7B6-54E1-4C4D-ABF7-99193550A3F4),
+        helpstring("MultiVMR9MixerControl Class")
+    ]
+    coclass MultiVMR9MixerControl
+    {
+        [default] interface IMultiVMR9MixerControl;
+    };
+};

@@ -1,0 +1,4 @@
+// Microsoft Developer Studio generated Help ID include file.
+// Used by Audiobox.rc
+//
+#define HIDC_STATUS_DIRECTORY           0x80660194    // IDD_AUDIOBOX_DIALOG

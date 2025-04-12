@@ -1,0 +1,190 @@
+//Microsoft Developer Studio generated resource script.
+//
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+#include "text.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU MENU DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Open clip...",             ID_FILE_OPENCLIP
+        MENUITEM "&Close clip",               ID_FILE_CLOSE
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                     ID_FILE_EXIT
+    END
+    POPUP "&Text"
+    BEGIN
+        MENUITEM "Set &font...",              ID_SET_FONT
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About VMR Text...",        ID_HELP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_TEXT            ICON    DISCARDABLE     "vmrsample.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_HELP_ABOUT DIALOG DISCARDABLE  0, 0, 235, 59
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About VMR Text"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_TEXT,-1,11,17,21,20
+    LTEXT           "DirectShow VMR Text Sample",-1,40,10,131,8,
+                    SS_NOPREFIX
+    LTEXT           "Copyright (C) 2001-2002 Microsoft Corporation",-1,40,43,
+                    162,8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
+    LTEXT           "Version 9.0",-1,40,32,119,8,SS_NOPREFIX
+    LTEXT           "VMR Windowless Mode Rendering",-1,40,21,131,8,
+                    SS_NOPREFIX
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 9,0,0,0
+ PRODUCTVERSION 9,0,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "DirectShow Sample\0"
+            VALUE "CompanyName", "Microsoft\0"
+            VALUE "FileDescription", "VMR Text Application\0"
+            VALUE "FileVersion", "9.00\0"
+            VALUE "InternalName", "VMRText\0"
+            VALUE "LegalCopyright", "Copyright (c) 2001-2002 Microsoft Corporation\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "VMRText.EXE\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "DirectX 9 SDK\0"
+            VALUE "ProductVersion", "9.0\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""ticker.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_DIALOG_TEXT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 267
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 87
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

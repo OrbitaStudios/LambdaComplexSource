@@ -1,0 +1,59 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "GamePlayer"=.\GamePlayer\GamePlayer.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name MultiVMR9
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "MultiPlayer"=.\MultiPlayer\MultiPlayer.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name MultiVMR9
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "MultiVMR9"=.\DLL\MultiVMR9.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

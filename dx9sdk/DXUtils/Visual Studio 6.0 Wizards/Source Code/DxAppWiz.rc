@@ -1,0 +1,352 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+#include <winver.h>
+
+#ifdef WINNT
+
+#include <ntverp.h>
+
+#define VER_FILETYPE                VFT_DLL
+#define VER_FILESUBTYPE             VFT2_UNKNOWN
+#define VER_FILEDESCRIPTION_STR     "DirectX 9 AppWizard\0"
+#define VER_INTERNALNAME_STR        "DirectX 9 AppWizard\0"
+#define VER_ORIGINALFILENAME_STR    "dxappwiz9.awx\0"
+
+#undef  VER_PRODUCTNAME_STR
+#define VER_PRODUCTNAME_STR         "DirectX 9 AppWizard\0"
+
+#include "common.ver"
+
+#else // Win9x
+
+#include <verinfo.h>
+
+#define VERSIONNAME               "dxappwiz9.awx\0"
+#define VERSIONDESCRIPTION        "DirectX 9 AppWizard\0"
+#define VERSIONTYPE               VFT_DLL
+#define VERSIONSUBTYPE            VFT2_UNKNOWN
+
+#undef  VERSIONPRODUCTNAME
+#define VERSIONPRODUCTNAME		  "DirectX 9 AppWizard\0"
+
+#include "verinfo.ver"
+
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "#include ""afxres.rc""  // Standard components\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_CUSTOM1 DIALOG DISCARDABLE  0, 0, 303, 197
+STYLE DS_CONTROL | WS_CHILD | WS_TABSTOP
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         144,IDC_BACKGROUND,"Static",SS_BITMAP,0,0,125,198
+    CONTROL         146,IDC_PREVIEW,"Static",SS_BITMAP,13,10,120,94
+    LTEXT           "What type of application would you like to create?",
+                    IDC_STATIC,140,10,158,8
+    CONTROL         "Single document window",IDC_WINDOW,"Button",
+                    BS_AUTORADIOBUTTON,150,21,95,10
+    CONTROL         "MFC dialog based",IDC_MFCDIALOG,"Button",
+                    BS_AUTORADIOBUTTON,150,32,73,10
+    LTEXT           "What support would you like to include?",IDC_STATIC,140,
+                    53,127,8
+    CONTROL         "Direct3D",IDC_DIRECT3D,"Button",BS_AUTOCHECKBOX |
+                    WS_TABSTOP,150,64,44,10
+    CONTROL         "DirectInput",IDC_DINPUT,"Button",BS_AUTOCHECKBOX |
+                    WS_TABSTOP,150,76,51,10
+    CONTROL         "DirectMusic",IDC_DMUSIC,"Button",BS_AUTOCHECKBOX |
+                    WS_TABSTOP,150,88,53,10
+    CONTROL         "DirectSound",IDC_DSOUND,"Button",BS_AUTOCHECKBOX |
+                    WS_TABSTOP,150,100,55,10
+    CONTROL         "DirectPlay Peer-to-Peer",IDC_DPLAY,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,150,112,89,10
+    LTEXT           "Hint: Choose fewer options for simpler code.",
+                    IDC_STATIC,140,177,161,10
+    LTEXT           "What extras would you like to include?",IDC_STATIC,140,
+                    130,122,8
+    CONTROL         "Menu bar",IDC_ADDMENUS,"Button",BS_AUTOCHECKBOX |
+                    WS_TABSTOP,150,142,46,10
+    CONTROL         "Registry access",IDC_REGINCLUDE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,150,153,66,10
+END
+
+IDD_CUSTOM2 DIALOG DISCARDABLE  0, 0, 303, 197
+STYLE DS_CONTROL | WS_CHILD | WS_TABSTOP
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         144,IDC_BACKGROUND,"Static",SS_BITMAP,0,0,125,198
+    CONTROL         146,IDC_PREVIEW,"Static",SS_BITMAP,13,10,120,94
+    LTEXT           "What would you like to begin with?",IDC_STATIC,140,10,
+                    111,8
+    CONTROL         "Blank",IDC_SHOW_BLANK,"Button",BS_AUTORADIOBUTTON,150,
+                    20,34,10
+    CONTROL         "Triangle",IDC_SHOW_TRIANGLE,"Button",BS_AUTORADIOBUTTON,
+                    150,31,41,10
+    CONTROL         "Teapot",IDC_SHOW_TEAPOT,"Button",BS_AUTORADIOBUTTON,150,
+                    42,39,10
+    LTEXT           "What other support would you like to include?",
+                    IDC_STATIC,140,60,145,8
+    CONTROL         "Direct3D fonts",IDC_D3DFONT,"Button",BS_AUTOCHECKBOX |
+                    WS_TABSTOP,150,72,61,10
+    CONTROL         "3D meshes (.x files)",IDC_XFILE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,150,84,73,10
+END
+
+IDD_CUSTOM3 DIALOG DISCARDABLE  0, 0, 303, 197
+STYLE DS_CONTROL | WS_CHILD | WS_TABSTOP
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         144,IDC_BACKGROUND,"Static",SS_BITMAP,0,0,125,198
+    CONTROL         146,IDC_PREVIEW,"Static",SS_BITMAP,13,10,120,94
+    LTEXT           "What DirectInput support would you like to include?",
+                    IDC_STATIC,140,10,164,8
+    CONTROL         "DirectInput action mapping",IDC_ACTIONMAPPER,"Button",
+                    BS_AUTORADIOBUTTON,150,24,101,10
+    CONTROL         "DirectInput keyboard device",IDC_KEYBOARD,"Button",
+                    BS_AUTORADIOBUTTON,150,35,105,10
+    LTEXT           "The DirectInput action mapper option reads input data from all DirectInput devices, including mouse, keyboard, and joysticks.  It also supports user customization of the input mapping on each device.",
+                    IDC_STATIC,150,51,142,42
+    LTEXT           "The DirectInput keyboard device option generates simpler code, but only reads data from the keyboard.",
+                    IDC_STATIC,150,99,142,35
+END
+
+IDD_CUSTOM4 DIALOG DISCARDABLE  0, 0, 303, 197
+STYLE DS_CONTROL | WS_CHILD | WS_TABSTOP
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "TODO: Place controls for custom dialog 4 here",
+                    IDC_STATIC,32,79,232,19
+    LTEXT           "DirectMusic",IDC_STATIC,33,179,38,8
+END
+
+IDD_CUSTOM5 DIALOG DISCARDABLE  0, 0, 303, 197
+STYLE DS_CONTROL | WS_CHILD | WS_TABSTOP
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CONTROL         144,IDC_BACKGROUND,"Static",SS_BITMAP,0,0,125,198
+    CONTROL         146,IDC_PREVIEW,"Static",SS_BITMAP,13,10,120,94
+    LTEXT           "What DirectPlay support would you like to include?",
+                    IDC_STATIC,140,10,161,8
+    CONTROL         "DirectPlay Voice",IDC_DPLAYVOICE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,150,23,68,10
+END
+
+IDD_CUSTOM6 DIALOG DISCARDABLE  0, 0, 303, 197
+STYLE DS_CONTROL | WS_CHILD | WS_TABSTOP
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "TODO: Place controls for custom dialog 6 here",
+                    IDC_STATIC,32,79,232,19
+    LTEXT           "DirectSound",IDC_STATIC,33,179,40,8
+END
+
+IDD_CUSTOM7 DIALOG DISCARDABLE  0, 0, 303, 197
+STYLE DS_CONTROL | WS_CHILD | WS_TABSTOP
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "TODO: Place controls for custom dialog 7 here",
+                    IDC_STATIC,32,79,232,19
+END
+
+IDD_CUSTOM8 DIALOG DISCARDABLE  0, 0, 303, 197
+STYLE DS_CONTROL | WS_CHILD | WS_TABSTOP
+FONT 8, "MS Shell Dlg"
+BEGIN
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEMPLATE
+//
+
+NEWPROJ.INF             TEMPLATE DISCARDABLE    "template\\newproj.inf"
+CONFIRM.INF             TEMPLATE DISCARDABLE    "template\\confirm.inf"
+D3DAPP.CPP              TEMPLATE DISCARDABLE    "template\\d3dapp.cpp"
+D3DAPP.H                TEMPLATE DISCARDABLE    "template\\d3dapp.h"
+D3DFILE.CPP             TEMPLATE DISCARDABLE    "template\\d3dfile.cpp"
+D3DFILE.H               TEMPLATE DISCARDABLE    "template\\d3dfile.h"
+D3DFONT.CPP             TEMPLATE DISCARDABLE    "template\\d3dfont.cpp"
+D3DFONT.H               TEMPLATE DISCARDABLE    "template\\d3dfont.h"
+D3DSETTINGS.CPP         TEMPLATE DISCARDABLE    "template\\d3dsettings.cpp"
+D3DSETTINGS.H           TEMPLATE DISCARDABLE    "template\\d3dsettings.h"
+D3DENUMERATION.CPP      TEMPLATE DISCARDABLE    "template\\d3denumeration.cpp"
+D3DENUMERATION.H        TEMPLATE DISCARDABLE    "template\\d3denumeration.h"
+D3DUTIL.CPP             TEMPLATE DISCARDABLE    "template\\d3dutil.cpp"
+D3DUTIL.H               TEMPLATE DISCARDABLE    "template\\d3dutil.h"
+DIRECTX.ICO             TEMPLATE DISCARDABLE    "template\\directx.ico"
+DIUTIL.CPP              TEMPLATE DISCARDABLE    "template\\diutil.cpp"
+DIUTIL.H                TEMPLATE DISCARDABLE    "template\\diutil.h"
+DMUTIL.CPP              TEMPLATE DISCARDABLE    "template\\dmutil.cpp"
+DMUTIL.H                TEMPLATE DISCARDABLE    "template\\dmutil.h"
+DSUTIL.CPP              TEMPLATE DISCARDABLE    "template\\dsutil.cpp"
+DSUTIL.H                TEMPLATE DISCARDABLE    "template\\dsutil.h"
+DXUTIL.CPP              TEMPLATE DISCARDABLE    "template\\dxutil.cpp"
+DXUTIL.H                TEMPLATE DISCARDABLE    "template\\dxutil.h"
+NETCONNECT.CPP          TEMPLATE DISCARDABLE    "template\\netconnect.cpp"
+NETCONNECT.H            TEMPLATE DISCARDABLE    "template\\netconnect.h"
+NETCONNECTRES.H         TEMPLATE DISCARDABLE    "template\\netconnectres.h"
+NETVOICE.CPP            TEMPLATE DISCARDABLE    "template\\netvoice.cpp"
+NETVOICE.H              TEMPLATE DISCARDABLE    "template\\netvoice.h"
+NETVOICERES.H           TEMPLATE DISCARDABLE    "template\\netvoiceres.h"
+BOUNCE.WAV              TEMPLATE DISCARDABLE    "template\\bounce.wav"
+D3D_WIN.CPP             TEMPLATE DISCARDABLE    "template\\d3d_win\\d3d_win.cpp"
+D3D_WIN.H               TEMPLATE DISCARDABLE    "template\\d3d_win\\d3d_win.h"
+D3D_WIN.RC              TEMPLATE DISCARDABLE    "template\\d3d_win\\d3d_win.rc"
+D3D_WINRES.H            TEMPLATE DISCARDABLE    "template\\d3d_win\\d3d_winres.h"
+GDI_DLG.CPP             TEMPLATE DISCARDABLE    "template\\gdi_dlg\\gdi_dlg.cpp"
+GDI_DLG.H               TEMPLATE DISCARDABLE    "template\\gdi_dlg\\gdi_dlg.h"
+GDI_DLG.RC              TEMPLATE DISCARDABLE    "template\\gdi_dlg\\gdi_dlg.rc"
+GDI_DLGRES.H            TEMPLATE DISCARDABLE    "template\\gdi_dlg\\gdi_dlgres.h"
+GDI_DLGSTDAFX.CPP       TEMPLATE DISCARDABLE    "template\\gdi_dlg\\gdi_dlgStdAfx.cpp"
+GDI_DLGSTDAFX.H         TEMPLATE DISCARDABLE    "template\\gdi_dlg\\gdi_dlgStdAfx.h"
+D3D_DLG.CPP             TEMPLATE DISCARDABLE    "template\\d3d_dlg\\d3d_dlg.cpp"
+D3D_DLG.H               TEMPLATE DISCARDABLE    "template\\d3d_dlg\\d3d_dlg.h"
+D3D_DLG.RC              TEMPLATE DISCARDABLE    "template\\d3d_dlg\\d3d_dlg.rc"
+D3D_DLGRES.H            TEMPLATE DISCARDABLE    "template\\d3d_dlg\\d3d_dlgres.h"
+D3D_DLGSTDAFX.CPP       TEMPLATE DISCARDABLE    "template\\d3d_dlg\\d3d_dlgStdAfx.cpp"
+D3D_DLGSTDAFX.H         TEMPLATE DISCARDABLE    "template\\d3d_dlg\\d3d_dlgStdAfx.h"
+GDI_WIN.CPP             TEMPLATE DISCARDABLE    "template\\gdi_win\\gdi_win.cpp"
+GDI_WIN.H               TEMPLATE DISCARDABLE    "template\\gdi_win\\gdi_win.h"
+GDI_WIN.RC              TEMPLATE DISCARDABLE    "template\\gdi_win\\gdi_win.rc"
+GDI_WINRES.H            TEMPLATE DISCARDABLE    "template\\gdi_win\\gdi_winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON    DISCARDABLE     "icon1.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE
+BEGIN
+    IDD_CUSTOM1, DIALOG
+    BEGIN
+        VERTGUIDE, 140
+        VERTGUIDE, 150
+        HORZGUIDE, 10
+    END
+
+    IDD_CUSTOM2, DIALOG
+    BEGIN
+        VERTGUIDE, 140
+        VERTGUIDE, 150
+        HORZGUIDE, 10
+    END
+
+    IDD_CUSTOM3, DIALOG
+    BEGIN
+        VERTGUIDE, 140
+        VERTGUIDE, 150
+        HORZGUIDE, 10
+    END
+
+    IDD_CUSTOM5, DIALOG
+    BEGIN
+        VERTGUIDE, 140
+        VERTGUIDE, 150
+        HORZGUIDE, 10
+    END
+
+    IDD_CUSTOM8, DIALOG
+    BEGIN
+        VERTGUIDE, 285
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BACKGROUND          BITMAP  DISCARDABLE     "backgro.bmp"
+IDB_WIN_TEAPOT          BITMAP  DISCARDABLE     "win-tea.BMP"
+IDB_WIN_TRIANGLE        BITMAP  DISCARDABLE     "win-tri.BMP"
+IDB_WIN_BLANK           BITMAP  DISCARDABLE     "win-bla.BMP"
+IDB_DLG_TEAPOT          BITMAP  DISCARDABLE     "dlg-tea.BMP"
+IDB_DLG_TRIANGLE        BITMAP  DISCARDABLE     "dlg-tri.BMP"
+IDB_DLG_BLANK           BITMAP  DISCARDABLE     "dlg-bla.BMP"
+IDB_DLG_GDI             BITMAP  DISCARDABLE     "dlg-gdi.bmp"
+IDB_WIN_GDI             BITMAP  DISCARDABLE     "win-gdi.bmp"
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+#include "afxres.rc"  // Standard components
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

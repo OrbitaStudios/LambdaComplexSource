@@ -1,0 +1,81 @@
+Application type of $$root$$:
+$$IF(D3D)
+$$IF(WINDOW)
+    Single Document Interface Application with Direct3D integration
+$$ELSE
+    MFC dialog with Direct3D integration
+$$ENDIF
+$$ELSE
+$$IF(WINDOW)
+    Single Document Interface Application
+$$ELSE
+    MFC dialog
+$$ENDIF
+$$ENDIF
+
+Classes to be created:
+$$IF(D3D)
+$$IF(WINDOW)
+    Application: CMyD3DApplication in $$root$$.cpp
+$$ELSE
+    Application: CApp and CAppForm in $$root$$.cpp
+$$ENDIF
+    Base Application: CD3DApplication in D3DApp.cpp
+    Direct3D Settings: CD3DSettingsDialog in D3DSettings.cpp
+    Direct3D Enumeration: CD3DEnumeration in D3DEnumeration.cpp
+$$ELSE
+$$IF(WINDOW)
+    Application in $$root$$.cpp
+$$ELSE
+    Application: C$$CRoot$$App in $$root$$.cpp
+    Dialog: C$$CRoot$$Dlg in $$root$$Dlg.cpp
+$$ENDIF
+$$ENDIF
+$$IF(D3DFONT)
+    3D Font Texture Support: CD3DFont in D3DFont.cpp
+$$ENDIF
+$$IF(X_FILE)
+    .X File Support: CD3DFile in D3DFile.cpp
+$$ENDIF
+$$IF(DINPUT)
+    DirectInput Support: CInputDeviceManager in DIUtil.cpp
+$$ENDIF
+$$IF(DMUSIC)
+    DirectMusic Support: CMusicManager in DMUtil.cpp
+$$ENDIF
+$$IF(DSOUND)
+    DirectSound Support: CSoundManager in DSUtil.cpp
+$$ENDIF
+$$IF(DPLAY)
+    DirectPlay Peer-to-Peer Support: CNetConnectWizard in NetConnect.cpp
+$$ENDIF
+$$IF(DPLAYVOICE)
+    DirectPlay Voice Support: CNetVoice in NetVoice.cpp
+$$ENDIF
+$$IF(D3D)
+    Generic Direct3D Support in D3DUtil.cpp 
+$$ENDIF
+    Generic DirectX Support in DXUtil.cpp
+    
+$$IF(D3D)
+Starting with:
+$$IF(SHOW_BLANK)
+   + Blank project
+$$ENDIF
+$$IF(SHOW_TRIANGLE)
+   + Spinning Triangle
+$$ENDIF
+$$IF(SHOW_TEAPOT)
+   + Teapot
+$$ENDIF
+$$ENDIF
+
+$$IF(MENUBAR || REGACCESS)
+Extras: 
+$$IF(REGACCESS)
+   + Registry access
+$$ENDIF
+$$IF(MENUBAR)
+   + Menu bar
+$$ENDIF
+$$ENDIF

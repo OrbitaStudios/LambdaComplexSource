@@ -1,0 +1,681 @@
+<HTML DIR="LTR">
+
+<HEAD>
+	<TITLE>DirectX 9 AppWizard</TITLE>
+	<META NAME="vs_targetSchema" CONTENT="http://schemas.microsoft.com/intellisense/ie5">
+	<STYLE TYPE="text/css">@import url();</STYLE>
+	<SCRIPT>
+		var strURL = window.external.FindSymbol("PRODUCT_INSTALLATION_DIR");
+		strURL += "VCWizards/";
+		strURL += window.external.GetHostLocale();
+		strURL += "/NewStyles.css";
+		document.styleSheets(0).imports(0).href = strURL;
+	</SCRIPT>
+
+	<!--  -->
+	<!-- The SYMBOL tag is used to set the default values for the user-defined symbols.-->
+	<!--  -->
+
+	<SYMBOL NAME='WIZARD_DIALOG_TITLE' TYPE=text VALUE='DirectX 9 C++ AppWizard'></SYMBOL>
+	<SYMBOL NAME='WINDOW' TYPE=checkbox VALUE=true></SYMBOL>
+	<SYMBOL NAME='DLG' TYPE=checkbox VALUE=false></SYMBOL>
+	<SYMBOL NAME='D3D' TYPE=checkbox VALUE=true></SYMBOL>
+	<SYMBOL NAME='DINPUT' TYPE=checkbox VALUE=true></SYMBOL>
+	<SYMBOL NAME='DMUSIC' TYPE=checkbox VALUE=true></SYMBOL>
+	<SYMBOL NAME='DSOUND' TYPE=checkbox VALUE=false></SYMBOL>
+	<SYMBOL NAME='DPLAY' TYPE=checkbox VALUE=false></SYMBOL>
+	<SYMBOL NAME='MENUBAR' TYPE=checkbox VALUE=true></SYMBOL>
+	<SYMBOL NAME='REGACCESS' TYPE=checkbox VALUE=true></SYMBOL>
+	
+    <SYMBOL NAME='SHOW_BLANK' TYPE=checkbox VALUE=false></SYMBOL>
+	<SYMBOL NAME='SHOW_TRIANGLE' TYPE=checkbox VALUE=false></SYMBOL>
+	<SYMBOL NAME='SHOW_TEAPOT' TYPE=checkbox VALUE=true></SYMBOL>
+	<SYMBOL NAME='D3DFONT' TYPE=checkbox VALUE=true></SYMBOL>
+	<SYMBOL NAME='X_FILE' TYPE=checkbox VALUE=true></SYMBOL>
+	
+	<SYMBOL NAME='ACTIONMAPPER' TYPE=checkbox VALUE=true></SYMBOL>
+	<SYMBOL NAME='KEYBOARD' TYPE=checkbox VALUE=false></SYMBOL>
+	
+	<SYMBOL NAME='DPLAYVOICE' TYPE=checkbox VALUE=false></SYMBOL>
+	
+	<SYMBOL NAME="CLASSES_SUMMARY" TYPE="text" VALUE=""></SYMBOL>
+</HEAD>
+
+<BODY BGCOLOR="BUTTONFACE" TOPMARGIN="0" LEFTMARGIN="0" RIGHTMARGIN="0" BOTTOMMARGIN="0" ONLOAD="InitDocument(document);" ONKEYDOWN="OnKey();" ONKEYPRESS="OnPress();">
+
+<TABLE CLASS="ONE" HEIGHT="100%" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+
+<COL WIDTH="178"><COL>
+
+  <!--OPEN OF INTRODUCTORY INFORMATION TABLE//-->
+  <TR VALIGN="TOP">
+	<TD HEIGHT="79" WIDTH="100%" COLSPAN="2">
+	 <TABLE CLASS="TWO" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+	 <COL WIDTH="12"><COL><COL WIDTH="12">
+	  <TR>
+	   <TD VALIGN="TOP" HEIGHT="12" WIDTH="12">
+	  	&nbsp;
+	   </TD>
+  
+	   <TD VALIGN="TOP" HEIGHT="12">
+	  	&nbsp;
+	   </TD>
+  
+	   <TD VALIGN="TOP" HEIGHT="12" WIDTH="12">
+	  	&nbsp;
+	   </TD>
+  
+	   <TD CLASS="IMAGE" VALIGN="BOTTOM" WIDTH="110" ROWSPAN="2">
+		<DIV CLASS="SMALLA" ID="WINDOW_BLANK">
+		 <IMG CLASS="SMALL" SRC="..\..\Images\win-bla.bmp" WIDTH="98" HEIGHT="70" ALT="">
+		</DIV>
+		<DIV CLASS="SMALL" ID="WINDOW_GDI">
+		 <IMG CLASS="SMALL" SRC="..\..\Images\win-gdi.bmp" WIDTH="98" HEIGHT="70" ALT="">
+		</DIV>			
+		<DIV CLASS="SMALL" ID="WINDOW_TEAPOT">
+		 <IMG CLASS="SMALL" SRC="..\..\Images\win-tea.bmp" WIDTH="98" HEIGHT="70" ALT="">
+		</DIV>
+		<DIV CLASS="SMALL" ID="WINDOW_TRIANGLE">
+		 <IMG CLASS="SMALL" SRC="..\..\Images\win-tri.bmp" WIDTH="98" HEIGHT="70" ALT="">
+		</DIV>
+		
+		<DIV CLASS="SMALLA" ID="DLG_BLANK">
+		 <IMG CLASS="SMALL" SRC="..\..\Images\dlg-bla.bmp" WIDTH="110" HEIGHT="70" ALT="">
+		</DIV>
+		<DIV CLASS="SMALL" ID="DLG_GDI">
+		 <IMG CLASS="SMALL" SRC="..\..\Images\dlg-gdi.bmp" WIDTH="110" HEIGHT="70" ALT="">
+		</DIV>			
+		<DIV CLASS="SMALL" ID="DLG_TEAPOT">
+		 <IMG CLASS="SMALL" SRC="..\..\Images\dlg-tea.bmp" WIDTH="110" HEIGHT="70" ALT="">
+		</DIV>
+		<DIV CLASS="SMALL" ID="DLG_TRIANGLE">
+		 <IMG CLASS="SMALL" SRC="..\..\Images\dlg-tri.bmp" WIDTH="110" HEIGHT="70" ALT="">
+		</DIV>
+		
+	   </TD>
+
+	   <TD VALIGN="TOP" HEIGHT="12" WIDTH="6" ROWSPAN="2">
+	  	&nbsp;
+	   </TD>
+	  </TR>
+	 
+	  <TR>
+	   <TD VALIGN="TOP" HEIGHT="65" WIDTH="12">
+	  	&nbsp;
+	   </TD>
+	  
+	   <TD VALIGN="TOP" HEIGHT="65">
+		<H4 CLASS="HEAD" ID="HEAD">Welcome to the DirectX 9 AppWizard</H4>
+		<P CLASS="SUBHEAD" ID="SUBHEAD">This wizard generates a Visual C++ project which optionally can integrate Direct3D, DirectInput, DirectSound, DirectMusic, and DirectPlay into either a MFC dialog or a standard Win32 window.</P>
+	   </TD>
+	  
+	   <TD VALIGN="TOP" HEIGHT="65" WIDTH="12">
+	  	&nbsp;
+	   </TD>
+	  </TR>
+	 
+	  <TR>
+	   <TD VALIGN="TOP" CLASS="RULE" COLSPAN="5" HEIGHT="2">
+		<TABLE BORDER="0" WIDTH="100%" HEIGHT="1" CELLPADDING="0" CELLSPACING="0">
+	  	 <TR VALIGN="TOP">
+	  	  <TD HEIGHT="1" WIDTH="100%" BGCOLOR="BUTTONSHADOW"><IMG SRC="../../Images/spacer.gif" HEIGHT="1" WIDTH="1" ALT=""></TD>
+	  	  <TD HEIGHT="1" WIDTH="1" BGCOLOR="WINDOW"><IMG SRC="../../Images/spacer.gif" HEIGHT="1" WIDTH="1" ALT=""></TD>
+	  	 </TR>
+		</TABLE>
+	   </TD>
+	  </TR>
+	 </TABLE>
+	</TD>
+  </TR>
+  <!--CLOSE OF INTRODUCTORY INFORMATION TABLE//-->
+
+  <!--OPEN OF NAVIGATION, CONTENT, AND BUTTON TABLES//-->
+  <TR VALIGN="TOP">
+	<TD CLASS="THREE" VALIGN="TOP" HEIGHT="100%" WIDTH="178" STYLE="BACKGROUND-IMAGE: URL(../../Images/Dx9AppWizard_Background.gif);">
+
+	   <!--OPEN OF NAVIGATION TABLE//-->
+
+	    <TABLE CLASS="THREE" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+		<COL WIDTH="12"><COL WIDTH="166"><COL WIDTH="1">
+		 <TR>
+	   	  <TD VALIGN="TOP" COLSPAN="3" HEIGHT="12">
+	  		&nbsp;
+		  </TD>
+		 </TR>
+		 <TR>
+	   	  <TD VALIGN="TOP" HEIGHT="100%" WIDTH="12">
+	  		&nbsp;
+		  </TD>
+	   	  <TD VALIGN="TOP" HEIGHT="100%" WIDTH="165">
+
+	   	  <!--OPEN OF NAVIGATIONAL LINKS//-->
+
+
+		  	<DIV CLASS="LINKSELECTED">
+	 	   	 <SPAN CLASS="VERTLINE1">
+			  <IMG SRC="../../Images/spacer.gif" WIDTH="1" HEIGHT="1" ALT="" BORDER="0">
+			 </SPAN>
+			 <SPAN CLASS="HORILINE1">
+			  <TABLE WIDTH="167" HEIGHT="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+			   <TR VALIGN="TOP">
+			    <TD CLASS="DOTTEDLINE" HEIGHT="1">
+				</TD>
+			   </TR>
+			   <TR VALIGN="TOP">
+			    <TD HEIGHT="100%">
+				 <IMG SRC="../../Images/spacer.gif" WIDTH="1" HEIGHT="28" ALT="" BORDER="0">
+			    </TD>
+			   </TR>
+			   <TR VALIGN="TOP">
+			    <TD CLASS="DOTTEDLINE" HEIGHT="1">
+			    </TD>
+			   </TR>
+			  </TABLE>
+			 </SPAN>
+
+			 <TABLE WIDTH="160" HEIGHT="28" BORDER="0" CELLPADDING="0" CELLSPACING="0" CLASS="LINKTEXTSELECTED">
+			  <TR VALIGN="MIDDLE">
+			   <TD WIDTH="156">
+				<SPAN ID="Page_Overview" TITLE="Examine an overview of selections." onClick="onClick(this);">Overview</SPAN>
+			   </TD>
+			   <TD WIDTH="4">
+				<IMG SRC="../../Images/spacer.gif" HEIGHT="1" WIDTH="4">
+			   </TD>
+			  </TR>
+			 </TABLE>
+			</DIV>
+
+			 <TABLE WIDTH="160" HEIGHT="28" BORDER="0" CELLPADDING="0" CELLSPACING="0" CLASS="LINKTEXT">
+			  <TR VALIGN="MIDDLE">
+			   <TD WIDTH="156">
+				<SPAN CLASS="ACTIVELINK" ID="Page_Settings" TITLE="Specify application type, DirectX components, and extra features for your application." onClick="onClick(this);" TABINDEX="1">Project Settings</SPAN>
+			   </TD>
+			   <TD WIDTH="4">
+				<IMG SRC="../../Images/spacer.gif" HEIGHT="1" WIDTH="4">
+			   </TD>
+			  </TR>
+			 </TABLE>
+			</DIV>
+
+			<DIV CLASS="LINK">
+			 <TABLE WIDTH="166" HEIGHT="28" BORDER="0" CELLPADDING="0" CELLSPACING="0" CLASS="LINKTEXTINDENT">
+			  <TR VALIGN="MIDDLE">
+	  		   <TD WIDTH="162">
+				<SPAN CLASS="ACTIVELINK" ID="Page_3D" TITLE="Specify what 3D object you would like to begin with, and 3D support options for your application." onClick="onClick(this);" TABINDEX="2">Direct3D Options</SPAN>
+			   </TD>
+			   <TD WIDTH="4">
+				<IMG SRC="../../Images/spacer.gif" HEIGHT="1" WIDTH="4">
+			   </TD>
+			  </TR>
+			 </TABLE>
+			</DIV>
+			
+			<DIV CLASS="LINK">
+			 <TABLE WIDTH="166" HEIGHT="28" BORDER="0" CELLPADDING="0" CELLSPACING="0" CLASS="LINKTEXTINDENT">
+			  <TR VALIGN="MIDDLE">
+	  		   <TD WIDTH="162">
+				<SPAN CLASS="ACTIVELINK" ID="Page_Input" TITLE="Specify DirectInput support options for your application." onClick="onClick(this);" TABINDEX="3">DirectInput Options</SPAN>
+			   </TD>
+			   <TD WIDTH="4">
+				<IMG SRC="../../Images/spacer.gif" HEIGHT="1" WIDTH="4">
+			   </TD>
+			  </TR>
+			 </TABLE>
+			</DIV>
+			
+			<DIV CLASS="LINK">
+			 <TABLE WIDTH="166" HEIGHT="28" BORDER="0" CELLPADDING="0" CELLSPACING="0" CLASS="LINKTEXTINDENT">
+			  <TR VALIGN="MIDDLE">
+	  		   <TD WIDTH="162">
+				<SPAN CLASS="ACTIVELINK" ID="Page_Network" TITLE="Specify DirectPlay support options for your application." onClick="onClick(this);" TABINDEX="4">DirectPlay Options</SPAN>
+			   </TD>
+			   <TD WIDTH="4">
+				<IMG SRC="../../Images/spacer.gif" HEIGHT="1" WIDTH="4">
+			   </TD>
+			  </TR>
+			 </TABLE>
+			</DIV>
+			
+	   	  <!--CLOSE OF NAVIGATIONAL LINKS//-->
+		  </TD>
+		  <TD WIDTH="1">
+		   <DIV CLASS="VERTLINE">
+			 <IMG SRC="../../Images/spacer.gif" WIDTH="1" HEIGHT="1" ALT="" BORDER="0">
+		   </DIV>
+		  </TD>
+		 </TR>
+		</TABLE>
+			
+	   <!--CLOSE OF NAVIGATION TABLE//-->
+	   </TD>
+  
+	   <TD VALIGN="TOP" HEIGHT="100%">
+	   <!--OPEN OF CONTENT AND BUTTON TABLE//-->
+	   
+	   	<TABLE CLASS="ONE" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+		<COL WIDTH="100%">
+		 <TR VALIGN="TOP">
+		  <TD HEIGHT="100%">
+	   	  <!--OPEN OF CONTENT//-->
+		  
+		  	<TABLE CLASS="CONTENT" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+			<COL WIDTH="12"><COL WIDTH="398"><COL WIDTH="12">
+ 			 <TR>
+  			  <TD VALIGN="TOP" HEIGHT="12" COLSPAN="3">
+  				&nbsp;
+  			  </TD>
+ 			 </TR>
+ 			 <TR>
+ 			 <TD VALIGN="TOP" WIDTH="12">
+  				&nbsp;
+  			  </TD>
+  			  <TD VALIGN="TOP">
+ 				<SPAN CLASS="ItemTextTop" ID="PROJECT_SETTINGS">These are the current project settings:</SPAN>					
+				<UL>
+		  			  <SPAN CLASS="ItemText" ID="CLASSES_SUMMARY" TITLE="">
+		   				<LABEL FOR="CLASSES_SUMMARY"></LABEL>
+		  			  </SPAN>
+				</UL>
+				
+	  			<SPAN CLASS="ItemText" ID="FinishText">Hint: Choose fewer options for simpler code. Also if you wish to change the wizard templates, the source to this wizard is availible in the VS.NET directory.<BR><BR>Click <B>Finish</B> from any window to accept the current settings.</SPAN>
+  		  	  </TD>
+  
+  		  	  <TD VALIGN="TOP" WIDTH="12">
+  				&nbsp;
+  		  	  </TD>
+ 		  	 </TR>
+		 	</TABLE>
+			
+	   	  <!--CLOSE OF CONTENT//-->
+		  </TD>
+		 </TR>
+		 <TR VALIGN="BOTTOM">
+		  <TD HEIGHT="48">
+	   	  <!--OPEN OF BUTTON HTML//-->
+		  
+		  	<TABLE HEIGHT="48" BORDER="0" CELLPADDING="0" CELLSPACING="0">
+			<COL WIDTH="12"><COL><COL WIDTH="75"><COL WIDTH="4"><COL WIDTH="75"><COL WIDTH="4"><COL WIDTH="75"><COL WIDTH="12">
+			 <TR>
+  			  <TD VALIGN="TOP" CLASS="RULE" COLSPAN="8" HEIGHT="2">
+				<TABLE BORDER="0" WIDTH="100%" HEIGHT="1" CELLPADDING="0" CELLSPACING="0">
+  	 			 <TR VALIGN="TOP">
+  	  			  <TD HEIGHT="1" WIDTH="100%" BGCOLOR="BUTTONSHADOW"><IMG SRC="../../Images/spacer.gif" HEIGHT="1" WIDTH="1" ALT=""></TD>
+  	  			  <TD HEIGHT="1" WIDTH="1" BGCOLOR="WINDOW"><IMG SRC="../../Images/spacer.gif" HEIGHT="1" WIDTH="1" ALT=""></TD>
+  	 			 </TR>
+				</TABLE>
+  			  </TD>
+ 			  </TR>
+ 
+ 			  <TR>
+  			  <TD VALIGN="TOP" HEIGHT="11" COLSPAN="8">
+  				&nbsp;
+  			  </TD>
+ 			 </TR>
+ 
+ 			<TR>
+  			  <TD VALIGN="MIDDLE" HEIGHT="23" WIDTH="12">
+  				&nbsp;
+  			  </TD>
+  			  <TD VALIGN="TOP" HEIGHT="23">
+  				&nbsp;
+  			  </TD>
+  			  <TD VALIGN="MIDDLE" HEIGHT="23" WIDTH="75">
+  				<BUTTON CLASS="BUTTONS" ID="FinishBtn" ACCESSKEY="F" onClick="OnFinish(document);"><U>F</U>inish</BUTTON>
+  			  </TD>
+  			  <TD VALIGN="MIDDLE" HEIGHT="23" WIDTH="4">
+  				&nbsp;
+  			  </TD>
+  			  <TD VALIGN="MIDDLE" HEIGHT="23" WIDTH="75">
+  				<BUTTON CLASS="BUTTONS" ID="CancelBtn" ACCESSKEY="C" onClick="window.external.Finish(document, 'cancel');"><U>C</U>ancel</BUTTON>
+  			  </TD>
+  			  <TD VALIGN="MIDDLE" HEIGHT="23" WIDTH="4">
+  				&nbsp;
+  			  </TD>
+  			  <TD VALIGN="MIDDLE" HEIGHT="23" WIDTH="75">
+  				<BUTTON CLASS="BUTTONS" ID="HelpBtn" ACCESSKEY="H" onClick="window.external.OnHelp('vc.appwiz.custom.overview');"><U>H</U>elp</BUTTON>
+  			  </TD>
+  			  <TD VALIGN="MIDDLE" HEIGHT="23" WIDTH="12">
+  				&nbsp;
+  			  </TD>
+ 			 </TR>
+ 
+ 			 <TR>
+  			  <TD VALIGN="TOP" HEIGHT="12" COLSPAN="8">
+  				&nbsp;
+  			  </TD>
+ 			 </TR>
+			</TABLE>
+			
+	   	  <!--CLOSE OF BUTTON HTML//-->
+		  </TD>
+		 </TR>
+		</TABLE>
+	
+  	<!--CLOSE OF NAVIGATION, CONTENT, AND BUTTON TABLES//-->
+ 	</TD>
+  </TR>
+</TABLE>
+
+
+</BODY>
+</HTML>
+
+<SCRIPT LANGUAGE="JSCRIPT">
+
+var tab_array = new Array();
+tab_array[0] = Page_Overview;
+tab_array[1] = Page_Settings;
+tab_array[2] = Page_3D;
+tab_array[3] = Page_Input;
+tab_array[4] = Page_Network;
+
+// This is an example of a function which initializes the page
+//
+function InitDocument(document)
+{
+	setDirection();
+
+	if (window.external.FindSymbol('DOCUMENT_FIRST_LOAD'))
+	{	
+		// This function sets the default symbols based 
+		// on the values specified in the SYMBOL tags above
+		//	
+		window.external.SetDefaults(document);
+		
+		// Create a new guid for this app
+        strRawGUID = window.external.CreateGuid();
+        
+		// Add the guid in this style: "{B5B21F1F-DBCD-11D2-89CA-00C04F72DAF2}"
+        window.external.AddSymbol("GUIDMSG", strRawGUID);		
+        
+		// Add the guid in this style: "{ 0xd3f55740, 0xc3ed, 0x11d1, { 0xab, 0x8d, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 } }"
+        strGuidStruct = window.external.FormatGuid(strRawGUID, 2);
+        window.external.AddSymbol("GUIDSTRUCT", strGuidStruct);		
+        
+        window.external.AddSymbol("D3D_WAS_CHECKED",true);
+        window.external.AddSymbol("DINPUT_WAS_CHECKED",false);
+        window.external.AddSymbol("DPLAY_WAS_CHECKED",false);
+	}
+
+	InitTabs();
+
+	// Load the document and initialize the controls 
+	// with the appropriate symbol values
+	//
+	window.external.Load(document);
+	
+    Page_Network.className = "inactivelink";	
+	ToggleImage();
+	TogglePages();	
+	InitControls();
+}
+
+function InitTabs()
+{
+	MouseOut(Page_Settings);
+	MouseOut(Page_3D);
+	MouseOut(Page_Input);
+	MouseOut(Page_Network);
+}
+
+function InitControls()
+{
+    L_Classes_Text = "";
+    
+	if (window.external.FindSymbol("D3D"))
+	{
+    	if (window.external.FindSymbol("WINDOW"))
+    	{
+            L_Classes_Text += "Single Document Interface Application with Direct3D integration";
+    	}
+    	else
+    	{
+            L_Classes_Text += "MFC dialog with Direct3D integration";
+    	}
+	}
+	else
+	{
+        if (window.external.FindSymbol("WINDOW"))
+    	{
+            L_Classes_Text += "Single Document Interface Application";
+    	}
+    	else
+    	{
+            L_Classes_Text += "MFC dialog";
+    	}
+    }
+    
+	if (window.external.FindSymbol("DINPUT"))
+	{
+        L_Classes_Text += "<BR>";
+        L_Classes_Text += "DirectInput Support";
+	}
+	if (window.external.FindSymbol("DMUSIC"))
+	{
+        L_Classes_Text += "<BR>";
+        L_Classes_Text += "DirectMusic Support";
+	}
+	if (window.external.FindSymbol("DSOUND"))
+	{
+        L_Classes_Text += "<BR>";
+        L_Classes_Text += "DirectSound Support";
+	}
+	if (window.external.FindSymbol("DPLAY"))
+	{
+        L_Classes_Text += "<BR>";
+        L_Classes_Text += "DirectPlay Peer-to-Peer Support";
+	}
+	if (window.external.FindSymbol("D3D"))
+	{
+    	if (window.external.FindSymbol("DPLAYVOICE"))
+    	{
+            L_Classes_Text += "<BR>";
+            L_Classes_Text += "DirectPlay Voice Support";
+    	}
+    }
+	if (window.external.FindSymbol("D3DFONT"))
+	{
+        L_Classes_Text += "<BR>";
+        L_Classes_Text += "3D Font Texture Support";
+	}
+	if (window.external.FindSymbol("X_FILE"))
+	{
+        L_Classes_Text += "<BR>";
+        L_Classes_Text += ".X File Support";
+	}
+	if (window.external.FindSymbol("REGACCESS"))
+	{
+        L_Classes_Text += "<BR>";
+        L_Classes_Text += "Registry access";
+    }
+	if (window.external.FindSymbol("MENUBAR"))
+	{
+        L_Classes_Text += "<BR>";
+        L_Classes_Text += "Menu bar";
+    }
+    
+	if (window.external.FindSymbol("SHOW_BLANK"))
+	{
+        L_Classes_Text += "<BR>";
+        L_Classes_Text += "Starting with a Blank project";
+    }
+	if (window.external.FindSymbol("SHOW_TRIANGLE"))
+	{
+        L_Classes_Text += "<BR>";
+        L_Classes_Text += "Starting with a Spinning Triangle";
+    }
+	if (window.external.FindSymbol("SHOW_TEAPOT"))
+	{
+        L_Classes_Text += "<BR>";
+        L_Classes_Text += "Starting with a Teapot";
+    }
+    
+	CLASSES_SUMMARY.innerHTML = L_Classes_Text;
+}
+
+function ToggleImage()
+{
+	WINDOW_BLANK.style.display = "none";
+	WINDOW_GDI.style.display = "none";
+	WINDOW_TEAPOT.style.display = "none";
+	WINDOW_TRIANGLE.style.display = "none";
+	DLG_BLANK.style.display = "none";
+	DLG_GDI.style.display = "none";
+	DLG_TEAPOT.style.display = "none";
+	DLG_TRIANGLE.style.display = "none";
+
+	if (window.external.FindSymbol("WINDOW"))
+	{
+    	if (window.external.FindSymbol("D3D"))
+    	{
+        	if (window.external.FindSymbol("SHOW_BLANK"))
+        	{
+        		WINDOW_BLANK.style.display = "block";
+        		return;
+        	}
+        	if (window.external.FindSymbol("SHOW_TRIANGLE"))
+        	{
+        		WINDOW_TRIANGLE.style.display = "block";
+        		return;
+        	}
+        	if (window.external.FindSymbol("SHOW_TEAPOT"))
+        	{
+        		WINDOW_TEAPOT.style.display = "block";
+        		return;
+        	}
+    	}
+    	else
+    	{
+    		WINDOW_GDI.style.display = "block";
+    		return;
+    	}
+    }
+    else
+    {
+    	if (window.external.FindSymbol("D3D"))
+    	{
+        	if (window.external.FindSymbol("SHOW_BLANK"))
+        	{
+        		DLG_BLANK.style.display = "block";
+        		return;
+        	}
+        	if (window.external.FindSymbol("SHOW_TRIANGLE"))
+        	{
+        		DLG_TRIANGLE.style.display = "block";
+        		return;
+        	}
+        	if (window.external.FindSymbol("SHOW_TEAPOT"))
+        	{
+        		DLG_TEAPOT.style.display = "block";
+        		return;
+        	}
+    	}
+    	else
+    	{
+    		DLG_GDI.style.display = "block";
+    		return;
+    	}
+    }	
+}
+
+function TogglePages()
+{
+	if (window.external.FindSymbol("D3D"))
+	{
+    	Page_3D.className = "activelink";
+    }
+    else
+    {
+        Page_3D.className = "inactivelink";
+    }
+    
+	if (window.external.FindSymbol("DINPUT"))
+	{
+    	Page_Input.className = "activelink";
+    }
+    else
+    {
+        Page_Input.className = "inactivelink";
+    }
+
+	if (window.external.FindSymbol("DPLAY"))
+	{
+    	Page_Network.className = "activelink";
+    }
+    else
+    {
+        Page_Network.className = "inactivelink";
+    }
+}
+
+
+function onClick(obj)
+{
+	if (obj == null || typeof(obj) == "undefined")
+		return;
+
+	if (obj.id == "Page_Overview")
+	{
+		Next(document, "default.htm"); 
+	}
+	if (obj.id == "Page_Settings")
+	{
+		Next(document, "settings.htm"); 
+    }
+	if (obj.id == "Page_3D")
+	{
+		if (window.external.FindSymbol("D3D"))
+		{ 
+			Next(document, "Direct3D.htm"); 
+		}
+	}
+	if (obj.id == "Page_Input")
+	{
+		if (window.external.FindSymbol("DINPUT"))
+		{ 
+			Next(document, "DirectInput.htm"); 
+		}
+	}
+	if (obj.id == "Page_Network")
+	{
+		if (window.external.FindSymbol("DPLAY"))
+		{ 
+			Next(document, "DirectPlay.htm"); 
+		}
+	}
+}
+
+
+// If the wizard has more than 1 page, this 
+// function will browse to the page specified
+//
+function Next(document, linkto)
+{
+	window.external.Next(document, linkto);
+}
+
+// This is an example of a function which
+// gets called when the user clicks on 'Finish'
+//
+function OnFinish(document)
+{
+	OnWizFinish(document);
+}
+
+</SCRIPT>
+<SCRIPT ID="INCLUDE_SCRIPT" LANGUAGE="JSCRIPT"></SCRIPT>
+<SCRIPT ID="INCLUDE_COMMON" LANGUAGE="JSCRIPT"></SCRIPT>
+<!-- 
+Common.js is a script file which contains the helper functions 
+used by the wizards.  Include this line if you want to
+call these functions from your html scripts.
+//-->
+<SCRIPT>
+	var strPath = window.external.FindSymbol("PRODUCT_INSTALLATION_DIR");
+	strPath += "VCWizards/";
+	strPath += window.external.GetHostLocale();
+	var strScriptPath = strPath + "/Script.js";
+	var strCommonPath = strPath + "/Common.js";
+	document.scripts("INCLUDE_SCRIPT").src = strScriptPath;
+	document.scripts("INCLUDE_COMMON").src = strCommonPath;
+</SCRIPT>

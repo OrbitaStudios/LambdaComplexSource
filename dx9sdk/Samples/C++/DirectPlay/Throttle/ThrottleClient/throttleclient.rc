@@ -1,0 +1,170 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// RT_MANIFEST
+//
+
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST MOVEABLE PURE "ThrottleClient.manifest"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_CLIENT DIALOG DISCARDABLE  0, 0, 264, 146
+STYLE DS_MODALFRAME | DS_SETFOREGROUND | DS_CENTER | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Throttle Sample (Client)"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    PUSHBUTTON      "&Close",IDCANCEL,207,105,50,14
+    RTEXT           "Messages Waiting:",IDC_STATIC,15,22,61,8
+    CONTROL         "Slider2",IDC_SEND_INTERVAL,"msctls_trackbar32",TBS_BOTH | 
+                    TBS_NOTICKS | WS_TABSTOP,14,95,104,13
+    LTEXT           "Send Interval",IDC_STATIC,18,87,43,8
+    CONTROL         "Regulate Outgoing Rate",IDC_REGULATE_OUTGOING_RATE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,144,20,93,10
+    LTEXT           "Max Queue Size",IDC_MAX_QUEUE_SIZE_TEXT,148,38,53,8
+    CONTROL         "Slider2",IDC_MAX_QUEUE_SIZE,"msctls_trackbar32",
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,144,46,104,13
+    GROUPBOX        "Outgoing Data",IDC_STATIC,7,7,121,112
+    LTEXT           "0",IDC_MESSAGES_WAITING,80,22,38,8
+    PUSHBUTTON      "&Help",IDC_APPHELP,153,105,50,14
+    RTEXT           "Latency:",IDC_STATIC,48,47,28,8
+    RTEXT           "Queue Wait:",IDC_STATIC,35,57,41,8
+    LTEXT           "0 ms",IDC_LATENCY,80,47,41,8
+    LTEXT           "0 ms",IDC_QUEUE_WAIT,80,57,43,8
+    RTEXT           "Data Sent:",IDC_STATIC,41,67,35,8
+    LTEXT           "0 kb",IDC_QUEUE_SIZE,80,32,40,8
+    RTEXT           "Blocked:",IDC_BLOCKED_TEXT,175,71,29,8
+    LTEXT           "0 kb",IDC_BLOCKED,209,71,41,8
+    GROUPBOX        "Queue Monitoring",IDC_STATIC,136,7,121,88
+    RTEXT           "Block Percentage:",IDC_BLOCK_PERCENTAGE_TEXT,144,81,60,
+                    8
+    LTEXT           "0%",IDC_BLOCK_PERCENTAGE,209,81,42,8
+    RTEXT           "Queue Size:",IDC_STATIC,36,32,40,8
+    LTEXT           "0 ms",IDC_DATA_SENT,80,67,43,8
+    LTEXT           "5 ms",IDC_STATIC,14,107,16,8
+    LTEXT           "100 ms",IDC_STATIC,96,107,24,8
+    LTEXT           "0 kb",IDC_MIN_QUEUE_TEXT,144,58,15,8
+    LTEXT           "500 kb",IDC_MAX_QUEUE_TEXT,227,58,23,8
+    EDITTEXT        IDC_STATUS_BAR_TEXT,-1,131,266,12,ES_AUTOHSCROLL | 
+                    ES_READONLY | NOT WS_BORDER,WS_EX_STATICEDGE
+END
+
+IDD_CONNECT DIALOG DISCARDABLE  0, 0, 154, 92
+STYLE DS_MODALFRAME | DS_SETFOREGROUND | DS_CENTER | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Throttle Client - Connect"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    EDITTEXT        IDC_HOSTNAME,25,43,64,14,ES_AUTOHSCROLL
+    LTEXT           "Server Address:",IDC_STATIC,25,34,51,8
+    LTEXT           "Please enter the hostname or IP address",IDC_STATIC,7,7,
+                    128,8
+    LTEXT           "of the Throttle Server program.",IDC_STATIC,7,15,97,8
+    EDITTEXT        IDC_PORT,92,43,34,14,ES_AUTOHSCROLL
+    LTEXT           "Port:",IDC_STATIC,92,34,16,8
+    PUSHBUTTON      "&Cancel",IDCANCEL,44,74,50,14
+    DEFPUSHBUTTON   "&OK",IDOK,97,74,50,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_CLIENT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 257
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 119
+    END
+
+    IDD_CONNECT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 147
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 85
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_MAIN                ICON    DISCARDABLE     "..\\..\\..\\common\\directx.ico"
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

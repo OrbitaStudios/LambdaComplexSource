@@ -1,0 +1,187 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// 24
+//
+
+1                       24      MOVEABLE PURE   "NatPeer.manifest"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_MAIN_GAME DIALOG DISCARDABLE  0, 0, 153, 127
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "The Greeting Game"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Wave to the other players, or they can wave to you!",
+                    IDC_STATIC,11,14,132,16
+    LTEXT           "Local Player Name:",IDC_STATIC,11,49,86,8
+    LTEXT           "Static",IDC_PLAYER_NAME,106,49,38,8
+    LTEXT           "Number of players in game:",IDC_STATIC,11,59,94,8
+    LTEXT           "0",IDC_NUM_PLAYERS,106,59,38,8
+    EDITTEXT        IDC_LOG_EDIT,10,71,133,33,ES_MULTILINE | ES_READONLY | 
+                    WS_VSCROLL
+    DEFPUSHBUTTON   "Wave to other players!",IDC_WAVE,7,106,80,14
+    PUSHBUTTON      "Exit",IDCANCEL,95,106,50,14
+    GROUPBOX        "Rules",IDC_STATIC,4,3,145,32
+    GROUPBOX        "Game Status",IDC_STATIC,3,37,147,86
+END
+
+IDD_CONNECT DIALOG DISCARDABLE  0, 0, 152, 166
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "NAT Peer - Connect"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Player Name:",IDC_STATIC,11,8,48,8
+    EDITTEXT        IDC_PLAYER_NAME,59,6,79,12,ES_AUTOHSCROLL
+    CONTROL         "Enable NAT address resolution",IDC_ENABLE_RESOLUTION,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,29,113,10
+    LTEXT           "Server Address:",IDC_STATIC,10,46,56,8
+    EDITTEXT        IDC_SERVER_ADDRESS,67,44,79,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SERVER_PORT,67,59,41,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Server Port:",IDC_STATIC,22,61,38,8
+    LTEXT           "Password:",IDC_STATIC,27,79,39,8
+    EDITTEXT        IDC_PASSWORD,67,77,79,12,ES_AUTOHSCROLL
+    CONTROL         "Host session",IDC_HOST_SESSION,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,6,98,56,10
+    LTEXT           "Session Name:",IDC_STATIC,14,113,52,8
+    EDITTEXT        IDC_SESSION_NAME,67,111,79,12,ES_AUTOHSCROLL
+    GROUPBOX        "",IDC_STATIC,5,21,141,5
+    GROUPBOX        "",IDC_STATIC,5,91,141,5
+    LTEXT           "Local Port:",IDC_STATIC,26,129,35,8
+    EDITTEXT        IDC_LOCAL_PORT,67,127,41,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "&OK",IDOK,44,151,50,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,97,151,50,14
+    CONTROL         "SIP",IDC_SIP,"SIPPREF",NOT WS_VISIBLE,0,0,0,0
+END
+
+IDD_SEARCH DIALOG DISCARDABLE  0, 0, 154, 150
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "NAT Peer - Host Search"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "C&onnect",IDC_CONNECT,44,129,50,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,97,129,50,14
+    LTEXT           "Search Address:",IDC_STATIC,5,11,53,8
+    EDITTEXT        IDC_SEARCH_ADDRESS,5,20,62,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_REMOTE_PORT,72,20,26,14,ES_AUTOHSCROLL
+    LTEXT           "Port:",IDC_STATIC,72,11,16,8
+    PUSHBUTTON      "&Search",IDC_SEARCH,105,20,42,14
+    LTEXT           "Found Sessions:",IDC_STATIC,5,40,53,8
+    LISTBOX         IDC_SESSIONS,5,49,142,67,LBS_NOINTEGRALHEIGHT | 
+                    WS_VSCROLL | WS_TABSTOP
+    CONTROL         "SIP",IDC_SIP,"SIPPREF",NOT WS_VISIBLE,0,0,0,0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_MAIN_GAME, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        VERTGUIDE, 60
+        VERTGUIDE, 120
+        TOPMARGIN, 7
+    END
+
+    IDD_CONNECT, DIALOG
+    BEGIN
+        LEFTMARGIN, 5
+        RIGHTMARGIN, 146
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 159
+    END
+
+    IDD_SEARCH, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 147
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 143
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_MAIN                ICON    DISCARDABLE     "..\\..\\Common\\directxCE.ico"
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

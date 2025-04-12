@@ -1,0 +1,195 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// 24
+//
+
+1                       24      MOVEABLE PURE   "LobbyLaunch.manifest"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_MAIN DIALOG DISCARDABLE  0, 0, 216, 262
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Set in String Table"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    EDITTEXT        IDC_OUTBOX,15,137,150,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "E&xit",IDCANCEL,169,230,40,14
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME,7,7,202,34
+    LTEXT           "This tutorial implements the LobbiedApplication interface,",
+                    IDC_STATIC,16,14,179,8
+    LTEXT           "which enables enumeration and launch by a lobby client.",
+                    IDC_STATIC,16,24,179,8
+    GROUPBOX        "Session Status",IDC_STATIC,7,167,202,57
+    LTEXT           "Not connected to a session.",IDC_STATUS,21,180,173,8
+    PUSHBUTTON      "&Host...",IDC_HOST,19,200,55,16
+    GROUPBOX        "Communication",IDC_STATIC,7,47,202,114
+    LISTBOX         IDC_INBOX,16,70,183,61,NOT LBS_NOTIFY | 
+                    LBS_NOINTEGRALHEIGHT | LBS_NOSEL | WS_VSCROLL | 
+                    WS_TABSTOP
+    DEFPUSHBUTTON   "&Send",IDC_SEND,169,137,30,14
+    LTEXT           "Received Messages:",IDC_STATIC,16,60,68,8
+    PUSHBUTTON      "&Connect...",IDC_CONNECT,79,200,55,16
+END
+
+IDD_HOST DIALOG DISCARDABLE  0, 0, 168, 131
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Host New Session"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    EDITTEXT        IDC_NAME,71,48,81,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_LOCAL_PORT,71,67,42,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "&Migrate Host",IDC_MIGRATE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,71,89,56,10
+    DEFPUSHBUTTON   "OK",IDOK,71,114,42,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,117,114,43,14
+    LTEXT           "Session Name",IDC_STATIC,20,51,46,8
+    LTEXT           "Please provide a name for the new session.",IDC_STATIC,
+                    12,11,138,8
+    LTEXT           "This name will help other players identify you.",
+                    IDC_STATIC,12,22,142,8
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME,7,7,154,27
+    LTEXT           "Port",IDC_STATIC,53,70,14,8
+END
+
+IDD_CONNECT DIALOG DISCARDABLE  0, 0, 229, 153
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Connect to Session"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    EDITTEXT        IDC_ADDRESS,29,56,87,14,ES_AUTOHSCROLL
+    LTEXT           "Port:",IDC_STATIC,121,46,16,8
+    EDITTEXT        IDC_REMOTE_PORT,121,56,30,14,ES_AUTOHSCROLL | ES_NUMBER
+    DEFPUSHBUTTON   "&Search",IDC_SEARCH,159,56,42,14
+    LISTBOX         IDC_SESSIONS,28,89,173,31,LBS_NOINTEGRALHEIGHT | 
+                    WS_DISABLED | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    LTEXT           "Detected Sessions:",IDC_STATIC,29,79,99,8
+    LTEXT           "Search Address:",IDC_STATIC,29,46,53,8
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME,7,6,215,31
+    LTEXT           "Find hosts by using the search field below. Select a detected",
+                    IDC_STATIC,13,12,192,8
+    LTEXT           "host and click ""Connect"" to join a session.",
+                    IDC_STATIC,13,23,141,8
+    PUSHBUTTON      "C&onnect",IDOK,131,132,43,14,WS_DISABLED
+    PUSHBUTTON      "&Cancel",IDCANCEL,177,132,43,14
+END
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_MAIN                ICON    DISCARDABLE     "..\\..\\..\\Common\\directx.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_MAIN, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 251
+    END
+
+    IDD_HOST, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 110
+    END
+
+    IDD_CONNECT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 222
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 146
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAIN MENU DISCARDABLE 
+BEGIN
+    POPUP "Lobby"
+    BEGIN
+        MENUITEM "Register",                    IDM_LOBBY_REGISTER
+        MENUITEM "UnRegister",                  IDM_LOBBY_UNREGISTER
+    END
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

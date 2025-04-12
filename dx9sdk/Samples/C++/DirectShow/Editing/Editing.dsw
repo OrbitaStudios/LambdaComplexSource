@@ -1,0 +1,131 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "BaseClasses"=..\BaseClasses\baseclasses.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Compressor"=.\CompressView\Compressor.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "GrabBitmaps"=.\GrabBitmaps\GrabBitmaps.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "SampGrabCB"=.\SampGrabCB\SampGrabCB.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "StillCap"=.\StillCap\StillCap.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "TimelineTest"=.\TimelineTest\timelinetest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "TransViewer"=.\TransViewer\TransViewer.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "XTLTest"=.\XTLTest\XTLTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

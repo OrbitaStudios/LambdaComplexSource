@@ -1,0 +1,141 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// 24
+//
+
+1                       24      MOVEABLE PURE   "Connect.manifest"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_MAIN DIALOG DISCARDABLE  0, 0, 216, 251
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "SET IN STRING TABLE"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    EDITTEXT        IDC_ADDRESS,21,71,89,14,ES_AUTOHSCROLL
+    LTEXT           "Port:",IDC_STATIC,113,61,16,8
+    EDITTEXT        IDC_REMOTE_PORT,113,71,32,14,ES_AUTOHSCROLL
+    LISTBOX         IDC_SESSIONS,21,104,173,31,LBS_NOINTEGRALHEIGHT | 
+                    WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    LTEXT           "Detected Sessions:",IDC_STATIC,21,94,99,8
+    PUSHBUTTON      "&Search",IDC_SEARCH,152,71,42,14
+    LTEXT           "Search Address:",IDC_STATIC,21,61,53,8
+    GROUPBOX        "Host Search",IDC_STATIC,7,48,202,112
+    PUSHBUTTON      "Connect",IDC_CONNECT,151,139,43,14
+    DEFPUSHBUTTON   "E&xit",IDCANCEL,169,230,40,14
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME,7,7,202,34
+    LTEXT           "This tutorial adds the ability to connect to a session. Once",
+                    IDC_STATIC,16,14,182,8
+    LTEXT           "connected, an application can send and receive data.",
+                    IDC_STATIC,16,24,172,8
+    GROUPBOX        "Session Status",IDC_STATIC,7,167,202,57
+    LTEXT           "Not connected to a session.",IDC_STATUS,21,180,173,8
+    PUSHBUTTON      "&Host...",IDC_HOST,19,200,55,16
+END
+
+IDD_HOST DIALOG DISCARDABLE  0, 0, 168, 116
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Host New Session"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    EDITTEXT        IDC_NAME,71,48,81,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_LOCAL_PORT,71,67,42,14,ES_AUTOHSCROLL | ES_NUMBER
+    DEFPUSHBUTTON   "OK",IDOK,71,97,42,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,117,97,43,14
+    LTEXT           "Session Name",IDC_STATIC,20,51,46,8
+    LTEXT           "Please provide a name for the new session.",IDC_STATIC,
+                    12,11,138,8
+    LTEXT           "This name will help other players identify you.",
+                    IDC_STATIC,12,22,142,8
+    CONTROL         "",IDC_STATIC,"Static",SS_BLACKFRAME,7,7,154,27
+    LTEXT           "Port",IDC_STATIC,53,70,14,8
+END
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_MAIN                ICON    DISCARDABLE     "..\\..\\..\\Common\\directx.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_APP_TITLE           "Tutorial 4: Connect to Session"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

@@ -1,0 +1,1316 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "ASFCopy"=.\Misc\ASFCopy\ASFCopy.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "AudioCap"=.\Capture\AudioCap\AudioCap.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Audiobox"=.\Players\AudioBox\Audiobox.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "BGMusic"=.\players\bgmusic\bgmusic.DSP - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "BaseClasses"=.\BaseClasses\baseclasses.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Blender"=.\VMR\Blender\Blender.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Blender9"=.\VMR9\Blender\blender9.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "BmpMix9"=.\VMR9\BitmapMix\BmpMix9.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "CaptureTex"=.\Capture\CaptureTex\CaptureTex.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "CaptureTex9"=.\Capture\CaptureTex9\CaptureTex9.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Compressor"=.\Editing\CompressView\Compressor.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ControlBase"=.\DMO\GargleDMO\ControlBase\ControlBase.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Cube"=.\VMR\Cube\Cube.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Cutscene"=.\players\Cutscene\Cutscene.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "DDrawXCL"=.\players\DDrawXCL\DDrawXCL.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "DMOEnum"=.\Misc\DMOEnum\DMOEnum.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "DVDSample"=.\DVD\DVDSample\DVDSample.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "GamePlayer"=.\VMR9\MultiVMR9\GamePlayer\GamePlayer.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name MultiVMR9
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "GargleDMO"=.\DMO\GargleDMO\GargleDMO.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ControlBase
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name MedParamBase
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "GrabBitmaps"=.\Editing\GrabBitmaps\GrabBitmaps.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Jukebox"=.\Players\Jukebox\Jukebox.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Mapper"=.\Misc\Mapper\Mapper.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MedParamBase"=.\DMO\GargleDMO\MedParamBase\MedParamBase.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MonitorInfo"=.\VMR\MonitorInfo\MonitorInfo.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MonitorInfo9"=.\VMR9\MonitorInfo\monitorinfo9.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "MultiPlayer"=.\VMR9\MultiVMR9\MultiPlayer\MultiPlayer.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name MultiVMR9
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "MultiVMR9"=.\VMR9\MultiVMR9\DLL\MultiVMR9.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "PlayCap"=.\Capture\PlayCap\playcap.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "PlayCapMoniker"=.\Capture\PlayCapMoniker\PlayCapMoniker.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "PlayDMO"=.\Players\PlayDMO\PlayDMO.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "PlayDVD"=.\DVD\PlayDVD\PlayDVD.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "PlayWnd"=.\players\PlayWnd\PlayWnd.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "PlayWndASF"=.\Players\PlayWndASF\PlayWndASF.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "PsiParser"=.\Filters\PSIParser\PsiParser.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "PushSource"=.\Filters\PushSource\PushSource.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "RGBFilters"=.\Filters\RGBFilters\RGBFilters.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "RenderLess"=.\VMR\Renderless\RenderLess.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "RenderLog"=.\Misc\RenderLog\RenderLog.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "SampGrabCB"=.\Editing\SampGrabCB\SampGrabCB.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "StillCap"=.\Editing\StillCap\StillCap.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "StillView"=.\Players\StillView\StillView.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "SysEnum"=.\Misc\SysEnum\SysEnum.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Text"=.\VMR\Text\Text.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Text9"=.\VMR9\Text\text9.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Texture3D9"=.\Players\Texture3D9\Texture3D9.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Texture3D"=.\players\texture3d\Textures.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Ticker"=.\VMR\Ticker\ticker.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Ticker9"=.\VMR9\Ticker\ticker9.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "TimelineTest"=.\Editing\TimelineTest\timelinetest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "TransViewer"=.\Editing\TransViewer\TransViewer.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "TxtPlayer"=.\VMR\TxtPlayer\TxtPlayer.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "VMR9Allocator"=.\VMR9\VMR9Allocator\vmr9allocator.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "VMRMix"=.\VMR\VMRMix\VMRMix.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "VMRMulti"=.\VMR\VMRMulti\VMRMulti.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "VMRPip"=.\VMR\PIP\VMRPip.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "VMRPip9"=.\VMR9\Pip\vmrpip9.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "VMRPlayer"=.\VMR\VMRPlayer\VMRPlayer.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "VMRPlayer9"=.\VMR9\VMRPlayer\vmrplayer9.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "VMRXcl"=.\VMR\VMRXcl\VMRXcl.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "VMRXclBasic"=.\VMR\VMRXclBasic\VMRXclBasic.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Watermark"=.\VMR\Watermark\Watermark.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Watermark9"=.\VMR9\Watermark\watermark9.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Windowless"=.\VMR\Windowless\Windowless.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Windowless9"=.\VMR9\Windowless\windowless9.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "XTLTest"=.\Editing\XTLTest\xtltest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "amcap"=.\capture\amcap\amcap.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "asynbase"=.\filters\async\base\asynbase.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "async"=.\filters\async\filter\asyncflt.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name asynbase
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ball"=.\filters\ball\ball.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "contrast"=.\filters\contrast\contrast.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "dmodemo"=.\dmo\dmodemo\dmodemo.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "dmosample"=.\dmo\dmosample\sample.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "dsnet"=.\Filters\DSNetwork\filter\DSNetwork.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name dsnetifc
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name dsrecv
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name dssend
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name nutil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "dsnetifc"=.\Filters\DSNetwork\IDL\dsnetifc.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "dsrecv"=.\Filters\DSNetwork\receiver\dsrecv.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name dsnetifc
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "dssend"=.\Filters\DSNetwork\sender\dssend.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name dsnetifc
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "dump"=.\filters\dump\dump.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "dvapp"=.\capture\dvapp\dvapp.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ezrgb24"=.\filters\ezrgb24\ezrgb24.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "gargle"=.\filters\gargle\gargle.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "grabber"=.\Filters\Grabber\grabber.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "inftee"=.\filters\inftee\inftee.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "memfile"=.\filters\async\memfile\memfile.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name asynbase
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name async
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "metronom"=.\Filters\Metronome\metronom.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "nullip"=.\filters\nullinplace\nullip.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "nullnull"=.\filters\nullnull\nullnull.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "nutil"=.\Filters\DSNetwork\util\nutil.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "sampvid"=.\filters\sampvid\sampvid.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "scope"=.\filters\scope\scope.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "synth"=.\filters\synth\synth.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "textout"=.\filters\textout\textout.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "wavdest"=.\filters\wavdest\wavdest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

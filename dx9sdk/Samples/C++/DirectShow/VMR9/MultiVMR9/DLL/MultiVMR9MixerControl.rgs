@@ -1,0 +1,27 @@
+HKCR
+{
+	MultiVMR9.MultiVMR9MixerControl.1 = s 'MultiVMR9MixerControl Class'
+	{
+		CLSID = s '{BB22E7B6-54E1-4C4D-ABF7-99193550A3F4}'
+	}
+	MultiVMR9.MultiVMR9MixerControl = s 'MultiVMR9MixerControl Class'
+	{
+		CLSID = s '{BB22E7B6-54E1-4C4D-ABF7-99193550A3F4}'
+		CurVer = s 'MultiVMR9.MultiVMR9MixerControl.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {BB22E7B6-54E1-4C4D-ABF7-99193550A3F4} = s 'MultiVMR9MixerControl Class'
+		{
+			ProgID = s 'MultiVMR9.MultiVMR9MixerControl.1'
+			VersionIndependentProgID = s 'MultiVMR9.MultiVMR9MixerControl'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			val AppID = s '%APPID%'
+			'TypeLib' = s '{52CCE217-77CF-4108-9D55-CCBAAF2896D7}'
+		}
+	}
+}

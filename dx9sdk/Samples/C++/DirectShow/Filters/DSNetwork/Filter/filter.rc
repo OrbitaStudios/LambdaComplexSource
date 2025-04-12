@@ -1,0 +1,12 @@
+#include <windows.h>
+#include <activex.ver>
+
+#define VERSION_RES_BIN_NAME        "dsnet.ax\0"
+#define VERSION_RES_BIN_DESCRIPTION "DirectShow Net filter\0"
+#define AMOVIE_SELF_REGISTER
+
+#include <activex.rcv>
+
+// Include the resources for the sender and receiver libraries
+#include "..\sender\propsend.rc"
+#include "..\receiver\proprecv.rc"

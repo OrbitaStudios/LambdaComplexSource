@@ -1,0 +1,93 @@
+readme.txt
+
+[!if D3D]
+[!if WINDOW]
+d3d_win\d3d_win.cpp
+d3d_win\d3d_win.h
+d3d_win\d3d_win.rc
+d3d_win\d3d_winres.h
+[!else]
+d3d_dlg\d3d_dlg.cpp
+d3d_dlg\d3d_dlg.h
+d3d_dlg\d3d_dlg.rc
+d3d_dlg\d3d_dlgres.h
+d3d_dlg\d3d_dlgStdAfx.cpp
+d3d_dlg\d3d_dlgStdAfx.h
+[!endif]
+[!endif]
+
+[!if !D3D]
+[!if WINDOW]
+gdi_win\gdi_win.cpp
+gdi_win\gdi_win.h
+gdi_win\gdi_win.rc
+gdi_win\gdi_winres.h
+[!else]
+gdi_dlg\gdi_dlg.cpp
+gdi_dlg\gdi_dlg.h
+gdi_dlg\gdi_dlg.rc
+gdi_dlg\gdi_dlgres.h
+gdi_dlg\gdi_dlgStdAfx.cpp
+gdi_dlg\gdi_dlgStdAfx.h
+[!endif]
+[!endif]
+
+dxutil.cpp
+dxutil.h
+
+DirectX.ico
+
+[!if D3D]
+d3dapp.cpp
+d3dapp.h
+d3dsettings.cpp
+d3dsettings.h
+d3denumeration.cpp
+d3denumeration.h
+d3dutil.cpp
+d3dutil.h
+[!endif]
+
+[!if X_FILE]
+d3dfile.cpp
+d3dfile.h
+[!endif]
+
+[!if D3DFONT]
+d3dfont.cpp
+d3dfont.h
+[!endif]
+
+[!if DMUSIC]
+dmutil.cpp
+dmutil.h
+[!endif]
+
+[!if DSOUND]
+dsutil.cpp
+dsutil.h
+[!endif]
+
+[!if DMUSIC || DSOUND]
+bounce.wav
+[!endif]
+
+[!if ACTIONMAPPER]
+diutil.cpp
+diutil.h
+[!endif]
+
+[!if DPLAY]
+netconnect.cpp
+netconnect.h
+netconnectres.h
+[!endif]
+
+[!if DPLAYVOICE]
+netvoice.cpp
+netvoice.h
+netvoiceres.h
+[!endif]
+
+
+

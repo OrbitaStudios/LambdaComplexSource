@@ -1,0 +1,289 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 235, 55
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About Transition Previewer"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_ICON,IDC_STATIC,11,17,20,20
+    LTEXT           "DirectShow Transition Previewer",IDC_STATIC,40,10,119,8,
+                    SS_NOPREFIX
+    LTEXT           "Copyright (C) 2000-2002 Microsoft Corporation",
+                    IDC_STATIC,40,34,188,8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
+    LTEXT           "Version 9.0",IDC_STATIC,40,22,119,8,SS_NOPREFIX
+END
+
+IDD_MAIN DIALOG DISCARDABLE  100, 100, 390, 296
+STYLE DS_MODALFRAME | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "DirectShow Editing Services Transition Previewer"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LISTBOX         IDC_TRANS,7,16,118,159,LBS_SORT | LBS_NOINTEGRALHEIGHT | 
+                    WS_VSCROLL | WS_TABSTOP
+    CTEXT           "Select a Transition to Preview",IDC_STATIC,7,7,118,8
+    CONTROL         "",IDC_CLIP1,"Static",SS_BLACKRECT,133,16,120,100
+    CONTROL         "",IDC_CLIP2,"Static",SS_BLACKRECT,261,16,120,100
+    PUSHBUTTON      "Open Clip...",IDC_PICK_CLIP1,133,118,50,14
+    PUSHBUTTON      "Open Clip...",IDC_PICK_CLIP2,261,118,50,14
+    DEFPUSHBUTTON   "&Preview",IDC_PREVIEW,7,179,50,22,WS_DISABLED
+    EDITTEXT        IDC_ERRORLOG,7,253,118,27,ES_MULTILINE | ES_AUTOVSCROLL | 
+                    ES_READONLY
+    CTEXT           "Select a starting clip:",IDC_CLIP1_CAPTION,133,7,115,8
+    CTEXT           "Select an ending clip:",IDC_CLIP2_CAPTION,261,7,115,8
+    CONTROL         "",IDC_VIDWIN,"Static",SS_BLACKRECT,134,148,249,140
+    CTEXT           "Preview Window",IDC_STATIC,142,139,240,8
+    CTEXT           "Error Log",IDC_STATIC,7,281,118,8
+    PUSHBUTTON      "Select Color...",IDC_PICK_COLOR1,203,118,50,14
+    PUSHBUTTON      "Select Color...",IDC_PICK_COLOR2,331,118,50,14
+    PUSHBUTTON      "P&roperties",IDM_PROPERTIES,75,179,50,22
+    CONTROL         "Cycle all transitions?",IDC_CHECK_CYCLE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,225,82,10
+    CONTROL         "Loop current transition?",IDC_CHECK_LOOP,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,7,236,92,10
+    PUSHBUTTON      "&Stop",IDC_STOP,7,205,50,14
+    PUSHBUTTON      "Paus&e",IDC_PAUSE,75,205,50,14
+END
+
+IDD_PROPERTY DIALOG DISCARDABLE  100, 100, 188, 129
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Transition Properties"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,131,108,50,14
+    LISTBOX         IDC_PROPLIST,7,7,114,115,LBS_NOINTEGRALHEIGHT | 
+                    WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "&Add New",IDC_ADDNEW,131,7,50,14
+    PUSHBUTTON      "&Edit",IDC_EDIT,131,26,50,14
+    PUSHBUTTON      "&Remove",IDC_REMOVE,131,46,50,14
+END
+
+IDD_EDITPROP DIALOG DISCARDABLE  0, 0, 186, 71
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Add Property"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Name",IDC_STATIC,7,9,20,8
+    EDITTEXT        IDC_PROPNAME,34,7,145,14,ES_AUTOHSCROLL
+    LTEXT           "Value",IDC_STATIC,7,31,19,8
+    EDITTEXT        IDC_PROPVAL,34,29,145,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,40,50,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,96,50,50,14
+END
+
+IDD_SMPTE DIALOG DISCARDABLE  0, 0, 269, 133
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "SMPTE Wipe Properties"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    EDITTEXT        IDC_SMPTE_SOFTNESS,46,35,22,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    EDITTEXT        IDC_SMPTE_WIDTH,45,56,22,14,ES_AUTOHSCROLL | ES_NUMBER
+    PUSHBUTTON      "Pick Color",IDC_SMPTE_PICK_COLOR,77,56,50,14
+    EDITTEXT        IDC_SMPTE_OFFSETX,189,35,24,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    EDITTEXT        IDC_SMPTE_OFFSETY,230,35,24,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    EDITTEXT        IDC_SMPTE_REPLICATEX,189,54,24,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    EDITTEXT        IDC_SMPTE_REPLICATEY,230,54,24,14,ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    EDITTEXT        IDC_SMPTE_SCALEX,189,72,24,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SMPTE_SCALEY,230,72,24,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,76,112,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,134,112,50,14
+    LTEXT           "SMPTE Wipe",IDC_STATIC,7,9,44,8
+    LTEXT           "Softness",IDC_STATIC,12,38,28,8
+    LTEXT           "Width",IDC_STATIC,17,59,20,8
+    GROUPBOX        "Border",IDC_STATIC,7,24,126,50
+    CONTROL         "Button1",IDC_SMPTE_COLOR,"Button",BS_OWNERDRAW,101,37,
+                    24,14
+    LTEXT           "Color",IDC_STATIC,77,40,17,8
+    LTEXT           "Offset: X",IDC_STATIC,155,38,28,8
+    LTEXT           "Replicate: X",IDC_STATIC,144,56,40,8
+    LTEXT           "Scale: X",IDC_STATIC,155,75,28,8
+    LTEXT           "Y",IDC_STATIC,221,38,8,8
+    LTEXT           "Y",IDC_STATIC,221,56,8,8
+    LTEXT           "Y",IDC_STATIC,221,75,8,8
+    GROUPBOX        "Modify",IDC_STATIC,142,24,120,78
+    CTEXT           "(Wipe numbers 101-131 only)",IDC_STATIC,150,91,104,8
+    COMBOBOX        IDC_SMPTE_MASKNUM,56,7,206,123,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_COMPOSITOR DIALOG DISCARDABLE  0, 0, 161, 135
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Compositor Properies"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,28,114,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,84,114,50,14
+    CONTROL         "",IDC_COMP_CANVAS,"Static",SS_BLACKFRAME | NOT 
+                    WS_VISIBLE,7,7,147,62
+    LTEXT           "Source",IDC_STATIC,26,71,24,8
+    LTEXT           "Destination",IDC_STATIC,96,71,36,8
+    LTEXT           "Click on a blue rectangle to adjust the size.",
+                    IDC_STATIC,11,88,139,8
+END
+
+IDD_KEY DIALOG DISCARDABLE  0, 0, 150, 111
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Key Properties"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,22,90,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,78,90,50,14
+    COMBOBOX        IDC_KEY_TYPE,48,8,68,91,CBS_DROPDOWNLIST | WS_VSCROLL | 
+                    WS_TABSTOP
+    LTEXT           "Key Type",IDC_STATIC,7,10,37,12
+    LTEXT           "Hue",IDC_STATIC,29,32,14,8
+    EDITTEXT        IDC_KEY_HUE,48,29,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Invert?",IDC_KEY_INVERT,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,93,68,38,10
+    LTEXT           "Luminance",IDC_STATIC,7,50,36,8
+    EDITTEXT        IDC_KEY_LUMA,48,47,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Color",IDC_STATIC,93,31,17,8
+    CONTROL         "Button1",IDC_KEY_COLOR,"Button",BS_OWNERDRAW | 
+                    WS_TABSTOP,119,28,20,14
+    PUSHBUTTON      "Pick Color",IDC_KEY_PICK_COLOR,93,47,50,14
+    LTEXT           "Similarity",IDC_KEY_SIMILARITY,15,68,28,8
+    EDITTEXT        IDC_KEY_SIMILAR,48,65,40,14,ES_AUTOHSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_MAIN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 383
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 289
+    END
+
+    IDD_PROPERTY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 181
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 122
+    END
+
+    IDD_EDITPROP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 64
+    END
+
+    IDD_SMPTE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 262
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 126
+    END
+
+    IDD_COMPOSITOR, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 154
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 128
+    END
+
+    IDD_KEY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 143
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 104
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON                ICON    DISCARDABLE     "..\..\..\Common\directx.ico"
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

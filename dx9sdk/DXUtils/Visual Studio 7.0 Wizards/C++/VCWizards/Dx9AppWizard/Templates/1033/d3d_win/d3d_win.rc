@@ -1,0 +1,325 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#define IDC_STATIC -1
+#include <windows.h>
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_MAIN_ICON           ICON    DISCARDABLE     "DirectX.ico"
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define IDC_STATIC -1\r\n"
+    "#include <windows.h>\r\n"
+    "\r\n"
+    "\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAIN_ACCEL ACCELERATORS DISCARDABLE 
+BEGIN
+    VK_ESCAPE,      IDM_EXIT,               VIRTKEY, NOINVERT
+[!if !ACTIONMAPPER]
+    VK_F2,          IDM_CHANGEDEVICE,       VIRTKEY, NOINVERT
+[!if DPLAYVOICE]
+    VK_F4,          IDM_CONFIGVOICE,       VIRTKEY, NOINVERT
+[!endif]
+[!endif]
+    VK_RETURN,      IDM_TOGGLEFULLSCREEN,   VIRTKEY, ALT, NOINVERT
+    "X",            IDM_EXIT,               VIRTKEY, ALT, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_SELECTDEVICE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 259
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 143
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_SELECTDEVICE DIALOG DISCARDABLE  0, 0, 289, 302
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Direct3D Settings"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    GROUPBOX        "Adapter and device",IDC_STATIC,5,5,276,47
+    LTEXT           "Display &Adapter:",IDC_STATIC,16,17,98,10,
+                    SS_CENTERIMAGE
+    COMBOBOX        IDC_ADAPTER_COMBO,124,15,149,100,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Render &Device:",IDC_STATIC,16,34,98,10,SS_CENTERIMAGE
+    COMBOBOX        IDC_DEVICE_COMBO,124,32,149,100,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Display mode settings",IDC_STATIC,5,56,276,98
+    CONTROL         "&Windowed",IDC_WINDOW,"Button",BS_AUTORADIOBUTTON | 
+                    WS_GROUP | WS_TABSTOP,16,68,98,15
+    CONTROL         "&Fullscreen",IDC_FULLSCREEN,"Button",BS_AUTORADIOBUTTON,
+                    16,83,98,15
+    LTEXT           "Adapter F&ormat:",IDC_STATIC,16,103,98,8
+    COMBOBOX        IDC_ADAPTERFORMAT_COMBO,124,101,149,204,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_GROUP | WS_TABSTOP
+    LTEXT           "&Resolution:",IDC_STATIC,16,120,98,8
+    COMBOBOX        IDC_RESOLUTION_COMBO,124,118,149,204,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_GROUP | WS_TABSTOP
+    LTEXT           "R&efresh Rate:",IDC_STATIC,16,137,98,8
+    COMBOBOX        IDC_REFRESHRATE_COMBO,124,135,149,204,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_GROUP | WS_TABSTOP
+    GROUPBOX        "Device settings",IDC_STATIC,7,158,274,118
+    LTEXT           "&Back Buffer Format:",IDC_STATIC,16,173,98,8
+    COMBOBOX        IDC_BACKBUFFERFORMAT_COMBO,124,170,149,100,
+                    CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "De&pth/Stencil Buffer Format:",IDC_STATIC,16,190,98,8
+    COMBOBOX        IDC_DEPTHSTENCILBUFFERFORMAT_COMBO,124,187,149,100,
+                    CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "&Multisample Type:",IDC_STATIC,16,207,98,10,
+                    SS_CENTERIMAGE
+    COMBOBOX        IDC_MULTISAMPLE_COMBO,124,204,149,100,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Multisample &Quality:",IDC_STATIC,16,224,98,8
+    COMBOBOX        IDC_MULTISAMPLE_QUALITY_COMBO,124,221,149,100,
+                    CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "&Vertex Processing:",IDC_STATIC,16,241,98,8
+    COMBOBOX        IDC_VERTEXPROCESSING_COMBO,124,238,149,100,
+                    CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Present &Interval:",IDC_STATIC,16,258,98,8
+    COMBOBOX        IDC_PRESENTINTERVAL_COMBO,124,255,149,100,
+                    CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "OK",IDOK,86,286,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,152,286,50,14
+END
+[!if DPLAY]
+
+IDD_LOBBY_WAIT_STATUS DIALOG DISCARDABLE  120, 110, 162, 52
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION
+CAPTION "Lobby Connection Status"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "&Cancel",IDCANCEL,55,31,51,14
+    CTEXT           "Finding Game...",IDC_WAIT_TEXT,7,14,141,8
+END
+
+IDD_MULTIPLAYER_CREATE DIALOG DISCARDABLE  0, 0, 186, 65
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Create Game"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    EDITTEXT        IDC_EDIT_SESSION_NAME,7,19,172,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,7,44,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,129,44,50,14
+    LTEXT           "Game Name:",IDC_STATIC,7,7,42,8
+END
+
+IDD_MULTIPLAYER_CONNECT DIALOG DISCARDABLE  0, 0, 282, 151
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Multiplayer Connect"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Player Name:",IDC_STATIC,7,10,43,8
+    EDITTEXT        IDC_PLAYER_NAME_EDIT,7,22,268,14,ES_AUTOHSCROLL
+    LTEXT           "Connection Type:",IDC_STATIC,7,41,57,8
+    LISTBOX         IDC_CONNECTION_LIST,7,53,268,72,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "OK",IDOK,171,130,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,225,130,50,14
+END
+
+IDD_MULTIPLAYER_GAMES DIALOG DISCARDABLE  0, 0, 282, 140
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Multiplayer Games"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Select Game To Join:",-1,7,15,69,8
+    CONTROL         "Start Search",IDC_SEARCH_CHECK,"Button",BS_AUTOCHECKBOX | 
+                    BS_PUSHLIKE | WS_TABSTOP,220,7,55,14
+    LISTBOX         IDC_GAMES_LIST,7,24,268,91,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Join",IDC_JOIN,7,119,50,14
+    PUSHBUTTON      "Create",IDC_CREATE,61,119,50,14
+    PUSHBUTTON      "Cancel",IDC_BACK,225,119,50,14
+END
+[!endif]
+[!if DPLAYVOICE]
+
+IDD_VOICE_SETUP DIALOG DISCARDABLE  0, 0, 284, 204
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "DirectPlayVoice Configuration"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    GROUPBOX        "Client Options (adjust any time)",IDC_STATIC,7,7,270,
+                    124
+    GROUPBOX        "Playback Volume",IDC_STATIC,15,17,81,55,WS_GROUP
+    CONTROL         "Default",IDC_PLAYBACK_DEFAULT,"Button",
+                    BS_AUTORADIOBUTTON,23,27,39,10
+    CONTROL         "Set",IDC_PLAYBACK_SET,"Button",BS_AUTORADIOBUTTON,63,27,
+                    27,10
+    CONTROL         "Slider1",IDC_PLAYBACK_SLIDER,"msctls_trackbar32",
+                    TBS_NOTICKS | WS_TABSTOP,21,47,70,11
+    LTEXT           "Min",IDC_STATIC,25,58,12,8
+    LTEXT           "Max",IDC_STATIC,73,58,14,8
+    GROUPBOX        "Record Volume",IDC_STATIC,102,17,81,55,WS_GROUP
+    CONTROL         "Auto",IDC_RECORD_AUTO,"Button",BS_AUTORADIOBUTTON,110,
+                    27,31,10
+    CONTROL         "Default",IDC_RECORD_DEFAULT,"Button",BS_AUTORADIOBUTTON,
+                    142,27,39,10
+    CONTROL         "Set",IDC_RECORD_SET,"Button",BS_AUTORADIOBUTTON,130,37,
+                    27,10
+    CONTROL         "Slider1",IDC_RECORD_SLIDER,"msctls_trackbar32",
+                    TBS_NOTICKS | WS_TABSTOP,108,47,70,11
+    LTEXT           "Min",IDC_STATIC,112,58,12,8
+    LTEXT           "Max",IDC_STATIC,160,58,14,8
+    GROUPBOX        "Threshold",IDC_STATIC,189,17,81,55,WS_GROUP
+    CONTROL         "Auto",IDC_THRESHOLD_AUTO,"Button",BS_AUTORADIOBUTTON,
+                    197,27,31,10
+    CONTROL         "Default",IDC_THRESHOLD_DEFAULT,"Button",
+                    BS_AUTORADIOBUTTON,229,27,39,10
+    CONTROL         "Set",IDC_THRESHOLD_SET,"Button",BS_AUTORADIOBUTTON,217,
+                    37,27,10
+    CONTROL         "Slider1",IDC_THRESHOLD_SLIDER,"msctls_trackbar32",
+                    TBS_NOTICKS | WS_TABSTOP,195,47,70,11
+    LTEXT           "Min",IDC_STATIC,199,58,12,8
+    LTEXT           "Max",IDC_STATIC,247,58,14,8
+    GROUPBOX        "Quality",IDC_STATIC,59,73,81,53,WS_GROUP
+    CONTROL         "Default",IDC_QUALITY_DEFAULT,"Button",
+                    BS_AUTORADIOBUTTON,69,86,39,10
+    CONTROL         "Set",IDC_QUALITY_SET,"Button",BS_AUTORADIOBUTTON,111,86,
+                    27,10
+    CONTROL         "Slider1",IDC_QUALITY_SLIDER,"msctls_trackbar32",
+                    TBS_NOTICKS | WS_TABSTOP,65,100,70,11
+    LTEXT           "Min",IDC_STATIC,69,111,12,8
+    LTEXT           "Max",IDC_STATIC,117,111,14,8
+    GROUPBOX        "Aggressiveness",IDC_STATIC,146,73,81,53,WS_GROUP
+    CONTROL         "Default",IDC_AGGRESSIVENESS_DEFAULT,"Button",
+                    BS_AUTORADIOBUTTON,154,86,39,10
+    CONTROL         "Set",IDC_AGGRESSIVENESS_SET,"Button",BS_AUTORADIOBUTTON,
+                    198,86,27,10
+    CONTROL         "Slider1",IDC_AGGRESSIVENESS_SLIDER,"msctls_trackbar32",
+                    TBS_NOTICKS | WS_TABSTOP,150,100,70,11
+    LTEXT           "Min",IDC_STATIC,154,111,12,8
+    LTEXT           "Max",IDC_STATIC,202,111,14,8
+    GROUPBOX        "Server Options (set only when creating a new game)",
+                    IDC_STATIC,7,134,270,43
+    GROUPBOX        "Compression Codec",IDC_SESSIONCOMPRESION_GROUP,17,143,
+                    250,28,WS_GROUP
+    DEFPUSHBUTTON   "OK",IDOK,173,182,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,227,182,50,14
+    COMBOBOX        IDC_COMPRESSION_COMBO,22,152,240,51,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+END
+[!endif]
+
+
+[!if MENUBAR]
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU MENU DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "Config &display...\tF2",      IDM_CHANGEDEVICE
+[!if ACTIONMAPPER]
+        MENUITEM "Configure &input...\tF3",     IDM_CONFIGINPUT
+[!endif]
+[!if DPLAYVOICE]
+        MENUITEM "Config &voice...\tF4",        IDM_CONFIGVOICE
+[!endif]
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit\tESC",                  IDM_EXIT
+    END
+END
+
+[!endif]
+[!if DMUSIC || DSOUND]
+/////////////////////////////////////////////////////////////////////////////
+//
+// WAVE
+//
+
+BOUNCE                  WAVE    DISCARDABLE     "bounce.wav"
+[!endif]
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

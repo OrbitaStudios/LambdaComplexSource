@@ -1,0 +1,231 @@
+//Microsoft Developer Studio generated resource script.
+//
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include <windows.h>
+#include "resource.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU MENU DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Render DVD volume",          ID_FILE_OPENDVD
+        MENUITEM "&Close DVD volume",           ID_FILE_CLOSE
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_FILE_EXIT
+    END
+    POPUP "&Control"
+    BEGIN
+        MENUITEM "&Play\tL",                    ID_PLAY
+        MENUITEM "P&ause\tP",                   ID_PAUSE
+        MENUITEM "&Stop\tS",                    ID_STOP
+        MENUITEM "&Mute/Unmute\tM",             ID_MUTE
+        MENUITEM SEPARATOR
+        MENUITEM "Single F&rame Step\t<Space>", ID_SINGLE_STEP
+        MENUITEM SEPARATOR
+        MENUITEM "&Half size (50%)",            ID_SIZE_HALF
+        MENUITEM "&Three-quarter size (75%)",   ID_SIZE_THREEQUARTER
+        MENUITEM "&Normal size (100%)",         ID_SIZE_NORMAL, CHECKED
+        MENUITEM "&Double size (200%)",         ID_SIZE_DOUBLE
+        MENUITEM SEPARATOR
+        MENUITEM "&Full Screen\tF",             ID_SIZE_FULLSCREEN
+    END
+    POPUP "&Navigate"
+    BEGIN
+        MENUITEM "&Start Movie\tG",             ID_DVD_STARTMOVIE
+        MENUITEM "Display Root &Menu\tO",       ID_MENU_ROOT
+        MENUITEM "Display &Title Menu\tT",      ID_MENU_TITLE
+        MENUITEM "R&esume",                     ID_MENU_RESUME
+        MENUITEM SEPARATOR
+        MENUITEM "&Next Chapter\tN",            ID_DVD_NEXTCHAPTER
+        MENUITEM "&Previous Chapter\tB",        ID_DVD_PREVIOUSCHAPTER
+        MENUITEM "&Replay Chapter\tR",          ID_DVD_REPLAYCHAPTER
+	MENUITEM SEPARATOR
+        POPUP "&Title"
+	BEGIN
+            MENUITEM "Title 1",                 ID_DVD_TITLE_BASE, CHECKED
+	END
+        POPUP "&Chapter"
+	BEGIN
+            MENUITEM "Chapter 1",               ID_DVD_CHAPTER_BASE, CHECKED
+	END
+    END
+    POPUP "&Options"
+    BEGIN
+        POPUP "A&ngle"
+	BEGIN
+            MENUITEM "Default Angle",           ID_DVD_ANGLE_BASE, CHECKED
+	END
+        POPUP "&Audio"
+        BEGIN
+            MENUITEM "Default Audio Stream",    ID_DVD_AUDIO_BASE
+        END
+        POPUP "&Menu Language"
+        BEGIN
+            MENUITEM "Default Menu Language",   ID_DVD_MENULANG_BASE
+        END
+        POPUP "&Presentation"
+	BEGIN
+            MENUITEM "16 x 9",                  ID_DVD_16x9
+            MENUITEM "4 x 3 (Pan and Scan)",    ID_DVD_PANSCAN
+            MENUITEM "4 x 3 (Letterbox)",       ID_DVD_LETTERBOX
+	END
+        POPUP "&Subpicture"
+        BEGIN
+            MENUITEM "Show &Subpicture Stream", ID_DVD_SHOWSUBPICTURE
+            MENUITEM SEPARATOR
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "Show &Closed Captioning",     ID_DVD_SHOWCC
+    END
+    POPUP "&Rate"
+    BEGIN
+        MENUITEM "&Normal Forward\t<Backspace>", ID_RATE_NORMAL
+        MENUITEM "&Half Forward\t<Keypad />",   ID_RATE_HALF
+        MENUITEM "4X Forward",                  ID_RATE_QUAD
+        MENUITEM "8X Forward",                  ID_RATE_FAST
+        MENUITEM "16X Forward",                 ID_RATE_MAX
+        MENUITEM SEPARATOR
+        MENUITEM "4X Reverse",                  ID_RATE_QUAD_BACK
+        MENUITEM "8X Reverse",                  ID_RATE_FAST_BACK
+        MENUITEM "16X Reverse",                 ID_RATE_MAX_BACK
+        MENUITEM SEPARATOR
+        MENUITEM "Faster\t<Keypad +>",          ID_RATE_INCREASE
+        MENUITEM "Slower\t<Keypad ->",          ID_RATE_DECREASE
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About PlayDVD...",           ID_HELP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_PLAYDVD             ICON    DISCARDABLE     "..\..\..\Common\directx.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 235, 55
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About PlayDVD"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_PLAYDVD,-1,11,17,20,20
+    LTEXT           "DirectShow PlayDVD Sample",-1,40,10,131,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 1999-2002 Microsoft Corporation",-1,40,34,
+                    188,8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
+    LTEXT           "Version 9.0",-1,40,22,119,8,SS_NOPREFIX
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 9,0,0,0
+ PRODUCTVERSION 9,0,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "DirectShow Sample\0"
+            VALUE "CompanyName", "Microsoft\0"
+            VALUE "FileDescription", "PlayDVD Application\0"
+            VALUE "FileVersion", "9.00\0"
+            VALUE "InternalName", "PlayDVD\0"
+            VALUE "LegalCopyright", "Copyright (c) 2002 Microsoft Corporation\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "PlayDVD.EXE\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "DirectX 9 SDK\0"
+            VALUE "ProductVersion", "9.0\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""resource.h""\r\n"
+    "\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

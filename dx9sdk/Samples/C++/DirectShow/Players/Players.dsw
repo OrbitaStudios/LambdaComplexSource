@@ -1,0 +1,176 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "Audiobox"=.\AudioBox\Audiobox.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "BGMusic"=.\bgmusic\bgmusic.DSP - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "BaseClasses"=..\BaseClasses\baseclasses.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Cutscene"=.\Cutscene\Cutscene.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "DDrawXCL"=.\DDrawXCL\DDrawXCL.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Jukebox"=.\Jukebox\Jukebox.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "PlayDMO"=.\PlayDMO\PlayDMO.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "PlayWnd"=.\PlayWnd\PlayWnd.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "PlayWndASF"=.\PlayWndASF\PlayWndASF.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "StillView"=.\StillView\StillView.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "Texture3D9"=.\Texture3D9\Texture3D9.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Texture3D"=.\Texture3D\Textures.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

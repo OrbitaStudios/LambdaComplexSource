@@ -1,0 +1,288 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\Audiobox.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\Audiobox.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 235, 55
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About AudioBox"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    LTEXT           "DirectShow AudioBox Sample",IDC_STATIC,40,10,119,8,
+                    SS_NOPREFIX
+    LTEXT           "Copyright (c) 2000-2002 Microsoft Corporation",
+                    IDC_STATIC,40,34,188,8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
+    LTEXT           "Version 9.0",IDC_STATIC,40,22,119,8,SS_NOPREFIX
+END
+
+IDD_AUDIOBOX_DIALOG DIALOGEX 0, 0, 308, 209
+STYLE DS_MODALFRAME | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "DirectShow AudioBox Sample"
+MENU IDR_MENU
+FONT 8, "MS Shell Dlg"
+BEGIN
+    PUSHBUTTON      "&Play",IDC_BUTTON_PLAY,21,13,40,14
+    PUSHBUTTON      "&Stop",IDC_BUTTON_STOP,67,13,40,14
+    PUSHBUTTON      "P&ause",IDC_BUTTON_PAUSE,113,13,40,14
+    CONTROL         "Slider1",IDC_SLIDER,"msctls_trackbar32",TBS_AUTOTICKS | 
+                    TBS_TOP | WS_DISABLED | WS_TABSTOP,14,27,163,20
+    CONTROL         "&Mute audio",IDC_CHECK_MUTE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,189,8,53,11
+    CONTROL         "&Loop current file",IDC_CHECK_LOOP,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,189,17,90,11
+    CONTROL         "&Randomize file selection",IDC_CHECK_RANDOMIZE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,189,27,104,11
+    LISTBOX         IDC_LIST_DIR,7,65,124,58,LBS_SORT | LBS_NOINTEGRALHEIGHT | 
+                    WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    LISTBOX         IDC_LIST_FILES,136,62,152,120,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_HSCROLL | 
+                    WS_TABSTOP
+    CONTROL         "Spin1",IDC_SPIN_FILES,"msctls_updown32",UDS_WRAP | 
+                    UDS_ALIGNLEFT | UDS_ARROWKEYS | WS_TABSTOP,287,62,11,120
+    DEFPUSHBUTTON   "Set Media &Directory",IDC_BUTTON_SET_MEDIADIR,7,188,72,
+                    14
+    EDITTEXT        IDC_EDIT_MEDIADIR,83,188,218,14,ES_AUTOHSCROLL
+    CONTROL         "Slider1",IDC_SLIDER_VOLUME,"msctls_trackbar32",TBS_VERT | 
+                    TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,109,137,20,44,
+                    WS_EX_CLIENTEDGE
+    GROUPBOX        "Media File Information",IDC_STATIC,7,127,96,54
+    RTEXT           "Position: 00m:00s",IDC_STATIC_POSITION,10,137,87,8
+    RTEXT           "Duration: 00m:00s",IDC_STATIC_DURATION,10,148,87,8
+    RTEXT           "File date: 00/00/0000",IDC_STATIC_FILEDATE,10,159,87,8
+    RTEXT           "File size: 000000000 bytes",IDC_STATIC_FILESIZE,10,170,
+                    87,8
+    CTEXT           "Media Files",IDC_STATIC_FILELIST,136,52,148,8
+    CTEXT           "Select a Media Directory",IDC_STATIC,7,54,112,8
+    GROUPBOX        "",IDC_STATIC,7,3,177,46
+    GROUPBOX        "",IDC_STATIC,183,3,116,46
+    CTEXT           "Volume",IDC_STATIC,105,127,28,8
+    CONTROL         "&Favorite media directory",IDC_CHECK_FAVORITE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,189,37,105,11
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 9,0,0,0
+ PRODUCTVERSION 9,0,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "DirectShow Sample\0"
+            VALUE "CompanyName", "Microsoft\0"
+            VALUE "FileDescription", "AudioBox MFC Application\0"
+            VALUE "FileVersion", "9.00\0"
+            VALUE "InternalName", "AudioBox\0"
+            VALUE "LegalCopyright", "Copyright (c) 2000-2002 Microsoft Corporation\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "Audiobox.exe\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "DirectX 9 SDK\0"
+            VALUE "ProductVersion", "9.0\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_AUDIOBOX_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 301
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 202
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU MENU DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "E&xit",                       IDM_EXIT
+    END
+    POPUP "F&olders"
+    BEGIN
+        MENUITEM "My &Desktop",                 IDM_MYDESKTOP
+        MENUITEM "My D&ocuments",               IDM_MYDOCS
+        MENUITEM "My &Music (Default)",         IDM_MYMUSIC
+        MENUITEM SEPARATOR
+        MENUITEM "Direct&X SDK Media",          IDM_SDK_MEDIA
+        MENUITEM "&Windows Media",              IDM_WINDOWS_MEDIA
+        MENUITEM "&Local Disk (C:\\)",          IDM_DRIVE_ROOT
+    END
+    POPUP "Favo&rites"
+    BEGIN
+        MENUITEM "&Add Folder to Favorites",    ID_ADD_FAVORITE
+        MENUITEM SEPARATOR
+        MENUITEM "&Clear Favorites",            ID_CLEAR_FAVORITES
+        MENUITEM SEPARATOR
+    END
+    POPUP "&Playback"
+    BEGIN
+        MENUITEM "&Play",                       IDM_PLAY
+        MENUITEM "P&ause",                      IDM_PAUSE
+        MENUITEM "&Stop",                       IDM_STOP
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About AudioBox...",          IDM_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ABOUTBOX            "&About AudioBox..."
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res\Audiobox.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

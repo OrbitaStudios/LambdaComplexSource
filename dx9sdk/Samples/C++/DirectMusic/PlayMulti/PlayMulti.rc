@@ -1,0 +1,156 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include <windows.h>
+#define IDC_STATIC -1
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_MAIN DIALOGEX 0, 0, 334, 217
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | 
+    WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "DirectMusic PlayMutli Sample"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "B&rowse...",IDC_SOUNDFILE1,271,16,50,13
+    PUSHBUTTON      "&Play",IDC_PLAY1,271,32,50,14
+    PUSHBUTTON      "E&xit",IDCANCEL,277,196,50,14
+    EDITTEXT        IDC_FILENAME1,15,16,246,12,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "&Help",IDHELP,224,196,50,14
+    CONTROL         "Looped",IDC_LOOPED1,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,17,31,39,10
+    GROUPBOX        "Primary Segment",IDC_STATIC,7,7,320,43
+    DEFPUSHBUTTON   "B&rowse...",IDC_SOUNDFILE2,271,62,50,13
+    PUSHBUTTON      "&Play",IDC_PLAY2,271,78,50,14
+    EDITTEXT        IDC_FILENAME2,15,62,246,12,ES_AUTOHSCROLL | ES_READONLY
+    CONTROL         "Looped",IDC_LOOPED2,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,17,76,39,10
+    GROUPBOX        "Secondary Segment 1",IDC_STATIC,7,52,320,50
+    CONTROL         "Controlling Segment",IDC_CONTROL2,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,57,76,80,10
+    LTEXT           "Play boundary:",IDC_STATIC,15,89,51,10
+    CONTROL         "Default",IDC_RADIO_DEFAULT2,"Button",BS_AUTORADIOBUTTON,
+                    69,89,39,10
+    CONTROL         "Immediate",IDC_RADIO_IMMEDIATE2,"Button",
+                    BS_AUTORADIOBUTTON,110,89,48,10
+    CONTROL         "Grid",IDC_RADIO_GRID2,"Button",BS_AUTORADIOBUTTON,160,
+                    89,29,10
+    CONTROL         "Beat",IDC_RADIO_BEAT2,"Button",BS_AUTORADIOBUTTON,191,
+                    89,31,10
+    CONTROL         "Measure",IDC_RADIO_MEASURE2,"Button",BS_AUTORADIOBUTTON,
+                    224,89,43,10
+    DEFPUSHBUTTON   "B&rowse...",IDC_SOUNDFILE3,271,115,50,13
+    PUSHBUTTON      "&Play",IDC_PLAY3,271,131,50,14
+    EDITTEXT        IDC_FILENAME3,15,115,246,12,ES_AUTOHSCROLL | ES_READONLY
+    CONTROL         "Looped",IDC_LOOPED3,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,17,129,39,10
+    GROUPBOX        "Secondary Segment 2",IDC_STATIC,7,105,320,50
+    CONTROL         "Controlling Segment",IDC_CONTROL3,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,57,129,80,10
+    LTEXT           "Play boundary:",IDC_STATIC,15,142,51,10
+    CONTROL         "Default",IDC_RADIO_DEFAULT3,"Button",BS_AUTORADIOBUTTON,
+                    69,142,39,10
+    CONTROL         "Immediate",IDC_RADIO_IMMEDIATE3,"Button",
+                    BS_AUTORADIOBUTTON,111,142,48,10
+    CONTROL         "Grid",IDC_RADIO_GRID3,"Button",BS_AUTORADIOBUTTON,161,
+                    142,29,10
+    CONTROL         "Beat",IDC_RADIO_BEAT3,"Button",BS_AUTORADIOBUTTON,191,
+                    142,31,10
+    CONTROL         "Measure",IDC_RADIO_MEASURE3,"Button",BS_AUTORADIOBUTTON,
+                    225,142,43,10
+    PUSHBUTTON      "Sto&p All",IDC_STOPALL,7,196,50,14
+    LTEXT           "Primary segments contain underlying form, tempo and (potentially) harmonic information.  Normally secondary segments are layered over the primary segment and are synchronized based on the",
+                    IDC_STATIC,7,159,320,18
+    LTEXT           "primary segment (already playing).  Controlling secondary segments are authored so that they have tracks that will replace or override certain primary tracks. ",
+                    IDC_STATIC,7,175,320,16
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_MAIN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 327
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 210
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include <windows.h>\r\n"
+    "#define IDC_STATIC -1\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "..\..\Common\directx.ico"
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

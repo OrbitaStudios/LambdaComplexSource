@@ -1,0 +1,165 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#define IDC_STATIC -1
+#include <windows.h>
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "Drumpad.manifest"
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define IDC_STATIC -1\r\n"
+    "#include <windows.h>\r\n"
+    "\r\n"
+    "\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DLG_MAIN DIALOGEX 0, 0, 252, 210
+STYLE DS_MODALFRAME | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Drum Pad"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "&OK",IDOK,195,190,50,14
+    GROUPBOX        "Samples",IDC_STATIC,5,5,240,180
+    PUSHBUTTON      "Bass Drum",IDC_BUTTON_BASS,15,20,50,14
+    PUSHBUTTON      "Snare",IDC_BUTTON_SNARE,15,40,50,14
+    PUSHBUTTON      "Hi-Hat Up",IDC_BUTTON_HIHAT_UP,15,60,50,14
+    PUSHBUTTON      "Hi-Hat",IDC_BUTTON_HIHAT_DOWN,15,80,50,14
+    PUSHBUTTON      "Crash",IDC_BUTTON_CRASH,15,100,50,14
+    PUSHBUTTON      "User 1",IDC_BUTTON_USER1,15,120,50,14
+    PUSHBUTTON      "User 2",IDC_BUTTON_USER2,15,140,50,14
+    PUSHBUTTON      "User 3",IDC_BUTTON_USER3,15,160,50,14
+    LTEXT           "Filename",IDC_TEXT_FILENAME1,70,22,140,10,
+                    SS_CENTERIMAGE,WS_EX_STATICEDGE
+    LTEXT           "Filename",IDC_TEXT_FILENAME2,70,42,140,10,
+                    SS_CENTERIMAGE,WS_EX_STATICEDGE
+    LTEXT           "Filename",IDC_TEXT_FILENAME3,70,62,140,10,
+                    SS_CENTERIMAGE,WS_EX_STATICEDGE
+    LTEXT           "Filename",IDC_TEXT_FILENAME4,70,82,140,10,
+                    SS_CENTERIMAGE,WS_EX_STATICEDGE
+    LTEXT           "Filename",IDC_TEXT_FILENAME5,70,102,140,10,
+                    SS_CENTERIMAGE,WS_EX_STATICEDGE
+    LTEXT           "Filename",IDC_TEXT_FILENAME6,70,122,140,10,
+                    SS_CENTERIMAGE,WS_EX_STATICEDGE
+    LTEXT           "Filename",IDC_TEXT_FILENAME7,70,142,140,10,
+                    SS_CENTERIMAGE,WS_EX_STATICEDGE
+    LTEXT           "Filename",IDC_TEXT_FILENAME8,70,162,140,10,
+                    SS_CENTERIMAGE,WS_EX_STATICEDGE
+    PUSHBUTTON      "&View Device Mappings",IDC_BUTTON_DEVICE,5,190,105,14
+    GROUPBOX        "",IDC_STATIC,214,15,25,160
+END
+
+IDD_DLG_DIDCV DIALOGEX 0, 0, 342, 250
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION
+CAPTION "Drum Pad Action Mapping"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    GROUPBOX        "",IDC_STATIC,15,219,150,25
+    PUSHBUTTON      "<<",IDC_BUTTON_JOY_VIEW_PREV,19,227,24,14
+    PUSHBUTTON      ">>",IDC_BUTTON_JOY_VIEW_NEXT,135,227,25,14
+    CTEXT           "Static",IDC_EDIT_TEXT,45,227,85,15,SS_CENTERIMAGE | 
+                    WS_DISABLED,WS_EX_CLIENTEDGE | WS_EX_STATICEDGE
+    CONTROL         "Collapse Views",IDC_CHECK_COMPACT,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,180,230,70,10
+    CONTROL         "ShowAllControls",IDC_CHECK_JOY_SHOW_ALL,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,255,230,65,10
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_DLG_MAIN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 245
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 203
+    END
+
+    IDD_DLG_DIDCV, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 335
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 243
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON                ICON    DISCARDABLE     "..\..\Common\directx.ico"
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

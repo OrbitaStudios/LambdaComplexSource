@@ -1,0 +1,9 @@
+; MultiVMR9.def : Declares the module parameters.
+
+LIBRARY      "MultiVMR9.DLL"
+
+EXPORTS
+    DllGetClassObject	PRIVATE
+    DllCanUnloadNow		PRIVATE
+	DllRegisterServer	PRIVATE
+	DllUnregisterServer	PRIVATE

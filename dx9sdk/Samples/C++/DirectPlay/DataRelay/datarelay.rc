@@ -1,0 +1,262 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// RT_MANIFEST
+//
+
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST MOVEABLE PURE "DataRelay.manifest"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_MULTIPLAYER_CONNECT DIALOG DISCARDABLE  0, 0, 282, 151
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Multiplayer Connect"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Player Name:",IDC_STATIC,7,10,43,8
+    EDITTEXT        IDC_PLAYER_NAME_EDIT,7,22,268,14,ES_AUTOHSCROLL
+    LTEXT           "Connection Type:",IDC_STATIC,7,41,57,8
+    LISTBOX         IDC_CONNECTION_LIST,7,53,268,72,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "&OK",IDOK,171,130,50,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,225,130,50,14
+END
+
+IDD_MULTIPLAYER_GAMES DIALOG DISCARDABLE  0, 0, 282, 140
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Multiplayer Games"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Select Game To Join:",-1,7,15,69,8
+    PUSHBUTTON      "Start &Search",IDC_SEARCH_CHECK,220,7,55,14
+    LISTBOX         IDC_GAMES_LIST,7,24,268,91,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "&Join",IDC_JOIN,7,119,50,14
+    PUSHBUTTON      "C&reate",IDC_CREATE,61,119,50,14
+    PUSHBUTTON      "&Cancel",IDC_BACK,225,119,50,14
+END
+
+IDD_LOBBY_WAIT_STATUS DIALOG DISCARDABLE  120, 110, 162, 52
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION
+CAPTION "Lobby Connection Status"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "&Cancel",IDCANCEL,55,31,51,14
+    CTEXT           "Finding Game...",IDC_WAIT_TEXT,7,14,141,8
+END
+
+IDD_MULTIPLAYER_CREATE DIALOG DISCARDABLE  0, 0, 184, 119
+STYLE DS_MODALFRAME | DS_CENTER | DS_CONTEXTHELP | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "Create Game"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "Game Name:",IDC_STATIC,9,13,42,8
+    GROUPBOX        "Session Signing",IDC_STATIC,8,32,73,56
+    EDITTEXT        IDC_EDIT_SESSION_NAME,56,10,121,14,ES_AUTOHSCROLL
+    CONTROL         "Full Signed",IDC_SIGNING_FULL,"Button",
+                    BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,20,47,51,10
+    CONTROL         "Fast Signed",IDC_SIGNING_FAST,"Button",
+                    BS_AUTORADIOBUTTON,20,58,53,10
+    CONTROL         "Disabled",IDC_STATIC,"Button",BS_AUTORADIOBUTTON,20,69,
+                    43,10
+    CONTROL         "Enable Host Migration",IDC_MIGRATE_HOST,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,91,35,85,10
+    CONTROL         "Use DPNSVR",IDC_USE_DPNSVR,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,91,47,61,10
+    LTEXT           "Local Port:",IDC_LOCAL_PORT_TEXT,92,72,35,8
+    EDITTEXT        IDC_LOCAL_PORT,131,69,45,14,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "&OK",IDOK,74,100,50,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,128,100,50,14
+END
+
+IDD_MULTIPLAYER_ADDRESS DIALOG DISCARDABLE  0, 0, 171, 108
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Remote Address"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "&OK",IDOK,71,89,45,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,120,89,45,14
+    LTEXT           "Please enter the optional components of the remote session address. If set blank, DirectPlay will attempt to search the local network.",
+                    IDC_STATIC,12,9,153,27
+    EDITTEXT        IDC_REMOTE_HOSTNAME,25,57,78,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_REMOTE_PORT,110,57,31,14,ES_AUTOHSCROLL
+    LTEXT           "Hostname ",IDC_STATIC,25,47,35,8
+    LTEXT           "Port",IDC_STATIC,110,47,14,8
+END
+
+IDD_MAIN_GAME DIALOGEX 0, 0, 343, 294
+STYLE DS_LOCALEDIT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | 
+    WS_CAPTION | WS_SYSMENU
+CAPTION "Data Relay"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    LTEXT           "Number of players in session:",IDC_STATIC,11,27,95,8
+    LTEXT           "0",IDC_NUM_PLAYERS,107,27,54,8
+    GROUPBOX        "Game Status",IDC_STATIC,7,7,329,33
+    LTEXT           "Local Player Name:",IDC_STATIC,11,17,62,8
+    LTEXT           "Test Player",IDC_PLAYER_NAME,76,17,84,8
+    PUSHBUTTON      "E&xit",IDCANCEL,270,19,50,14
+    GROUPBOX        "Send",IDC_STATIC,7,43,128,98
+    RTEXT           "Target:",IDC_STATIC,11,56,43,8
+    COMBOBOX        IDC_SEND_TARGET_COMBO,57,54,73,140,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    RTEXT           "Size (bytes):",IDC_STATIC,11,73,43,8
+    COMBOBOX        IDC_SEND_SIZE_COMBO,57,71,73,77,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    RTEXT           "Rate (ms):",IDC_STATIC,11,90,43,8
+    COMBOBOX        IDC_SEND_RATE_COMBO,57,88,73,85,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    RTEXT           "Timeout (ms):",IDC_STATIC,11,107,43,8
+    COMBOBOX        IDC_SEND_TIMEOUT_COMBO,57,105,73,140,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Coalesce packets",IDC_COALESCE,"Button",BS_AUTOCHECKBOX | 
+                    WS_TABSTOP,15,125,73,10
+    GROUPBOX        "Connection Info",IDC_CONNINFO,142,43,194,133
+    RTEXT           "Info Target:",IDC_STATIC,176,55,43,8,0,WS_EX_RIGHT
+    COMBOBOX        IDC_CONNINFO_COMBO,224,53,73,85,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_CONNINFO_EDIT,150,71,177,97,ES_MULTILINE | 
+                    ES_READONLY | WS_VSCROLL
+    GROUPBOX        "Log",IDC_STATIC,7,179,329,88
+    EDITTEXT        IDC_LOG_EDIT,14,191,314,71,ES_MULTILINE | ES_READONLY
+    CONTROL         "Push to &Send",IDC_SEND_READY,"Button",BS_AUTOCHECKBOX | 
+                    BS_PUSHLIKE | WS_DISABLED | WS_TABSTOP,200,19,65,14
+    GROUPBOX        "Statistics",IDC_STATIC,7,144,127,32
+    RTEXT           "Total Send Rate:",IDC_STATIC,13,153,65,8
+    RTEXT           "Total Recieve Rate:",IDC_STATIC,13,161,65,8
+    LTEXT           "0.0 BPS",IDC_ACTUAL_SEND_RATE,82,153,50,8
+    LTEXT           "0.0 BPS",IDC_ACTUAL_RECIEVE_RATE,82,162,49,8
+    EDITTEXT        IDC_STATUS_BAR_TEXT,-1,279,345,12,ES_AUTOHSCROLL | 
+                    ES_READONLY | NOT WS_BORDER,WS_EX_STATICEDGE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_MULTIPLAYER_CONNECT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 275
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 144
+    END
+
+    IDD_MULTIPLAYER_GAMES, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 275
+        VERTGUIDE, 141
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 133
+    END
+
+    IDD_MAIN_GAME, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 336
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 267
+    END
+
+    IDD_LOBBY_WAIT_STATUS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 148
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 45
+    END
+
+    IDD_MULTIPLAYER_CREATE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        VERTGUIDE, 94
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 120
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_MAIN                ICON    DISCARDABLE     "..\\..\\Common\\directx.ico"
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

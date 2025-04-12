@@ -1,0 +1,103 @@
+$$// newproj.inf = template for list of template files
+$$//  format is 'sourceResName' \t 'destFileName'
+$$//    The source res name may be preceded by any combination of '=', '-',  '!', '?', ':', '#', and/or '*'
+$$//       '=' => the resource is binary
+$$//       '-' => the file should not be added to the project (all files are added to the project by default)
+$$//       '!' => the file should be marked exclude from build
+$$//       '?' => the file should be treated as a help file
+$$//       ':' => the file should be treated as a resource
+$$//       '#' => the file should be treated as a template (implies '!')
+$$//       '*' => bypass the custom AppWizard's resources when loading
+$$//	if name starts with / => create new subdir
+
+$$IF(D3D)
+$$IF(WINDOW)
+d3d_win.cpp	$$root$$.cpp
+d3d_win.h	$$root$$.h
+d3d_win.rc	$$root$$.rc
+d3d_winres.h	resource.h
+$$ELSE
+d3d_dlg.cpp	$$root$$.cpp
+d3d_dlg.h	$$root$$.h
+d3d_dlg.rc	$$root$$.rc
+d3d_dlgres.h	resource.h
+d3d_dlgStdAfx.cpp	StdAfx.cpp
+d3d_dlgStdAfx.h	StdAfx.h
+$$ENDIF
+$$ENDIF
+
+$$IF(!D3D)
+$$IF(WINDOW)
+gdi_win.cpp	$$root$$.cpp
+gdi_win.h	$$root$$.h
+gdi_win.rc	$$root$$.rc
+gdi_winres.h	resource.h
+$$ELSE
+gdi_dlg.cpp	$$root$$.cpp
+gdi_dlg.h	$$root$$.h
+gdi_dlg.rc	$$root$$.rc
+gdi_dlgres.h	resource.h
+gdi_dlgStdAfx.cpp	StdAfx.cpp
+gdi_dlgStdAfx.h	StdAfx.h
+$$ENDIF
+$$ENDIF
+
+dxutil.cpp	dxutil.cpp
+dxutil.h	dxutil.h
+
+=:DirectX.ico	DirectX.ico
+
+$$IF(D3D)
+d3dapp.cpp	d3dapp.cpp
+d3dapp.h	d3dapp.h
+d3dsettings.cpp	d3dsettings.cpp
+d3dsettings.h	d3dsettings.h
+d3denumeration.cpp	d3denumeration.cpp
+d3denumeration.h	d3denumeration.h
+d3dutil.cpp	d3dutil.cpp
+d3dutil.h	d3dutil.h
+$$ENDIF
+
+$$IF(X_FILE)
+d3dfile.cpp	d3dfile.cpp
+d3dfile.h	d3dfile.h
+$$ENDIF
+
+$$IF(D3DFONT)
+d3dfont.cpp	d3dfont.cpp
+d3dfont.h	d3dfont.h
+$$ENDIF
+
+$$IF(DMUSIC)
+dmutil.cpp	dmutil.cpp
+dmutil.h	dmutil.h
+$$ENDIF
+
+$$IF(DSOUND)
+dsutil.cpp	dsutil.cpp
+dsutil.h	dsutil.h
+$$ENDIF
+
+$$IF(DMUSIC || DSOUND)
+=:bounce.wav	bounce.wav
+$$ENDIF
+
+$$IF(ACTIONMAPPER)
+diutil.cpp	diutil.cpp
+diutil.h	diutil.h
+$$ENDIF
+
+$$IF(DPLAY)
+netconnect.cpp	netconnect.cpp
+netconnect.h	netconnect.h
+netconnectres.h	netconnectres.h
+$$ENDIF
+
+$$IF(DPLAYVOICE)
+netvoice.cpp	netvoice.cpp
+netvoice.h	netvoice.h
+netvoiceres.h	netvoiceres.h
+$$ENDIF
+
+
+

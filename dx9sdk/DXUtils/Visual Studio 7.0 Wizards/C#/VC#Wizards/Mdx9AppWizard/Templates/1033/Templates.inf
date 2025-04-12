@@ -1,0 +1,50 @@
+readme.txt
+main.cs
+DXUtil.cs
+
+[!if USE_DIRECTINPUT]
+dinput.cs
+[!endif]
+
+[!if GRAPHICSTYPE_NOGRAPHICS]
+graphics.cs
+[!endif]
+
+[!if GRAPHICSTYPE_DIRECT3D]
+d3dapp.cs
+d3denumeration.cs
+d3dfont.cs
+d3dutil.cs
+D3DSettingsForm.cs
+[!endif]
+
+[!if VISUALTYPE_TRIANGLE && GRAPHICSTYPE_DIRECT3D]
+D3DTriangle.cs
+[!endif]
+[!if VISUALTYPE_D3DBLANK && GRAPHICSTYPE_DIRECT3D]
+D3DBlank.cs
+[!endif]
+[!if VISUALTYPE_TEAPOT && GRAPHICSTYPE_DIRECT3D]
+D3DMesh.cs
+[!endif]
+
+[!if GRAPHICSTYPE_DIRECTDRAW]
+ddraw.cs
+[!endif]
+
+[!if USE_AUDIO]
+audio.cs
+[!endif]
+
+[!if USE_DIRECTPLAY]
+dplay.cs
+DPlayConnect.cs
+DPlayConnect_AddressForm.cs
+DPlayConnect_CreateForm.cs
+DPlayConnect_JoinForm.cs
+DPlayConnect_ServiceProviderForm.cs
+[!endif]
+
+[!if USE_VOICE]
+DPlayVoiceWizard.cs
+[!endif]

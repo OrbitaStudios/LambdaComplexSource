@@ -1,0 +1,128 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "AudioCap"=.\AudioCap\AudioCap.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "BaseClasses"=..\BaseClasses\baseclasses.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "CaptureTex"=.\CaptureTex\CaptureTex.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "CaptureTex9"=.\CaptureTex9\CaptureTex9.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "PlayCap"=.\PlayCap\playcap.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "PlayCapMoniker"=.\PlayCapMoniker\PlayCapMoniker.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BaseClasses
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "amcap"=.\amcap\amcap.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "dvapp"=.\dvapp\dvapp.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

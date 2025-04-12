@@ -1,0 +1,33 @@
+History of Space Donuts
+
+"Donut" 
+- A sample showing a single spinning donut. 
+- Shipped in the Game SDK (9/95) until DXSDK v6.1 (10/98)
+
+"Space Donuts" (aka "donuts")
+- Using the graphics from "Donut", this was a 2D game feature multiple spinning donuts.
+- Shipped in DXSDK v2.0 (7/96) until DXSDK v7.0 (9/99)
+
+"ffdonuts" 
+- Similar to "donuts" this version featured force feedback joystick support.
+- Shipped in DXSDK v5.0 (7/96) until DXSDK v7.0 (9/99)
+
+"DMDonuts"
+- Similar to "donuts" this version featured enchanced DirectMusic support.
+- Shipped in DXSDK v6.0 (6/98) until DXSDK v7.0 (9/99)
+
+"MultiNut"
+- Similar to "donuts" this version featured multimon support.
+- Shipped in DXSDK v6.0 (6/98) until DXSDK v6.1 (10/98) 
+
+"Donuts3D" 
+- A fully 3D game but the enemies were still the original graphics from "Donut"
+- Shipped in DXSDK v8.0 (9/00) until DXSDK v8.1 (10/01)
+
+"GDC Donuts3D"
+- A version prepared for GDC, similar to Donuts 3D that featured a rich musical score
+- Shipped on GDC demo CDs.
+
+"Donuts 4" 
+- A 3D game featuring all new artwork
+- Shipped in DXSDK v9.0

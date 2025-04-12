@@ -1,0 +1,138 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+#include "newres.h"
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_MAIN DIALOG DISCARDABLE  0, 0, 158, 161
+STYLE DS_MODALFRAME | DS_SETFOREGROUND | DS_CENTER | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "SET IN STRING TABLE"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "&Send",IDC_SEND,118,79,30,13
+    EDITTEXT        IDC_OUTBOX,9,79,106,13,ES_AUTOHSCROLL
+    LTEXT           "Not connected to a session.",IDC_STATUS,9,112,115,8
+    PUSHBUTTON      "&Host...",IDC_HOST,9,135,53,13
+    LISTBOX         IDC_INBOX,9,29,139,48,NOT LBS_NOTIFY | 
+                    LBS_NOINTEGRALHEIGHT | LBS_NOSEL | WS_VSCROLL | 
+                    WS_TABSTOP
+    LTEXT           "Received Messages:",IDC_STATIC,9,20,68,8
+    LTEXT           "Communication:",IDC_STATIC,3,8,51,8
+    LTEXT           "Session Status: ",IDC_STATIC,3,101,52,8
+    CONTROL         "SIP",IDC_SIP,"SIPPREF",NOT WS_VISIBLE,0,0,0,0
+END
+
+IDD_HOST DIALOG DISCARDABLE  0, 0, 116, 81
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Host New Session"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    EDITTEXT        IDC_NAME,31,14,77,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_LOCAL_PORT,31,34,46,14,ES_AUTOHSCROLL | ES_NUMBER
+    DEFPUSHBUTTON   "OK",IDOK,21,63,42,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,66,63,43,14
+    LTEXT           "Name:",IDC_STATIC,7,17,22,8
+    LTEXT           "Port:",IDC_STATIC,13,37,16,8
+    CONTROL         "SIP",IDC_SIP,"SIPPREF",NOT WS_VISIBLE,0,0,6,6
+END
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "#include ""newres.h""\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_MAIN                ICON    DISCARDABLE     "..\..\..\..\Common\directxCE.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_MAIN, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 150
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_APP_TITLE           "Tutorial 9: Server"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

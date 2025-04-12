@@ -1,0 +1,193 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_VMR_MULTI DIALOG DISCARDABLE  0, 0, 280, 169
+STYLE DS_3DLOOK | WS_MINIMIZEBOX | WS_CAPTION | WS_SYSMENU
+CAPTION "VMR Multi Playback Graphs"
+CLASS "VMRMulti"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LISTBOX         IDC_ACTIVE_PB,7,27,266,77,LBS_USETABSTOPS | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "&Add Video Stream...",IDC_ADD,7,111,50,26,BS_MULTILINE
+    PUSHBUTTON      "Close",IDOK,7,140,50,24
+    CONTROL         "Slider1",IDC_SLIDER,"msctls_trackbar32",TBS_NOTICKS | 
+                    WS_TABSTOP,76,117,187,20
+    PUSHBUTTON      "Play",IDC_PLAY,81,143,16,14,BS_BITMAP
+    PUSHBUTTON      "Stop",IDC_STOP,101,143,16,14,BS_BITMAP
+    PUSHBUTTON      "Eject",IDC_EJECT,122,143,16,14,BS_BITMAP
+    GROUPBOX        "Current playing stream",IDC_STATIC,64,107,211,58
+    EDITTEXT        IDC_STATUS,189,143,76,14,ES_AUTOHSCROLL | ES_READONLY | 
+                    NOT WS_TABSTOP
+    CTEXT           "Video streams that are currently loaded are displayed below.\nDouble-click on any entry in this list to switch focus.",
+                    IDC_STATIC,7,7,266,18
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 9,0,0,0
+ PRODUCTVERSION 9,0,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "DirectShow Sample\0"
+            VALUE "CompanyName", "Microsoft\0"
+            VALUE "FileDescription", "VMRMulti Application\0"
+            VALUE "FileVersion", "9.00\0"
+            VALUE "InternalName", "VMRMulti\0"
+            VALUE "LegalCopyright", "Copyright (c) 2000-2002 Microsoft Corporation\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "VMRMulti.EXE\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "DirectX 9 SDK\0"
+            VALUE "ProductVersion", "9.0\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_VMR_MULTI, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 278
+        VERTGUIDE, 273
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 165
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_PLAY                BITMAP  DISCARDABLE     "res\\play.bmp"
+IDB_STOP                BITMAP  DISCARDABLE     "res\\stop.bmp"
+IDB_EJECT               BITMAP  DISCARDABLE     "res\\eject.bmp"
+IDB_SWITCH              BITMAP  DISCARDABLE     "res\\trans.bmp"
+DX5.BMP                 BITMAP  DISCARDABLE     "res\\dx5.bmp"
+DX7.BMP                 BITMAP  DISCARDABLE     "res\\dx7.bmp"
+FLARE1.BMP              BITMAP  DISCARDABLE     "res\\flare1.bmp"
+FLARE2.BMP              BITMAP  DISCARDABLE     "res\\flare2.bmp"
+FLARE3.BMP              BITMAP  DISCARDABLE     "res\\flare3.bmp"
+FLARE4.BMP              BITMAP  DISCARDABLE     "res\\flare4.bmp"
+FLARE5.BMP              BITMAP  DISCARDABLE     "res\\flare5.bmp"
+FLARE6.BMP              BITMAP  DISCARDABLE     "res\\flare6.bmp"
+FLARE7.BMP              BITMAP  DISCARDABLE     "res\\flare7.bmp"
+FLARE8.BMP              BITMAP  DISCARDABLE     "res\\flare8.bmp"
+SHINE1.BMP              BITMAP  DISCARDABLE     "res\\shine1.bmp"
+SHINE2.BMP              BITMAP  DISCARDABLE     "res\\shine2.bmp"
+SHINE3.BMP              BITMAP  DISCARDABLE     "res\\shine3.bmp"
+SHINE4.BMP              BITMAP  DISCARDABLE     "res\\shine4.bmp"
+SHINE5.BMP              BITMAP  DISCARDABLE     "res\\shine5.bmp"
+SHINE6.BMP              BITMAP  DISCARDABLE     "res\\shine6.bmp"
+FRAME.BMP               BITMAP  DISCARDABLE     "res\\Frame.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON                ICON    DISCARDABLE     "Res\\vmrsample.ico"
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

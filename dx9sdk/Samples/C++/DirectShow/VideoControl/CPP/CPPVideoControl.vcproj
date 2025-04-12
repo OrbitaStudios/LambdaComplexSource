@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding = "Windows-1252"?>
+<VisualStudioProject
+	ProjectType="Visual C++"
+	Version="7.00"
+	Name="CPPVideoControl"
+	SccProjectName=""
+	SccLocalPath=""
+	Keyword="AtlProj">
+	<Platforms>
+		<Platform
+			Name="Win32"/>
+	</Platforms>
+	<Configurations>
+		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory=".\Debug"
+			IntermediateDirectory=".\Debug"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				PreprocessorDefinitions="_DEBUG,WIN32,_WINDOWS,WINVER=0x501"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="stdafx.h"
+				PrecompiledHeaderFile=".\Debug/CPPVideoControl.pch"
+				AssemblerListingLocation=".\Debug/"
+				ObjectFile=".\Debug/"
+				ProgramDataBaseFileName=".\Debug/"
+				WarningLevel="4"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Performing registration"
+				CommandLine="&quot;$(TargetPath)&quot; /RegServer
+echo regsvr32 exec. time &gt; &quot;$(OutDir)\regsvr32.trg&quot;
+echo Server registration done!
+"
+				Outputs="$(OutDir)\regsvr32.trg"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /IGNORE:4098"
+				AdditionalDependencies="atl.lib strmiids.lib comctl32.lib odbc32.lib odbccp32.lib"
+				OutputFile=".\Debug/CPPVideoControl.exe"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="D:\nt\public\sdk\lib\i386"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\Debug/CPPVideoControl.pdb"
+				SubSystem="2"/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\Debug/CPPVideoControl.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Unicode Release MinDependency|Win32"
+			OutputDirectory=".\ReleaseUMinDependency"
+			IntermediateDirectory=".\ReleaseUMinDependency"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			UseOfATL="1"
+			ATLMinimizesCRunTimeLibraryUsage="TRUE"
+			CharacterSet="1">
+			<Tool
+				Name="VCCLCompilerTool"
+				InlineFunctionExpansion="1"
+				PreprocessorDefinitions="NDEBUG,WINVER=0x501,WIN32,_WINDOWS"
+				StringPooling="TRUE"
+				RuntimeLibrary="4"
+				EnableFunctionLevelLinking="TRUE"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="stdafx.h"
+				PrecompiledHeaderFile=".\ReleaseUMinDependency/CPPVideoControl.pch"
+				AssemblerListingLocation=".\ReleaseUMinDependency/"
+				ObjectFile=".\ReleaseUMinDependency/"
+				ProgramDataBaseFileName=".\ReleaseUMinDependency/"
+				WarningLevel="4"
+				SuppressStartupBanner="TRUE"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Performing registration"
+				CommandLine="if &quot;%OS%&quot;==&quot;&quot; goto NOTNT
+if not &quot;%OS%&quot;==&quot;Windows_NT&quot; goto NOTNT
+&quot;$(TargetPath)&quot; /RegServer
+echo regsvr32 exec. time &gt; &quot;$(OutDir)\regsvr32.trg&quot;
+echo Server registration done!
+goto end
+:NOTNT
+echo Warning : Cannot register Unicode EXE on Windows 95
+:end
+"
+				Outputs="$(OutDir)\regsvr32.trg"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /IGNORE:4098"
+				AdditionalDependencies="atl.lib strmiids.lib comctl32.lib odbc32.lib odbccp32.lib"
+				OutputFile=".\ReleaseUMinDependency/CPPVideoControl.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="D:\nt\public\sdk\lib\i386"
+				ProgramDatabaseFile=".\ReleaseUMinDependency/CPPVideoControl.pdb"
+				SubSystem="2"/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\ReleaseUMinDependency/CPPVideoControl.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Unicode Release MinSize|Win32"
+			OutputDirectory=".\ReleaseUMinSize"
+			IntermediateDirectory=".\ReleaseUMinSize"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			UseOfATL="2"
+			ATLMinimizesCRunTimeLibraryUsage="TRUE"
+			CharacterSet="1">
+			<Tool
+				Name="VCCLCompilerTool"
+				InlineFunctionExpansion="1"
+				PreprocessorDefinitions="NDEBUG,WIN32,_WINDOWS,WINVER=0x501"
+				StringPooling="TRUE"
+				RuntimeLibrary="4"
+				EnableFunctionLevelLinking="TRUE"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="stdafx.h"
+				PrecompiledHeaderFile=".\ReleaseUMinSize/CPPVideoControl.pch"
+				AssemblerListingLocation=".\ReleaseUMinSize/"
+				ObjectFile=".\ReleaseUMinSize/"
+				ProgramDataBaseFileName=".\ReleaseUMinSize/"
+				WarningLevel="4"
+				SuppressStartupBanner="TRUE"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Performing registration"
+				CommandLine="if &quot;%OS%&quot;==&quot;&quot; goto NOTNT
+if not &quot;%OS%&quot;==&quot;Windows_NT&quot; goto NOTNT
+&quot;$(TargetPath)&quot; /RegServer
+echo regsvr32 exec. time &gt; &quot;$(OutDir)\regsvr32.trg&quot;
+echo Server registration done!
+goto end
+:NOTNT
+echo Warning : Cannot register Unicode EXE on Windows 95
+:end
+"
+				Outputs="$(OutDir)\regsvr32.trg"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /IGNORE:4098"
+				AdditionalDependencies="atl.lib strmiids.lib comctl32.lib odbc32.lib odbccp32.lib"
+				OutputFile=".\ReleaseUMinSize/CPPVideoControl.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="D:\nt\public\sdk\lib\i386"
+				ProgramDatabaseFile=".\ReleaseUMinSize/CPPVideoControl.pdb"
+				SubSystem="2"/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\ReleaseUMinSize/CPPVideoControl.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Unicode Debug|Win32"
+			OutputDirectory=".\DebugU"
+			IntermediateDirectory=".\DebugU"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="1">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				PreprocessorDefinitions="_DEBUG,WIN32,_WINDOWS,WINVER=0x501"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="5"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="stdafx.h"
+				PrecompiledHeaderFile=".\DebugU/CPPVideoControl.pch"
+				AssemblerListingLocation=".\DebugU/"
+				ObjectFile=".\DebugU/"
+				ProgramDataBaseFileName=".\DebugU/"
+				WarningLevel="4"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Performing registration"
+				CommandLine="if &quot;%OS%&quot;==&quot;&quot; goto NOTNT
+if not &quot;%OS%&quot;==&quot;Windows_NT&quot; goto NOTNT
+&quot;$(TargetPath)&quot; /RegServer
+echo regsvr32 exec. time &gt; &quot;$(OutDir)\regsvr32.trg&quot;
+echo Server registration done!
+goto end
+:NOTNT
+echo Warning : Cannot register Unicode EXE on Windows 95
+:end
+"
+				Outputs="$(OutDir)\regsvr32.trg"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /IGNORE:4098"
+				AdditionalDependencies="atl.lib strmiids.lib comctl32.lib odbc32.lib odbccp32.lib"
+				OutputFile=".\DebugU/CPPVideoControl.exe"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="D:\nt\public\sdk\lib\i386"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\DebugU/CPPVideoControl.pdb"
+				SubSystem="2"
+				EntryPointSymbol="wWinMainCRTStartup"/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\DebugU/CPPVideoControl.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release MinDependency|Win32"
+			OutputDirectory=".\ReleaseMinDependency"
+			IntermediateDirectory=".\ReleaseMinDependency"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			UseOfATL="1"
+			ATLMinimizesCRunTimeLibraryUsage="TRUE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				InlineFunctionExpansion="1"
+				PreprocessorDefinitions="NDEBUG,WIN32,_WINDOWS,WINVER=0x501"
+				StringPooling="TRUE"
+				RuntimeLibrary="4"
+				EnableFunctionLevelLinking="TRUE"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="stdafx.h"
+				PrecompiledHeaderFile=".\ReleaseMinDependency/CPPVideoControl.pch"
+				AssemblerListingLocation=".\ReleaseMinDependency/"
+				ObjectFile=".\ReleaseMinDependency/"
+				ProgramDataBaseFileName=".\ReleaseMinDependency/"
+				WarningLevel="4"
+				SuppressStartupBanner="TRUE"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Performing registration"
+				CommandLine="&quot;$(TargetPath)&quot; /RegServer
+echo regsvr32 exec. time &gt; &quot;$(OutDir)\regsvr32.trg&quot;
+echo Server registration done!
+"
+				Outputs="$(OutDir)\regsvr32.trg"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /IGNORE:4098"
+				AdditionalDependencies="atl.lib strmiids.lib comctl32.lib odbc32.lib odbccp32.lib"
+				OutputFile=".\ReleaseMinDependency/CPPVideoControl.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="D:\nt\public\sdk\lib\i386"
+				ProgramDatabaseFile=".\ReleaseMinDependency/CPPVideoControl.pdb"
+				SubSystem="2"/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\ReleaseMinDependency/CPPVideoControl.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+		<Configuration
+			Name="Release MinSize|Win32"
+			OutputDirectory=".\ReleaseMinSize"
+			IntermediateDirectory=".\ReleaseMinSize"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			UseOfATL="2"
+			ATLMinimizesCRunTimeLibraryUsage="TRUE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				InlineFunctionExpansion="1"
+				PreprocessorDefinitions="NDEBUG,WIN32,_WINDOWS,WINVER=0x501"
+				StringPooling="TRUE"
+				RuntimeLibrary="4"
+				EnableFunctionLevelLinking="TRUE"
+				UsePrecompiledHeader="3"
+				PrecompiledHeaderThrough="stdafx.h"
+				PrecompiledHeaderFile=".\ReleaseMinSize/CPPVideoControl.pch"
+				AssemblerListingLocation=".\ReleaseMinSize/"
+				ObjectFile=".\ReleaseMinSize/"
+				ProgramDataBaseFileName=".\ReleaseMinSize/"
+				WarningLevel="4"
+				SuppressStartupBanner="TRUE"/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="Performing registration"
+				CommandLine="&quot;$(TargetPath)&quot; /RegServer
+echo regsvr32 exec. time &gt; &quot;$(OutDir)\regsvr32.trg&quot;
+echo Server registration done!
+"
+				Outputs="$(OutDir)\regsvr32.trg"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386 /IGNORE:4089 /IGNORE:4098"
+				AdditionalDependencies="atl.lib strmiids.lib comctl32.lib odbc32.lib odbccp32.lib"
+				OutputFile=".\ReleaseMinSize/CPPVideoControl.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="D:\nt\public\sdk\lib\i386"
+				ProgramDatabaseFile=".\ReleaseMinSize/CPPVideoControl.pdb"
+				SubSystem="2"/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\ReleaseMinSize/CPPVideoControl.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+		</Configuration>
+	</Configurations>
+	<Files>
+		<Filter
+			Name="Source Files"
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
+			<File
+				RelativePath=".\CPPVideoControl.cpp">
+			</File>
+			<File
+				RelativePath=".\CPPVideoControl.idl">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCMIDLTool"
+						GenerateStublessProxies="TRUE"
+						TypeLibraryName=".\CPPVideoControl.tlb"
+						HeaderFileName="CPPVideoControl.h"
+						InterfaceIdentifierFileName="CPPVideoControl_i.c"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Release MinDependency|Win32">
+					<Tool
+						Name="VCMIDLTool"
+						GenerateStublessProxies="TRUE"
+						TypeLibraryName=".\CPPVideoControl.tlb"
+						HeaderFileName="CPPVideoControl.h"
+						InterfaceIdentifierFileName="CPPVideoControl_i.c"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Release MinSize|Win32">
+					<Tool
+						Name="VCMIDLTool"
+						GenerateStublessProxies="TRUE"
+						TypeLibraryName=".\CPPVideoControl.tlb"
+						HeaderFileName="CPPVideoControl.h"
+						InterfaceIdentifierFileName="CPPVideoControl_i.c"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Debug|Win32">
+					<Tool
+						Name="VCMIDLTool"
+						GenerateStublessProxies="TRUE"
+						TypeLibraryName=".\CPPVideoControl.tlb"
+						HeaderFileName="CPPVideoControl.h"
+						InterfaceIdentifierFileName="CPPVideoControl_i.c"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release MinDependency|Win32">
+					<Tool
+						Name="VCMIDLTool"
+						GenerateStublessProxies="TRUE"
+						TypeLibraryName=".\CPPVideoControl.tlb"
+						HeaderFileName="CPPVideoControl.h"
+						InterfaceIdentifierFileName="CPPVideoControl_i.c"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release MinSize|Win32">
+					<Tool
+						Name="VCMIDLTool"
+						GenerateStublessProxies="TRUE"
+						TypeLibraryName=".\CPPVideoControl.tlb"
+						HeaderFileName="CPPVideoControl.h"
+						InterfaceIdentifierFileName="CPPVideoControl_i.c"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\CPPVideoControl.rc">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="$(OUTDIR);$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Release MinDependency|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="$(OUTDIR);$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Release MinSize|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="$(OUTDIR);$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Debug|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="$(OUTDIR);$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release MinDependency|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="$(OUTDIR);$(NoInherit)"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release MinSize|Win32">
+					<Tool
+						Name="VCResourceCompilerTool"
+						AdditionalIncludeDirectories="$(OUTDIR);$(NoInherit)"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\CompositeControl.cpp">
+			</File>
+			<File
+				RelativePath=".\StdAfx.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Release MinDependency|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Release MinSize|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release MinDependency|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release MinSize|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="1"/>
+				</FileConfiguration>
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl">
+			<File
+				RelativePath=".\CPPVideoControl.h">
+			</File>
+			<File
+				RelativePath=".\CompositeControl.h">
+			</File>
+			<File
+				RelativePath=".\Resource.h">
+			</File>
+			<File
+				RelativePath=".\StdAfx.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="Resource Files"
+			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
+			<File
+				RelativePath=".\CPPVideoControl.rgs">
+			</File>
+			<File
+				RelativePath=".\CompositeControl.rgs">
+			</File>
+			<File
+				RelativePath=".\bda.ico">
+			</File>
+		</Filter>
+	</Files>
+	<Globals>
+	</Globals>
+</VisualStudioProject>

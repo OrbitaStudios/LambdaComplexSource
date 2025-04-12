@@ -1,0 +1,98 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "dsnet"=.\DSNetwork.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name dsnetifc
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name dsrecv
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name dssend
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name nutil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "dsnetifc"=..\idl\dsnetifc.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "dsrecv"=..\receiver\dsrecv.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name dsnetifc
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "dssend"=..\sender\dssend.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name dsnetifc
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "nutil"=..\util\nutil.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name dsnetifc
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

@@ -1,0 +1,233 @@
+//------------------------------------------------------------------------------
+// File: VMRPip.rc
+//
+// Desc: DirectShow sample code - resource file for VMR PIP sample
+//
+// Copyright (c) 2001-2002 Microsoft Corporation.  All rights reserved.
+//------------------------------------------------------------------------------
+
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+#include "vmrpip.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU MENU DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Open Video Files...",        ID_FILE_OPENCLIPS
+        MENUITEM "&Close Files",                ID_FILE_CLOSE
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_FILE_EXIT
+    END
+    POPUP "&Subpicture", GRAYED
+    BEGIN
+        MENUITEM "Top &Left\t<F1>",             IDM_TOPLEFT
+        MENUITEM "Top &Right\t<F2>",            IDM_TOPRIGHT
+        MENUITEM "&Bottom Right\t<F3>",         IDM_BOTTOMRIGHT
+        MENUITEM "Bottom Lef&t\t<F4>",          IDM_BOTTOMLEFT
+        MENUITEM SEPARATOR
+        MENUITEM "&Next Quadrant\t<Space>",     IDM_NEXTQUADRANT
+        MENUITEM "&Center image\t<F5>",         IDM_CENTER
+        MENUITEM SEPARATOR
+        MENUITEM "&Smaller image\t<F6>",        IDM_SMALLER
+        MENUITEM "Larger &image\t<F7>",         IDM_LARGER
+    END
+    POPUP "&Effects", GRAYED
+    BEGIN
+        MENUITEM "&Swap streams\t<Enter>",         IDM_SWAP
+        MENUITEM "&Animated stream swap\t<Backspace>", IDM_SWAP_ANIMATE
+        MENUITEM SEPARATOR
+        MENUITEM "&Mirror primary stream\t<F8>",   IDM_MIRROR_PRIMARY
+        MENUITEM "Mirro&r secondary stream\t<F9>", IDM_MIRROR_SECONDARY
+        MENUITEM SEPARATOR
+        MENUITEM "&Flip primary stream\t<F11>",    IDM_FLIP_PRIMARY
+        MENUITEM "F&lip secondary stream\t<F12>",  IDM_FLIP_SECONDARY
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About VMR PIP...",           ID_HELP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_SAMPLE              ICON    DISCARDABLE     "vmrsample.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_HELP_ABOUT DIALOG DISCARDABLE  0, 0, 235, 59
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About VMR Picture-In-Picture Sample"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    ICON            IDI_SAMPLE,-1,11,17,21,20
+    LTEXT           "DirectShow VMR Picture-In-Picture",-1,40,10,131,8,
+                    SS_NOPREFIX
+    LTEXT           "Copyright (C) 2001-2002 Microsoft Corporation",-1,40,43,162,
+                    8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
+    LTEXT           "Version 9.0",-1,40,32,119,8,SS_NOPREFIX
+    LTEXT           "VMR Windowless Mode Rendering",-1,40,21,131,8,
+                    SS_NOPREFIX
+END
+
+IDD_DIALOG_FILES DIALOG DISCARDABLE  0, 0, 334, 97
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Select Video Files"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,102,75,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,181,75,50,14
+    PUSHBUTTON      "Stream &1...",IDC_BUTTON_FILE1,7,29,53,14
+    PUSHBUTTON      "Stream &2...",IDC_BUTTON_FILE2,7,51,53,14
+    EDITTEXT        IDC_EDIT_FILE1,66,29,261,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_FILE2,66,51,261,14,ES_AUTOHSCROLL
+    CTEXT           "Select two video files below and click OK.  If the files are valid, \nthey will be blended together with a Picture-In-Picture effect.",
+                    IDC_STATIC,20,7,292,18
+END
+
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 9,0,0,0
+ PRODUCTVERSION 9,0,0,0
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "DirectShow Sample\0"
+            VALUE "CompanyName", "Microsoft\0"
+            VALUE "FileDescription", "VMR Picture-In-Picture Sample\0"
+            VALUE "FileVersion", "9.00\0"
+            VALUE "InternalName", "VMRPip\0"
+            VALUE "LegalCopyright", "Copyright (c) 2001-2002 Microsoft Corporation\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "Pip.exe\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "DirectX 9 SDK\0"
+            VALUE "ProductVersion", "9.0\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""vmrpip.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_DIALOG_FILES, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 327
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 90
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

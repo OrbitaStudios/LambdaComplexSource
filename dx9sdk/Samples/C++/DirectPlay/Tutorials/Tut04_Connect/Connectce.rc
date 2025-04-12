@@ -1,0 +1,151 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+#include "newres.h"
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_MAIN DIALOG DISCARDABLE  0, 0, 158, 167
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "SET IN STRING TABLE"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "&Search",IDC_SEARCH,107,27,36,14
+    EDITTEXT        IDC_ADDRESS,15,29,62,14,ES_AUTOHSCROLL
+    LTEXT           "Port:",IDC_STATIC,80,19,16,8
+    EDITTEXT        IDC_REMOTE_PORT,80,29,21,14,ES_AUTOHSCROLL
+    LTEXT           "Not connected to a session.",IDC_STATUS,15,121,120,8
+    PUSHBUTTON      "&Host...",IDC_HOST,15,141,56,14
+    LISTBOX         IDC_SESSIONS,15,56,128,32,LBS_NOINTEGRALHEIGHT | 
+                    WS_VSCROLL | WS_HSCROLL | WS_TABSTOP
+    LTEXT           "Detected Sessions:",IDC_STATIC,15,47,99,8
+    LTEXT           "Search Address:",IDC_STATIC,15,18,53,8
+    LTEXT           "Host Search: ",IDC_STATIC,7,7,44,8
+    LTEXT           "Session Status: ",IDC_STATIC,7,109,63,8
+    PUSHBUTTON      "&Connect",IDC_CONNECT,108,92,35,14
+    CONTROL         "SIP",IDC_SIP,"SIPPREF",NOT WS_VISIBLE,0,0,6,6
+END
+
+IDD_HOST DIALOG DISCARDABLE  0, 0, 116, 81
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Host New Session"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    EDITTEXT        IDC_NAME,31,14,77,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_LOCAL_PORT,31,34,46,14,ES_AUTOHSCROLL | ES_NUMBER
+    DEFPUSHBUTTON   "OK",IDOK,21,63,42,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,66,63,43,14
+    LTEXT           "Name:",IDC_STATIC,7,17,22,8
+    LTEXT           "Port:",IDC_STATIC,13,37,16,8
+    CONTROL         "SIP",IDC_SIP,"SIPPREF",NOT WS_VISIBLE,0,0,6,6
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_MAIN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 151
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 160
+    END
+
+    IDD_HOST, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 109
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 56
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "#include ""newres.h""\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_MAIN                ICON    DISCARDABLE     "..\..\..\Common\directxCE.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_APP_TITLE           "Tutorial 4: Connect"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

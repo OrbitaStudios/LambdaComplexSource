@@ -1,0 +1,14 @@
+;===========================================================================
+;  Copyright (c) 1992-2002  Microsoft Corporation.  All Rights Reserved.
+;===========================================================================
+
+LIBRARY     "CPPVideoControlPS"
+
+DESCRIPTION  'Proxy/Stub DLL'
+
+EXPORTS
+            DllGetClassObject       @1  PRIVATE
+            DllCanUnloadNow         @2  PRIVATE
+            GetProxyDllInfo         @3  PRIVATE
+            DllRegisterServer       @4  PRIVATE
+            DllUnregisterServer     @5  PRIVATE

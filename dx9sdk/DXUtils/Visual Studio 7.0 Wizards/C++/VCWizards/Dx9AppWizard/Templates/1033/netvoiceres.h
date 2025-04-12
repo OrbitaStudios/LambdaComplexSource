@@ -1,0 +1,21 @@
+
+#define IDD_VOICE_SETUP                 12008
+#define IDC_SESSIONCOMPRESION_GROUP     12059
+#define IDC_COMPRESSION_COMBO           12060
+#define IDC_QUALITY_DEFAULT             12201
+#define IDC_QUALITY_SET                 12202
+#define IDC_QUALITY_SLIDER              12203
+#define IDC_AGGRESSIVENESS_DEFAULT      12301
+#define IDC_AGGRESSIVENESS_SET          12302
+#define IDC_AGGRESSIVENESS_SLIDER       12303
+#define IDC_RECORD_DEFAULT              12501
+#define IDC_RECORD_SET                  12502
+#define IDC_RECORD_AUTO                 12503
+#define IDC_RECORD_SLIDER               12504
+#define IDC_THRESHOLD_DEFAULT           12601
+#define IDC_THRESHOLD_SET               12602
+#define IDC_THRESHOLD_AUTO              12603
+#define IDC_THRESHOLD_SLIDER            12604
+#define IDC_PLAYBACK_DEFAULT            12701
+#define IDC_PLAYBACK_SET                12702
+#define IDC_PLAYBACK_SLIDER             12703

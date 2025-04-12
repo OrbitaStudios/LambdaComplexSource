@@ -1,0 +1,27 @@
+HKCR
+{
+	MultiVMR9.MultiVMR9UILayer.1 = s 'MultiVMR9UILayer Class'
+	{
+		CLSID = s '{70A2E5FE-981E-4518-83C7-9324DC957DA4}'
+	}
+	MultiVMR9.MultiVMR9UILayer = s 'MultiVMR9UILayer Class'
+	{
+		CLSID = s '{70A2E5FE-981E-4518-83C7-9324DC957DA4}'
+		CurVer = s 'MultiVMR9.MultiVMR9UILayer.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {70A2E5FE-981E-4518-83C7-9324DC957DA4} = s 'MultiVMR9UILayer Class'
+		{
+			ProgID = s 'MultiVMR9.MultiVMR9UILayer.1'
+			VersionIndependentProgID = s 'MultiVMR9.MultiVMR9UILayer'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			val AppID = s '%APPID%'
+			'TypeLib' = s '{52CCE217-77CF-4108-9D55-CCBAAF2896D7}'
+		}
+	}
+}

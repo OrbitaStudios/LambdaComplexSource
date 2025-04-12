@@ -1,0 +1,118 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "ActionBasic.manifest"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_APPDIALOG DIALOGEX 0, 0, 281, 278
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "ActionBasic Sample"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    DEFPUSHBUTTON   "E&xit",IDCANCEL,224,256,50,14
+    CONTROL         "",IDCHART,"Button",BS_OWNERDRAW,22,71,238,150,
+                    WS_EX_CLIENTEDGE
+    LTEXT           "This tutorial polls for action-mapped data from the attached devices,",
+                    IDC_STATIC,17,19,229,8
+    LTEXT           "and displays a chart showing triggered game actions plotted against",
+                    IDC_STATIC,17,29,213,8
+    LTEXT           "the corresponding input devices.",IDC_STATIC,17,39,104,
+                    8
+    GROUPBOX        "",IDC_STATIC,7,7,267,246
+    PUSHBUTTON      "&View Configuration",IDC_CONFIG,161,228,99,16
+    LTEXT           "Press the F1 key for help.",IDC_STATIC,17,53,81,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_APPDIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 274
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 270
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON    DISCARDABLE     "..\..\Common\directx.ico"
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

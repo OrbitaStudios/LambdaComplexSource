@@ -1,0 +1,1192 @@
+=======================================
+How to get data from a DirectShow graph
+=======================================
+
+A lot of people have asked, “how do I get data out of directshow and into my 
+application?” Because DirectShow is an “open” streaming architecture, there are several 
+ways to answer this question, all of which have a significant (but not impossible) 
+learning curve.
+
+Here’s a list of possible solutions, in order of complexity:
+
+1.  Use the MultIMedia Streaming APIs. They’re simple, synchronous, and they do work.
+
+2.  Learn how to write a simple transform or rendering filter that can get the data for 
+    you, put as little effort as possible into that filter, and learn how to use that 
+    filter from your application.
+
+3.  Learn all about DirectShow, write a transform or render filter, and use that 
+    filter to process your data in a more tightly integrated way. The application 
+    becomes less important and the filter becomes more important.
+
+This document is going to explain how to do #2 above. #1 and #3 are beyond the scope
+of this paper.
+
+
+MultiMedia Streaming
+--------------------
+
+You can find the documentation and sample code for how to use MultiMedia streaming in 
+released versions of the DirectShow SDK. It is already well documented there.
+
+=======================================
+The DirectShow Basics you need to know
+=======================================
+
+Let’s start with a very basic summary of DirectShow and what it does. DirectShow is a 
+streaming architecture runtime. It allows the user to create and connect objects together 
+which stream data to and through each other, in a virtual space called a “graph”. A graph 
+means “a collection of streaming objects, usually connected to each other” (a graph can 
+contain unconnected objects, but those graphs aren’t very useful).
+
+
+The different kinds of DirectShow objects
+-----------------------------------------
+
+In DirectShow there are three types of objects, collectively called “filters”, which are: 
+“sources”, “transforms”, and “renderers”. Source objects create data and push it upon the 
+next object it’s connected to. Transform objects both receive and transmit data, 
+sometimes on more than one thread. Renderers receive data only. 
+
+Pins on a DirectShow Filter
+---------------------------
+
+Every DirectShow object (called a filter) has one or more “pins”, which represent a 
+connection site. Each pin can connect to one and only one other pin. When two pins are 
+connected to each other, it is assumed that data will flow from one pin to the other 
+when the graph is in a state where data is supposed to flow.
+
+
+The Different States of a Graph
+-------------------------------
+
+A graph (a collection of filters) has four different possible states it can be in: 
+Stopped, Paused, Running, or “Transitioning”. 
+
+Transitioning state means when the graph is going from one state to another, but it hasn’t 
+quite finished yet because of the multithreaded nature of the sources.
+
+Paused state, with only several exceptions, is viewed as exactly the same to an individual 
+filter as the running state. Only rendering filters and live capture source filters care about 
+whether the graph is paused or running.
+
+Live capture filters will stop sending new frames of data when paused.
+
+Rendering filters will stop “displaying” data when paused and won’t allow any new 
+information to come in, through the use of multithreading and event handle techniques.
+
+Other filters don’t really deal with the differences between states, but they do have to deal 
+with the protocol which must be obeyed by filters when the graph transitions from one 
+state to another. When the graph’s state transitions, messages will be sent both 
+“upstream” and “downstream”, which must be handled correctly. You’ll need to read the 
+documentation and probably a bit of the base class filters to understand this fully.
+
+
+Multithreading
+--------------
+
+It is a must to partially understand multithreading when using any part of DirectShow 
+besides MultiMedia Streaming. MultiMedia Streaming makes a great attempt to keep the 
+user from having to deal with multithreading issues. But if you plan on writing any filter
+(source, transform, or renderer), be prepared to read the DirectShow docs, and be prepared 
+to deal with multithreading, critical sections, autolocking, not using global data, and 
+event handles. You can easily write a filter without dealing with these issues, but the 
+filter will have a very high chance of locking up or performing incorrectly and creating a 
+hassle for you and users of the filter. Don't be overwhelmed by this statement. Once you 
+understand the issues, development will become much easier.
+
+The application
+
+You will need to understand multithreading when writing filters for DirectShow.
+Even if you write an application that just uses DirectShow in the simplest manner,
+you must understand (at the very least) that the data is travelling through the 
+graph on different threads than the application thread. 
+
+Source Filters 
+
+In general, for each output pin that a source filter provides, a thread is created when the 
+graph is in the paused or running state. That thread takes buffers which were created by it 
+or another filter, fills them up, and delivers them to the next filter it’s connected to.
+
+Transform Filters
+
+Each transform filter has the option to create a new thread for any (or each) of its output 
+pins to push data upon when the filter goes into paused or run mode. Most transform 
+filters do not do this. In fact, unless necessary, it’s advised not to do this. Splitter filters, 
+which parse interleaved data from an upstream source and separate the data into more 
+basic (like audio or video) streams, normally do create threads for their output pins. This 
+is because when one stream becomes two, you don’t want one stream which is blocked 
+(for some unknown reason) to prevent the other stream from delivering data. 
+
+Rendering Filters
+
+Nobody has ever heard of a render filter which creates it’s own thread. Thank goodness 
+this is simple.
+
+
+Buffering Negotiations
+----------------------
+
+Each filter’s pin goes through a set of negotiations when it connects to another pin. The 
+two pins must commonly decide on the type of media they will deliver and receive, the 
+size of the buffers they will create or share, the number of buffers available for use, and 
+the memory block size the memory must be aligned with. A pin when it’s dealing with 
+data will be using buffers that either it created, or somebody else created. Put simply: 
+there is a complex sequence of actions that are performed when two pins connect in order 
+to get them to agree. This is described in the DirectShow docs.
+
+Why is all this important?
+
+Many potential users of DirectShow have been discouraged by the learning curve 
+required just to get data out of a compressed file. MultiMedia Streaming can be used, but 
+sometimes it may not be enough. Even if you know COM and C++, DirectShow still has 
+a lot of rules that must be learned.
+
+
+
+=======================================
+The Sample Grabber 
+=======================================
+
+The easiest way to get data out of a DirectShow graph, if you’re not going to use 
+MultiMedia Streaming, is probably to write your own TransInPlace filter, a sub-variety 
+of a Transform filter. Then connect this filter to the desired stream of data you wish to 
+monitor, and then run, pause, seek, or otherwise control the graph. The data, as it passes 
+through the transform filter, can be manipulated however you want. We call this kind of 
+filter, a “sample grabber”.  Microsoft released a limited-functionality sample grabber 
+with DX8.0. This filter is limited because it doesn’t deal with DV Data or mediatypes 
+with a format of VideoInfo2. It doesn’t allow the user to receive prerolled samples. 
+(What’s a preroll sample? See the DX8.1 docs) Its “OneShot” mode also has some problems.
+
+What is a Transform-based Sample Grabber good for?
+
+1.	Decoding an entire file into a memory buffer
+2.	Getting a “Poster Frame” of video from a video file
+3.	Capturing still images from a live video stream
+4.	Decoding a video file into a direct-draw buffer (for a game)
+
+
+Writing a Sample Grabber – where to begin?
+------------------------------------------
+
+First thing to decide is whether you need a transform filter to get your data, or a renderer. 
+Either one of these types of filters can monitor the data it receives and do something with 
+it for you. Why write it as one or the other? Here are the benefits of each:
+
+Transform filter:
+
+1.	can connect the output pin to something else, possibly render the data or
+	write it to a file
+
+2.	because of #1 above, this filter is more generic and can be used for other purposes
+
+Render filter:
+
+1.	a TransInPlace filter can potentially suffer from connection problems. Because 
+	there are more filters in the graph, there are more connections to be made. The 
+	more connections there are, the more likelihood (however small) that something 
+	won’t work the way you intended. 
+
+2.	However, you can’t connect up the output pin since there isn’t one
+
+In this document we will only discuss how to write the transform version of a sample 
+grabber. The same type of ideas will apply to writing a render version grabber.
+
+
+How do you write a TransInPlace filter?
+---------------------------------------
+
+You need to be somewhat familiar with the DirectShow base classes.  Here’s the basic 
+steps you need to follow to write a TransInPlaceFilter
+
+1.	Define a new class and have it derive from CTransInPlaceFilter
+
+2.	If you need to have the filter be a real COM object and perform self-registration, 
+	you’ll probably need an IDL file with the CLSID definition, a DEF file, and your 
+	new class will need to include the method CreateInstance. You’ll need to do all 
+	the stuff that’s necessary for self-registration. This is well defined in the docs.
+
+3.	Since the Transform() method in CTransInPlaceFilter is PURE (a C++ term), 
+	you’ll need to override it with your own method.
+
+4.	Since the CheckInputType() method in CTransInPlaceFilter is PURE (a C++ 
+	term), you’ll need to override it with your own method.
+
+That is all you need to do to create a very basic TransInPlaceFilter, the C++ base class 
+does a lot of things for you automatically. Like: negotiate pin connections, negotiate 
+buffer types, reconnect pins when necessary, moves data from the input pin to the output 
+pin, handles multithreading issues. Reading the C++ code for the base class will be very 
+informative. If you want to do something more fancy, you need to start overriding the 
+CTransInPlaceFilter’s methods in your class.
+
+The CheckInputType override
+
+The CTransInPlace requires you to override CheckInputType so your transform filter can 
+determine which media types to accept and which to reject. During pin connection 
+negotiations, your transform filter will be queried by the upstream pin with a variety of 
+media types it supports. Your filter has the right to say which media types it will accept 
+and which it won’t. During the connection negotiations, DirectShow will automatically 
+try new filters to attempt to make the connection work. For instance, it will automatically 
+insert a video decompressor (if available) if you try to connect an AVI file source filter’s 
+output pin to your transform when your transform only accepts video, and an 
+uncompressed video subtype. (See the DX8.1 docs for an explanation about media types.)
+
+Different Format Types
+
+If your filter only accepts Type = MEDIATYPE_Video and Subtype = 
+MEDIASUBTYPE_RGB24, it doesn’t always mean your filter will connect with a 
+format type of FORMAT_VideoInfo. There are several other video format types, 
+including VideoInfo2, and a DV-specific one too. You need to be specific in which 
+formats you can accept or not, depending on how you handle the data.
+
+Different Format Blocks – inverted DIBS!
+
+If your filter only accepts uncompressed video, and even forces VideoInfo as the type, 
+unless you look at (and accept or refuse) the actual VideoInfo format block and look at 
+the BITMAPINFOHEADER information’s biHeight, you may get inverted or non-
+inverted pictures delivered to you. THIS IS IMPORTANT! That’s because during the 
+connection negotiations, a decompressor may be able to decode two different ways, 
+inverted or non-inverted. It will ask your filter if it accepts one type, and if it succeeds,
+it will be satisfied with it and the connection will be made using that type. 
+If you say no to the first type, the decompressor may try the other one, and then succeed. 
+For this reason, if you need the video pictures to be inverted or non-inverted in a 
+certain way, you also need to look at the format of the media types you’re accepting 
+or rejecting!
+
+So to use a sample grabber, you need to:
+
+1)	Use an interface to specify what kind of data you want. This can be an 
+	exact format, but usually it is a general description that will allow several 
+	possible formats (eg: RGB24 of any size).
+
+2)	Understand that the CheckInput method of the filter will make sure that the 
+	only types accepted are types which you allow in #1 above
+
+3)	You must use an interface to get the exact media type being used after 
+	connecting the filter.  For instance, you might have allowed RGB24, 
+	but now you need to know what size of RGB24 you are getting (320x240? 
+	640x480?) or you won’t know how to interpret the data.
+
+4)	The format might change in the middle of retrieving samples, which further 
+	complicates things.  This will be described later.
+
+
+The Transform override
+----------------------
+
+When you override the Transform() method, you get passed a IMediaSample * for your 
+transform to operate on. If when you created the transform, you told the base class 
+CTransInPlaceFilter constructor you agreed not to modify the data (see the 
+CTransInPlaceFilter constructor in the DX8.1 docs), then you are obligated not to change 
+the contents of the IMediaSample during the Transform() method. If you didn’t agree not 
+to modify the data, you can do whatever you want with the data bits to modify it.
+
+If you look at the CTransInPlaceFilter’s Receive() method in the base classes, you will 
+see where it calls your Transform() method. You can see that it first does some checking 
+to make sure the allocators are “right”, then it calls your Transform() method, then calls 
+Deliver() (if appropriate) on the output pin.
+
+If you override just the Transform() method, then if you return S_FALSE from the 
+transform method, it means to the base class to signal an EC_QUALITY_CHANGE. But 
+the upstream filter keeps delivering. If you return an error code from Transform(), it 
+means that an error happened, and the graph will stop because of the error, but not in a 
+good way. There’s no way to just stop the graph because you want it to. The source filter 
+would stop if the Receive method returned S_FALSE, but there’s no way to get the 
+S_FALSE out of the Receive() method. It’s a little confusing. You’ll need to consult the 
+DX8.1 docs about a CTransInPlaceFilter. Only if you return NOERROR or S_OK from 
+Transform() will the base class deliver the sample to the output pin.
+
+If you wanted to have your transform filter tell the upstream filter to stop sending data 
+because you know that no more data is needed, and you understand the implications, you 
+would normally return S_FALSE from the input pin’s Receive() method. There is no way 
+to accomplish by only overriding Transform() - you would need to override Receive() as 
+well.
+
+
+How to deal with the multithreaded nature of DirectShow
+-------------------------------------------------------
+
+Your application will be controlling DirectShow, but what if your application wants to 
+get the data synchronously from the sample grabber? Your app is always going to be 
+running on a different thread than the thread which is delivering data to the sample 
+grabber.  You’ll need to be aware of this when you are using a sample grabber.
+
+Decode an entire file
+
+If you application just wants to decode an entire compressed file and get each block of 
+uncompressed data in a row then be done with it, you probably don’t need to be too 
+concerned about multiple threads. You can set up the Transform() method to decode into 
+a global buffer that’s set up by your application. Or you could set up the Transform() 
+method to call a callback method when it gets a sample, and in the callback, you could 
+decode into the global buffer. Your application would set up the callback, run the graph, 
+allow the Transform() method to get called repeatedly, wait for the graph to stop, then 
+tear down the graph and you’re done.
+
+Decode just a section of a file
+
+Same as decoding the entire file, but the application would need to set up some way for 
+the callback to return S_FALSE at some point, so the source thread stops delivering data, 
+or it would need to set the play range via IMediaSeeking::SetPositions(), setting both the 
+start and stop positions.
+
+Decode random pieces, seeking and pausing
+
+If you want to decode a portion of a file, then seek to another location and decode again, 
+it becomes more complicated. That is because when you seek a graph or transition from 
+any graph state (paused/stopped/running) to any other graph state,  the application needs 
+to wait for the graph’s state to become stable. 
+
+For instance, if you put a graph into paused state and in a loop, seek the graph via 
+IMediaSeeking to various locations, the seek call happens asynchronously. The seek 
+method, when you call it, travels synchronously up the chain of renderers, through their 
+connected filters, to the sources. The sources acknowledge the seek, then asynchronously 
+stop pushing their old data, send a flush downstream, then seek to the new position and 
+start sending data from there.
+
+Your application needs to be aware of this behavior. If you put the graph into paused 
+mode, and always return S_FALSE from your transform/receive overrides, then every 
+time you seek the graph, the sources will asynchronously seek, send one frame of data to 
+your filter, see that S_FALSE was returned, and then stop pushing data. Your application 
+will probably want to get these frames synchronously. What you can do is set an event in 
+the transform() override that notifies the app that a frame of data has been received. You 
+can therefore have a loop in the app that looks like this:
+
+1.	Seek the graph
+2.	Wait for the event to be complete
+3.	Go to 1
+
+The processing of the sample data will have to be done during the transform() override, 
+or during the callback the transform() override calls. If you want to process the data 
+inside of the application’s loop, you need TWO events. One to tell the app the sample is 
+ready, and one for the app to tell the pushing loop you’re done using the sample. 
+
+1.	Seek the graph
+2.	Wait for the “sample ready” event to be set
+3.	Process the data
+4.	Signal (set) the “done with sample” event
+5.	Go to 1
+
+See? It got more complicated! The reason you need to have two events is because if 
+you only had one, the “sample ready” event, then during the Transform() method, it 
+would signal that the sample was ready, but since it’s on another thread, that thread is 
+free to exit the Transform() method and do what it wants with that IMediaSample 
+pointer (which is probably to refill it with something different).
+
+A more advanced note: You could AddRef() the sample you get in the Transform() 
+method and store the addreffed variable in some global space the application can see, 
+then use that AddRef() to keep the sample for the application’s use until it’s done 
+with it. What really happens when the source’s pushing thread leaves the Transform() 
+method is that Release() eventually gets called on the IMediaSample() and that 
+normally makes the reference count go to 0, which signals that that buffer is ready for 
+reusal by the pushing thread. The source pushing thread in fact cannot reuse that 
+sample buffer for pushing a new sample until it’s reference count reaches 0. So you 
+probably don’t need another event if you’re really sure you can deal with the 
+reference counting.
+
+
+
+
+========================================================
+Sample Grabber Source Code, simple version, Application
+========================================================
+
+#include "stdafx.h"
+#include <atlbase.h>
+#include <streams.h>
+#include <qedit.h> // for Null Renderer
+#include <filfuncs.h> // for GetOutPin, GetInPin
+#include <filfuncs.cpp> // for GetOutPin, GetInPin
+#include "SampleGrabber.h"
+
+int test(int argc, char* argv[]);
+
+int main(int argc, char* argv[])
+{
+    CoInitialize( NULL );
+    int i = test( argc, argv );
+    CoUninitialize();
+    return i;
+}
+
+HANDLE gWaitEvent = NULL;
+
+HRESULT Callback( IMediaSample * pSample, REFERENCE_TIME * StartTime, REFERENCE_TIME * 
+StopTime )
+{
+
+    // NOTE: We cannot do anything with this sample until we call GetConnectedMediaType 
+    // on the filter to find out what format these samples are.
+
+    DbgLog( ( LOG_TRACE, 0, "Callback with sample %lx for time %ld", 
+        pSample, long( *StartTime / 10000 ) ) );
+    SetEvent( gWaitEvent );
+    return S_FALSE; // don't deliver me any more samples, pushing thread!
+}
+
+int test( int argc, char * argv[] )
+{
+    // create a handle to be notified when we get a sample
+    gWaitEvent = CreateEvent( NULL, FALSE, FALSE, NULL );
+
+    // create a sample grabber by hand. It's not in the registry!
+    HRESULT hr = 0;
+    CSampleGrabber * pGrab = new CSampleGrabber( NULL, &hr, FALSE );
+    pGrab->AddRef();
+
+    // set the sample grabber's callback
+    pGrab->SetCallback( &Callback );
+
+    // set up a partially specified media type
+    CMediaType mt;
+    mt.SetType( &MEDIATYPE_Video );
+    mt.SetSubtype( &MEDIASUBTYPE_RGB24 );
+    hr = pGrab->SetAcceptedMediaType( &mt );
+
+    // create a filter graph
+    CComPtr< IFilterGraph > pGraph;
+    hr = pGraph.CoCreateInstance( CLSID_FilterGraph );
+
+    // QI the filter graph for the other useful interfaces
+    CComQIPtr< IGraphBuilder, &IID_IGraphBuilder > pBuilder( pGraph );
+    CComQIPtr< IMediaSeeking, &IID_IMediaSeeking > pSeeking( pGraph );
+    CComQIPtr< IMediaControl, &IID_IMediaControl > pControl( pGraph );
+    CComQIPtr< IMediaFilter, &IID_IMediaFilter > pMediaFilter( pGraph );
+    CComQIPtr< IMediaEvent, &IID_IMediaEvent > pEvent( pGraph );
+
+    // add a source filter for it
+    CComPtr< IBaseFilter > pSource;
+    hr = pBuilder->AddSourceFilter( L"d:\\media\\avi\\clooso1.avi", L"source", &pSource 
+);
+
+    // add the sample grabber to the graph
+    hr = pBuilder->AddFilter( pGrab, L"Grabber" );
+
+    // get the input and output pins
+    IPin * pSourceOut = GetOutPin( pSource, 0 );
+    IPin * pGrabIn = GetInPin( pGrab, 0 );
+
+    // connect the pins
+    hr = pBuilder->Connect( pSourceOut, pGrabIn );
+
+    // create a null renderer
+    CComPtr< IBaseFilter > pNull;
+    hr = pNull.CoCreateInstance( CLSID_NullRenderer );
+
+    // add it to the graph
+    hr = pBuilder->AddFilter( pNull, L"Renderer" );
+
+    // get the other input and output pins
+    IPin * pGrabOut = GetOutPin( pGrab, 0 );
+    IPin * pNullIn = GetInPin( pNull, 0 );
+
+    // connect
+    hr = pBuilder->Connect( pGrabOut, pNullIn );
+
+    // make sure it looks right in the debug output
+    DumpGraph( pGraph, 0 );
+
+    // NOTE: We cannot do anything useful unless we call GetConnectedMediaType 
+    // on the filter (now that the graph is built) to find out what format the
+    // sample grabber is going to send us.  We set a vague format (RGB24 of any size)
+    // so we don’t yet know what kind of data we’re actually going to get
+
+    REFERENCE_TIME Duration = 0;
+    hr = pSeeking->GetDuration( &Duration );
+
+    BOOL Paused = FALSE;
+    long t1 = timeGetTime();
+
+    for( int i = 0 ; i < 100 ; i++ )
+    {
+        // perform the seek
+        REFERENCE_TIME Seek = Duration * i / 100;
+        hr = pSeeking->SetPositions( 
+            &Seek, 
+            AM_SEEKING_AbsolutePositioning, 
+            NULL, 
+            AM_SEEKING_NoPositioning );
+
+        // if we haven’t paused the graph yet, do that now
+        if( !Paused )
+        {
+            hr = pControl->Pause();
+            ASSERT( !FAILED( hr ) );
+            Paused = TRUE;
+        }
+
+        // wait for the source to deliver us one sample. The callback will return
+        // S_FALSE so the source won’t deliver more than one per seek
+        WaitForSingleObject( gWaitEvent, INFINITE );
+    }
+
+    long t2 = timeGetTime();
+    DbgLog( ( LOG_TRACE, 0, "Frames per second = %ld", i * 1000 / ( t2 - t1 ) ) );
+
+    pGrab->Release();
+
+    return 0;
+}
+
+
+
+
+===========================================
+Adding Complexity: Overriding the Input Pin
+===========================================
+
+Why?
+
+Because of the way DirectShow auto-connection mechanism works, if you set the Sample 
+Grabber as it stands up for only receiving audio types, and you try to connect a File 
+Source up to the Sample Grabber’s input pin, the connection process will work, but it will 
+take a long time. Why? Because DirectShow doesn’t naturally know what media types 
+the Sample Grabber wants to use. It absolutely cannot tell what media types the SG 
+prefers except to try them all. It repeatedly loads up ALL codecs (video and audio) and 
+trys them inline of the stream, and calls the SG’s method CheckInputType(). During the 
+CheckInputType(), it would be great if the CheckInputType() could return the desired 
+connection type back OUT of the call inside the media type parameter that was passed in 
+(like, “oh, you asked me if I wanted video, but I only want audio, so I’ll change the media 
+type’s major type to audio”), but this isn’t part of the DirectShow specification, and 
+cannot be retrofitted into working correctly. So if the SG only accept audio types, it will 
+first try all the video codecs, then start trying audio codecs. Thus, it will take a *lot* 
+longer to connect a SG with audio than video. 
+
+Speeding up connection times
+
+We can fix this problem to some degree. The Sample Grabber has two pins that are 
+created by the base class, the CTransInPlaceInputPin and the CTransInPlaceOutputPin. If 
+we override the input pin with a derived class, and override GetMediaType() and 
+EnumMediaTypes(), we can offer a partially specified media type in GetMediaType(). 
+This will give the DirectShow auto-connection logic a hint about which codecs to try 
+when it starts trying random ones. If you look closely at the CbasePin::TryMediaTypes() 
+method, you’ll see where this logic is used (the code is in amfilter.cpp).
+Overriding the m_pInput member variable of the CTransInPlaceFilter
+So that our overridden input pin is used instead of the default CTransInPlaceInputPin, we 
+make a class, CsampleGrabberInPin, override what we need to in that class, and in the 
+constructor of the CsampleGrabber, create the CsampleGrabberInPin, and assign it (via a 
+cast) to m_pInput.
+
+Overriding EnumMediaTypes()
+
+When connecting to the Sample Grabber input pin, the upstream filter will eventually call 
+EnumMediaTypes() on the SG input pin. During this time, the output pin is normally 
+disconnected. The CTransInPlaceInputPin’s base class code overrides 
+EnumMediaTypes() from CbasePin and returns VFW_E_NOT_CONNECTED if the 
+output pin is disconnected. In order to allow GetMediaType() to be called, we need to 
+override EnumMediaTypes() ourselves, and do what CbasePin::EnumMediaTypes() 
+does, but only if the output pin is still disconnected. Otherwise, do the normal thing. 
+You’ll see this in the code below.
+
+Overriding GetMediaType()
+
+The SG overrides GetMediaType() and only fills out the major type of the media type 
+parameter that is passed in. If we fill out anything more than that, which should be 
+feasible, it crashes some 3rd party codecs. So don’t do that. A transform filter like the SG 
+wouldn’t know what the video size is before connecting anyhow, so it wouldn’t always 
+be possible to fully specify the media type anyhow.
+
+
+
+The Additional Header Code to override the Input Pin
+
+//----------------------------------------------------------------------------
+// we override the input pin class so we can provide a media type
+// to speed up connection times. When you try to connect a filesourceasync
+// to a transform filter, DirectShow will insert a splitter and then
+// start trying codecs, both audio and video, video codecs first. If
+// your sample grabber's set to connect to audio, unless we do this, it
+// will try all the video codecs first. Connection times are sped up x10
+// for audio with just this minor modification!
+//----------------------------------------------------------------------------
+
+class CSampleGrabberInPin : public CTransInPlaceInputPin
+{
+public:
+
+    CSampleGrabberInPin( CTransInPlaceFilter * pFilter, HRESULT * pHr ) 
+        : CTransInPlaceInputPin( TEXT("SampleGrabberInputPin"), pFilter, pHr, L"Input" )
+    {
+    }
+
+    // override to provide major media type for fast connects
+
+    HRESULT GetMediaType( int iPosition, CMediaType *pMediaType );
+
+    // override this or GetMediaType is never called
+
+    STDMETHODIMP EnumMediaTypes( IEnumMediaTypes **ppEnum );
+};
+
+
+
+The Additional .CPP Code to override the Input Pin
+
+CSampleGrabber::CSampleGrabber(…)
+… omitted …
+{
+    m_pInput = (CTransInPlaceInputPin*) new CSampleGrabberInPin( this, phr );
+    if( !m_pInput )
+    {
+        *phr = E_OUTOFMEMORY;
+    }
+}
+
+//----------------------------------------------------------------------------
+// used to help speed input pin connection times. We return a partially
+// specified media type - only the main type is specified. If we return
+// anything BUT a major type, some codecs written improperly will crash
+//----------------------------------------------------------------------------
+
+HRESULT CSampleGrabberInPin::GetMediaType( int iPosition, CMediaType * pMediaType )
+{
+    if (iPosition < 0) {
+        return E_INVALIDARG;
+    }
+    if (iPosition > 0) {
+        return VFW_S_NO_MORE_ITEMS;
+    }
+
+    *pMediaType = CMediaType();
+    pMediaType->SetType( ((CSampleGrabber*)m_pFilter)->m_mtAccept.Type() );
+    return S_OK;
+}
+
+//----------------------------------------------------------------------------
+// override the CTransInPlaceInputPin's method, and return a new enumerator
+// if the input pin is disconnected. This will allow GetMediaType to be
+// called. If we didn't do this, EnumMediaTypes returns a failure code
+// and GetMediaType is never called. 
+//----------------------------------------------------------------------------
+
+STDMETHODIMP CSampleGrabberInPin::EnumMediaTypes( IEnumMediaTypes **ppEnum )
+{
+    CheckPointer(ppEnum,E_POINTER);
+    ValidateReadWritePtr(ppEnum,sizeof(IEnumMediaTypes *));
+
+    // if the output pin isn't connected yet, offer the possibly 
+    // partially specified media type that has been set by the user
+
+    if( !((CSampleGrabber*)m_pTIPFilter)->OutputPin()->IsConnected() )
+    {
+        /* Create a new ref counted enumerator */
+
+        *ppEnum = new CEnumMediaTypes( this, NULL );
+
+        return (*ppEnum) ? NOERROR : E_OUTOFMEMORY;
+    }
+
+    // if the output pin is connected, offer it's fully qualified media type
+
+    return ((CSampleGrabber*)m_pTIPFilter)->OutputPin()->GetConnected()->EnumMediaTypes( 
+ppEnum );
+
+}
+
+
+
+=====================================================
+Forcing the Sample Grabber to deliver to your buffer
+=====================================================
+
+Overview
+
+With some DirectShow sleight-of-hand, we can in some cases force the Sample Grabber 
+to deliver to a buffer of the application’s choosing. In order to do this, you need to be 
+very familiar with DirectShow’s allocator mechanism and somewhat familiar with how 
+the DirectShow auto-connection mechanism works. If you’re not familiar with what’s 
+goin’ on, you will be scratching your head for weeks.
+
+Here’s what you need to do, as a quick summary:
+1.	make a new class, CsampleGrabberAllocator, derived from CmemAllocator
+2.	override that class’ GetAllocatorRequirements(), Alloc(), and ReallyFree() 
+	methods, force them to provide a memory allocator that points to your 
+	application’s memory
+3.	override your input pin’s NotifyAllocator() and refuse any allocators that are not 
+	the special one you overrode in steps 1 & 2
+4.	override your input pin’s GetAllocator() and return your special allocator instead
+5.	provide a protected method from the SG to determine if the user wanted it in 
+	“read only” mode or not (you’ll see why in the code)
+6.	provide a public method for the SG so the app can set the delivery buffer
+
+Allocators
+
+Whenever two pins connect, they must agree upon a common memory buffer transport in 
+order to pass the samples downstream, these are called Allocators. Every two connected 
+pins use the same allocator. When a transform filter copies the sample from the input pin 
+to the output pin, it’s memory copying between two different allocators. When a 
+transinplace filter operates in transinplace mode, it’s using the same allocator on both the 
+input pin and the output pin. It’s possible, but not likely, for a source filter to deliver all 
+the way down to a renderer with every single pin using the same allocator with no 
+memory copies happening!
+
+Allocator Properties
+
+Allocators can have something called a “prefix” (how much spare memory must be 
+allocated before the buffer you wish to fill with data). They can have an alignment (what 
+modulus they must be aligned upon). They have a buffer count. Let’s explain this for a 
+second – when two pins agree upon an allocator, they can actually agree to use more than 
+one buffer. This allows the upstream pin to deliver to a multitude of memory buffers on 
+it’s thread, and allows the downstream pin(s) to hold onto one or more of the buffers 
+while letting the input pin fill up some more. This is complicated. In the SG code that 
+allows setting of the delivery buffer the allocator uses, we set this buffer count to be 1 
+only. Allocators also have a maximum size they should be allocated at.
+
+The Output Pin and its Allocator
+
+Since we’re a TransInPlace filter, we’re pretty much assured the output pin’s allocator is 
+going to be the same as the input pin’s, so we don’t need to worry about overriding the 
+output pin’s allocator stuff. Thank goodness this is easy, eh?
+
+
+Header Code to Enable Delivering to an Application’s Buffer
+
+//----------------------------------------------------------------------------
+// this is a special allocator that KNOWS the person who is creating it
+// will only create one of them. It allocates CMediaSamples that only 
+// reference the buffer location that is set in the pin's renderer's
+// data variable
+//----------------------------------------------------------------------------
+
+class CSampleGrabberAllocator : public CMemAllocator
+{
+protected:
+    CSampleGrabberInPin * m_pPin; // who created us
+
+public:
+    CSampleGrabberAllocator( CSampleGrabberInPin * pParent, HRESULT *phr ) 
+        : CMemAllocator( TEXT("SampleGrabberAllocator"), NULL, phr ) 
+        , m_pPin( pParent )
+    {
+    };
+
+    ~CSampleGrabberAllocator()
+    {
+        // wipe out m_pBuffer before we try to delete it. It's not an allocated
+        // buffer, and the default destructor will try to free it!
+        m_pBuffer = NULL;
+    }
+
+    // we override this to tell whoever's upstream of us what kind of
+    // properties we're going to demand to have
+    //
+    HRESULT GetAllocatorRequirements( ALLOCATOR_PROPERTIES *pProps );
+    HRESULT Alloc();
+    void ReallyFree();
+};
+
+class CSampleGrabberInPin : public CTransInPlaceInputPin
+{
+    CSampleGrabberAllocator * m_pPrivateAllocator;
+    ALLOCATOR_PROPERTIES m_allocprops;
+     BYTE * m_pBuffer;
+     
+    … stuff omitted …
+ 
+protected:
+    HRESULT SetDeliveryBuffer( ALLOCATOR_PROPERTIES props, BYTE * m_pBuffer );
+
+public:
+    // override this to refuse any allocators besides
+    // the one the user wants, if this is set
+    STDMETHODIMP NotifyAllocator( IMemAllocator *pAllocator, BOOL bReadOnly );
+
+    // override this so we always return the special allocator, if necessary
+    STDMETHODIMP GetAllocator( IMemAllocator **ppAllocator );
+};
+
+class CSampleGrabber : public CTransInPlaceFilter
+{
+    …. Stuff omitted …
+    HRESULT SetDeliveryBuffer( ALLOCATOR_PROPERTIES props, BYTE * m_pBuffer );
+};
+
+
+.CPP Code to Enable Delivering to an Application’s Buffer
+
+//----------------------------------------------------------------------------
+// inform the input pin of the allocator buffer we wish to use. See the
+// input pin's SetDeliverBuffer method for comments. 
+//----------------------------------------------------------------------------
+
+HRESULT CSampleGrabber::SetDeliveryBuffer( ALLOCATOR_PROPERTIES props, BYTE * m_pBuffer )
+{
+    // they can't be connected if we're going to be changing delivery buffers
+    //
+    if( InputPin()->IsConnected() || OutputPin()->IsConnected() )
+    {
+        return E_INVALIDARG;
+    }
+    return ((CSampleGrabberInPin*)m_pInput)->SetDeliveryBuffer( props, m_pBuffer );
+}
+
+//----------------------------------------------------------------------------
+//
+//----------------------------------------------------------------------------
+
+STDMETHODIMP CSampleGrabberInPin::NotifyAllocator( IMemAllocator *pAllocator, BOOL 
+bReadOnly )
+{
+    if( m_pPrivateAllocator )
+    {
+        if( pAllocator != m_pPrivateAllocator )
+        {
+            return E_FAIL;
+        }
+        else
+        {
+            // if the upstream guy wants to be read only and we don't, then that's bad
+            // if the upstream guy doesn't request read only, but we do, that's okay
+            if( bReadOnly && !SampleGrabber()->IsReadOnly() )
+            {
+                return E_FAIL;
+            }
+        }
+    }
+
+    return CTransInPlaceInputPin::NotifyAllocator( pAllocator, bReadOnly );
+}
+
+//----------------------------------------------------------------------------
+//
+//----------------------------------------------------------------------------
+
+STDMETHODIMP CSampleGrabberInPin::GetAllocator( IMemAllocator **ppAllocator )
+{
+    if( m_pPrivateAllocator )
+    {
+        *ppAllocator = m_pPrivateAllocator;
+        m_pPrivateAllocator->AddRef();
+        return NOERROR;
+    }
+    else
+    {
+        return CTransInPlaceInputPin::GetAllocator( ppAllocator );
+    }
+}
+
+HRESULT CSampleGrabberInPin::SetDeliveryBuffer( ALLOCATOR_PROPERTIES props, BYTE * 
+pBuffer )
+{
+    // don't allow more than one buffer
+
+    if( props.cBuffers != 1 )
+    {
+        return E_INVALIDARG;
+    }
+    if( !pBuffer )
+    {
+        return E_POINTER;
+    }
+
+    m_allocprops = props;
+    m_pBuffer = pBuffer;
+
+    HRESULT hr = 0;
+    m_pPrivateAllocator = new CSampleGrabberAllocator( this, &hr );
+    if( !m_pPrivateAllocator )
+    {
+        return E_OUTOFMEMORY;
+    }
+    m_pPrivateAllocator->AddRef();
+    return hr;
+}
+
+//----------------------------------------------------------------------------
+// ask for the allocator props. this can hardly go wrong
+//----------------------------------------------------------------------------
+
+HRESULT CSampleGrabberAllocator::GetAllocatorRequirements( ALLOCATOR_PROPERTIES *pProps )
+{
+    *pProps = m_pPin->m_allocprops;
+    return NOERROR;
+}
+
+//----------------------------------------------------------------------------
+// don't allocate the memory, just use the buffer the app set up
+//----------------------------------------------------------------------------
+
+HRESULT CSampleGrabberAllocator::Alloc()
+{
+    // look at the base class code to see where this came from!
+
+    CAutoLock lck(this);
+
+    /* Check he has called SetProperties */
+    HRESULT hr = CBaseAllocator::Alloc();
+    if (FAILED(hr)) {
+        return hr;
+    }
+
+    /* If the requirements haven't changed then don't reallocate */
+    if (hr == S_FALSE) {
+        ASSERT(m_pBuffer);
+        return NOERROR;
+    }
+    ASSERT(hr == S_OK); // we use this fact in the loop below
+
+    /* Free the old resources */
+    if (m_pBuffer) {
+        ReallyFree();
+    }
+
+    /* Compute the aligned size */
+    LONG lAlignedSize = m_lSize + m_lPrefix;
+    if (m_lAlignment > 1) {
+        LONG lRemainder = lAlignedSize % m_lAlignment;
+        if (lRemainder != 0) {
+            lAlignedSize += (m_lAlignment - lRemainder);
+        }
+    }
+
+    /* Create the contiguous memory block for the samples
+       making sure it's properly aligned (64K should be enough!)
+    */
+    ASSERT(lAlignedSize % m_lAlignment == 0);
+
+    // don't create it, use what was passed to us
+    //
+#if 0
+    m_pBuffer = (PBYTE)VirtualAlloc(NULL,
+                    m_lCount * lAlignedSize,
+                    MEM_COMMIT,
+                    PAGE_READWRITE);
+#endif
+
+    m_pBuffer = m_pPin->m_pBuffer;
+
+    if (m_pBuffer == NULL) {
+        return E_OUTOFMEMORY;
+    }
+
+    LPBYTE pNext = m_pBuffer;
+    CMediaSample *pSample;
+
+    ASSERT(m_lAllocated == 0);
+
+    // Create the new samples - we have allocated m_lSize bytes for each sample
+    // plus m_lPrefix bytes per sample as a prefix. We set the pointer to
+    // the memory after the prefix - so that GetPointer() will return a pointer
+    // to m_lSize bytes.
+    for (; m_lAllocated < m_lCount; m_lAllocated++, pNext += lAlignedSize) {
+
+        pSample = new CMediaSample(
+                        NAME("Sample Grabber memory media sample"),
+                        this,
+                        &hr,
+                        pNext + m_lPrefix,      // GetPointer() value
+                        m_lSize);               // not including prefix
+
+        ASSERT(SUCCEEDED(hr));
+        if (pSample == NULL) {
+            return E_OUTOFMEMORY;
+        }
+
+        // This CANNOT fail
+        m_lFree.Add(pSample);
+    }
+
+    m_bChanged = FALSE;
+    return NOERROR;
+}
+
+//----------------------------------------------------------------------------
+// don't really free the memory
+//----------------------------------------------------------------------------
+
+void CSampleGrabberAllocator::ReallyFree()
+{
+    // look at the base class code to see where this came from!
+
+    /* Should never be deleting this unless all buffers are freed */
+
+    ASSERT(m_lAllocated == m_lFree.GetCount());
+
+    /* Free up all the CMediaSamples */
+
+    CMediaSample *pSample;
+    for (;;) {
+        pSample = m_lFree.RemoveHead();
+        if (pSample != NULL) {
+            delete pSample;
+        } else {
+            break;
+        }
+    }
+
+    m_lAllocated = 0;
+
+    // don't free it, let the app do it
+#if 0
+    // free the block of buffer memory
+    if (m_pBuffer) {
+    EXECUTE_ASSERT(VirtualFree(m_pBuffer, 0, MEM_RELEASE));
+    m_pBuffer = NULL;
+    }
+#endif
+}
+
+
+
+Application Code to Enable Delivering to an Application’s Buffer
+     … code omitted …
+     
+    HRESULT hr = 0;
+    CSampleGrabber * pGrab = new CSampleGrabber( NULL, &hr, FALSE );
+    pGrab->AddRef();
+
+    // set the sample grabber's callback
+
+    pGrab->SetCallback( &Callback );
+
+    // set up a partially specified media type
+
+    CMediaType mt;
+#if 1
+    mt.SetType( &MEDIATYPE_Video );
+    mt.SetSubtype( &MEDIASUBTYPE_RGB24 );
+
+    #if 1
+        ALLOCATOR_PROPERTIES props;
+        props.cBuffers = 1;
+        props.cbBuffer = 320*240*3;
+        props.cbAlign = 1;
+        props.cbPrefix = 0;
+
+        BYTE * pBuffer = new BYTE[320*240*3];
+        pGrab->SetDeliveryBuffer( props, pBuffer );
+        memset( pBuffer, 0, 320*240*3 );
+    #endif
+#else
+    mt.SetType( &MEDIATYPE_Audio );
+#endif
+
+    ASSERT( hr == NOERROR );
+    pGrab->SetAcceptedMediaType( &mt );
+
+     … code omitted …
+
+
+
+=======================================
+How to get Notified of Format Changes
+=======================================
+
+What are format changes?
+
+Format changes are when the format of the data coming into us changes while the graph 
+is running, without the input pin being disconnected and then reconnected. This can 
+happen by the upstream filter, deciding it has a different format to send due to the media, 
+or it can happen from the downstream filter, trying to use a different format than the one 
+it’s currently receiving. For example, the “old” Video Renderer filter will accept an RGB 
+format when it connects, but when it starts playing, it tries to use DirectDraw and an 
+“accelerated” video format like YUV, and will query upstream to see if it can change the 
+format on the fly.
+
+What does this mean to the Sample Grabber?
+
+If the SG only demands the incoming format is Video or Audio (without being more 
+restrictive), or if it will accept two or more different types, it’s possible the format could 
+change without you knowing it. Therefore, you either need to be very restrictive in the 
+CheckInputType, or you need to be notified when the format changes, or when you get 
+the sample callback, you must not depend on the format never changing.  If you only 
+accept one and only one media format in CheckInputType(), or if you’re sure nothing in 
+the graph will cause the format to change (a Null Renderer, for example, will never ask 
+for a format change), then you’re fine, but as described below, disallowing format 
+changes can degrade performance.
+
+How do you tell what the new media type is?
+
+You can call IMediaSample::GetMediaType on samples that you receive.  Normally, the 
+type is NULL, but the type of the first sample after a format change will be set to that 
+new format.  Subsequent samples will again have a NULL type.  See the docs for more 
+information about format changes.
+
+Therefore, when your application receives a sample in its callback, it should check the 
+media type on that sample to find out if this sample is of a different format that previous 
+samples. 
+
+What if you don’t allow changing the type? Does this change performance?
+Somebody recently wrote me and complained that inserting the DX8.1 SampleGrabber 
+but not doing anything in the callback was causing the graph to process data slower than 
+normally, and wanted to know why. The answer is simple: Because he had set up the 
+Sample Grabber to only accept RGB24 type data. And when the SG was not added to the 
+graph, when he connected the video source to the renderer, it looked like an RGB24 
+connection, but after he started playing the graph, the Video Renderer said upstream, 
+“hey, I’d really rather prefer you output YUV data” and the video decoder upstream 
+agreed to that. YUV plays faster than RGB for some video cards, so he got a performance 
+boost. When he inserted the Sample Grabber, he had it set up to say “No way” to any 
+format other than RGB24. The Video Render wanted to reconnect with the YUV format, 
+but the SG refused. Thus, the performance gain wasn’t realized in this case. You need to 
+be aware of these types of issues if you want full benefit from the SG or DirectShow. Of 
+course, if you’re stuck, you can always post an email to the news group.
+
+
+===============================================
+What is wrong with the SampleGrabber in DX8.0?
+===============================================
+
+Oneshot mode
+
+Oneshot mode was an idea we had that was meant to speed up getting still images from 
+files on disk. We figured that if the SampleGrabber returned S_FALSE out of the 
+transform, it would shut down the upstream source filter sooner, and it wouldn’t continue 
+to fill up data on it’s pushing thread. Unfortunately, there are a number of pitfalls with 
+this idea.
+
+1.	The upstream filter, when it sees the S_FALSE returned, does stop filling up data, 
+	but it will not singal the graph that it’s stopping pushing via an EC_COMPLETE, 
+	or any other message. The application still must rely on some other mechanism to 
+	figure out of the graph has reached a stable state or not. Most of the time, just the 
+	fact that the sample callback gets called is enough, but this undocumented 
+	mechanism is misleading, and therefore makes us wish it wasn’t in there in the 
+	first place.
+2.	The upstream filter, when it sees the S_FALSE, will still keep filling up sample 
+	buffers, if it has an output Q, because there are still buffers to fill. There’s no way 
+	for the application to tell the source filter’s pushing thread “I only want to get one 
+	sample right now, just fill up one and not any more”. So using S_FALSE in the 
+	SampleGrabber doesn’t make the source filling thread shut down right away. If 
+	you don’t understand the DirectShow model of source filters, operating on 
+	different threads, filling up buffers, and using output queues, this isn’t going to 
+	make much sense to you.
+3.	We could have allowed one-shot mode like the filter described in this 
+	documentation – by overriding Receive() and Transform() method, and allowing 
+	the sample callback’s return of S_FALSE to propagate up as the Receive() return 
+	code. This way, we don’t need to write a special one-shot mode in the first place
+
+VideoInfo2
+
+The Sample Grabber in DX8.0 just will not accept any video type of VideoInfo2. We did 
+this on purpose because we weren’t prepared for a ton of questions regarding using the 
+Sample Grabber with VideoInfo2 types. For instance, field-based video processing, 
+interlacing or deinterlacing, etc. We figured if people wanted to grab field-based video, 
+they could write their own Sample Grabber. Restricting VideoInfo2 from the DX8 
+sample grabber was for simplicity’s sake. Armed with this doc and some DirectShow 
+know-how, you should be able to easily write a field-based Sample Grabber.
+
+Buffered Mode
+
+The DX8.0 Sample Grabber has a mode where you can ask it to buffer the samples before 
+calling you back. This wasn’t a good idea. The idea was supposed to be that as the 
+samples are passing through the sample grabber, they would be buffered, so that when the 
+user asked for the latest (buffered) sample from the grabber, it wouldn’t have to wait for 
+the next one to pass by in order to get “something”. We realized later that it would be just 
+as easy for the application to do the buffering in their callback. Of course, this forces the 
+user to understand multithreading and locking issues, whereas just getting the latest 
+buffered sample is easier. We haven’t gotten any comments or feedback about the 
+buffered mode, so we must assume it’s either not being used, or it works so well users 
+never write questions about it. 
+
+Formats and Dynamic formats
+
+The DX8.0 Sample Grabber only allowed the user to specify either partial media types, or 
+fully specified media types, but not 2 or more fully specified media types. What does this 
+mean? The user couldn’t make the SG allow both fully specified RGB, OR a fully 
+specified YUV type. This made it so the SG couldn’t connect to the Video Renderer so 
+that the renderer could dynamically switch the format from RGB to YUV. Therefore, 
+when the SG was connected to the Video Renderer, accelerated YUV ddraw playback 
+wouldn’t be enabled. That’s why the overlay window usually doesn’t show up with the 
+SG connected inline. By providing the source code, we allow the user to do whatever 
+they want in CheckInputType. This should be more useful. The DX8.0 SG also wouldn’t 
+notify you if the format changes on the fly.
+
+

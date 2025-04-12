@@ -1,0 +1,154 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// 24
+//
+
+1                       24      MOVEABLE PURE   "LobbyClient.manifest"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_LOBBY_CLIENT DIALOG DISCARDABLE  0, 0, 332, 278
+STYLE DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "DirectPlay8 Lobby Client"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    GROUPBOX        "Launch Parameters",IDC_STATIC,7,7,318,175
+    LTEXT           "Registered Applications:",IDC_STATIC,15,16,77,8
+    LISTBOX         IDC_APP_LIST,16,25,95,137,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    RTEXT           "Player Name:",IDC_STATIC,135,27,43,8
+    EDITTEXT        IDC_PLAYER_NAME,182,25,135,12,ES_AUTOHSCROLL
+    RTEXT           "Session Name:",IDC_STATIC,130,44,48,8
+    EDITTEXT        IDC_SESSION_NAME,182,42,135,12,ES_AUTOHSCROLL
+    RTEXT           "Serivce Provider:",IDC_STATIC,123,61,55,8
+    COMBOBOX        IDC_SP_COMBO,182,59,135,65,CBS_DROPDOWNLIST | CBS_SORT | 
+                    WS_VSCROLL | WS_TABSTOP
+    RTEXT           "Adapter:",IDC_STATIC,150,78,28,8
+    COMBOBOX        IDC_ADAPTER_COMBO,182,76,135,65,CBS_DROPDOWNLIST | 
+                    WS_VSCROLL | WS_TABSTOP
+    RTEXT           "Remote IP:",IDC_ADDRESS_TEXT,142,95,36,8
+    EDITTEXT        IDC_ADDRESS,182,93,82,12,ES_AUTOHSCROLL
+    RTEXT           "Port:",IDC_REMOTE_PORT_TEXT,268,95,16,8
+    EDITTEXT        IDC_REMOTE_PORT,286,93,31,12,ES_AUTOHSCROLL | ES_NUMBER
+    GROUPBOX        "Launch method",IDC_STATIC,119,115,84,49
+    CONTROL         "&Always launch",IDC_LAUNCH_NEW,"Button",
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,123,125,61,10
+    CONTROL         "Launch if not &found",IDC_LAUNCH_NOT_FOUND,"Button",
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,123,137,77,10
+    CONTROL         "Do not la&unch",IDC_DONT_LAUNCH,"Button",
+                    BS_AUTORADIOBUTTON | WS_TABSTOP,123,149,61,10
+    CONTROL         "Override local &port:",IDC_OVERRIDE_LOCAL_PORT,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,210,119,74,10
+    EDITTEXT        IDC_LOCAL_PORT,286,118,31,12,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "&Host session",IDC_HOST_SESSION,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,210,130,56,10
+    CONTROL         "Don't send co&nnection settings",IDC_NO_SETTINGS,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,210,141,111,10
+    PUSHBUTTON      "&Launch App",IDC_LAUNCH,260,160,58,14
+    GROUPBOX        "Active Connections",IDC_STATIC,7,187,318,63
+    LISTBOX         IDC_ACTIVE_CONNECTIONS,13,201,96,40,LBS_SORT | 
+                    LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "&Send Message",IDC_SEND_MSG,121,202,58,14
+    PUSHBUTTON      "&Disconnect",IDC_DISCONNECT,185,202,58,14
+    LTEXT           "Status:",IDC_STATIC,119,226,24,8
+    EDITTEXT        IDC_STATUS,152,223,161,14,ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "E&xit",IDCANCEL,267,257,58,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_LOBBY_CLIENT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 325
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 271
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_MAIN                ICON    DISCARDABLE     "..\\..\\Common\\directx.ico"
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

@@ -1,0 +1,46 @@
+readme.txt
+main.vb
+DXUtil.vb
+
+[!if USE_DIRECTINPUT]
+dinput.vb
+[!endif]
+
+[!if GRAPHICSTYPE_NOGRAPHICS]
+graphics.vb
+[!endif]
+
+[!if GRAPHICSTYPE_DIRECT3D]
+d3dapp.vb
+d3denumeration.vb
+d3dfont.vb
+d3dutil.vb
+D3DSettingForm.vb
+[!endif]
+
+[!if VISUALTYPE_TRIANGLE && GRAPHICSTYPE_DIRECT3D]
+D3DTriangle.vb
+[!endif]
+[!if VISUALTYPE_D3DBLANK && GRAPHICSTYPE_DIRECT3D]
+D3DBlank.vb
+[!endif]
+[!if VISUALTYPE_TEAPOT && GRAPHICSTYPE_DIRECT3D]
+D3DMesh.vb
+[!endif]
+
+[!if GRAPHICSTYPE_DIRECTDRAW]
+ddraw.vb
+[!endif]
+
+[!if USE_AUDIO]
+audio.vb
+[!endif]
+
+[!if USE_DIRECTPLAY]
+dplay.vb
+DPlayConnect.vb
+[!endif]
+
+[!if USE_VOICE]
+DPlayVoiceWizard.vb
+[!endif]

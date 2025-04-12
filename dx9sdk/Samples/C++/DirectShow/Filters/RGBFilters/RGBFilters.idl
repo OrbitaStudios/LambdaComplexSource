@@ -1,0 +1,139 @@
+//------------------------------------------------------------------------------
+// File: RGBFilters.idl
+//
+// Desc: DirectShow sample code - implementation of RGBFilters sample filters
+//
+// Copyright (c) 2000-2002  Microsoft Corporation.  All rights reserved.
+//------------------------------------------------------------------------------
+
+
+[
+    uuid(56ECA530-1D00-43d0-9465-4D7E3BBD361A),
+    version(1.0)
+]
+library RGBFiltersLib
+{
+    importlib("stdole32.tlb");
+    importlib("stdole2.tlb");
+
+    [
+        uuid(98BEDFA2-C4A1-40ea-BBD2-C77070918F24)
+    ]
+    coclass RateSource
+    {
+        [default] interface IUnknown;
+    };
+
+    [
+        uuid(66D155F8-1A72-4f6c-8D03-BE4F7CCF739A)
+    ]
+    coclass AlphaRenderer
+    {
+        [default] interface IUnknown;
+    };
+
+    [
+        uuid(BE393783-E457-498b-AF1E-E0564F0F0D1F)
+    ]
+    coclass AlphaSource
+    {
+        [default] interface IUnknown;
+    };
+
+    [
+        uuid(F39C8EA7-1ACB-46f3-A56D-F56F391F9D7D)
+    ]
+    coclass Source8Bit
+    {
+        [default] interface IUnknown;
+    };
+
+    [
+        uuid(345446A2-B638-40b4-BBE5-4098028AA14B)
+    ]
+    coclass Source555Bit
+    {
+        [default] interface IUnknown;
+    };
+
+    [
+        uuid(345446A3-B638-40b4-BBE5-4098028AA14B)
+    ]
+    coclass Source565Bit
+    {
+        [default] interface IUnknown;
+    };
+
+    [
+        uuid(345446A4-B638-40b4-BBE5-4098028AA14B)
+    ]
+    coclass Source24Bit
+    {
+        [default] interface IUnknown;
+    };
+
+    [
+        uuid(345446A5-B638-40b4-BBE5-4098028AA14B)
+    ]
+    coclass Source32Bit
+    {
+        [default] interface IUnknown;
+    };
+
+    [
+        uuid(345446A6-B638-40b4-BBE5-4098028AA14B)
+    ]
+    coclass TransNull8
+    {
+        [default] interface IUnknown;
+    };
+
+    [
+        uuid(345446A7-B638-40b4-BBE5-4098028AA14B)
+    ]
+    coclass TransNull555
+    {
+        [default] interface IUnknown;
+    };
+
+    [
+        uuid(345446A8-B638-40b4-BBE5-4098028AA14B)
+    ]
+    coclass TransNull565
+    {
+        [default] interface IUnknown;
+    };
+
+    [
+        uuid(345446A9-B638-40b4-BBE5-4098028AA14B)
+    ]
+    coclass TransNull24
+    {
+        [default] interface IUnknown;
+    };
+
+    [
+        uuid(345446AA-B638-40b4-BBE5-4098028AA14B)
+    ]
+    coclass TransNull32
+    {
+        [default] interface IUnknown;
+    };
+
+    [
+        uuid(345446AB-B638-40b4-BBE5-4098028AA14B)
+    ]
+    coclass TransNull32a
+    {
+        [default] interface IUnknown;
+    };
+
+    [
+        uuid(345446AC-B638-40b4-BBE5-4098028AA14B)
+    ]
+    coclass TransSmpte
+    {
+        [default] interface IUnknown;
+    };
+
+};

@@ -1,0 +1,88 @@
+<!DOCTYPE html public "-//w3c//dtd html 4.0 transitional//en">
+<HTML>
+	<HEAD>
+		<META name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">
+		<META name=VI60_defaultClientScript content=JavaScript>
+		<META name="GENERATOR" content="Microsoft Visual Studio 6.0">
+		<LINK rel="StyleSheet" href="results.css" type="text/css">
+		<SCRIPT ID=clientEventHandlersJS LANGUAGE=javascript>
+		<!--
+		var sServerDocLoc = "sampleInfo.xml";
+		var sXSLTDocLoc = "samples.xslt";
+		var sHelpDocLoc = "help.htm";
+		var xDoc = new ActiveXObject("MSXML.DOMDocument");
+		var xRet = new ActiveXObject("MSXML.DOMDocument");
+		var xTrans = new ActiveXObject("MSXML.DOMDocument");
+		var xHelp = new ActiveXObject("MSXML.DOMDocument");
+		var strEmptyDoc = "";
+		
+		xDoc.async = false;
+		xRet.async = false;
+		xTrans.async = false;
+
+		function window_onload()
+		{	
+			if (!xTrans.load(sXSLTDocLoc) || !xDoc.load(sServerDocLoc) || !xHelp.load(sHelpDocLoc))
+			{
+				alert("Error loading file");
+				return;
+			}
+			
+			// Determine what an empty search looks like
+			var xEle = xTrans.selectSingleNode( "//xsl:for-each" );
+			xEle.setAttribute( "select", "//sample[dxarea=\"none\"]" );
+			xDoc.transformNodeToObject(xTrans, xRet);
+			strEmptyDoc = xRet.xml;
+
+			// Now that the samples are loaded, we're ready to initialize
+			// the parent
+			parent.init()
+		}	
+
+		function disableLanguage( strLang )
+		{
+			// Set the installed attribute for all nodes
+			var nodeList = xDoc.selectNodes("samples/sample[language=\"" + strLang + "\"]");
+			
+			// For each sample in the XML file
+			for( var nodeIndex=0; nodeIndex < nodeList.length; nodeIndex++ )
+			{	
+				// Set the installed flag
+				nodeList[nodeIndex].setAttribute("installed", "no");
+			}
+		}
+		
+		function filter( strFilter, strSortby, doc )
+		{
+			var  xEle = xTrans.selectSingleNode( "//xsl:for-each" );
+			
+			xEle.setAttribute( "select", strFilter );
+			xEle.setAttribute( "order-by", strSortby );
+			
+			doc.transformNodeToObject(xTrans, xRet);
+				
+			if( xRet.xml == strEmptyDoc )
+				display.innerHTML = xHelp.xml;
+			else
+				display.innerHTML = xRet.xml;
+			
+		}		
+		
+		function getXMLDoc()
+		{
+			return (xDoc);
+		}
+
+		function getXSLDoc()
+		{
+			return (xTrans);
+		}			
+						  
+		//-->
+		</SCRIPT>
+
+</HEAD>
+<BODY LANGUAGE=javascript onload="return window_onload()" style="font:bold 10pt Arial; background-Color:Black; margin:20px 0px 0px 0px;">
+	<div id="display" LANGUAGE=javascript></div>
+</BODY>
+</HTML>

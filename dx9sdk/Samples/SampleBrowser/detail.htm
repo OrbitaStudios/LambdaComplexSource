@@ -1,0 +1,448 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+   <head>
+      <meta name=vs_targetSchema content="http://schemas.microsoft.com/intellisense/ie5">
+      <link rel="StyleSheet" href="core.css" type="text/css">
+      <title>DirectX 9.0 SDK:</title>
+      <STYLE>	
+		A:hover
+		{
+			cursor:hand;		
+		{
+      </STYLE>
+      
+      <SCRIPT language="JavaScript">
+	  <!--
+		function init()
+		{
+			// Set the default area
+			document.all("dxarea").value = "Direct3D";
+
+			// Load the stored state from cookies
+			loadState();
+
+			// Set the title image
+			titleimg.src = "img/title_" + document.all("dxarea").value + ".gif";
+			
+			// Disable samples which are not installed
+			var strQuery = self.location.href;
+			
+			if( strQuery.indexOf("cpp=false") != -1 )
+				samples.disableLanguage( "C++" );
+			
+			if( strQuery.indexOf("cs=false") != -1 )
+				samples.disableLanguage( "C#" );
+				
+			if( strQuery.indexOf("vb=false") != -1 )
+				samples.disableLanguage( "VB.Net" );
+			
+			if( strQuery.indexOf("dxutils=false") != -1 )
+				samples.disableLanguage( "Executable-Only" );
+				
+			// Filter the results				
+			filter();
+		}
+		
+		function filter()
+		{
+			// Clear the search box
+			document.all("searchtext").value = "";
+
+			samples.filter( getFilterString(), document.all("sortby").value, samples.getXMLDoc() );
+			saveState();
+		}
+
+		function saveState()
+		{
+			// Set cookies
+			StoreValue("dxarea");
+			StoreChecked("langCpp");
+			StoreChecked("langCS");
+			StoreChecked("langVB");
+			StoreChecked("typeTut");
+			StoreChecked("typeSamp");
+			StoreChecked("typeDemo");
+			StoreChecked("typeUtil");
+			StoreChecked("searchAll");
+			StoreValue("sortby");
+		}
+
+		function loadState()
+		{
+			// Retrieve cookies
+			RetrieveValue("dxarea");
+			RetrieveChecked("langCpp");
+			RetrieveChecked("langCS");
+			RetrieveChecked("langVB");
+			RetrieveChecked("typeTut");
+			RetrieveChecked("typeSamp");
+			RetrieveChecked("typeDemo");
+			RetrieveChecked("typeUtil");
+			RetrieveChecked("searchAll");
+			RetrieveValue("sortby");
+		}
+	
+		function getCookie( strName )
+		{
+			// Get the document cookie
+			var strCookie = document.cookie;
+
+			// Search for the variable name
+			var iStart = strCookie.indexOf( "@" + strName );
+			if( iStart == -1 )
+				return "";
+
+			// Advance the pointer to the beginning of the value
+			iStart += strName.length + 2;
+			
+			// Search for the closing semicolon
+			var iEnd = strCookie.indexOf( ";", iStart )
+			if( iEnd == -1 )
+				iEnd = strCookie.length;
+
+			return strCookie.substring( iStart, iEnd );
+		}
+
+		function setCookie( strName, strValue )
+		{
+			var now = new Date();
+			var expires = new Date( now.getTime() + 100 * 24 * 60 * 60 * 1000 );
+
+			document.cookie = "@" + strName + "=" + strValue + "; expires=" + expires.toGMTString();
+		}
+
+		function StoreValue( str )
+		{
+		    setCookie( str, document.all(str).value );
+		}
+		
+		function StoreChecked( str )
+		{
+		    setCookie( str, document.all(str).checked ? "true" : "false" );
+		}
+		
+		function RetrieveValue( str )
+		{
+			var value = getCookie( str );
+
+			if( value.length > 0 )
+				document.all(str).value = value;
+		}
+		
+		function RetrieveChecked( str )
+		{
+			var value = getCookie( str );
+
+			if( value.length > 0 )
+				document.all(str).checked = value != "false";
+		}
+
+		function FILTER_AND( filter, term )
+		{
+			var strReturn = "";
+
+			if( term != "" )
+			{
+				if( filter != "" )
+					strReturn += " and ";
+
+				strReturn += "(" + term + ")";
+			}
+
+			return strReturn;
+		}
+
+		function FILTER_OR( filter, term )
+		{
+			var strReturn = "";
+
+			if( term != "" )
+			{
+				if( filter != "" )
+					strReturn += " or ";
+
+				strReturn += term;
+			}
+
+			return strReturn;
+		}
+
+		function getFilterString()
+		{
+			return getFilterString( false );
+		}
+
+		function getFilterString( bAllAreas )
+		{
+			var strFilter = "";
+			var strTerm = "";
+			
+			// Filter by DXAREA
+			strTerm = "";
+				
+			if( !bAllAreas )
+				strTerm += FILTER_OR( strTerm, "dxarea=\"" + document.all.dxarea.value + "\"" );
+			
+			strFilter += FILTER_AND( strFilter, strTerm );
+				
+
+			// Filter by LANGUAGE
+			strTerm = "";
+
+			strTerm += FILTER_OR( strTerm, "language=\"Executable-Only\"" );
+			
+			if (document.all.langCPP.checked)
+				strTerm += FILTER_OR( strTerm, "language=\"C++\"" );
+
+			if (document.all.langCS.checked)
+				strTerm += FILTER_OR( strTerm, "language=\"C#\"" );
+				
+			if (document.all.langVB.checked)
+				strTerm += FILTER_OR( strTerm, "language=\"VB.Net\"" );
+			
+			strFilter += FILTER_AND( strFilter, strTerm );
+
+
+			// Filter by TYPE
+			strTerm = "";
+
+			if (document.all.typeSamp.checked)
+				strTerm += FILTER_OR( strTerm, "type=\"sample\"" );
+
+			if (document.all.typeDemo.checked)
+				strTerm += FILTER_OR( strTerm, "type=\"demo\"" );
+				
+			if (document.all.typeTut.checked)
+				strTerm += FILTER_OR( strTerm, "type=\"tutorial\"" );
+				
+			if (document.all.typeUtil.checked)
+				strTerm += FILTER_OR( strTerm, "type=\"utility\"" );
+
+			// Special case term: If no valid types were selected, specify a 
+			// non-existant type so no results are returned
+			if (strTerm == "")
+				strTerm += FILTER_OR( strTerm, "type=\"none\"" );
+				
+			strFilter += FILTER_AND( strFilter, strTerm );
+
+									
+			return "//sample[" + strFilter + "]"; 
+		}
+		
+		function search()
+		{
+			var keywords = document.all("searchtext").value;
+			keywords = keywords.toLowerCase();
+			keywords = removePunctuation( keywords );
+			
+			if (keywords == "") 
+			{
+				filter();
+				return(0);
+			}
+							
+			
+			var xmlDoc = samples.getXMLDoc();
+			var xslDoc = samples.getXSLDoc();
+			
+			var bAllAreas = document.all("searchAll").checked;
+
+			var nodeList;
+			
+			if( bAllAreas )
+				nodeList = xmlDoc.selectNodes("samples/sample");
+			else
+				nodeList = xmlDoc.selectNodes("samples/sample[dxarea=\"" + document.all.dxarea.value + "\"]");
+
+			var queryWords = keywords.split(" ");
+			var xmlResults = new String("");
+					
+			// Start a new XML document
+			xmlResults = "<samples>\n";
+			
+			// For each sample in the XML file
+			for( var nodeIndex=0; nodeIndex < nodeList.length; nodeIndex++ )
+			{
+				// Extract the sample text
+				var strSearchText = nodeList[nodeIndex].text;
+				strSearchText = strSearchText.toLowerCase();
+						
+				// For each query word
+				for( var wordIndex=0; wordIndex < queryWords.length; wordIndex++ )
+				{
+					// If query term is blank, continue
+					if( queryWords[wordIndex] == null || queryWords[wordIndex] == "" )
+						continue;
+
+					// Check the sample text for a match
+					if( strSearchText.indexOf( queryWords[wordIndex] ) != -1 )
+					{
+						// Match was found, add this sample's XML
+						xmlResults += nodeList[nodeIndex].xml;
+						break;
+					}
+				}
+			}
+			
+			// Close the XML text
+			xmlResults += "</samples>";
+			
+			// Translate the XML into HTML
+			var xDocResults = new ActiveXObject("MSXML.DOMDocument");
+			xDocResults.loadXML( xmlResults );
+			
+			// Display the results
+			samples.filter( getFilterString( bAllAreas ), document.all("sortby").value, xDocResults );
+
+			// Select the search string to make a subsequent search easier
+			document.all("searchtext").select();
+
+			return(0);
+		}
+
+		function removePunctuation(strIn)
+		{
+			var strOut = new String("");
+			var prevCharWasSpace = true;
+			
+			// For each character in the string
+			for( var i=0; i < strIn.length; i++ )
+			{
+				var ch = strIn.charAt(i);
+				
+				if( ( ch >= 'a' && ch <= 'z' ) ||
+				    ( ch >= '0' && ch <= '9' ) )
+				{
+					// If character is a letter or number, 
+					// pass it directly to the output
+					strOut += ch;
+					prevCharWasSpace = false;
+				}
+				else
+				{
+					// Else, replace it with a space if last output
+					// character wasn't a space
+					if( !prevCharWasSpace )
+						strOut += ' ';
+
+					prevCharWasSpace = true;
+				}	
+			}
+
+			return strOut;
+		}
+		
+		function JumpToArea( area )
+		{
+			// Set the new area
+			document.all("dxarea").value = area;
+			titleimg.src = "img/title_" + area + ".gif";
+			
+			// Clear the search box
+			document.all("searchtext").value = "";
+
+			// Filter the results			
+			filter();
+		}
+		
+		// -->
+		</SCRIPT>
+	</head>		
+					
+	<body scroll="no">
+		<table width=100% height=100% cellpadding=0 cellspacing=0 border=0>
+			<tr>
+				<td height=49 valign="top" background="img/core_top_bg.gif"><img id="titleimg" src="img/title_direct3d.gif" width="307" height="49"></td>
+				<td width="500" style="padding-right: 20px" class="top_right_bar" height=49 valign="middle" align="right">
+					<table cellpadding=0 cellspacing=0 border=0>
+						<tr>
+							<td style="padding-top: 4px;">
+								<NOBR>&nbsp;<input type="text" style="height: 19; vertical-align: middle; font-size:9px;" size=35 name="searchtext" id="searchtext"
+								><input type="image" onclick="search();" src="img/core_search.gif" style="cursor:hand; vertical-align: middle" width="47" hspace=5 height="19"></NOBR>
+							</td>
+						</tr>
+						<tr>
+							<td style="font: bold 8pt/150% Tahoma, Sans-Serif; color: black; position: relative; top: -2px;">
+								<input type="checkbox" onclick="saveState()" id="searchAll" name="searchAll" value="ON"> Search all areas</input>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td colspan=2 bgcolor="white" height=1></td>
+			</tr>
+			<tr>
+				<td colspan=2  bgcolor="black" height=30 valign="middle" style="padding-left: 25px; padding-right: 17px;">
+					<table cellpadding=0 cellspacing=0 border=0>
+					<tr>
+						<td width=100%>
+						<A class="links" onclick="JumpToArea('Direct3D')">Direct3D</A>
+						<A class="links" onclick="JumpToArea('DirectMusic')">DirectMusic</A>
+						<A class="links" onclick="JumpToArea('DirectSound')">DirectSound</A>
+						<A class="links" onclick="JumpToArea('DirectInput')">DirectInput</A>
+						<A class="links" onclick="JumpToArea('DirectPlay')">DirectPlay</A>
+						<A class="links" onclick="JumpToArea('DirectShow')">DirectShow</A>
+						<A class="links" onclick="JumpToArea('Miscellaneous')">Miscellaneous</A>
+						</td>
+						
+						<td align="right">
+						<A class="links" href="../../doc/DirectX9/Directx9_c.chm">C++&nbsp;Samples&nbsp;Documentation</A>
+						</td>
+					</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td colspan=2 bgcolor="white" height=1></td>
+			</tr>
+			<tr>
+				<td height=100% colspan=2>
+					<table width="100%" height="100%" cellpadding="25" cellspacing="0" border="0">
+					<tr>
+						<td valign="top">
+							<table bgcolor="black" style="border: solid 1px white;" cellpadding=0 cellspacing=0 border=0>
+								<tr>
+									<td class="options">
+										<form id="filters">
+											<div style="position: relative; left: -13px; top: -3px"><img src="img\core_show.gif"></div>
+												<input type="hidden" id="dxarea">
+												<input onclick="filter()" type="checkbox" id="langCpp" name="langCPP" value="ON">&nbsp;C++<br>
+												<input onclick="filter()" type="checkbox" id="langCS" name="langCS" value="ON">&nbsp;C#<br>
+												<input onclick="filter()" type="checkbox" id="langVB" name="langVB" value="ON">&nbsp;Visual&nbsp;Basic<br>
+												<br>
+												<input onclick="filter()" type="checkbox" id="typeTut" name="typeTut" value="ON">&nbsp;Tutorials<br>
+												<input onclick="filter()" type="checkbox" id="typeSamp" name="typeSamp" value="ON">&nbsp;Samples<br>
+												<input onclick="filter()" type="checkbox" id="typeDemo" name="typeDemo" value="ON">&nbsp;Demos<br>
+												<input onclick="filter()" type="checkbox" id="typeUtil" name="typeUtil" value="ON">&nbsp;Utilities<br>
+												<BR>
+											<div style="position: relative; left: -13px"><img src="img\core_sortby.gif"></div>
+											<select id="sortby" style="height: 19; position: relative; top: 5px" onchange="filter()">
+												<option value="name">Name</option>
+												<option value="number(complexity)">Difficulty</option>
+											</select>
+										</form>
+									</td>
+								</tr>
+							</table>
+						</td>
+						<td valign="top" width="100%" height="100%" style="padding-left: 0px;">
+							<table cellpadding=0 cellspacing=0 border=0 width=100% height=100%>
+							<tr>
+								<td>
+									<IFRAME id="samples" name="samples" width="100%" height="100%" style="border: solid 1px white;" src="results.htm" frameborder="no"></IFRAME>
+								</td>
+								<td bgcolor="black" width=1></td>
+							</tr>
+							<tr>
+								<td colspan=2 height=1 bgcolor="black"></td>
+							</tr>		
+							</table>
+						</td>
+					</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

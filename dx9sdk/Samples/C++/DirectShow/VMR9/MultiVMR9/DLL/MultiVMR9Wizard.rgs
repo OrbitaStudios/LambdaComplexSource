@@ -1,0 +1,27 @@
+HKCR
+{
+	MultiVMR9.MultiVMR9Wizard.1 = s 'MultiVMR9Wizard Class'
+	{
+		CLSID = s '{CE8ED243-0078-41A2-B56C-EC9CF0E887C2}'
+	}
+	MultiVMR9.MultiVMR9Wizard = s 'MultiVMR9Wizard Class'
+	{
+		CLSID = s '{CE8ED243-0078-41A2-B56C-EC9CF0E887C2}'
+		CurVer = s 'MultiVMR9.MultiVMR9Wizard.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {CE8ED243-0078-41A2-B56C-EC9CF0E887C2} = s 'MultiVMR9Wizard Class'
+		{
+			ProgID = s 'MultiVMR9.MultiVMR9Wizard.1'
+			VersionIndependentProgID = s 'MultiVMR9.MultiVMR9Wizard'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			val AppID = s '%APPID%'
+			'TypeLib' = s '{52CCE217-77CF-4108-9D55-CCBAAF2896D7}'
+		}
+	}
+}
