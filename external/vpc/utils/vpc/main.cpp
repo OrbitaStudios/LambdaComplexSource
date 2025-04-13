@@ -2022,6 +2022,11 @@ void CVPC::SetMacrosAndConditionals()
 	#else
 		SetConditional( "WEBGL" );
 	#endif
+
+		// and is a cross-compiled target
+		SetConditional( "CROSS_COMPILED" );
+		SetMacro( "CROSS_COMPILED", "1", true );
+		SetMacro( "_CROSS_COMPILED", "1", true );
 	}
 #endif
 

@@ -138,6 +138,7 @@ const char *g_szArrPlatforms[] =
 	"linux32",	//  4
 	"linux64",	//  5
 	"cygwin",	//  6
+	"emscripten"	// 6.5
 	"ps3",		//  7
 	"x360",		//  8
 	"win",		//  9

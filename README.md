@@ -21,3 +21,4 @@ Emscripten Source is a port of the entirety of the Source Engine to the [WASM pl
 ## TODO:
 - Port shaders (Specifically DirectX 9-10 related calls)
 - Fix Debug build (`-O0`)
+- Recompile *every* lib

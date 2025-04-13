@@ -1,0 +1,32 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Configure Source Engine for Emscripten for 32-bit",
+            "type": "shell",
+            "command": "devtools/bin/vpc_emscripten /emscripten /hl2 /mksln Makefile",
+            "problemMatcher": []
+        },
+        {
+	
+            "_comment": "TODO: Get this working",
+	    "label": "Configure Source Engine for Emscripten for 64-bit",
+            "type": "shell",
+            "command": "devtools/bin/vpc_emscripten /emscripten64 /hl2 /mksln Makefile",
+            "problemMatcher": []
+        },
+        {
+            "label": "Build",
+            "type": "shell",
+            "command": "emmake make -f Makefile.mak",
+            "problemMatcher": {
+                "base": "$emcc",
+                "fileLocation": ["relative", "${workspaceFolder}../game"]
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
