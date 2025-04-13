@@ -16,3 +16,8 @@ Emscripten Source is a port of the entirety of the Source Engine to the [WASM pl
 - Firstly, install `emscripten base-devel dpkg` and `codelite`
 - Run `createallprojects.sh`
 - Open the makefile in CodeLite or compile it via `emmake`
+
+
+## TODO:
+- Port shaders (Specifically DirectX 9-10 related calls)
+- Fix Debug build (`-O0`)

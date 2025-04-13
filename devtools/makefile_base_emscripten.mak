@@ -56,23 +56,23 @@ ifeq ($(OS),Darwin)
 endif
 
 # Optimization flags specific to compiler/CFG combination
-ifeq ($(CFG), release)
+$ifeq ($(CFG), release)
 	# With gcc 4.6.3, engine.so went from 7,383,765 to 8,429,109 when building with -O3.
 	#  There also was no speed difference running at 1280x1024. May 2012, mikesart.
 	#  tonyp: The size increase was likely caused by -finline-functions and -fipa-cp-clone getting switched on with -O3.
 	# -fno-omit-frame-pointer: need this for stack traces with perf.
 	
-	# Mohamed Ashraf: My PC blew up, because of too much RAM usage, so I have to set it to -02.
-	OptimizerLevel_CompilerSpecific = -O2 -fno-strict-aliasing -ffast-math -fno-omit-frame-pointer -ftree-vectorize
+	# Fuck it!
+	# OptimizerLevel_CompilerSpecific = -O2 -fno-strict-aliasing -ffast-math -fno-omit-frame-pointer -ftree-vectorize
 #	ifeq ($(CLANG_BUILD),1)
 #		OptimizerLevel_CompilerSpecific += -funswitch-loops
 #	else
 #		OptimizerLevel_CompilerSpecific += -fpredictive-commoning -funswitch-loops
 #	endif
-else
+$else
 	OptimizerLevel_CompilerSpecific = -O0
 	#-O1 -finline-functions
-endif
+#endif
 
 # When we move to a modern toolchain, this will be necessary for early testing
 # until we can ensure that every user has libraries built against the new C++11
@@ -90,9 +90,13 @@ CPPFLAGS = $(DEFINES) $(addprefix -I, $(abspath $(INCLUDEDIRS) ))
 BASE_CFLAGS = $(ARCH_FLAGS) $(CPPFLAGS) $(WARN_FLAGS) -fvisibility=$(SymbolVisibility) $(OptimizerLevel) -pipe $(GCC_ExtraCompilerFlags) -Usprintf -Ustrncpy -UPROTECTED_THINGS_ENABLE
 
 # Browsers have a minimal amount of memory to use.
-BASE_CFLAGS += --no-entry -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s STANDALONE_WASM=1 -s INITIAL_MEMORY=512MB -s ALLOW_MEMORY_GROWTH=1 MAXIMUM_MEMORY=4GB 
+CPPLAGS += --no-entry -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s STANDALONE_WASM=1 -s INITIAL_MEMORY=512MB -s ALLOW_MEMORY_GROWTH=1 MAXIMUM_MEMORY=4GB 
 # The Source Engine uses ZFS.
-BASE_CFLAGS += FORCE_FILESYSTEM=1
+CPPLAGS += FORCE_FILESYSTEM=1
+# Convert OpenGL calls to WebGL.
+# https://emscripten.org/docs/porting/multimedia_and_graphics/OpenGL-support.html
+#CPPFLAGS += -sMAX_WEBGL_VERSION=2
+CPPFLAGS += -sLEGACY_GL_EMULATION -sGL_UNSAFE_OPTS -sGL_FFP_ONLY --use-port=sdl2
 
 # Emscripten can't find Linux headers, so we should add this.
 # Uncomment if required!!!
