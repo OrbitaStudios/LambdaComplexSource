@@ -34,7 +34,7 @@ SystemLibraries=
 DLL_EXT=.so
 SYM_EXT=.dbg
 FORCEINCLUDES= 
-DEFINES= -DVPC -DDEBUG -D_DEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/source/replay/common -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
+DEFINES= -DVPC -DDEBUG -D_DEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/EmSource/replay/common -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
 INCLUDEDIRS += ../../common ../../public ../../public/tier0 ../../public/tier1 ../../thirdparty/SDL2 
 CONFTYPE=lib
 GAMEOUTPUTFILE=../../lib/common/linux32/replay_common.a
@@ -70,7 +70,7 @@ OTHER_DEPENDENCIES = \
 
 
 # Include the base makefile now.
-include $(SRCROOT)/devtools/makefile_base_posix.mak
+include $(SRCROOT)/devtools/makefile_base_emscripten.mak
 
 
 
@@ -78,7 +78,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/basereplayserializeable.P
 endif
 
-$(OBJ_DIR)/basereplayserializeable.o : $(abspath basereplayserializeable.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/basereplayserializeable.o : $(abspath basereplayserializeable.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -86,7 +86,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/performance.P
 endif
 
-$(OBJ_DIR)/performance.o : $(abspath performance.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/performance.o : $(abspath performance.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -94,7 +94,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/replay.P
 endif
 
-$(OBJ_DIR)/replay.o : $(abspath replay.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/replay.o : $(abspath replay.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -102,7 +102,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/replaylib.P
 endif
 
-$(OBJ_DIR)/replaylib.o : $(abspath replaylib.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/replaylib.o : $(abspath replaylib.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -110,7 +110,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/replaytime.P
 endif
 
-$(OBJ_DIR)/replaytime.o : $(abspath replaytime.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/replaytime.o : $(abspath replaytime.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -118,7 +118,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/replayutils.P
 endif
 
-$(OBJ_DIR)/replayutils.o : $(abspath replayutils.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/replayutils.o : $(abspath replayutils.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -126,7 +126,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/screenshot.P
 endif
 
-$(OBJ_DIR)/screenshot.o : $(abspath screenshot.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/screenshot.o : $(abspath screenshot.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -156,7 +156,7 @@ SystemLibraries=
 DLL_EXT=.so
 SYM_EXT=.dbg
 FORCEINCLUDES= 
-DEFINES= -DVPC -DNDEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/source/replay/common -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
+DEFINES= -DVPC -DNDEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/EmSource/replay/common -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
 INCLUDEDIRS += ../../common ../../public ../../public/tier0 ../../public/tier1 ../../thirdparty/SDL2 
 CONFTYPE=lib
 GAMEOUTPUTFILE=../../lib/common/linux32/replay_common.a
@@ -192,7 +192,7 @@ OTHER_DEPENDENCIES = \
 
 
 # Include the base makefile now.
-include $(SRCROOT)/devtools/makefile_base_posix.mak
+include $(SRCROOT)/devtools/makefile_base_emscripten.mak
 
 
 
@@ -200,7 +200,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/basereplayserializeable.P
 endif
 
-$(OBJ_DIR)/basereplayserializeable.o : $(abspath basereplayserializeable.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/basereplayserializeable.o : $(abspath basereplayserializeable.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -208,7 +208,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/performance.P
 endif
 
-$(OBJ_DIR)/performance.o : $(abspath performance.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/performance.o : $(abspath performance.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -216,7 +216,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/replay.P
 endif
 
-$(OBJ_DIR)/replay.o : $(abspath replay.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/replay.o : $(abspath replay.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -224,7 +224,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/replaylib.P
 endif
 
-$(OBJ_DIR)/replaylib.o : $(abspath replaylib.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/replaylib.o : $(abspath replaylib.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -232,7 +232,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/replaytime.P
 endif
 
-$(OBJ_DIR)/replaytime.o : $(abspath replaytime.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/replaytime.o : $(abspath replaytime.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -240,7 +240,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/replayutils.P
 endif
 
-$(OBJ_DIR)/replayutils.o : $(abspath replayutils.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/replayutils.o : $(abspath replayutils.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -248,7 +248,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/screenshot.P
 endif
 
-$(OBJ_DIR)/screenshot.o : $(abspath screenshot.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/screenshot.o : $(abspath screenshot.cpp) $(PWD)/replay_common_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 

@@ -1980,11 +1980,11 @@ void CVPC::SetMacrosAndConditionals()
 	}
 
 #if defined(EMSCRIPTEN)
-	else if ( V_stricmp( cVPCPlatform.String(), "EMSCRIPTEN" ) == 0
+	else if ( V_stricmp( cVPCPlatform.String(), "EMSCRIPTEN" ) == 0)
 	{
 		bool IsEmscripten = ( V_stricmp( cVPCPlatform.String(), "EMSCRIPTEN" ) == 0 );
 
-		SetMacro( "PLATSUBDIR", IsEmscripten ? "\\emscripten", false );
+		SetMacro( "PLATSUBDIR", "\\emscripten", false );
 
 		SetConditional( "LINUXALL" );
 		// We only want to compile the *game* not srcds/dedicated servers, since we can already do that in-game.
@@ -1999,7 +1999,7 @@ void CVPC::SetMacrosAndConditionals()
 		SetMacro( "POSIX", "1", true );
 		SetMacro( "_POSIX", "1", true );
 
-		const char *str3264 = IsLinux32 ? "" : "64";
+		const char *str3264 = IsEmscripten ? "" : "64";
 		const char *strSrv = m_bAppendSrvToDedicated ? "_srv" : "";
 		CFmtStrN<128> strDso( "%s%s.so", strSrv, str3264 );
 		CFmtStrN<128> strLib( "%s%s.a", strSrv, str3264 );
@@ -2368,7 +2368,7 @@ void CVPC::SetupGenerators()
 	bool bIsLinux = IsPlatformDefined( "LINUX32" ) || IsPlatformDefined( "LINUX64" );
 	bool bIsOSX = IsPlatformDefined( "OSX32" ) || IsPlatformDefined( "OSX64" );
 #if defined(EMSCRIPTEN)
-	bool bIsEmscripten = IsPlatformDefined( "EMSCRIPTEN" )
+	bool bIsEmscripten = IsPlatformDefined( "EMSCRIPTEN" );
 #endif
 
 #if defined( WIN32 )

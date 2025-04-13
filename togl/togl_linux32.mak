@@ -34,7 +34,7 @@ SystemLibraries=
 DLL_EXT=.so
 SYM_EXT=.dbg
 FORCEINCLUDES= 
-DEFINES= -DVPC -DDEBUG -D_DEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=togl -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DTOGL_DLL_EXPORT -DPROTECTED_THINGS_ENABLE -Dstrncpy=use_Q_strncpy_instead -D_snprintf=use_Q_snprintf_instead -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/source/togl -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
+DEFINES= -DVPC -DDEBUG -D_DEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=togl -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DTOGL_DLL_EXPORT -DPROTECTED_THINGS_ENABLE -Dstrncpy=use_Q_strncpy_instead -D_snprintf=use_Q_snprintf_instead -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/EmSource/togl -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
 INCLUDEDIRS += ../common ../public ../public/tier0 ../public/tier1 ../thirdparty/SDL2 ../ 
 CONFTYPE=dll
 IMPORTLIBRARY=../lib/public/linux32/libtogl.so
@@ -85,7 +85,7 @@ OTHER_DEPENDENCIES = \
 
 
 # Include the base makefile now.
-include $(SRCROOT)/devtools/makefile_base_posix.mak
+include $(SRCROOT)/devtools/makefile_base_emscripten.mak
 
 
 
@@ -93,7 +93,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/memoverride.P
 endif
 
-$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -101,7 +101,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cglmbuffer.P
 endif
 
-$(OBJ_DIR)/cglmbuffer.o : $(abspath ../togl/linuxwin/cglmbuffer.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cglmbuffer.o : $(abspath ../togl/linuxwin/cglmbuffer.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -109,7 +109,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cglmfbo.P
 endif
 
-$(OBJ_DIR)/cglmfbo.o : $(abspath ../togl/linuxwin/cglmfbo.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cglmfbo.o : $(abspath ../togl/linuxwin/cglmfbo.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -117,7 +117,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cglmprogram.P
 endif
 
-$(OBJ_DIR)/cglmprogram.o : $(abspath ../togl/linuxwin/cglmprogram.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cglmprogram.o : $(abspath ../togl/linuxwin/cglmprogram.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -125,7 +125,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cglmquery.P
 endif
 
-$(OBJ_DIR)/cglmquery.o : $(abspath ../togl/linuxwin/cglmquery.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cglmquery.o : $(abspath ../togl/linuxwin/cglmquery.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -133,7 +133,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cglmtex.P
 endif
 
-$(OBJ_DIR)/cglmtex.o : $(abspath ../togl/linuxwin/cglmtex.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cglmtex.o : $(abspath ../togl/linuxwin/cglmtex.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -141,7 +141,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/dx9asmtogl2.P
 endif
 
-$(OBJ_DIR)/dx9asmtogl2.o : $(abspath ../togl/linuxwin/dx9asmtogl2.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/dx9asmtogl2.o : $(abspath ../togl/linuxwin/dx9asmtogl2.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -149,7 +149,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/dxabstract.P
 endif
 
-$(OBJ_DIR)/dxabstract.o : $(abspath ../togl/linuxwin/dxabstract.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/dxabstract.o : $(abspath ../togl/linuxwin/dxabstract.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -157,7 +157,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/glentrypoints.P
 endif
 
-$(OBJ_DIR)/glentrypoints.o : $(abspath ../togl/linuxwin/glentrypoints.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/glentrypoints.o : $(abspath ../togl/linuxwin/glentrypoints.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -165,7 +165,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/glmgr.P
 endif
 
-$(OBJ_DIR)/glmgr.o : $(abspath ../togl/linuxwin/glmgr.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/glmgr.o : $(abspath ../togl/linuxwin/glmgr.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -173,7 +173,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/glmgrbasics.P
 endif
 
-$(OBJ_DIR)/glmgrbasics.o : $(abspath ../togl/linuxwin/glmgrbasics.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/glmgrbasics.o : $(abspath ../togl/linuxwin/glmgrbasics.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -203,7 +203,7 @@ SystemLibraries=
 DLL_EXT=.so
 SYM_EXT=.dbg
 FORCEINCLUDES= 
-DEFINES= -DVPC -DNDEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=togl -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DTOGL_DLL_EXPORT -DPROTECTED_THINGS_ENABLE -Dstrncpy=use_Q_strncpy_instead -D_snprintf=use_Q_snprintf_instead -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/source/togl -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
+DEFINES= -DVPC -DNDEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=togl -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DTOGL_DLL_EXPORT -DPROTECTED_THINGS_ENABLE -Dstrncpy=use_Q_strncpy_instead -D_snprintf=use_Q_snprintf_instead -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/EmSource/togl -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
 INCLUDEDIRS += ../common ../public ../public/tier0 ../public/tier1 ../thirdparty/SDL2 ../ 
 CONFTYPE=dll
 IMPORTLIBRARY=../lib/public/linux32/libtogl.so
@@ -254,7 +254,7 @@ OTHER_DEPENDENCIES = \
 
 
 # Include the base makefile now.
-include $(SRCROOT)/devtools/makefile_base_posix.mak
+include $(SRCROOT)/devtools/makefile_base_emscripten.mak
 
 
 
@@ -262,7 +262,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/memoverride.P
 endif
 
-$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -270,7 +270,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cglmbuffer.P
 endif
 
-$(OBJ_DIR)/cglmbuffer.o : $(abspath ../togl/linuxwin/cglmbuffer.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cglmbuffer.o : $(abspath ../togl/linuxwin/cglmbuffer.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -278,7 +278,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cglmfbo.P
 endif
 
-$(OBJ_DIR)/cglmfbo.o : $(abspath ../togl/linuxwin/cglmfbo.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cglmfbo.o : $(abspath ../togl/linuxwin/cglmfbo.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -286,7 +286,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cglmprogram.P
 endif
 
-$(OBJ_DIR)/cglmprogram.o : $(abspath ../togl/linuxwin/cglmprogram.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cglmprogram.o : $(abspath ../togl/linuxwin/cglmprogram.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -294,7 +294,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cglmquery.P
 endif
 
-$(OBJ_DIR)/cglmquery.o : $(abspath ../togl/linuxwin/cglmquery.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cglmquery.o : $(abspath ../togl/linuxwin/cglmquery.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -302,7 +302,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cglmtex.P
 endif
 
-$(OBJ_DIR)/cglmtex.o : $(abspath ../togl/linuxwin/cglmtex.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cglmtex.o : $(abspath ../togl/linuxwin/cglmtex.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -310,7 +310,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/dx9asmtogl2.P
 endif
 
-$(OBJ_DIR)/dx9asmtogl2.o : $(abspath ../togl/linuxwin/dx9asmtogl2.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/dx9asmtogl2.o : $(abspath ../togl/linuxwin/dx9asmtogl2.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -318,7 +318,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/dxabstract.P
 endif
 
-$(OBJ_DIR)/dxabstract.o : $(abspath ../togl/linuxwin/dxabstract.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/dxabstract.o : $(abspath ../togl/linuxwin/dxabstract.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -326,7 +326,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/glentrypoints.P
 endif
 
-$(OBJ_DIR)/glentrypoints.o : $(abspath ../togl/linuxwin/glentrypoints.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/glentrypoints.o : $(abspath ../togl/linuxwin/glentrypoints.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -334,7 +334,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/glmgr.P
 endif
 
-$(OBJ_DIR)/glmgr.o : $(abspath ../togl/linuxwin/glmgr.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/glmgr.o : $(abspath ../togl/linuxwin/glmgr.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -342,7 +342,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/glmgrbasics.P
 endif
 
-$(OBJ_DIR)/glmgrbasics.o : $(abspath ../togl/linuxwin/glmgrbasics.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/glmgrbasics.o : $(abspath ../togl/linuxwin/glmgrbasics.cpp) $(PWD)/togl_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 

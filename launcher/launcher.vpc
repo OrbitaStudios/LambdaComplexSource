@@ -94,7 +94,7 @@ $Project "launcher"
 		$Lib	tier3
 		$Implib steam_api
 		$ImpLib togl [!$IS_LIB_PROJECT && $GL]
-		$ImpLib SDL2 [$SDL && !EMSCRIPTEN] // TODO: Create Emscripten lib.
+		$ImpLib SDL2 [$SDL && !$EMSCRIPTEN] // TODO: Create Emscripten lib.
 	}
 
 }

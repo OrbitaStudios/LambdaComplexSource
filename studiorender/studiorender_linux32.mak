@@ -34,7 +34,7 @@ SystemLibraries=
 DLL_EXT=.so
 SYM_EXT=.dbg
 FORCEINCLUDES= 
-DEFINES= -DVPC -DDEBUG -D_DEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=studiorender -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DSTUDIORENDER_EXPORTS -DPROTECTED_THINGS_ENABLE -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/source/studiorender -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
+DEFINES= -DVPC -DDEBUG -D_DEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=studiorender -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DSTUDIORENDER_EXPORTS -DPROTECTED_THINGS_ENABLE -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/EmSource/studiorender -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
 INCLUDEDIRS += ../common ../public ../public/tier0 ../public/tier1 ../thirdparty/SDL2 
 CONFTYPE=dll
 IMPORTLIBRARY=
@@ -90,7 +90,7 @@ OTHER_DEPENDENCIES = \
 
 
 # Include the base makefile now.
-include $(SRCROOT)/devtools/makefile_base_posix.mak
+include $(SRCROOT)/devtools/makefile_base_emscripten.mak
 
 
 
@@ -98,7 +98,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/memoverride.P
 endif
 
-$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -106,7 +106,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/flexrenderdata.P
 endif
 
-$(OBJ_DIR)/flexrenderdata.o : $(abspath flexrenderdata.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/flexrenderdata.o : $(abspath flexrenderdata.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -114,7 +114,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/r_studio.P
 endif
 
-$(OBJ_DIR)/r_studio.o : $(abspath r_studio.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/r_studio.o : $(abspath r_studio.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -122,7 +122,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/r_studiodecal.P
 endif
 
-$(OBJ_DIR)/r_studiodecal.o : $(abspath r_studiodecal.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/r_studiodecal.o : $(abspath r_studiodecal.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -130,7 +130,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/r_studiodraw.P
 endif
 
-$(OBJ_DIR)/r_studiodraw.o : $(abspath r_studiodraw.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/r_studiodraw.o : $(abspath r_studiodraw.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -138,7 +138,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/r_studiodraw_computeflexedvertex.P
 endif
 
-$(OBJ_DIR)/r_studiodraw_computeflexedvertex.o : $(abspath r_studiodraw_computeflexedvertex.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/r_studiodraw_computeflexedvertex.o : $(abspath r_studiodraw_computeflexedvertex.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -146,7 +146,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/r_studioflex.P
 endif
 
-$(OBJ_DIR)/r_studioflex.o : $(abspath r_studioflex.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/r_studioflex.o : $(abspath r_studioflex.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -154,7 +154,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/r_studiogettriangles.P
 endif
 
-$(OBJ_DIR)/r_studiogettriangles.o : $(abspath r_studiogettriangles.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/r_studiogettriangles.o : $(abspath r_studiogettriangles.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -162,7 +162,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/r_studiolight.P
 endif
 
-$(OBJ_DIR)/r_studiolight.o : $(abspath r_studiolight.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/r_studiolight.o : $(abspath r_studiolight.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -170,7 +170,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/r_studiostats.P
 endif
 
-$(OBJ_DIR)/r_studiostats.o : $(abspath r_studiostats.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/r_studiostats.o : $(abspath r_studiostats.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -178,7 +178,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/studiorender.P
 endif
 
-$(OBJ_DIR)/studiorender.o : $(abspath studiorender.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/studiorender.o : $(abspath studiorender.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -186,7 +186,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/studiorendercontext.P
 endif
 
-$(OBJ_DIR)/studiorendercontext.o : $(abspath studiorendercontext.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/studiorendercontext.o : $(abspath studiorendercontext.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -216,7 +216,7 @@ SystemLibraries=
 DLL_EXT=.so
 SYM_EXT=.dbg
 FORCEINCLUDES= 
-DEFINES= -DVPC -DNDEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=studiorender -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DSTUDIORENDER_EXPORTS -DPROTECTED_THINGS_ENABLE -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/source/studiorender -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
+DEFINES= -DVPC -DNDEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=studiorender -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DSTUDIORENDER_EXPORTS -DPROTECTED_THINGS_ENABLE -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/EmSource/studiorender -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
 INCLUDEDIRS += ../common ../public ../public/tier0 ../public/tier1 ../thirdparty/SDL2 
 CONFTYPE=dll
 IMPORTLIBRARY=
@@ -272,7 +272,7 @@ OTHER_DEPENDENCIES = \
 
 
 # Include the base makefile now.
-include $(SRCROOT)/devtools/makefile_base_posix.mak
+include $(SRCROOT)/devtools/makefile_base_emscripten.mak
 
 
 
@@ -280,7 +280,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/memoverride.P
 endif
 
-$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -288,7 +288,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/flexrenderdata.P
 endif
 
-$(OBJ_DIR)/flexrenderdata.o : $(abspath flexrenderdata.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/flexrenderdata.o : $(abspath flexrenderdata.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -296,7 +296,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/r_studio.P
 endif
 
-$(OBJ_DIR)/r_studio.o : $(abspath r_studio.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/r_studio.o : $(abspath r_studio.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -304,7 +304,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/r_studiodecal.P
 endif
 
-$(OBJ_DIR)/r_studiodecal.o : $(abspath r_studiodecal.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/r_studiodecal.o : $(abspath r_studiodecal.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -312,7 +312,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/r_studiodraw.P
 endif
 
-$(OBJ_DIR)/r_studiodraw.o : $(abspath r_studiodraw.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/r_studiodraw.o : $(abspath r_studiodraw.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -320,7 +320,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/r_studiodraw_computeflexedvertex.P
 endif
 
-$(OBJ_DIR)/r_studiodraw_computeflexedvertex.o : $(abspath r_studiodraw_computeflexedvertex.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/r_studiodraw_computeflexedvertex.o : $(abspath r_studiodraw_computeflexedvertex.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -328,7 +328,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/r_studioflex.P
 endif
 
-$(OBJ_DIR)/r_studioflex.o : $(abspath r_studioflex.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/r_studioflex.o : $(abspath r_studioflex.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -336,7 +336,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/r_studiogettriangles.P
 endif
 
-$(OBJ_DIR)/r_studiogettriangles.o : $(abspath r_studiogettriangles.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/r_studiogettriangles.o : $(abspath r_studiogettriangles.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -344,7 +344,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/r_studiolight.P
 endif
 
-$(OBJ_DIR)/r_studiolight.o : $(abspath r_studiolight.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/r_studiolight.o : $(abspath r_studiolight.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -352,7 +352,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/r_studiostats.P
 endif
 
-$(OBJ_DIR)/r_studiostats.o : $(abspath r_studiostats.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/r_studiostats.o : $(abspath r_studiostats.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -360,7 +360,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/studiorender.P
 endif
 
-$(OBJ_DIR)/studiorender.o : $(abspath studiorender.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/studiorender.o : $(abspath studiorender.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -368,7 +368,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/studiorendercontext.P
 endif
 
-$(OBJ_DIR)/studiorendercontext.o : $(abspath studiorendercontext.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/studiorendercontext.o : $(abspath studiorendercontext.cpp) $(PWD)/studiorender_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 

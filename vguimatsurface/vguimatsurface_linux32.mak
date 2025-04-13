@@ -34,7 +34,7 @@ SystemLibraries=-lfontconfig -lfreetype
 DLL_EXT=.so
 SYM_EXT=.dbg
 FORCEINCLUDES= 
-DEFINES= -DVPC -DDEBUG -D_DEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=vguimatsurface -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DBENCHMARK -DVGUIMATSURFACE_DLL_EXPORT -DGAMEUI_EXPORTS -DDONT_PROTECT_FILEIO_FUNCTIONS -DPROTECTED_THINGS_ENABLE -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/source/vguimatsurface -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
+DEFINES= -DVPC -DDEBUG -D_DEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=vguimatsurface -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DBENCHMARK -DVGUIMATSURFACE_DLL_EXPORT -DGAMEUI_EXPORTS -DDONT_PROTECT_FILEIO_FUNCTIONS -DPROTECTED_THINGS_ENABLE -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/EmSource/vguimatsurface -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
 INCLUDEDIRS += ../common ../public ../public/tier0 ../public/tier1 ../thirdparty/SDL2 
 CONFTYPE=dll
 IMPORTLIBRARY=
@@ -94,7 +94,7 @@ OTHER_DEPENDENCIES = \
 
 
 # Include the base makefile now.
-include $(SRCROOT)/devtools/makefile_base_posix.mak
+include $(SRCROOT)/devtools/makefile_base_emscripten.mak
 
 
 
@@ -102,7 +102,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/filesystem_helpers.P
 endif
 
-$(OBJ_DIR)/filesystem_helpers.o : $(abspath ../public/filesystem_helpers.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/filesystem_helpers.o : $(abspath ../public/filesystem_helpers.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -110,7 +110,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/memoverride.P
 endif
 
-$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -118,7 +118,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/vgui_controls.P
 endif
 
-$(OBJ_DIR)/vgui_controls.o : $(abspath ../public/vgui_controls/vgui_controls.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/vgui_controls.o : $(abspath ../public/vgui_controls/vgui_controls.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -126,7 +126,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/vgui_key_translation.P
 endif
 
-$(OBJ_DIR)/vgui_key_translation.o : $(abspath ../vgui2/src/vgui_key_translation.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/vgui_key_translation.o : $(abspath ../vgui2/src/vgui_key_translation.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -134,7 +134,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Clip2D.P
 endif
 
-$(OBJ_DIR)/Clip2D.o : $(abspath Clip2D.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Clip2D.o : $(abspath Clip2D.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -142,7 +142,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Cursor.P
 endif
 
-$(OBJ_DIR)/Cursor.o : $(abspath Cursor.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Cursor.o : $(abspath Cursor.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -150,7 +150,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/FontTextureCache.P
 endif
 
-$(OBJ_DIR)/FontTextureCache.o : $(abspath FontTextureCache.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/FontTextureCache.o : $(abspath FontTextureCache.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -158,7 +158,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Input.P
 endif
 
-$(OBJ_DIR)/Input.o : $(abspath Input.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Input.o : $(abspath Input.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -166,7 +166,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/MatSystemSurface.P
 endif
 
-$(OBJ_DIR)/MatSystemSurface.o : $(abspath MatSystemSurface.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/MatSystemSurface.o : $(abspath MatSystemSurface.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -174,7 +174,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/TextureDictionary.P
 endif
 
-$(OBJ_DIR)/TextureDictionary.o : $(abspath TextureDictionary.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/TextureDictionary.o : $(abspath TextureDictionary.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -204,7 +204,7 @@ SystemLibraries=-lfontconfig -lfreetype
 DLL_EXT=.so
 SYM_EXT=.dbg
 FORCEINCLUDES= 
-DEFINES= -DVPC -DNDEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=vguimatsurface -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DBENCHMARK -DVGUIMATSURFACE_DLL_EXPORT -DGAMEUI_EXPORTS -DDONT_PROTECT_FILEIO_FUNCTIONS -DPROTECTED_THINGS_ENABLE -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/source/vguimatsurface -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
+DEFINES= -DVPC -DNDEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=vguimatsurface -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DBENCHMARK -DVGUIMATSURFACE_DLL_EXPORT -DGAMEUI_EXPORTS -DDONT_PROTECT_FILEIO_FUNCTIONS -DPROTECTED_THINGS_ENABLE -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/EmSource/vguimatsurface -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
 INCLUDEDIRS += ../common ../public ../public/tier0 ../public/tier1 ../thirdparty/SDL2 
 CONFTYPE=dll
 IMPORTLIBRARY=
@@ -264,7 +264,7 @@ OTHER_DEPENDENCIES = \
 
 
 # Include the base makefile now.
-include $(SRCROOT)/devtools/makefile_base_posix.mak
+include $(SRCROOT)/devtools/makefile_base_emscripten.mak
 
 
 
@@ -272,7 +272,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/filesystem_helpers.P
 endif
 
-$(OBJ_DIR)/filesystem_helpers.o : $(abspath ../public/filesystem_helpers.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/filesystem_helpers.o : $(abspath ../public/filesystem_helpers.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -280,7 +280,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/memoverride.P
 endif
 
-$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -288,7 +288,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/vgui_controls.P
 endif
 
-$(OBJ_DIR)/vgui_controls.o : $(abspath ../public/vgui_controls/vgui_controls.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/vgui_controls.o : $(abspath ../public/vgui_controls/vgui_controls.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -296,7 +296,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/vgui_key_translation.P
 endif
 
-$(OBJ_DIR)/vgui_key_translation.o : $(abspath ../vgui2/src/vgui_key_translation.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/vgui_key_translation.o : $(abspath ../vgui2/src/vgui_key_translation.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -304,7 +304,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Clip2D.P
 endif
 
-$(OBJ_DIR)/Clip2D.o : $(abspath Clip2D.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Clip2D.o : $(abspath Clip2D.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -312,7 +312,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Cursor.P
 endif
 
-$(OBJ_DIR)/Cursor.o : $(abspath Cursor.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Cursor.o : $(abspath Cursor.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -320,7 +320,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/FontTextureCache.P
 endif
 
-$(OBJ_DIR)/FontTextureCache.o : $(abspath FontTextureCache.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/FontTextureCache.o : $(abspath FontTextureCache.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -328,7 +328,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Input.P
 endif
 
-$(OBJ_DIR)/Input.o : $(abspath Input.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Input.o : $(abspath Input.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -336,7 +336,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/MatSystemSurface.P
 endif
 
-$(OBJ_DIR)/MatSystemSurface.o : $(abspath MatSystemSurface.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/MatSystemSurface.o : $(abspath MatSystemSurface.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -344,7 +344,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/TextureDictionary.P
 endif
 
-$(OBJ_DIR)/TextureDictionary.o : $(abspath TextureDictionary.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/TextureDictionary.o : $(abspath TextureDictionary.cpp) $(PWD)/vguimatsurface_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 

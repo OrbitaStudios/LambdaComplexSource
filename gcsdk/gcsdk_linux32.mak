@@ -34,7 +34,7 @@ SystemLibraries=
 DLL_EXT=.so
 SYM_EXT=.dbg
 FORCEINCLUDES= 
-DEFINES= -DVPC -DDEBUG -D_DEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DTF -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/source/gcsdk -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
+DEFINES= -DVPC -DDEBUG -D_DEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DTF -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/EmSource/gcsdk -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
 INCLUDEDIRS += ../common ../public ../public/tier0 ../public/tier1 ../thirdparty/SDL2 ../gcsdk/generated_proto ../thirdparty/protobuf-2.6.1/src ../gcsdk/steamextra .. ../public ../public/gcsdk ../thirdparty/JSON_parser . 
 CONFTYPE=lib
 GAMEOUTPUTFILE=../lib/public/linux32/gcsdk.a
@@ -97,7 +97,7 @@ OTHER_DEPENDENCIES = \
 
 
 # Include the base makefile now.
-include $(SRCROOT)/devtools/makefile_base_posix.mak
+include $(SRCROOT)/devtools/makefile_base_emscripten.mak
 
 
 
@@ -117,7 +117,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/gcsdk_gcmessages.pb.P
 endif
 
-$(OBJ_DIR)/gcsdk_gcmessages.pb.o : $(abspath ../gcsdk/generated_proto/gcsdk_gcmessages.pb.cc) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/gcsdk_gcmessages.pb.o : $(abspath ../gcsdk/generated_proto/gcsdk_gcmessages.pb.cc) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -125,7 +125,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/gcsystemmsgs.pb.P
 endif
 
-$(OBJ_DIR)/gcsystemmsgs.pb.o : $(abspath ../gcsdk/generated_proto/gcsystemmsgs.pb.cc) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/gcsystemmsgs.pb.o : $(abspath ../gcsdk/generated_proto/gcsystemmsgs.pb.cc) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -133,7 +133,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/steammessages.pb.P
 endif
 
-$(OBJ_DIR)/steammessages.pb.o : $(abspath ../gcsdk/generated_proto/steammessages.pb.cc) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/steammessages.pb.o : $(abspath ../gcsdk/generated_proto/steammessages.pb.cc) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -153,7 +153,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/JSON_parser.P
 endif
 
-$(OBJ_DIR)/JSON_parser.o : $(abspath ../thirdparty/JSON_parser/JSON_parser.c) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/JSON_parser.o : $(abspath ../thirdparty/JSON_parser/JSON_parser.c) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -162,7 +162,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/gcclient.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/gcclient.o : $(abspath gcclient.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/gcclient.o : $(abspath gcclient.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -171,7 +171,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/gcclient_sharedobjectcache.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/gcclient_sharedobjectcache.o : $(abspath gcclient_sharedobjectcache.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/gcclient_sharedobjectcache.o : $(abspath gcclient_sharedobjectcache.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -180,7 +180,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/gcconstants.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/gcconstants.o : $(abspath gcconstants.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/gcconstants.o : $(abspath gcconstants.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -189,7 +189,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/gclogger.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/gclogger.o : $(abspath gclogger.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/gclogger.o : $(abspath gclogger.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -198,7 +198,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/gcmsg.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/gcmsg.o : $(abspath gcmsg.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/gcmsg.o : $(abspath gcmsg.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -219,7 +219,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/job.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/job.o : $(abspath job.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/job.o : $(abspath job.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -228,7 +228,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/jobmgr.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/jobmgr.o : $(abspath jobmgr.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/jobmgr.o : $(abspath jobmgr.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -237,7 +237,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/jobtime.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/jobtime.o : $(abspath jobtime.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/jobtime.o : $(abspath jobtime.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -246,7 +246,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/messagelist.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/messagelist.o : $(abspath messagelist.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/messagelist.o : $(abspath messagelist.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -255,7 +255,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/msgprotobuf.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/msgprotobuf.o : $(abspath msgprotobuf.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/msgprotobuf.o : $(abspath msgprotobuf.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -264,7 +264,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/netpacket.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/netpacket.o : $(abspath netpacket.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/netpacket.o : $(abspath netpacket.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -273,7 +273,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/netpacketpool.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/netpacketpool.o : $(abspath netpacketpool.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/netpacketpool.o : $(abspath netpacketpool.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -282,7 +282,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/protobufsharedobject.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/protobufsharedobject.o : $(abspath protobufsharedobject.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/protobufsharedobject.o : $(abspath protobufsharedobject.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -291,7 +291,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/sharedobject.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/sharedobject.o : $(abspath sharedobject.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/sharedobject.o : $(abspath sharedobject.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -300,7 +300,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/sharedobjectcache.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/sharedobjectcache.o : $(abspath sharedobjectcache.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/sharedobjectcache.o : $(abspath sharedobjectcache.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -308,7 +308,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/stdafx.P
 endif
 
-$(OBJ_DIR)/stdafx.h.gch : stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/stdafx.h.gch : stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_PCH) $(POST_COMPILE_FILE)
 
@@ -320,10 +320,10 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 include $(OBJ_DIR)/stdafx.h.P
 endif
 
-$(OBJ_DIR)/stdafx.h : stdafx.h $(OBJ_DIR)/stdafx.h.gch $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/stdafx.h : stdafx.h $(OBJ_DIR)/stdafx.h.gch $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	cp -f $< $(OBJ_DIR)/stdafx.h
 
-$(OBJ_DIR)/stdafx.o : $(abspath stdafx.cpp) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/stdafx.o : $(abspath stdafx.cpp) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -332,7 +332,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/misc.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/misc.o : $(abspath steamextra/misc.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/misc.o : $(abspath steamextra/misc.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -341,7 +341,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/rtime.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/rtime.o : $(abspath steamextra/rtime.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/rtime.o : $(abspath steamextra/rtime.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -349,7 +349,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/steamid.P
 endif
 
-$(OBJ_DIR)/steamid.o : $(abspath steamextra/steamid.cpp) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/steamid.o : $(abspath steamextra/steamid.cpp) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -358,7 +358,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/hashglobals.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/hashglobals.o : $(abspath steamextra/tier1/hashglobals.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/hashglobals.o : $(abspath steamextra/tier1/hashglobals.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -367,7 +367,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/tsmempool.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/tsmempool.o : $(abspath steamextra/tier1/tsmempool.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/tsmempool.o : $(abspath steamextra/tier1/tsmempool.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -376,7 +376,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/tsmultimempool.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/tsmultimempool.o : $(abspath steamextra/tier1/tsmultimempool.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/tsmultimempool.o : $(abspath steamextra/tier1/tsmultimempool.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -385,7 +385,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/webapi_response.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/webapi_response.o : $(abspath webapi_response.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/webapi_response.o : $(abspath webapi_response.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -394,7 +394,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/workthreadpool.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/workthreadpool.o : $(abspath workthreadpool.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/workthreadpool.o : $(abspath workthreadpool.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -424,7 +424,7 @@ SystemLibraries=
 DLL_EXT=.so
 SYM_EXT=.dbg
 FORCEINCLUDES= 
-DEFINES= -DVPC -DNDEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DTF -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/source/gcsdk -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
+DEFINES= -DVPC -DNDEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DTF -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/EmSource/gcsdk -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
 INCLUDEDIRS += ../common ../public ../public/tier0 ../public/tier1 ../thirdparty/SDL2 ../gcsdk/generated_proto ../thirdparty/protobuf-2.6.1/src ../gcsdk/steamextra .. ../public ../public/gcsdk ../thirdparty/JSON_parser . 
 CONFTYPE=lib
 GAMEOUTPUTFILE=../lib/public/linux32/gcsdk.a
@@ -488,7 +488,7 @@ OTHER_DEPENDENCIES = \
 
 
 # Include the base makefile now.
-include $(SRCROOT)/devtools/makefile_base_posix.mak
+include $(SRCROOT)/devtools/makefile_base_emscripten.mak
 
 
 
@@ -497,7 +497,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/debug_lib_check.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/debug_lib_check.o : $(abspath ../common/debug_lib_check.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/debug_lib_check.o : $(abspath ../common/debug_lib_check.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -517,7 +517,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/gcsdk_gcmessages.pb.P
 endif
 
-$(OBJ_DIR)/gcsdk_gcmessages.pb.o : $(abspath ../gcsdk/generated_proto/gcsdk_gcmessages.pb.cc) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/gcsdk_gcmessages.pb.o : $(abspath ../gcsdk/generated_proto/gcsdk_gcmessages.pb.cc) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -525,7 +525,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/gcsystemmsgs.pb.P
 endif
 
-$(OBJ_DIR)/gcsystemmsgs.pb.o : $(abspath ../gcsdk/generated_proto/gcsystemmsgs.pb.cc) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/gcsystemmsgs.pb.o : $(abspath ../gcsdk/generated_proto/gcsystemmsgs.pb.cc) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -533,7 +533,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/steammessages.pb.P
 endif
 
-$(OBJ_DIR)/steammessages.pb.o : $(abspath ../gcsdk/generated_proto/steammessages.pb.cc) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/steammessages.pb.o : $(abspath ../gcsdk/generated_proto/steammessages.pb.cc) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -553,7 +553,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/JSON_parser.P
 endif
 
-$(OBJ_DIR)/JSON_parser.o : $(abspath ../thirdparty/JSON_parser/JSON_parser.c) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/JSON_parser.o : $(abspath ../thirdparty/JSON_parser/JSON_parser.c) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -562,7 +562,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/gcclient.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/gcclient.o : $(abspath gcclient.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/gcclient.o : $(abspath gcclient.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -571,7 +571,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/gcclient_sharedobjectcache.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/gcclient_sharedobjectcache.o : $(abspath gcclient_sharedobjectcache.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/gcclient_sharedobjectcache.o : $(abspath gcclient_sharedobjectcache.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -580,7 +580,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/gcconstants.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/gcconstants.o : $(abspath gcconstants.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/gcconstants.o : $(abspath gcconstants.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -589,7 +589,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/gclogger.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/gclogger.o : $(abspath gclogger.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/gclogger.o : $(abspath gclogger.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -598,7 +598,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/gcmsg.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/gcmsg.o : $(abspath gcmsg.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/gcmsg.o : $(abspath gcmsg.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -619,7 +619,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/job.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/job.o : $(abspath job.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/job.o : $(abspath job.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -628,7 +628,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/jobmgr.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/jobmgr.o : $(abspath jobmgr.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/jobmgr.o : $(abspath jobmgr.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -637,7 +637,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/jobtime.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/jobtime.o : $(abspath jobtime.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/jobtime.o : $(abspath jobtime.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -646,7 +646,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/messagelist.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/messagelist.o : $(abspath messagelist.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/messagelist.o : $(abspath messagelist.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -655,7 +655,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/msgprotobuf.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/msgprotobuf.o : $(abspath msgprotobuf.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/msgprotobuf.o : $(abspath msgprotobuf.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -664,7 +664,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/netpacket.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/netpacket.o : $(abspath netpacket.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/netpacket.o : $(abspath netpacket.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -673,7 +673,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/netpacketpool.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/netpacketpool.o : $(abspath netpacketpool.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/netpacketpool.o : $(abspath netpacketpool.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -682,7 +682,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/protobufsharedobject.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/protobufsharedobject.o : $(abspath protobufsharedobject.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/protobufsharedobject.o : $(abspath protobufsharedobject.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -691,7 +691,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/sharedobject.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/sharedobject.o : $(abspath sharedobject.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/sharedobject.o : $(abspath sharedobject.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -700,7 +700,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/sharedobjectcache.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/sharedobjectcache.o : $(abspath sharedobjectcache.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/sharedobjectcache.o : $(abspath sharedobjectcache.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -708,7 +708,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/stdafx.P
 endif
 
-$(OBJ_DIR)/stdafx.h.gch : stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/stdafx.h.gch : stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_PCH) $(POST_COMPILE_FILE)
 
@@ -720,10 +720,10 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 include $(OBJ_DIR)/stdafx.h.P
 endif
 
-$(OBJ_DIR)/stdafx.h : stdafx.h $(OBJ_DIR)/stdafx.h.gch $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/stdafx.h : stdafx.h $(OBJ_DIR)/stdafx.h.gch $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	cp -f $< $(OBJ_DIR)/stdafx.h
 
-$(OBJ_DIR)/stdafx.o : $(abspath stdafx.cpp) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/stdafx.o : $(abspath stdafx.cpp) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -732,7 +732,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/misc.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/misc.o : $(abspath steamextra/misc.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/misc.o : $(abspath steamextra/misc.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -741,7 +741,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/rtime.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/rtime.o : $(abspath steamextra/rtime.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/rtime.o : $(abspath steamextra/rtime.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -749,7 +749,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/steamid.P
 endif
 
-$(OBJ_DIR)/steamid.o : $(abspath steamextra/steamid.cpp) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/steamid.o : $(abspath steamextra/steamid.cpp) $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -758,7 +758,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/hashglobals.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/hashglobals.o : $(abspath steamextra/tier1/hashglobals.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/hashglobals.o : $(abspath steamextra/tier1/hashglobals.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -767,7 +767,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/tsmempool.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/tsmempool.o : $(abspath steamextra/tier1/tsmempool.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/tsmempool.o : $(abspath steamextra/tier1/tsmempool.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -776,7 +776,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/tsmultimempool.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/tsmultimempool.o : $(abspath steamextra/tier1/tsmultimempool.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/tsmultimempool.o : $(abspath steamextra/tier1/tsmultimempool.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -785,7 +785,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/webapi_response.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/webapi_response.o : $(abspath webapi_response.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/webapi_response.o : $(abspath webapi_response.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -794,7 +794,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/workthreadpool.o : TARGET_PCH_FILE = $(OBJ_DIR)/stdafx.h
-$(OBJ_DIR)/workthreadpool.o : $(abspath workthreadpool.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/workthreadpool.o : $(abspath workthreadpool.cpp) $(OBJ_DIR)/stdafx.h.gch $(OBJ_DIR)/stdafx.h $(PWD)/gcsdk_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 

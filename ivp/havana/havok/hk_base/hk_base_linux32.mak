@@ -34,7 +34,7 @@ SystemLibraries=
 DLL_EXT=.so
 SYM_EXT=.dbg
 FORCEINCLUDES= 
-DEFINES= -DVPC -DDEBUG -D_DEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DVPHYSICS_EXPORTS -DHAVANA_CONSTRAINTS -DHAVOK_MOPP -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/source/ivp/havana/havok/hk_base -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
+DEFINES= -DVPC -DDEBUG -D_DEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DVPHYSICS_EXPORTS -DHAVANA_CONSTRAINTS -DHAVOK_MOPP -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/EmSource/ivp/havana/havok/hk_base -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
 INCLUDEDIRS += ../../../../common ../../../../public ../../../../public/tier0 ../../../../public/tier1 ../../../../thirdparty/SDL2 ../../../../ivp/havana/havok ../../../../ivp/havana 
 CONFTYPE=lib
 GAMEOUTPUTFILE=../../../../lib/common/linux32/hk_base.a
@@ -72,7 +72,7 @@ OTHER_DEPENDENCIES = \
 
 
 # Include the base makefile now.
-include $(SRCROOT)/devtools/makefile_base_posix.mak
+include $(SRCROOT)/devtools/makefile_base_emscripten.mak
 
 
 
@@ -81,7 +81,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/array.o : TARGET_PCH_FILE = $(OBJ_DIR)/base.h
-$(OBJ_DIR)/array.o : $(abspath array/array.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/array.o : $(abspath array/array.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -89,7 +89,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/base_types.P
 endif
 
-$(OBJ_DIR)/base.h.gch : hk_base/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/base.h.gch : hk_base/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_PCH) $(POST_COMPILE_FILE)
 
@@ -101,10 +101,10 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 include $(OBJ_DIR)/base.h.P
 endif
 
-$(OBJ_DIR)/base.h : hk_base/base.h $(OBJ_DIR)/base.h.gch $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/base.h : hk_base/base.h $(OBJ_DIR)/base.h.gch $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	cp -f $< $(OBJ_DIR)/base.h
 
-$(OBJ_DIR)/base_types.o : $(abspath base_types.cpp) $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/base_types.o : $(abspath base_types.cpp) $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -113,7 +113,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/console.o : TARGET_PCH_FILE = $(OBJ_DIR)/base.h
-$(OBJ_DIR)/console.o : $(abspath console.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/console.o : $(abspath console.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -122,7 +122,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/hash.o : TARGET_PCH_FILE = $(OBJ_DIR)/base.h
-$(OBJ_DIR)/hash.o : $(abspath hash/hash.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/hash.o : $(abspath hash/hash.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -131,7 +131,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/id_server.o : TARGET_PCH_FILE = $(OBJ_DIR)/base.h
-$(OBJ_DIR)/id_server.o : $(abspath id_server/id_server.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/id_server.o : $(abspath id_server/id_server.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -140,7 +140,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/memory.o : TARGET_PCH_FILE = $(OBJ_DIR)/base.h
-$(OBJ_DIR)/memory.o : $(abspath memory/memory.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/memory.o : $(abspath memory/memory.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -149,7 +149,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/memory_util.o : TARGET_PCH_FILE = $(OBJ_DIR)/base.h
-$(OBJ_DIR)/memory_util.o : $(abspath memory/memory_util.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/memory_util.o : $(abspath memory/memory_util.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -158,7 +158,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/stopwatch.o : TARGET_PCH_FILE = $(OBJ_DIR)/base.h
-$(OBJ_DIR)/stopwatch.o : $(abspath stopwatch/stopwatch.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/stopwatch.o : $(abspath stopwatch/stopwatch.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -167,7 +167,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/string.o : TARGET_PCH_FILE = $(OBJ_DIR)/base.h
-$(OBJ_DIR)/string.o : $(abspath string/string.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/string.o : $(abspath string/string.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -197,7 +197,7 @@ SystemLibraries=
 DLL_EXT=.so
 SYM_EXT=.dbg
 FORCEINCLUDES= 
-DEFINES= -DVPC -DNDEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DVPHYSICS_EXPORTS -DHAVANA_CONSTRAINTS -DHAVOK_MOPP -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/source/ivp/havana/havok/hk_base -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
+DEFINES= -DVPC -DNDEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DVPHYSICS_EXPORTS -DHAVANA_CONSTRAINTS -DHAVOK_MOPP -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/EmSource/ivp/havana/havok/hk_base -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
 INCLUDEDIRS += ../../../../common ../../../../public ../../../../public/tier0 ../../../../public/tier1 ../../../../thirdparty/SDL2 ../../../../ivp/havana/havok ../../../../ivp/havana 
 CONFTYPE=lib
 GAMEOUTPUTFILE=../../../../lib/common/linux32/hk_base.a
@@ -235,7 +235,7 @@ OTHER_DEPENDENCIES = \
 
 
 # Include the base makefile now.
-include $(SRCROOT)/devtools/makefile_base_posix.mak
+include $(SRCROOT)/devtools/makefile_base_emscripten.mak
 
 
 
@@ -244,7 +244,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/array.o : TARGET_PCH_FILE = $(OBJ_DIR)/base.h
-$(OBJ_DIR)/array.o : $(abspath array/array.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/array.o : $(abspath array/array.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -252,7 +252,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/base_types.P
 endif
 
-$(OBJ_DIR)/base.h.gch : hk_base/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/base.h.gch : hk_base/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_PCH) $(POST_COMPILE_FILE)
 
@@ -264,10 +264,10 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 include $(OBJ_DIR)/base.h.P
 endif
 
-$(OBJ_DIR)/base.h : hk_base/base.h $(OBJ_DIR)/base.h.gch $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/base.h : hk_base/base.h $(OBJ_DIR)/base.h.gch $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	cp -f $< $(OBJ_DIR)/base.h
 
-$(OBJ_DIR)/base_types.o : $(abspath base_types.cpp) $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/base_types.o : $(abspath base_types.cpp) $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -276,7 +276,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/console.o : TARGET_PCH_FILE = $(OBJ_DIR)/base.h
-$(OBJ_DIR)/console.o : $(abspath console.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/console.o : $(abspath console.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -285,7 +285,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/hash.o : TARGET_PCH_FILE = $(OBJ_DIR)/base.h
-$(OBJ_DIR)/hash.o : $(abspath hash/hash.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/hash.o : $(abspath hash/hash.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -294,7 +294,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/id_server.o : TARGET_PCH_FILE = $(OBJ_DIR)/base.h
-$(OBJ_DIR)/id_server.o : $(abspath id_server/id_server.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/id_server.o : $(abspath id_server/id_server.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -303,7 +303,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/memory.o : TARGET_PCH_FILE = $(OBJ_DIR)/base.h
-$(OBJ_DIR)/memory.o : $(abspath memory/memory.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/memory.o : $(abspath memory/memory.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -312,7 +312,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/memory_util.o : TARGET_PCH_FILE = $(OBJ_DIR)/base.h
-$(OBJ_DIR)/memory_util.o : $(abspath memory/memory_util.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/memory_util.o : $(abspath memory/memory_util.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -321,7 +321,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/stopwatch.o : TARGET_PCH_FILE = $(OBJ_DIR)/base.h
-$(OBJ_DIR)/stopwatch.o : $(abspath stopwatch/stopwatch.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/stopwatch.o : $(abspath stopwatch/stopwatch.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -330,7 +330,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/string.o : TARGET_PCH_FILE = $(OBJ_DIR)/base.h
-$(OBJ_DIR)/string.o : $(abspath string/string.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/string.o : $(abspath string/string.cpp) $(OBJ_DIR)/base.h.gch $(OBJ_DIR)/base.h $(PWD)/hk_base_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 

@@ -34,7 +34,7 @@ SystemLibraries=
 DLL_EXT=.so
 SYM_EXT=.dbg
 FORCEINCLUDES= 
-DEFINES= -DVPC -DDEBUG -D_DEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=ServerBrowser -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DVERSION_SAFE_STEAM_API_INTERFACES -DSERVERBROWSER_EXPORTS -DGAME_SRC -D_USE_32BIT_TIME_T -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/source/serverbrowser -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
+DEFINES= -DVPC -DDEBUG -D_DEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=ServerBrowser -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DVERSION_SAFE_STEAM_API_INTERFACES -DSERVERBROWSER_EXPORTS -DGAME_SRC -D_USE_32BIT_TIME_T -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/EmSource/serverbrowser -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
 INCLUDEDIRS += ../common ../public ../public/tier0 ../public/tier1 ../thirdparty/SDL2 
 CONFTYPE=dll
 IMPORTLIBRARY=
@@ -102,7 +102,7 @@ OTHER_DEPENDENCIES = \
 
 
 # Include the base makefile now.
-include $(SRCROOT)/devtools/makefile_base_posix.mak
+include $(SRCROOT)/devtools/makefile_base_emscripten.mak
 
 
 
@@ -110,7 +110,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/blacklisted_server_manager.P
 endif
 
-$(OBJ_DIR)/blacklisted_server_manager.o : $(abspath ../common/ServerBrowser/blacklisted_server_manager.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/blacklisted_server_manager.o : $(abspath ../common/ServerBrowser/blacklisted_server_manager.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -118,7 +118,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/memoverride.P
 endif
 
-$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -126,7 +126,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/vgui_controls.P
 endif
 
-$(OBJ_DIR)/vgui_controls.o : $(abspath ../public/vgui_controls/vgui_controls.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/vgui_controls.o : $(abspath ../public/vgui_controls/vgui_controls.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -134,7 +134,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/BaseGamesPage.P
 endif
 
-$(OBJ_DIR)/BaseGamesPage.o : $(abspath BaseGamesPage.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/BaseGamesPage.o : $(abspath BaseGamesPage.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -142,7 +142,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/BlacklistedServers.P
 endif
 
-$(OBJ_DIR)/BlacklistedServers.o : $(abspath BlacklistedServers.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/BlacklistedServers.o : $(abspath BlacklistedServers.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -150,7 +150,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/CustomGames.P
 endif
 
-$(OBJ_DIR)/CustomGames.o : $(abspath CustomGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/CustomGames.o : $(abspath CustomGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -158,7 +158,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/DialogAddServer.P
 endif
 
-$(OBJ_DIR)/DialogAddServer.o : $(abspath DialogAddServer.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/DialogAddServer.o : $(abspath DialogAddServer.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -166,7 +166,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/DialogGameInfo.P
 endif
 
-$(OBJ_DIR)/DialogGameInfo.o : $(abspath DialogGameInfo.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/DialogGameInfo.o : $(abspath DialogGameInfo.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -174,7 +174,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/DialogServerPassword.P
 endif
 
-$(OBJ_DIR)/DialogServerPassword.o : $(abspath DialogServerPassword.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/DialogServerPassword.o : $(abspath DialogServerPassword.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -182,7 +182,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/FavoriteGames.P
 endif
 
-$(OBJ_DIR)/FavoriteGames.o : $(abspath FavoriteGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/FavoriteGames.o : $(abspath FavoriteGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -190,7 +190,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/FriendsGames.P
 endif
 
-$(OBJ_DIR)/FriendsGames.o : $(abspath FriendsGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/FriendsGames.o : $(abspath FriendsGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -198,7 +198,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/HistoryGames.P
 endif
 
-$(OBJ_DIR)/HistoryGames.o : $(abspath HistoryGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/HistoryGames.o : $(abspath HistoryGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -206,7 +206,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/InternetGames.P
 endif
 
-$(OBJ_DIR)/InternetGames.o : $(abspath InternetGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/InternetGames.o : $(abspath InternetGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -214,7 +214,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/LanGames.P
 endif
 
-$(OBJ_DIR)/LanGames.o : $(abspath LanGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/LanGames.o : $(abspath LanGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -222,7 +222,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ModList.P
 endif
 
-$(OBJ_DIR)/ModList.o : $(abspath ModList.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ModList.o : $(abspath ModList.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -230,7 +230,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/QuickListPanel.P
 endif
 
-$(OBJ_DIR)/QuickListPanel.o : $(abspath QuickListPanel.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/QuickListPanel.o : $(abspath QuickListPanel.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -238,7 +238,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ServerBrowser.P
 endif
 
-$(OBJ_DIR)/ServerBrowser.o : $(abspath ServerBrowser.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ServerBrowser.o : $(abspath ServerBrowser.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -246,7 +246,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ServerBrowserDialog.P
 endif
 
-$(OBJ_DIR)/ServerBrowserDialog.o : $(abspath ServerBrowserDialog.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ServerBrowserDialog.o : $(abspath ServerBrowserDialog.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -254,7 +254,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ServerContextMenu.P
 endif
 
-$(OBJ_DIR)/ServerContextMenu.o : $(abspath ServerContextMenu.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ServerContextMenu.o : $(abspath ServerContextMenu.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -262,7 +262,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ServerListCompare.P
 endif
 
-$(OBJ_DIR)/ServerListCompare.o : $(abspath ServerListCompare.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ServerListCompare.o : $(abspath ServerListCompare.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -270,7 +270,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/SpectateGames.P
 endif
 
-$(OBJ_DIR)/SpectateGames.o : $(abspath SpectateGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/SpectateGames.o : $(abspath SpectateGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -278,7 +278,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/VACBannedConnRefusedDialog.P
 endif
 
-$(OBJ_DIR)/VACBannedConnRefusedDialog.o : $(abspath VACBannedConnRefusedDialog.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/VACBannedConnRefusedDialog.o : $(abspath VACBannedConnRefusedDialog.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -308,7 +308,7 @@ SystemLibraries=
 DLL_EXT=.so
 SYM_EXT=.dbg
 FORCEINCLUDES= 
-DEFINES= -DVPC -DNDEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=ServerBrowser -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DVERSION_SAFE_STEAM_API_INTERFACES -DSERVERBROWSER_EXPORTS -DGAME_SRC -D_USE_32BIT_TIME_T -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/source/serverbrowser -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
+DEFINES= -DVPC -DNDEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=ServerBrowser -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DVERSION_SAFE_STEAM_API_INTERFACES -DSERVERBROWSER_EXPORTS -DGAME_SRC -D_USE_32BIT_TIME_T -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/EmSource/serverbrowser -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
 INCLUDEDIRS += ../common ../public ../public/tier0 ../public/tier1 ../thirdparty/SDL2 
 CONFTYPE=dll
 IMPORTLIBRARY=
@@ -376,7 +376,7 @@ OTHER_DEPENDENCIES = \
 
 
 # Include the base makefile now.
-include $(SRCROOT)/devtools/makefile_base_posix.mak
+include $(SRCROOT)/devtools/makefile_base_emscripten.mak
 
 
 
@@ -384,7 +384,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/blacklisted_server_manager.P
 endif
 
-$(OBJ_DIR)/blacklisted_server_manager.o : $(abspath ../common/ServerBrowser/blacklisted_server_manager.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/blacklisted_server_manager.o : $(abspath ../common/ServerBrowser/blacklisted_server_manager.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -392,7 +392,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/memoverride.P
 endif
 
-$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -400,7 +400,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/vgui_controls.P
 endif
 
-$(OBJ_DIR)/vgui_controls.o : $(abspath ../public/vgui_controls/vgui_controls.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/vgui_controls.o : $(abspath ../public/vgui_controls/vgui_controls.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -408,7 +408,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/BaseGamesPage.P
 endif
 
-$(OBJ_DIR)/BaseGamesPage.o : $(abspath BaseGamesPage.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/BaseGamesPage.o : $(abspath BaseGamesPage.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -416,7 +416,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/BlacklistedServers.P
 endif
 
-$(OBJ_DIR)/BlacklistedServers.o : $(abspath BlacklistedServers.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/BlacklistedServers.o : $(abspath BlacklistedServers.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -424,7 +424,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/CustomGames.P
 endif
 
-$(OBJ_DIR)/CustomGames.o : $(abspath CustomGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/CustomGames.o : $(abspath CustomGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -432,7 +432,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/DialogAddServer.P
 endif
 
-$(OBJ_DIR)/DialogAddServer.o : $(abspath DialogAddServer.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/DialogAddServer.o : $(abspath DialogAddServer.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -440,7 +440,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/DialogGameInfo.P
 endif
 
-$(OBJ_DIR)/DialogGameInfo.o : $(abspath DialogGameInfo.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/DialogGameInfo.o : $(abspath DialogGameInfo.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -448,7 +448,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/DialogServerPassword.P
 endif
 
-$(OBJ_DIR)/DialogServerPassword.o : $(abspath DialogServerPassword.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/DialogServerPassword.o : $(abspath DialogServerPassword.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -456,7 +456,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/FavoriteGames.P
 endif
 
-$(OBJ_DIR)/FavoriteGames.o : $(abspath FavoriteGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/FavoriteGames.o : $(abspath FavoriteGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -464,7 +464,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/FriendsGames.P
 endif
 
-$(OBJ_DIR)/FriendsGames.o : $(abspath FriendsGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/FriendsGames.o : $(abspath FriendsGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -472,7 +472,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/HistoryGames.P
 endif
 
-$(OBJ_DIR)/HistoryGames.o : $(abspath HistoryGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/HistoryGames.o : $(abspath HistoryGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -480,7 +480,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/InternetGames.P
 endif
 
-$(OBJ_DIR)/InternetGames.o : $(abspath InternetGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/InternetGames.o : $(abspath InternetGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -488,7 +488,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/LanGames.P
 endif
 
-$(OBJ_DIR)/LanGames.o : $(abspath LanGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/LanGames.o : $(abspath LanGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -496,7 +496,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ModList.P
 endif
 
-$(OBJ_DIR)/ModList.o : $(abspath ModList.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ModList.o : $(abspath ModList.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -504,7 +504,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/QuickListPanel.P
 endif
 
-$(OBJ_DIR)/QuickListPanel.o : $(abspath QuickListPanel.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/QuickListPanel.o : $(abspath QuickListPanel.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -512,7 +512,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ServerBrowser.P
 endif
 
-$(OBJ_DIR)/ServerBrowser.o : $(abspath ServerBrowser.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ServerBrowser.o : $(abspath ServerBrowser.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -520,7 +520,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ServerBrowserDialog.P
 endif
 
-$(OBJ_DIR)/ServerBrowserDialog.o : $(abspath ServerBrowserDialog.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ServerBrowserDialog.o : $(abspath ServerBrowserDialog.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -528,7 +528,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ServerContextMenu.P
 endif
 
-$(OBJ_DIR)/ServerContextMenu.o : $(abspath ServerContextMenu.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ServerContextMenu.o : $(abspath ServerContextMenu.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -536,7 +536,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ServerListCompare.P
 endif
 
-$(OBJ_DIR)/ServerListCompare.o : $(abspath ServerListCompare.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ServerListCompare.o : $(abspath ServerListCompare.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -544,7 +544,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/SpectateGames.P
 endif
 
-$(OBJ_DIR)/SpectateGames.o : $(abspath SpectateGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/SpectateGames.o : $(abspath SpectateGames.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -552,7 +552,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/VACBannedConnRefusedDialog.P
 endif
 
-$(OBJ_DIR)/VACBannedConnRefusedDialog.o : $(abspath VACBannedConnRefusedDialog.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/VACBannedConnRefusedDialog.o : $(abspath VACBannedConnRefusedDialog.cpp) $(PWD)/ServerBrowser_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 

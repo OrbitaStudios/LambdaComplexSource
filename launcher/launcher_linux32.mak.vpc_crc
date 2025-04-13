@@ -1,7 +1,7 @@
 [vpc crc file version 2]
-b7285823 ../devtools/bin/vpc_linux
+a8901f09 ../devtools/bin/vpc_emscripten
 _Nc_/vpcgame:hl2_
-8e13f66e launcher.vpc
+48164eaa launcher.vpc
 4832e67a ../vpc_scripts/source_dll_base.vpc
 9aa25bdc ../vpc_scripts/platform_dirs.vpc
 6c4a5ff1 ../vpc_scripts/source_base.vpc

@@ -7,7 +7,9 @@
 #include "vpc.h"
 #include "baseprojectdatacollector.h"
 #include "tier1/utlstack.h"
+//#if !defined(EMSCRIPTEN)
 #include "projectgenerator_codelite.h"
+//#endif
 
 // TODO: Add Windows support.
 
@@ -269,7 +271,7 @@ public:
     if ( !pTargetPlatformName )
       g_pVPC->VPCError( "GetTargetPlatformName failed." );
 
-    if ( !V_stricmp( pTargetPlatformName, "LINUX32" )  || !V_stricmp( pTargetPlatformName, "LINUX64" ) )
+    if ( !V_stricmp( pTargetPlatformName, "LINUX32" )  || !V_stricmp( pTargetPlatformName, "LINUX64" ) || !V_stricmp( pTargetPlatformName, "EMSCRIPTEN" ) )
     {
       if ( g_pVPC->IsForceGenerate() || !bProjectIsCurrent )
       {

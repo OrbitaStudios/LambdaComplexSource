@@ -34,7 +34,7 @@ SystemLibraries=
 DLL_EXT=.so
 SYM_EXT=.dbg
 FORCEINCLUDES= 
-DEFINES= -DVPC -DDEBUG -D_DEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/source/vgui2/vgui_controls -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
+DEFINES= -DVPC -DDEBUG -D_DEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/EmSource/vgui2/vgui_controls -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
 INCLUDEDIRS += ../../common ../../public ../../public/tier0 ../../public/tier1 ../../thirdparty/SDL2 generated_proto ../../thirdparty/protobuf-2.6.1/src ../../thirdparty ../../thirdparty/cef generated_proto 
 CONFTYPE=lib
 GAMEOUTPUTFILE=../../lib/public/linux32/vgui_controls.a
@@ -140,7 +140,7 @@ OTHER_DEPENDENCIES = \
 
 
 # Include the base makefile now.
-include $(SRCROOT)/devtools/makefile_base_posix.mak
+include $(SRCROOT)/devtools/makefile_base_emscripten.mak
 
 
 
@@ -148,7 +148,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/filesystem_helpers.P
 endif
 
-$(OBJ_DIR)/filesystem_helpers.o : $(abspath ../../public/filesystem_helpers.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/filesystem_helpers.o : $(abspath ../../public/filesystem_helpers.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -156,7 +156,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/vgui_key_translation.P
 endif
 
-$(OBJ_DIR)/vgui_key_translation.o : $(abspath ../../vgui2/src/vgui_key_translation.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/vgui_key_translation.o : $(abspath ../../vgui2/src/vgui_key_translation.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -164,7 +164,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/AnalogBar.P
 endif
 
-$(OBJ_DIR)/AnalogBar.o : $(abspath AnalogBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/AnalogBar.o : $(abspath AnalogBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -172,7 +172,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/AnimatingImagePanel.P
 endif
 
-$(OBJ_DIR)/AnimatingImagePanel.o : $(abspath AnimatingImagePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/AnimatingImagePanel.o : $(abspath AnimatingImagePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -180,7 +180,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/AnimationController.P
 endif
 
-$(OBJ_DIR)/AnimationController.o : $(abspath AnimationController.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/AnimationController.o : $(abspath AnimationController.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -188,7 +188,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/BitmapImagePanel.P
 endif
 
-$(OBJ_DIR)/BitmapImagePanel.o : $(abspath BitmapImagePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/BitmapImagePanel.o : $(abspath BitmapImagePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -196,7 +196,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/BuildFactoryHelper.P
 endif
 
-$(OBJ_DIR)/BuildFactoryHelper.o : $(abspath BuildFactoryHelper.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/BuildFactoryHelper.o : $(abspath BuildFactoryHelper.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -204,7 +204,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/BuildGroup.P
 endif
 
-$(OBJ_DIR)/BuildGroup.o : $(abspath BuildGroup.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/BuildGroup.o : $(abspath BuildGroup.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -212,7 +212,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/BuildModeDialog.P
 endif
 
-$(OBJ_DIR)/BuildModeDialog.o : $(abspath BuildModeDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/BuildModeDialog.o : $(abspath BuildModeDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -220,7 +220,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Button.P
 endif
 
-$(OBJ_DIR)/Button.o : $(abspath Button.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Button.o : $(abspath Button.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -228,7 +228,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/CheckButton.P
 endif
 
-$(OBJ_DIR)/CheckButton.o : $(abspath CheckButton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/CheckButton.o : $(abspath CheckButton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -236,7 +236,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/CheckButtonList.P
 endif
 
-$(OBJ_DIR)/CheckButtonList.o : $(abspath CheckButtonList.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/CheckButtonList.o : $(abspath CheckButtonList.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -244,7 +244,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/CircularProgressBar.P
 endif
 
-$(OBJ_DIR)/CircularProgressBar.o : $(abspath CircularProgressBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/CircularProgressBar.o : $(abspath CircularProgressBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -252,7 +252,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ComboBox.P
 endif
 
-$(OBJ_DIR)/ComboBox.o : $(abspath ComboBox.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ComboBox.o : $(abspath ComboBox.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -260,7 +260,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/consoledialog.P
 endif
 
-$(OBJ_DIR)/consoledialog.o : $(abspath consoledialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/consoledialog.o : $(abspath consoledialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -268,7 +268,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ControllerMap.P
 endif
 
-$(OBJ_DIR)/ControllerMap.o : $(abspath ControllerMap.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ControllerMap.o : $(abspath ControllerMap.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -276,7 +276,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/controls.P
 endif
 
-$(OBJ_DIR)/controls.o : $(abspath controls.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/controls.o : $(abspath controls.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -284,7 +284,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cvartogglecheckbutton.P
 endif
 
-$(OBJ_DIR)/cvartogglecheckbutton.o : $(abspath cvartogglecheckbutton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cvartogglecheckbutton.o : $(abspath cvartogglecheckbutton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -292,7 +292,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/DirectorySelectDialog.P
 endif
 
-$(OBJ_DIR)/DirectorySelectDialog.o : $(abspath DirectorySelectDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/DirectorySelectDialog.o : $(abspath DirectorySelectDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -300,7 +300,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Divider.P
 endif
 
-$(OBJ_DIR)/Divider.o : $(abspath Divider.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Divider.o : $(abspath Divider.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -308,7 +308,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/EditablePanel.P
 endif
 
-$(OBJ_DIR)/EditablePanel.o : $(abspath EditablePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/EditablePanel.o : $(abspath EditablePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -316,7 +316,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ExpandButton.P
 endif
 
-$(OBJ_DIR)/ExpandButton.o : $(abspath ExpandButton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ExpandButton.o : $(abspath ExpandButton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -324,7 +324,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/FileOpenDialog.P
 endif
 
-$(OBJ_DIR)/FileOpenDialog.o : $(abspath FileOpenDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/FileOpenDialog.o : $(abspath FileOpenDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -332,7 +332,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/FileOpenStateMachine.P
 endif
 
-$(OBJ_DIR)/FileOpenStateMachine.o : $(abspath FileOpenStateMachine.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/FileOpenStateMachine.o : $(abspath FileOpenStateMachine.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -340,7 +340,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/FocusNavGroup.P
 endif
 
-$(OBJ_DIR)/FocusNavGroup.o : $(abspath FocusNavGroup.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/FocusNavGroup.o : $(abspath FocusNavGroup.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -348,7 +348,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Frame.P
 endif
 
-$(OBJ_DIR)/Frame.o : $(abspath Frame.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Frame.o : $(abspath Frame.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -356,7 +356,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/GraphPanel.P
 endif
 
-$(OBJ_DIR)/GraphPanel.o : $(abspath GraphPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/GraphPanel.o : $(abspath GraphPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -364,7 +364,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/HTML.P
 endif
 
-$(OBJ_DIR)/HTML.o : $(abspath HTML.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/HTML.o : $(abspath HTML.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -372,7 +372,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Image.P
 endif
 
-$(OBJ_DIR)/Image.o : $(abspath Image.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Image.o : $(abspath Image.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -380,7 +380,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ImageList.P
 endif
 
-$(OBJ_DIR)/ImageList.o : $(abspath ImageList.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ImageList.o : $(abspath ImageList.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -388,7 +388,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ImagePanel.P
 endif
 
-$(OBJ_DIR)/ImagePanel.o : $(abspath ImagePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ImagePanel.o : $(abspath ImagePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -396,7 +396,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/InputDialog.P
 endif
 
-$(OBJ_DIR)/InputDialog.o : $(abspath InputDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/InputDialog.o : $(abspath InputDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -404,7 +404,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/KeyBindingHelpDialog.P
 endif
 
-$(OBJ_DIR)/KeyBindingHelpDialog.o : $(abspath KeyBindingHelpDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/KeyBindingHelpDialog.o : $(abspath KeyBindingHelpDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -412,7 +412,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/KeyBoardEditorDialog.P
 endif
 
-$(OBJ_DIR)/KeyBoardEditorDialog.o : $(abspath KeyBoardEditorDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/KeyBoardEditorDialog.o : $(abspath KeyBoardEditorDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -420,7 +420,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/KeyRepeat.P
 endif
 
-$(OBJ_DIR)/KeyRepeat.o : $(abspath KeyRepeat.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/KeyRepeat.o : $(abspath KeyRepeat.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -428,7 +428,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Label.P
 endif
 
-$(OBJ_DIR)/Label.o : $(abspath Label.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Label.o : $(abspath Label.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -436,7 +436,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ListPanel.P
 endif
 
-$(OBJ_DIR)/ListPanel.o : $(abspath ListPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ListPanel.o : $(abspath ListPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -444,7 +444,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ListViewPanel.P
 endif
 
-$(OBJ_DIR)/ListViewPanel.o : $(abspath ListViewPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ListViewPanel.o : $(abspath ListViewPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -452,7 +452,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Menu.P
 endif
 
-$(OBJ_DIR)/Menu.o : $(abspath Menu.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Menu.o : $(abspath Menu.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -460,7 +460,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/MenuBar.P
 endif
 
-$(OBJ_DIR)/MenuBar.o : $(abspath MenuBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/MenuBar.o : $(abspath MenuBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -468,7 +468,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/MenuButton.P
 endif
 
-$(OBJ_DIR)/MenuButton.o : $(abspath MenuButton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/MenuButton.o : $(abspath MenuButton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -476,7 +476,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/MenuItem.P
 endif
 
-$(OBJ_DIR)/MenuItem.o : $(abspath MenuItem.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/MenuItem.o : $(abspath MenuItem.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -484,7 +484,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/MessageBox.P
 endif
 
-$(OBJ_DIR)/MessageBox.o : $(abspath MessageBox.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/MessageBox.o : $(abspath MessageBox.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -492,7 +492,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/MessageDialog.P
 endif
 
-$(OBJ_DIR)/MessageDialog.o : $(abspath MessageDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/MessageDialog.o : $(abspath MessageDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -500,7 +500,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Panel.P
 endif
 
-$(OBJ_DIR)/Panel.o : $(abspath Panel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Panel.o : $(abspath Panel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -508,7 +508,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/PanelListPanel.P
 endif
 
-$(OBJ_DIR)/PanelListPanel.o : $(abspath PanelListPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/PanelListPanel.o : $(abspath PanelListPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -516,7 +516,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/PerforceFileExplorer.P
 endif
 
-$(OBJ_DIR)/PerforceFileExplorer.o : $(abspath PerforceFileExplorer.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/PerforceFileExplorer.o : $(abspath PerforceFileExplorer.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -524,7 +524,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/PerforceFileList.P
 endif
 
-$(OBJ_DIR)/PerforceFileList.o : $(abspath PerforceFileList.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/PerforceFileList.o : $(abspath PerforceFileList.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -532,7 +532,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/perforcefilelistframe.P
 endif
 
-$(OBJ_DIR)/perforcefilelistframe.o : $(abspath perforcefilelistframe.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/perforcefilelistframe.o : $(abspath perforcefilelistframe.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -540,7 +540,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ProgressBar.P
 endif
 
-$(OBJ_DIR)/ProgressBar.o : $(abspath ProgressBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ProgressBar.o : $(abspath ProgressBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -548,7 +548,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ProgressBox.P
 endif
 
-$(OBJ_DIR)/ProgressBox.o : $(abspath ProgressBox.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ProgressBox.o : $(abspath ProgressBox.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -556,7 +556,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/PropertyDialog.P
 endif
 
-$(OBJ_DIR)/PropertyDialog.o : $(abspath PropertyDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/PropertyDialog.o : $(abspath PropertyDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -564,7 +564,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/PropertyPage.P
 endif
 
-$(OBJ_DIR)/PropertyPage.o : $(abspath PropertyPage.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/PropertyPage.o : $(abspath PropertyPage.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -572,7 +572,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/PropertySheet.P
 endif
 
-$(OBJ_DIR)/PropertySheet.o : $(abspath PropertySheet.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/PropertySheet.o : $(abspath PropertySheet.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -580,7 +580,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/QueryBox.P
 endif
 
-$(OBJ_DIR)/QueryBox.o : $(abspath QueryBox.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/QueryBox.o : $(abspath QueryBox.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -588,7 +588,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/RadioButton.P
 endif
 
-$(OBJ_DIR)/RadioButton.o : $(abspath RadioButton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/RadioButton.o : $(abspath RadioButton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -596,7 +596,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/RichText.P
 endif
 
-$(OBJ_DIR)/RichText.o : $(abspath RichText.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/RichText.o : $(abspath RichText.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -604,7 +604,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/RotatingProgressBar.P
 endif
 
-$(OBJ_DIR)/RotatingProgressBar.o : $(abspath RotatingProgressBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/RotatingProgressBar.o : $(abspath RotatingProgressBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -612,7 +612,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/savedocumentquery.P
 endif
 
-$(OBJ_DIR)/savedocumentquery.o : $(abspath savedocumentquery.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/savedocumentquery.o : $(abspath savedocumentquery.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -620,7 +620,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ScalableImagePanel.P
 endif
 
-$(OBJ_DIR)/ScalableImagePanel.o : $(abspath ScalableImagePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ScalableImagePanel.o : $(abspath ScalableImagePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -628,7 +628,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ScrollableEditablePanel.P
 endif
 
-$(OBJ_DIR)/ScrollableEditablePanel.o : $(abspath ScrollableEditablePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ScrollableEditablePanel.o : $(abspath ScrollableEditablePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -636,7 +636,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ScrollBar.P
 endif
 
-$(OBJ_DIR)/ScrollBar.o : $(abspath ScrollBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ScrollBar.o : $(abspath ScrollBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -644,7 +644,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ScrollBarSlider.P
 endif
 
-$(OBJ_DIR)/ScrollBarSlider.o : $(abspath ScrollBarSlider.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ScrollBarSlider.o : $(abspath ScrollBarSlider.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -652,7 +652,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/SectionedListPanel.P
 endif
 
-$(OBJ_DIR)/SectionedListPanel.o : $(abspath SectionedListPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/SectionedListPanel.o : $(abspath SectionedListPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -660,7 +660,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Slider.P
 endif
 
-$(OBJ_DIR)/Slider.o : $(abspath Slider.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Slider.o : $(abspath Slider.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -668,7 +668,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Splitter.P
 endif
 
-$(OBJ_DIR)/Splitter.o : $(abspath Splitter.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Splitter.o : $(abspath Splitter.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -676,7 +676,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/subrectimage.P
 endif
 
-$(OBJ_DIR)/subrectimage.o : $(abspath subrectimage.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/subrectimage.o : $(abspath subrectimage.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -684,7 +684,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/TextEntry.P
 endif
 
-$(OBJ_DIR)/TextEntry.o : $(abspath TextEntry.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/TextEntry.o : $(abspath TextEntry.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -692,7 +692,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/TextImage.P
 endif
 
-$(OBJ_DIR)/TextImage.o : $(abspath TextImage.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/TextImage.o : $(abspath TextImage.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -700,7 +700,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ToggleButton.P
 endif
 
-$(OBJ_DIR)/ToggleButton.o : $(abspath ToggleButton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ToggleButton.o : $(abspath ToggleButton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -708,7 +708,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Tooltip.P
 endif
 
-$(OBJ_DIR)/Tooltip.o : $(abspath Tooltip.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Tooltip.o : $(abspath Tooltip.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -716,7 +716,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ToolWindow.P
 endif
 
-$(OBJ_DIR)/ToolWindow.o : $(abspath ToolWindow.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ToolWindow.o : $(abspath ToolWindow.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -724,7 +724,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/TreeView.P
 endif
 
-$(OBJ_DIR)/TreeView.o : $(abspath TreeView.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/TreeView.o : $(abspath TreeView.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -732,7 +732,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/TreeViewListControl.P
 endif
 
-$(OBJ_DIR)/TreeViewListControl.o : $(abspath TreeViewListControl.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/TreeViewListControl.o : $(abspath TreeViewListControl.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -740,7 +740,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/URLLabel.P
 endif
 
-$(OBJ_DIR)/URLLabel.o : $(abspath URLLabel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/URLLabel.o : $(abspath URLLabel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -748,7 +748,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/WizardPanel.P
 endif
 
-$(OBJ_DIR)/WizardPanel.o : $(abspath WizardPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/WizardPanel.o : $(abspath WizardPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -756,7 +756,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/WizardSubPanel.P
 endif
 
-$(OBJ_DIR)/WizardSubPanel.o : $(abspath WizardSubPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/WizardSubPanel.o : $(abspath WizardSubPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -786,7 +786,7 @@ SystemLibraries=
 DLL_EXT=.so
 SYM_EXT=.dbg
 FORCEINCLUDES= 
-DEFINES= -DVPC -DNDEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/source/vgui2/vgui_controls -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
+DEFINES= -DVPC -DNDEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/EmSource/vgui2/vgui_controls -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
 INCLUDEDIRS += ../../common ../../public ../../public/tier0 ../../public/tier1 ../../thirdparty/SDL2 generated_proto ../../thirdparty/protobuf-2.6.1/src ../../thirdparty ../../thirdparty/cef generated_proto 
 CONFTYPE=lib
 GAMEOUTPUTFILE=../../lib/public/linux32/vgui_controls.a
@@ -892,7 +892,7 @@ OTHER_DEPENDENCIES = \
 
 
 # Include the base makefile now.
-include $(SRCROOT)/devtools/makefile_base_posix.mak
+include $(SRCROOT)/devtools/makefile_base_emscripten.mak
 
 
 
@@ -900,7 +900,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/filesystem_helpers.P
 endif
 
-$(OBJ_DIR)/filesystem_helpers.o : $(abspath ../../public/filesystem_helpers.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/filesystem_helpers.o : $(abspath ../../public/filesystem_helpers.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -908,7 +908,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/vgui_key_translation.P
 endif
 
-$(OBJ_DIR)/vgui_key_translation.o : $(abspath ../../vgui2/src/vgui_key_translation.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/vgui_key_translation.o : $(abspath ../../vgui2/src/vgui_key_translation.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -916,7 +916,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/AnalogBar.P
 endif
 
-$(OBJ_DIR)/AnalogBar.o : $(abspath AnalogBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/AnalogBar.o : $(abspath AnalogBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -924,7 +924,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/AnimatingImagePanel.P
 endif
 
-$(OBJ_DIR)/AnimatingImagePanel.o : $(abspath AnimatingImagePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/AnimatingImagePanel.o : $(abspath AnimatingImagePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -932,7 +932,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/AnimationController.P
 endif
 
-$(OBJ_DIR)/AnimationController.o : $(abspath AnimationController.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/AnimationController.o : $(abspath AnimationController.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -940,7 +940,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/BitmapImagePanel.P
 endif
 
-$(OBJ_DIR)/BitmapImagePanel.o : $(abspath BitmapImagePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/BitmapImagePanel.o : $(abspath BitmapImagePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -948,7 +948,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/BuildFactoryHelper.P
 endif
 
-$(OBJ_DIR)/BuildFactoryHelper.o : $(abspath BuildFactoryHelper.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/BuildFactoryHelper.o : $(abspath BuildFactoryHelper.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -956,7 +956,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/BuildGroup.P
 endif
 
-$(OBJ_DIR)/BuildGroup.o : $(abspath BuildGroup.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/BuildGroup.o : $(abspath BuildGroup.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -964,7 +964,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/BuildModeDialog.P
 endif
 
-$(OBJ_DIR)/BuildModeDialog.o : $(abspath BuildModeDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/BuildModeDialog.o : $(abspath BuildModeDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -972,7 +972,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Button.P
 endif
 
-$(OBJ_DIR)/Button.o : $(abspath Button.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Button.o : $(abspath Button.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -980,7 +980,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/CheckButton.P
 endif
 
-$(OBJ_DIR)/CheckButton.o : $(abspath CheckButton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/CheckButton.o : $(abspath CheckButton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -988,7 +988,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/CheckButtonList.P
 endif
 
-$(OBJ_DIR)/CheckButtonList.o : $(abspath CheckButtonList.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/CheckButtonList.o : $(abspath CheckButtonList.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -996,7 +996,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/CircularProgressBar.P
 endif
 
-$(OBJ_DIR)/CircularProgressBar.o : $(abspath CircularProgressBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/CircularProgressBar.o : $(abspath CircularProgressBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1004,7 +1004,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ComboBox.P
 endif
 
-$(OBJ_DIR)/ComboBox.o : $(abspath ComboBox.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ComboBox.o : $(abspath ComboBox.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1012,7 +1012,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/consoledialog.P
 endif
 
-$(OBJ_DIR)/consoledialog.o : $(abspath consoledialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/consoledialog.o : $(abspath consoledialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1020,7 +1020,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ControllerMap.P
 endif
 
-$(OBJ_DIR)/ControllerMap.o : $(abspath ControllerMap.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ControllerMap.o : $(abspath ControllerMap.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1028,7 +1028,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/controls.P
 endif
 
-$(OBJ_DIR)/controls.o : $(abspath controls.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/controls.o : $(abspath controls.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1036,7 +1036,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cvartogglecheckbutton.P
 endif
 
-$(OBJ_DIR)/cvartogglecheckbutton.o : $(abspath cvartogglecheckbutton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cvartogglecheckbutton.o : $(abspath cvartogglecheckbutton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1044,7 +1044,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/DirectorySelectDialog.P
 endif
 
-$(OBJ_DIR)/DirectorySelectDialog.o : $(abspath DirectorySelectDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/DirectorySelectDialog.o : $(abspath DirectorySelectDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1052,7 +1052,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Divider.P
 endif
 
-$(OBJ_DIR)/Divider.o : $(abspath Divider.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Divider.o : $(abspath Divider.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1060,7 +1060,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/EditablePanel.P
 endif
 
-$(OBJ_DIR)/EditablePanel.o : $(abspath EditablePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/EditablePanel.o : $(abspath EditablePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1068,7 +1068,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ExpandButton.P
 endif
 
-$(OBJ_DIR)/ExpandButton.o : $(abspath ExpandButton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ExpandButton.o : $(abspath ExpandButton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1076,7 +1076,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/FileOpenDialog.P
 endif
 
-$(OBJ_DIR)/FileOpenDialog.o : $(abspath FileOpenDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/FileOpenDialog.o : $(abspath FileOpenDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1084,7 +1084,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/FileOpenStateMachine.P
 endif
 
-$(OBJ_DIR)/FileOpenStateMachine.o : $(abspath FileOpenStateMachine.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/FileOpenStateMachine.o : $(abspath FileOpenStateMachine.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1092,7 +1092,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/FocusNavGroup.P
 endif
 
-$(OBJ_DIR)/FocusNavGroup.o : $(abspath FocusNavGroup.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/FocusNavGroup.o : $(abspath FocusNavGroup.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1100,7 +1100,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Frame.P
 endif
 
-$(OBJ_DIR)/Frame.o : $(abspath Frame.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Frame.o : $(abspath Frame.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1108,7 +1108,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/GraphPanel.P
 endif
 
-$(OBJ_DIR)/GraphPanel.o : $(abspath GraphPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/GraphPanel.o : $(abspath GraphPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1116,7 +1116,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/HTML.P
 endif
 
-$(OBJ_DIR)/HTML.o : $(abspath HTML.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/HTML.o : $(abspath HTML.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1124,7 +1124,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Image.P
 endif
 
-$(OBJ_DIR)/Image.o : $(abspath Image.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Image.o : $(abspath Image.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1132,7 +1132,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ImageList.P
 endif
 
-$(OBJ_DIR)/ImageList.o : $(abspath ImageList.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ImageList.o : $(abspath ImageList.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1140,7 +1140,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ImagePanel.P
 endif
 
-$(OBJ_DIR)/ImagePanel.o : $(abspath ImagePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ImagePanel.o : $(abspath ImagePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1148,7 +1148,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/InputDialog.P
 endif
 
-$(OBJ_DIR)/InputDialog.o : $(abspath InputDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/InputDialog.o : $(abspath InputDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1156,7 +1156,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/KeyBindingHelpDialog.P
 endif
 
-$(OBJ_DIR)/KeyBindingHelpDialog.o : $(abspath KeyBindingHelpDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/KeyBindingHelpDialog.o : $(abspath KeyBindingHelpDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1164,7 +1164,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/KeyBoardEditorDialog.P
 endif
 
-$(OBJ_DIR)/KeyBoardEditorDialog.o : $(abspath KeyBoardEditorDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/KeyBoardEditorDialog.o : $(abspath KeyBoardEditorDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1172,7 +1172,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/KeyRepeat.P
 endif
 
-$(OBJ_DIR)/KeyRepeat.o : $(abspath KeyRepeat.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/KeyRepeat.o : $(abspath KeyRepeat.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1180,7 +1180,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Label.P
 endif
 
-$(OBJ_DIR)/Label.o : $(abspath Label.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Label.o : $(abspath Label.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1188,7 +1188,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ListPanel.P
 endif
 
-$(OBJ_DIR)/ListPanel.o : $(abspath ListPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ListPanel.o : $(abspath ListPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1196,7 +1196,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ListViewPanel.P
 endif
 
-$(OBJ_DIR)/ListViewPanel.o : $(abspath ListViewPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ListViewPanel.o : $(abspath ListViewPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1204,7 +1204,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Menu.P
 endif
 
-$(OBJ_DIR)/Menu.o : $(abspath Menu.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Menu.o : $(abspath Menu.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1212,7 +1212,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/MenuBar.P
 endif
 
-$(OBJ_DIR)/MenuBar.o : $(abspath MenuBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/MenuBar.o : $(abspath MenuBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1220,7 +1220,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/MenuButton.P
 endif
 
-$(OBJ_DIR)/MenuButton.o : $(abspath MenuButton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/MenuButton.o : $(abspath MenuButton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1228,7 +1228,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/MenuItem.P
 endif
 
-$(OBJ_DIR)/MenuItem.o : $(abspath MenuItem.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/MenuItem.o : $(abspath MenuItem.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1236,7 +1236,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/MessageBox.P
 endif
 
-$(OBJ_DIR)/MessageBox.o : $(abspath MessageBox.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/MessageBox.o : $(abspath MessageBox.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1244,7 +1244,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/MessageDialog.P
 endif
 
-$(OBJ_DIR)/MessageDialog.o : $(abspath MessageDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/MessageDialog.o : $(abspath MessageDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1252,7 +1252,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Panel.P
 endif
 
-$(OBJ_DIR)/Panel.o : $(abspath Panel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Panel.o : $(abspath Panel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1260,7 +1260,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/PanelListPanel.P
 endif
 
-$(OBJ_DIR)/PanelListPanel.o : $(abspath PanelListPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/PanelListPanel.o : $(abspath PanelListPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1268,7 +1268,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/PerforceFileExplorer.P
 endif
 
-$(OBJ_DIR)/PerforceFileExplorer.o : $(abspath PerforceFileExplorer.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/PerforceFileExplorer.o : $(abspath PerforceFileExplorer.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1276,7 +1276,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/PerforceFileList.P
 endif
 
-$(OBJ_DIR)/PerforceFileList.o : $(abspath PerforceFileList.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/PerforceFileList.o : $(abspath PerforceFileList.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1284,7 +1284,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/perforcefilelistframe.P
 endif
 
-$(OBJ_DIR)/perforcefilelistframe.o : $(abspath perforcefilelistframe.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/perforcefilelistframe.o : $(abspath perforcefilelistframe.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1292,7 +1292,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ProgressBar.P
 endif
 
-$(OBJ_DIR)/ProgressBar.o : $(abspath ProgressBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ProgressBar.o : $(abspath ProgressBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1300,7 +1300,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ProgressBox.P
 endif
 
-$(OBJ_DIR)/ProgressBox.o : $(abspath ProgressBox.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ProgressBox.o : $(abspath ProgressBox.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1308,7 +1308,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/PropertyDialog.P
 endif
 
-$(OBJ_DIR)/PropertyDialog.o : $(abspath PropertyDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/PropertyDialog.o : $(abspath PropertyDialog.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1316,7 +1316,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/PropertyPage.P
 endif
 
-$(OBJ_DIR)/PropertyPage.o : $(abspath PropertyPage.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/PropertyPage.o : $(abspath PropertyPage.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1324,7 +1324,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/PropertySheet.P
 endif
 
-$(OBJ_DIR)/PropertySheet.o : $(abspath PropertySheet.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/PropertySheet.o : $(abspath PropertySheet.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1332,7 +1332,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/QueryBox.P
 endif
 
-$(OBJ_DIR)/QueryBox.o : $(abspath QueryBox.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/QueryBox.o : $(abspath QueryBox.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1340,7 +1340,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/RadioButton.P
 endif
 
-$(OBJ_DIR)/RadioButton.o : $(abspath RadioButton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/RadioButton.o : $(abspath RadioButton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1348,7 +1348,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/RichText.P
 endif
 
-$(OBJ_DIR)/RichText.o : $(abspath RichText.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/RichText.o : $(abspath RichText.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1356,7 +1356,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/RotatingProgressBar.P
 endif
 
-$(OBJ_DIR)/RotatingProgressBar.o : $(abspath RotatingProgressBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/RotatingProgressBar.o : $(abspath RotatingProgressBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1364,7 +1364,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/savedocumentquery.P
 endif
 
-$(OBJ_DIR)/savedocumentquery.o : $(abspath savedocumentquery.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/savedocumentquery.o : $(abspath savedocumentquery.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1372,7 +1372,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ScalableImagePanel.P
 endif
 
-$(OBJ_DIR)/ScalableImagePanel.o : $(abspath ScalableImagePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ScalableImagePanel.o : $(abspath ScalableImagePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1380,7 +1380,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ScrollableEditablePanel.P
 endif
 
-$(OBJ_DIR)/ScrollableEditablePanel.o : $(abspath ScrollableEditablePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ScrollableEditablePanel.o : $(abspath ScrollableEditablePanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1388,7 +1388,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ScrollBar.P
 endif
 
-$(OBJ_DIR)/ScrollBar.o : $(abspath ScrollBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ScrollBar.o : $(abspath ScrollBar.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1396,7 +1396,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ScrollBarSlider.P
 endif
 
-$(OBJ_DIR)/ScrollBarSlider.o : $(abspath ScrollBarSlider.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ScrollBarSlider.o : $(abspath ScrollBarSlider.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1404,7 +1404,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/SectionedListPanel.P
 endif
 
-$(OBJ_DIR)/SectionedListPanel.o : $(abspath SectionedListPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/SectionedListPanel.o : $(abspath SectionedListPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1412,7 +1412,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Slider.P
 endif
 
-$(OBJ_DIR)/Slider.o : $(abspath Slider.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Slider.o : $(abspath Slider.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1420,7 +1420,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Splitter.P
 endif
 
-$(OBJ_DIR)/Splitter.o : $(abspath Splitter.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Splitter.o : $(abspath Splitter.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1428,7 +1428,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/subrectimage.P
 endif
 
-$(OBJ_DIR)/subrectimage.o : $(abspath subrectimage.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/subrectimage.o : $(abspath subrectimage.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1436,7 +1436,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/TextEntry.P
 endif
 
-$(OBJ_DIR)/TextEntry.o : $(abspath TextEntry.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/TextEntry.o : $(abspath TextEntry.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1444,7 +1444,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/TextImage.P
 endif
 
-$(OBJ_DIR)/TextImage.o : $(abspath TextImage.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/TextImage.o : $(abspath TextImage.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1452,7 +1452,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ToggleButton.P
 endif
 
-$(OBJ_DIR)/ToggleButton.o : $(abspath ToggleButton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ToggleButton.o : $(abspath ToggleButton.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1460,7 +1460,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/Tooltip.P
 endif
 
-$(OBJ_DIR)/Tooltip.o : $(abspath Tooltip.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/Tooltip.o : $(abspath Tooltip.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1468,7 +1468,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/ToolWindow.P
 endif
 
-$(OBJ_DIR)/ToolWindow.o : $(abspath ToolWindow.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/ToolWindow.o : $(abspath ToolWindow.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1476,7 +1476,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/TreeView.P
 endif
 
-$(OBJ_DIR)/TreeView.o : $(abspath TreeView.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/TreeView.o : $(abspath TreeView.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1484,7 +1484,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/TreeViewListControl.P
 endif
 
-$(OBJ_DIR)/TreeViewListControl.o : $(abspath TreeViewListControl.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/TreeViewListControl.o : $(abspath TreeViewListControl.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1492,7 +1492,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/URLLabel.P
 endif
 
-$(OBJ_DIR)/URLLabel.o : $(abspath URLLabel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/URLLabel.o : $(abspath URLLabel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1500,7 +1500,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/WizardPanel.P
 endif
 
-$(OBJ_DIR)/WizardPanel.o : $(abspath WizardPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/WizardPanel.o : $(abspath WizardPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1508,7 +1508,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/WizardSubPanel.P
 endif
 
-$(OBJ_DIR)/WizardSubPanel.o : $(abspath WizardSubPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/WizardSubPanel.o : $(abspath WizardSubPanel.cpp) $(PWD)/vgui_controls_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 

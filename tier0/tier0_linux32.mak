@@ -34,7 +34,7 @@ SystemLibraries=-lrt
 DLL_EXT=.so
 SYM_EXT=.dbg
 FORCEINCLUDES= 
-DEFINES= -DVPC -DDEBUG -D_DEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=tier0 -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DTIER0_DLL_EXPORT -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/source/tier0 -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
+DEFINES= -DVPC -DDEBUG -D_DEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=tier0 -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DTIER0_DLL_EXPORT -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/EmSource/tier0 -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
 INCLUDEDIRS += ../common ../public ../public/tier0 ../public/tier1 ../thirdparty/SDL2 
 CONFTYPE=dll
 IMPORTLIBRARY=../lib/public/linux32/libtier0.so
@@ -97,7 +97,7 @@ OTHER_DEPENDENCIES = \
 
 
 # Include the base makefile now.
-include $(SRCROOT)/devtools/makefile_base_posix.mak
+include $(SRCROOT)/devtools/makefile_base_emscripten.mak
 
 
 
@@ -105,7 +105,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/memoverride.P
 endif
 
-$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -114,7 +114,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/pathmatch.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/pathmatch.o : $(abspath ../tier1/pathmatch.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/pathmatch.o : $(abspath ../tier1/pathmatch.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -123,7 +123,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/assert_dialog.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/assert_dialog.o : $(abspath assert_dialog.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/assert_dialog.o : $(abspath assert_dialog.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -132,7 +132,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/commandline.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/commandline.o : $(abspath commandline.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/commandline.o : $(abspath commandline.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -141,7 +141,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/cpu.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/cpu.o : $(abspath cpu.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/cpu.o : $(abspath cpu.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -150,7 +150,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/cpumonitoring.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/cpumonitoring.o : $(abspath cpumonitoring.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/cpumonitoring.o : $(abspath cpumonitoring.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -159,7 +159,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/cpu_posix.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/cpu_posix.o : $(abspath cpu_posix.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/cpu_posix.o : $(abspath cpu_posix.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -168,7 +168,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/cpu_usage.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/cpu_usage.o : $(abspath cpu_usage.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/cpu_usage.o : $(abspath cpu_usage.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -177,7 +177,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/dbg.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/dbg.o : $(abspath dbg.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/dbg.o : $(abspath dbg.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -186,7 +186,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/dynfunction.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/dynfunction.o : $(abspath dynfunction.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/dynfunction.o : $(abspath dynfunction.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -195,7 +195,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/fasttimer.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/fasttimer.o : $(abspath fasttimer.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/fasttimer.o : $(abspath fasttimer.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -204,7 +204,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/mem.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/mem.o : $(abspath mem.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/mem.o : $(abspath mem.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -213,7 +213,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/memdbg.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/memdbg.o : $(abspath memdbg.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/memdbg.o : $(abspath memdbg.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -222,7 +222,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/memstd.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/memstd.o : $(abspath memstd.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/memstd.o : $(abspath memstd.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -231,7 +231,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/memvalidate.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/memvalidate.o : $(abspath memvalidate.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/memvalidate.o : $(abspath memvalidate.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -240,7 +240,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/mem_helpers.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/mem_helpers.o : $(abspath mem_helpers.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/mem_helpers.o : $(abspath mem_helpers.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -249,7 +249,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/minidump.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/minidump.o : $(abspath minidump.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/minidump.o : $(abspath minidump.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -257,7 +257,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/pch_tier0.P
 endif
 
-$(OBJ_DIR)/pch_tier0.h.gch : pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/pch_tier0.h.gch : pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_PCH) $(POST_COMPILE_FILE)
 
@@ -269,10 +269,10 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 include $(OBJ_DIR)/pch_tier0.h.P
 endif
 
-$(OBJ_DIR)/pch_tier0.h : pch_tier0.h $(OBJ_DIR)/pch_tier0.h.gch $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/pch_tier0.h : pch_tier0.h $(OBJ_DIR)/pch_tier0.h.gch $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	cp -f $< $(OBJ_DIR)/pch_tier0.h
 
-$(OBJ_DIR)/pch_tier0.o : $(abspath pch_tier0.cpp) $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/pch_tier0.o : $(abspath pch_tier0.cpp) $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -281,7 +281,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/platform_posix.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/platform_posix.o : $(abspath platform_posix.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/platform_posix.o : $(abspath platform_posix.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -289,7 +289,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/PMELib.P
 endif
 
-$(OBJ_DIR)/PMELib.o : $(abspath PMELib.cpp) $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/PMELib.o : $(abspath PMELib.cpp) $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -298,7 +298,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/pme_posix.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/pme_posix.o : $(abspath pme_posix.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/pme_posix.o : $(abspath pme_posix.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -307,7 +307,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/progressbar.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/progressbar.o : $(abspath progressbar.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/progressbar.o : $(abspath progressbar.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -316,7 +316,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/security.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/security.o : $(abspath security.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/security.o : $(abspath security.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -325,7 +325,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/stacktools.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/stacktools.o : $(abspath stacktools.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/stacktools.o : $(abspath stacktools.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -334,7 +334,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/systeminformation.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/systeminformation.o : $(abspath systeminformation.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/systeminformation.o : $(abspath systeminformation.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -343,7 +343,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/thread.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/thread.o : $(abspath thread.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/thread.o : $(abspath thread.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -352,7 +352,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/threadtools.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/threadtools.o : $(abspath threadtools.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/threadtools.o : $(abspath threadtools.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -361,7 +361,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/tier0_strtools.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/tier0_strtools.o : $(abspath tier0_strtools.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/tier0_strtools.o : $(abspath tier0_strtools.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -370,7 +370,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/tslist.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/tslist.o : $(abspath tslist.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/tslist.o : $(abspath tslist.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -379,7 +379,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/vcrmode_posix.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/vcrmode_posix.o : $(abspath vcrmode_posix.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/vcrmode_posix.o : $(abspath vcrmode_posix.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -388,7 +388,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/vprof.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/vprof.o : $(abspath vprof.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/vprof.o : $(abspath vprof.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -418,7 +418,7 @@ SystemLibraries=-lrt
 DLL_EXT=.so
 SYM_EXT=.dbg
 FORCEINCLUDES= 
-DEFINES= -DVPC -DNDEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=tier0 -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DTIER0_DLL_EXPORT -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/source/tier0 -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
+DEFINES= -DVPC -DNDEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=tier0 -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DTIER0_DLL_EXPORT -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/EmSource/tier0 -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
 INCLUDEDIRS += ../common ../public ../public/tier0 ../public/tier1 ../thirdparty/SDL2 
 CONFTYPE=dll
 IMPORTLIBRARY=../lib/public/linux32/libtier0.so
@@ -481,7 +481,7 @@ OTHER_DEPENDENCIES = \
 
 
 # Include the base makefile now.
-include $(SRCROOT)/devtools/makefile_base_posix.mak
+include $(SRCROOT)/devtools/makefile_base_emscripten.mak
 
 
 
@@ -489,7 +489,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/memoverride.P
 endif
 
-$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -498,7 +498,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/pathmatch.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/pathmatch.o : $(abspath ../tier1/pathmatch.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/pathmatch.o : $(abspath ../tier1/pathmatch.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -507,7 +507,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/assert_dialog.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/assert_dialog.o : $(abspath assert_dialog.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/assert_dialog.o : $(abspath assert_dialog.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -516,7 +516,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/commandline.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/commandline.o : $(abspath commandline.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/commandline.o : $(abspath commandline.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -525,7 +525,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/cpu.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/cpu.o : $(abspath cpu.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/cpu.o : $(abspath cpu.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -534,7 +534,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/cpumonitoring.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/cpumonitoring.o : $(abspath cpumonitoring.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/cpumonitoring.o : $(abspath cpumonitoring.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -543,7 +543,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/cpu_posix.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/cpu_posix.o : $(abspath cpu_posix.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/cpu_posix.o : $(abspath cpu_posix.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -552,7 +552,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/cpu_usage.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/cpu_usage.o : $(abspath cpu_usage.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/cpu_usage.o : $(abspath cpu_usage.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -561,7 +561,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/dbg.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/dbg.o : $(abspath dbg.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/dbg.o : $(abspath dbg.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -570,7 +570,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/dynfunction.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/dynfunction.o : $(abspath dynfunction.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/dynfunction.o : $(abspath dynfunction.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -579,7 +579,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/fasttimer.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/fasttimer.o : $(abspath fasttimer.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/fasttimer.o : $(abspath fasttimer.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -588,7 +588,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/mem.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/mem.o : $(abspath mem.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/mem.o : $(abspath mem.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -597,7 +597,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/memdbg.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/memdbg.o : $(abspath memdbg.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/memdbg.o : $(abspath memdbg.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -606,7 +606,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/memstd.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/memstd.o : $(abspath memstd.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/memstd.o : $(abspath memstd.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -615,7 +615,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/memvalidate.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/memvalidate.o : $(abspath memvalidate.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/memvalidate.o : $(abspath memvalidate.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -624,7 +624,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/mem_helpers.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/mem_helpers.o : $(abspath mem_helpers.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/mem_helpers.o : $(abspath mem_helpers.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -633,7 +633,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/minidump.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/minidump.o : $(abspath minidump.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/minidump.o : $(abspath minidump.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -641,7 +641,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/pch_tier0.P
 endif
 
-$(OBJ_DIR)/pch_tier0.h.gch : pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/pch_tier0.h.gch : pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_PCH) $(POST_COMPILE_FILE)
 
@@ -653,10 +653,10 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 include $(OBJ_DIR)/pch_tier0.h.P
 endif
 
-$(OBJ_DIR)/pch_tier0.h : pch_tier0.h $(OBJ_DIR)/pch_tier0.h.gch $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/pch_tier0.h : pch_tier0.h $(OBJ_DIR)/pch_tier0.h.gch $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	cp -f $< $(OBJ_DIR)/pch_tier0.h
 
-$(OBJ_DIR)/pch_tier0.o : $(abspath pch_tier0.cpp) $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/pch_tier0.o : $(abspath pch_tier0.cpp) $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -665,7 +665,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/platform_posix.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/platform_posix.o : $(abspath platform_posix.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/platform_posix.o : $(abspath platform_posix.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -673,7 +673,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/PMELib.P
 endif
 
-$(OBJ_DIR)/PMELib.o : $(abspath PMELib.cpp) $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/PMELib.o : $(abspath PMELib.cpp) $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -682,7 +682,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/pme_posix.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/pme_posix.o : $(abspath pme_posix.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/pme_posix.o : $(abspath pme_posix.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -691,7 +691,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/progressbar.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/progressbar.o : $(abspath progressbar.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/progressbar.o : $(abspath progressbar.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -700,7 +700,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/security.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/security.o : $(abspath security.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/security.o : $(abspath security.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -709,7 +709,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/stacktools.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/stacktools.o : $(abspath stacktools.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/stacktools.o : $(abspath stacktools.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -718,7 +718,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/systeminformation.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/systeminformation.o : $(abspath systeminformation.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/systeminformation.o : $(abspath systeminformation.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -727,7 +727,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/thread.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/thread.o : $(abspath thread.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/thread.o : $(abspath thread.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -736,7 +736,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/threadtools.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/threadtools.o : $(abspath threadtools.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/threadtools.o : $(abspath threadtools.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -745,7 +745,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/tier0_strtools.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/tier0_strtools.o : $(abspath tier0_strtools.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/tier0_strtools.o : $(abspath tier0_strtools.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -754,7 +754,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/tslist.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/tslist.o : $(abspath tslist.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/tslist.o : $(abspath tslist.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -763,7 +763,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/vcrmode_posix.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/vcrmode_posix.o : $(abspath vcrmode_posix.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/vcrmode_posix.o : $(abspath vcrmode_posix.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 
@@ -772,7 +772,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 endif
 
 $(OBJ_DIR)/vprof.o : TARGET_PCH_FILE = $(OBJ_DIR)/pch_tier0.h
-$(OBJ_DIR)/vprof.o : $(abspath vprof.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak
+$(OBJ_DIR)/vprof.o : $(abspath vprof.cpp) $(OBJ_DIR)/pch_tier0.h.gch $(OBJ_DIR)/pch_tier0.h $(PWD)/tier0_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE_WITH_PCH) $(POST_COMPILE_FILE)
 

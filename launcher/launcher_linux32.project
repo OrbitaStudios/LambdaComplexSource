@@ -32,6 +32,7 @@
     <VirtualDirectory Name="Source Files">
       <File Name="../public/filesystem_init.cpp"/>
       <File Name="../public/tier0/memoverride.cpp"/>
+      <File Name="emscripten/launcher.cpp"/>
       <File Name="launcher.cpp"/>
       <File Name="reslistgenerator.cpp"/>
     </VirtualDirectory>

@@ -34,7 +34,7 @@ SystemLibraries=-lrt -lcurl-gnutls
 DLL_EXT=.so
 SYM_EXT=.dbg
 FORCEINCLUDES= 
-DEFINES= -DVPC -DDEBUG -D_DEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=replay -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DREPLAY_DLL -DREPLAY_ENABLED -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/source/replay -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
+DEFINES= -DVPC -DDEBUG -D_DEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=replay -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DREPLAY_DLL -DREPLAY_ENABLED -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/EmSource/replay -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
 INCLUDEDIRS += ../common ../public ../public/tier0 ../public/tier1 ../thirdparty/SDL2 
 CONFTYPE=dll
 IMPORTLIBRARY=
@@ -143,7 +143,7 @@ OTHER_DEPENDENCIES = \
 
 
 # Include the base makefile now.
-include $(SRCROOT)/devtools/makefile_base_posix.mak
+include $(SRCROOT)/devtools/makefile_base_emscripten.mak
 
 
 
@@ -151,7 +151,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/imageutils.P
 endif
 
-$(OBJ_DIR)/imageutils.o : $(abspath ../common/imageutils.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/imageutils.o : $(abspath ../common/imageutils.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -159,7 +159,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/netmessages.P
 endif
 
-$(OBJ_DIR)/netmessages.o : $(abspath ../common/netmessages.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/netmessages.o : $(abspath ../common/netmessages.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -167,7 +167,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/memoverride.P
 endif
 
-$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -175,7 +175,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/baserecordingsession.P
 endif
 
-$(OBJ_DIR)/baserecordingsession.o : $(abspath baserecordingsession.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/baserecordingsession.o : $(abspath baserecordingsession.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -183,7 +183,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/baserecordingsessionblock.P
 endif
 
-$(OBJ_DIR)/baserecordingsessionblock.o : $(abspath baserecordingsessionblock.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/baserecordingsessionblock.o : $(abspath baserecordingsessionblock.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -191,7 +191,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/baserecordingsessionblockmanager.P
 endif
 
-$(OBJ_DIR)/baserecordingsessionblockmanager.o : $(abspath baserecordingsessionblockmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/baserecordingsessionblockmanager.o : $(abspath baserecordingsessionblockmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -199,7 +199,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/baserecordingsessionmanager.P
 endif
 
-$(OBJ_DIR)/baserecordingsessionmanager.o : $(abspath baserecordingsessionmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/baserecordingsessionmanager.o : $(abspath baserecordingsessionmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -207,7 +207,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/basethinker.P
 endif
 
-$(OBJ_DIR)/basethinker.o : $(abspath basethinker.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/basethinker.o : $(abspath basethinker.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -215,7 +215,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_commands.P
 endif
 
-$(OBJ_DIR)/cl_commands.o : $(abspath cl_commands.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_commands.o : $(abspath cl_commands.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -223,7 +223,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_cvars.P
 endif
 
-$(OBJ_DIR)/cl_cvars.o : $(abspath cl_cvars.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_cvars.o : $(abspath cl_cvars.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -231,7 +231,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_downloader.P
 endif
 
-$(OBJ_DIR)/cl_downloader.o : $(abspath cl_downloader.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_downloader.o : $(abspath cl_downloader.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -239,7 +239,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_performancecontroller.P
 endif
 
-$(OBJ_DIR)/cl_performancecontroller.o : $(abspath cl_performancecontroller.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_performancecontroller.o : $(abspath cl_performancecontroller.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -247,7 +247,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_performancemanager.P
 endif
 
-$(OBJ_DIR)/cl_performancemanager.o : $(abspath cl_performancemanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_performancemanager.o : $(abspath cl_performancemanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -255,7 +255,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_recordingsession.P
 endif
 
-$(OBJ_DIR)/cl_recordingsession.o : $(abspath cl_recordingsession.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_recordingsession.o : $(abspath cl_recordingsession.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -263,7 +263,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_recordingsessionblock.P
 endif
 
-$(OBJ_DIR)/cl_recordingsessionblock.o : $(abspath cl_recordingsessionblock.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_recordingsessionblock.o : $(abspath cl_recordingsessionblock.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -271,7 +271,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_recordingsessionblockmanager.P
 endif
 
-$(OBJ_DIR)/cl_recordingsessionblockmanager.o : $(abspath cl_recordingsessionblockmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_recordingsessionblockmanager.o : $(abspath cl_recordingsessionblockmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -279,7 +279,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_recordingsessionmanager.P
 endif
 
-$(OBJ_DIR)/cl_recordingsessionmanager.o : $(abspath cl_recordingsessionmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_recordingsessionmanager.o : $(abspath cl_recordingsessionmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -287,7 +287,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_renderqueue.P
 endif
 
-$(OBJ_DIR)/cl_renderqueue.o : $(abspath cl_renderqueue.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_renderqueue.o : $(abspath cl_renderqueue.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -295,7 +295,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_replaycontext.P
 endif
 
-$(OBJ_DIR)/cl_replaycontext.o : $(abspath cl_replaycontext.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_replaycontext.o : $(abspath cl_replaycontext.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -303,7 +303,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_replaymanager.P
 endif
 
-$(OBJ_DIR)/cl_replaymanager.o : $(abspath cl_replaymanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_replaymanager.o : $(abspath cl_replaymanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -311,7 +311,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_replaymovie.P
 endif
 
-$(OBJ_DIR)/cl_replaymovie.o : $(abspath cl_replaymovie.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_replaymovie.o : $(abspath cl_replaymovie.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -319,7 +319,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_replaymoviemanager.P
 endif
 
-$(OBJ_DIR)/cl_replaymoviemanager.o : $(abspath cl_replaymoviemanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_replaymoviemanager.o : $(abspath cl_replaymoviemanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -327,7 +327,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_screenshotmanager.P
 endif
 
-$(OBJ_DIR)/cl_screenshotmanager.o : $(abspath cl_screenshotmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_screenshotmanager.o : $(abspath cl_screenshotmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -335,7 +335,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_sessionblockdownloader.P
 endif
 
-$(OBJ_DIR)/cl_sessionblockdownloader.o : $(abspath cl_sessionblockdownloader.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_sessionblockdownloader.o : $(abspath cl_sessionblockdownloader.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -343,7 +343,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_sessioninfodownloader.P
 endif
 
-$(OBJ_DIR)/cl_sessioninfodownloader.o : $(abspath cl_sessioninfodownloader.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_sessioninfodownloader.o : $(abspath cl_sessioninfodownloader.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -351,7 +351,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/compression.P
 endif
 
-$(OBJ_DIR)/compression.o : $(abspath compression.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/compression.o : $(abspath compression.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -359,7 +359,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/errorsystem.P
 endif
 
-$(OBJ_DIR)/errorsystem.o : $(abspath errorsystem.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/errorsystem.o : $(abspath errorsystem.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -367,7 +367,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/managertest.P
 endif
 
-$(OBJ_DIR)/managertest.o : $(abspath managertest.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/managertest.o : $(abspath managertest.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -375,7 +375,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/replaysystem.P
 endif
 
-$(OBJ_DIR)/replaysystem.o : $(abspath replaysystem.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/replaysystem.o : $(abspath replaysystem.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -383,7 +383,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/replay_dbg.P
 endif
 
-$(OBJ_DIR)/replay_dbg.o : $(abspath replay_dbg.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/replay_dbg.o : $(abspath replay_dbg.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -391,7 +391,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/replay_reconstructor.P
 endif
 
-$(OBJ_DIR)/replay_reconstructor.o : $(abspath replay_reconstructor.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/replay_reconstructor.o : $(abspath replay_reconstructor.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -399,7 +399,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sessioninfoheader.P
 endif
 
-$(OBJ_DIR)/sessioninfoheader.o : $(abspath sessioninfoheader.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sessioninfoheader.o : $(abspath sessioninfoheader.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -407,7 +407,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/shared_cvars.P
 endif
 
-$(OBJ_DIR)/shared_cvars.o : $(abspath shared_cvars.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/shared_cvars.o : $(abspath shared_cvars.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -415,7 +415,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/shared_replaycontext.P
 endif
 
-$(OBJ_DIR)/shared_replaycontext.o : $(abspath shared_replaycontext.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/shared_replaycontext.o : $(abspath shared_replaycontext.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -423,7 +423,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/spew.P
 endif
 
-$(OBJ_DIR)/spew.o : $(abspath spew.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/spew.o : $(abspath spew.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -431,7 +431,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_basejob.P
 endif
 
-$(OBJ_DIR)/sv_basejob.o : $(abspath sv_basejob.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_basejob.o : $(abspath sv_basejob.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -439,7 +439,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_commands.P
 endif
 
-$(OBJ_DIR)/sv_commands.o : $(abspath sv_commands.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_commands.o : $(abspath sv_commands.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -447,7 +447,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_cvars.P
 endif
 
-$(OBJ_DIR)/sv_cvars.o : $(abspath sv_cvars.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_cvars.o : $(abspath sv_cvars.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -455,7 +455,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_filepublish.P
 endif
 
-$(OBJ_DIR)/sv_filepublish.o : $(abspath sv_filepublish.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_filepublish.o : $(abspath sv_filepublish.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -463,7 +463,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_fileservercleanup.P
 endif
 
-$(OBJ_DIR)/sv_fileservercleanup.o : $(abspath sv_fileservercleanup.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_fileservercleanup.o : $(abspath sv_fileservercleanup.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -471,7 +471,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_publishtest.P
 endif
 
-$(OBJ_DIR)/sv_publishtest.o : $(abspath sv_publishtest.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_publishtest.o : $(abspath sv_publishtest.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -479,7 +479,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_recordingsession.P
 endif
 
-$(OBJ_DIR)/sv_recordingsession.o : $(abspath sv_recordingsession.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_recordingsession.o : $(abspath sv_recordingsession.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -487,7 +487,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_recordingsessionblock.P
 endif
 
-$(OBJ_DIR)/sv_recordingsessionblock.o : $(abspath sv_recordingsessionblock.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_recordingsessionblock.o : $(abspath sv_recordingsessionblock.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -495,7 +495,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_recordingsessionblockmanager.P
 endif
 
-$(OBJ_DIR)/sv_recordingsessionblockmanager.o : $(abspath sv_recordingsessionblockmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_recordingsessionblockmanager.o : $(abspath sv_recordingsessionblockmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -503,7 +503,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_recordingsessionmanager.P
 endif
 
-$(OBJ_DIR)/sv_recordingsessionmanager.o : $(abspath sv_recordingsessionmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_recordingsessionmanager.o : $(abspath sv_recordingsessionmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -511,7 +511,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_replaycontext.P
 endif
 
-$(OBJ_DIR)/sv_replaycontext.o : $(abspath sv_replaycontext.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_replaycontext.o : $(abspath sv_replaycontext.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -519,7 +519,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_sessionblockpublisher.P
 endif
 
-$(OBJ_DIR)/sv_sessionblockpublisher.o : $(abspath sv_sessionblockpublisher.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_sessionblockpublisher.o : $(abspath sv_sessionblockpublisher.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -527,7 +527,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_sessioninfopublisher.P
 endif
 
-$(OBJ_DIR)/sv_sessioninfopublisher.o : $(abspath sv_sessioninfopublisher.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_sessioninfopublisher.o : $(abspath sv_sessioninfopublisher.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -535,7 +535,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_sessionpublishmanager.P
 endif
 
-$(OBJ_DIR)/sv_sessionpublishmanager.o : $(abspath sv_sessionpublishmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_sessionpublishmanager.o : $(abspath sv_sessionpublishmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -543,7 +543,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_sessionrecorder.P
 endif
 
-$(OBJ_DIR)/sv_sessionrecorder.o : $(abspath sv_sessionrecorder.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_sessionrecorder.o : $(abspath sv_sessionrecorder.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -551,7 +551,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/thinkmanager.P
 endif
 
-$(OBJ_DIR)/thinkmanager.o : $(abspath thinkmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/thinkmanager.o : $(abspath thinkmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -581,7 +581,7 @@ SystemLibraries=-lrt -lcurl-gnutls
 DLL_EXT=.so
 SYM_EXT=.dbg
 FORCEINCLUDES= 
-DEFINES= -DVPC -DNDEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=replay -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DREPLAY_DLL -DREPLAY_ENABLED -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/source/replay -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
+DEFINES= -DVPC -DNDEBUG -DGNUC -DPOSIX -DCOMPILER_GCC -D_DLL_EXT=.so -D_LINUX -DLINUX -DPOSIX -D_POSIX -DDLLNAME=replay -DBINK_VIDEO -DGL_GLEXT_PROTOTYPES -DDX_TO_GL_ABSTRACTION -DUSE_SDL -DDEV_BUILD -DFRAME_POINTER_OMISSION_DISABLED -DREPLAY_DLL -DREPLAY_ENABLED -D_EXTERNAL_DLL_EXT=.so -DVPCGAMECAPS=HL2 -DPROJECTDIR=/home/universe/Documents/EmSource/replay -D_DLL_EXT=.so -DSOURCE1=1 -DVPCGAME=hl2 -D_LINUX=1 -D_POSIX=1 -DLINUX=1 -DPOSIX=1 
 INCLUDEDIRS += ../common ../public ../public/tier0 ../public/tier1 ../thirdparty/SDL2 
 CONFTYPE=dll
 IMPORTLIBRARY=
@@ -690,7 +690,7 @@ OTHER_DEPENDENCIES = \
 
 
 # Include the base makefile now.
-include $(SRCROOT)/devtools/makefile_base_posix.mak
+include $(SRCROOT)/devtools/makefile_base_emscripten.mak
 
 
 
@@ -698,7 +698,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/imageutils.P
 endif
 
-$(OBJ_DIR)/imageutils.o : $(abspath ../common/imageutils.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/imageutils.o : $(abspath ../common/imageutils.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -706,7 +706,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/netmessages.P
 endif
 
-$(OBJ_DIR)/netmessages.o : $(abspath ../common/netmessages.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/netmessages.o : $(abspath ../common/netmessages.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -714,7 +714,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/memoverride.P
 endif
 
-$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/memoverride.o : $(abspath ../public/tier0/memoverride.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -722,7 +722,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/baserecordingsession.P
 endif
 
-$(OBJ_DIR)/baserecordingsession.o : $(abspath baserecordingsession.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/baserecordingsession.o : $(abspath baserecordingsession.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -730,7 +730,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/baserecordingsessionblock.P
 endif
 
-$(OBJ_DIR)/baserecordingsessionblock.o : $(abspath baserecordingsessionblock.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/baserecordingsessionblock.o : $(abspath baserecordingsessionblock.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -738,7 +738,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/baserecordingsessionblockmanager.P
 endif
 
-$(OBJ_DIR)/baserecordingsessionblockmanager.o : $(abspath baserecordingsessionblockmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/baserecordingsessionblockmanager.o : $(abspath baserecordingsessionblockmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -746,7 +746,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/baserecordingsessionmanager.P
 endif
 
-$(OBJ_DIR)/baserecordingsessionmanager.o : $(abspath baserecordingsessionmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/baserecordingsessionmanager.o : $(abspath baserecordingsessionmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -754,7 +754,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/basethinker.P
 endif
 
-$(OBJ_DIR)/basethinker.o : $(abspath basethinker.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/basethinker.o : $(abspath basethinker.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -762,7 +762,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_commands.P
 endif
 
-$(OBJ_DIR)/cl_commands.o : $(abspath cl_commands.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_commands.o : $(abspath cl_commands.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -770,7 +770,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_cvars.P
 endif
 
-$(OBJ_DIR)/cl_cvars.o : $(abspath cl_cvars.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_cvars.o : $(abspath cl_cvars.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -778,7 +778,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_downloader.P
 endif
 
-$(OBJ_DIR)/cl_downloader.o : $(abspath cl_downloader.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_downloader.o : $(abspath cl_downloader.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -786,7 +786,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_performancecontroller.P
 endif
 
-$(OBJ_DIR)/cl_performancecontroller.o : $(abspath cl_performancecontroller.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_performancecontroller.o : $(abspath cl_performancecontroller.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -794,7 +794,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_performancemanager.P
 endif
 
-$(OBJ_DIR)/cl_performancemanager.o : $(abspath cl_performancemanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_performancemanager.o : $(abspath cl_performancemanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -802,7 +802,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_recordingsession.P
 endif
 
-$(OBJ_DIR)/cl_recordingsession.o : $(abspath cl_recordingsession.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_recordingsession.o : $(abspath cl_recordingsession.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -810,7 +810,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_recordingsessionblock.P
 endif
 
-$(OBJ_DIR)/cl_recordingsessionblock.o : $(abspath cl_recordingsessionblock.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_recordingsessionblock.o : $(abspath cl_recordingsessionblock.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -818,7 +818,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_recordingsessionblockmanager.P
 endif
 
-$(OBJ_DIR)/cl_recordingsessionblockmanager.o : $(abspath cl_recordingsessionblockmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_recordingsessionblockmanager.o : $(abspath cl_recordingsessionblockmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -826,7 +826,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_recordingsessionmanager.P
 endif
 
-$(OBJ_DIR)/cl_recordingsessionmanager.o : $(abspath cl_recordingsessionmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_recordingsessionmanager.o : $(abspath cl_recordingsessionmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -834,7 +834,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_renderqueue.P
 endif
 
-$(OBJ_DIR)/cl_renderqueue.o : $(abspath cl_renderqueue.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_renderqueue.o : $(abspath cl_renderqueue.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -842,7 +842,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_replaycontext.P
 endif
 
-$(OBJ_DIR)/cl_replaycontext.o : $(abspath cl_replaycontext.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_replaycontext.o : $(abspath cl_replaycontext.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -850,7 +850,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_replaymanager.P
 endif
 
-$(OBJ_DIR)/cl_replaymanager.o : $(abspath cl_replaymanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_replaymanager.o : $(abspath cl_replaymanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -858,7 +858,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_replaymovie.P
 endif
 
-$(OBJ_DIR)/cl_replaymovie.o : $(abspath cl_replaymovie.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_replaymovie.o : $(abspath cl_replaymovie.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -866,7 +866,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_replaymoviemanager.P
 endif
 
-$(OBJ_DIR)/cl_replaymoviemanager.o : $(abspath cl_replaymoviemanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_replaymoviemanager.o : $(abspath cl_replaymoviemanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -874,7 +874,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_screenshotmanager.P
 endif
 
-$(OBJ_DIR)/cl_screenshotmanager.o : $(abspath cl_screenshotmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_screenshotmanager.o : $(abspath cl_screenshotmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -882,7 +882,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_sessionblockdownloader.P
 endif
 
-$(OBJ_DIR)/cl_sessionblockdownloader.o : $(abspath cl_sessionblockdownloader.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_sessionblockdownloader.o : $(abspath cl_sessionblockdownloader.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -890,7 +890,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/cl_sessioninfodownloader.P
 endif
 
-$(OBJ_DIR)/cl_sessioninfodownloader.o : $(abspath cl_sessioninfodownloader.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/cl_sessioninfodownloader.o : $(abspath cl_sessioninfodownloader.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -898,7 +898,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/compression.P
 endif
 
-$(OBJ_DIR)/compression.o : $(abspath compression.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/compression.o : $(abspath compression.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -906,7 +906,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/errorsystem.P
 endif
 
-$(OBJ_DIR)/errorsystem.o : $(abspath errorsystem.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/errorsystem.o : $(abspath errorsystem.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -914,7 +914,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/managertest.P
 endif
 
-$(OBJ_DIR)/managertest.o : $(abspath managertest.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/managertest.o : $(abspath managertest.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -922,7 +922,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/replaysystem.P
 endif
 
-$(OBJ_DIR)/replaysystem.o : $(abspath replaysystem.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/replaysystem.o : $(abspath replaysystem.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -930,7 +930,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/replay_dbg.P
 endif
 
-$(OBJ_DIR)/replay_dbg.o : $(abspath replay_dbg.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/replay_dbg.o : $(abspath replay_dbg.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -938,7 +938,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/replay_reconstructor.P
 endif
 
-$(OBJ_DIR)/replay_reconstructor.o : $(abspath replay_reconstructor.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/replay_reconstructor.o : $(abspath replay_reconstructor.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -946,7 +946,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sessioninfoheader.P
 endif
 
-$(OBJ_DIR)/sessioninfoheader.o : $(abspath sessioninfoheader.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sessioninfoheader.o : $(abspath sessioninfoheader.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -954,7 +954,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/shared_cvars.P
 endif
 
-$(OBJ_DIR)/shared_cvars.o : $(abspath shared_cvars.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/shared_cvars.o : $(abspath shared_cvars.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -962,7 +962,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/shared_replaycontext.P
 endif
 
-$(OBJ_DIR)/shared_replaycontext.o : $(abspath shared_replaycontext.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/shared_replaycontext.o : $(abspath shared_replaycontext.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -970,7 +970,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/spew.P
 endif
 
-$(OBJ_DIR)/spew.o : $(abspath spew.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/spew.o : $(abspath spew.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -978,7 +978,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_basejob.P
 endif
 
-$(OBJ_DIR)/sv_basejob.o : $(abspath sv_basejob.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_basejob.o : $(abspath sv_basejob.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -986,7 +986,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_commands.P
 endif
 
-$(OBJ_DIR)/sv_commands.o : $(abspath sv_commands.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_commands.o : $(abspath sv_commands.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -994,7 +994,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_cvars.P
 endif
 
-$(OBJ_DIR)/sv_cvars.o : $(abspath sv_cvars.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_cvars.o : $(abspath sv_cvars.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1002,7 +1002,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_filepublish.P
 endif
 
-$(OBJ_DIR)/sv_filepublish.o : $(abspath sv_filepublish.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_filepublish.o : $(abspath sv_filepublish.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1010,7 +1010,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_fileservercleanup.P
 endif
 
-$(OBJ_DIR)/sv_fileservercleanup.o : $(abspath sv_fileservercleanup.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_fileservercleanup.o : $(abspath sv_fileservercleanup.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1018,7 +1018,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_publishtest.P
 endif
 
-$(OBJ_DIR)/sv_publishtest.o : $(abspath sv_publishtest.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_publishtest.o : $(abspath sv_publishtest.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1026,7 +1026,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_recordingsession.P
 endif
 
-$(OBJ_DIR)/sv_recordingsession.o : $(abspath sv_recordingsession.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_recordingsession.o : $(abspath sv_recordingsession.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1034,7 +1034,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_recordingsessionblock.P
 endif
 
-$(OBJ_DIR)/sv_recordingsessionblock.o : $(abspath sv_recordingsessionblock.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_recordingsessionblock.o : $(abspath sv_recordingsessionblock.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1042,7 +1042,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_recordingsessionblockmanager.P
 endif
 
-$(OBJ_DIR)/sv_recordingsessionblockmanager.o : $(abspath sv_recordingsessionblockmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_recordingsessionblockmanager.o : $(abspath sv_recordingsessionblockmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1050,7 +1050,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_recordingsessionmanager.P
 endif
 
-$(OBJ_DIR)/sv_recordingsessionmanager.o : $(abspath sv_recordingsessionmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_recordingsessionmanager.o : $(abspath sv_recordingsessionmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1058,7 +1058,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_replaycontext.P
 endif
 
-$(OBJ_DIR)/sv_replaycontext.o : $(abspath sv_replaycontext.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_replaycontext.o : $(abspath sv_replaycontext.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1066,7 +1066,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_sessionblockpublisher.P
 endif
 
-$(OBJ_DIR)/sv_sessionblockpublisher.o : $(abspath sv_sessionblockpublisher.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_sessionblockpublisher.o : $(abspath sv_sessionblockpublisher.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1074,7 +1074,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_sessioninfopublisher.P
 endif
 
-$(OBJ_DIR)/sv_sessioninfopublisher.o : $(abspath sv_sessioninfopublisher.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_sessioninfopublisher.o : $(abspath sv_sessioninfopublisher.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1082,7 +1082,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_sessionpublishmanager.P
 endif
 
-$(OBJ_DIR)/sv_sessionpublishmanager.o : $(abspath sv_sessionpublishmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_sessionpublishmanager.o : $(abspath sv_sessionpublishmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1090,7 +1090,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/sv_sessionrecorder.P
 endif
 
-$(OBJ_DIR)/sv_sessionrecorder.o : $(abspath sv_sessionrecorder.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/sv_sessionrecorder.o : $(abspath sv_sessionrecorder.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
@@ -1098,7 +1098,7 @@ ifneq (clean, $(findstring clean, $(MAKECMDGOALS)))
 -include $(OBJ_DIR)/thinkmanager.P
 endif
 
-$(OBJ_DIR)/thinkmanager.o : $(abspath thinkmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_posix.mak $(OTHER_DEPENDENCIES)
+$(OBJ_DIR)/thinkmanager.o : $(abspath thinkmanager.cpp) $(PWD)/replay_linux32.mak $(SRCROOT)/devtools/makefile_base_emscripten.mak $(OTHER_DEPENDENCIES)
 	$(PRE_COMPILE_FILE)
 	$(COMPILE_FILE) $(POST_COMPILE_FILE)
 
