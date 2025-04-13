@@ -24,7 +24,7 @@ endif
 # Allow redirection to an arbitrary location for the tools we use.
 # This helps with cross-compilation by not requiring Linux tools
 # to be on the path and possibly overriding Windows tools.
-AR := emscripten/emar
+AR := emar
 CP = $(TOOL_PATH)cp
 CUT = $(TOOL_PATH)cut
 DIRNAME = $(TOOL_PATH)dirname
@@ -44,8 +44,8 @@ HOSTNAME := $($(SHELL) $(TOOL_PATH)hostname)
 -include $(SRCROOT)/devtools/steam_def.mak
 -include $(SRCROOT)/devtools/sourcesdk_def.mak
 
-CC = emscripten/emcc
-CXX = emscripten/em++
+CC = emcc
+CXX = em++
 
 #ifneq (,$(findstring emcc,$(CXX)))
 CLANG_BUILD = 1
