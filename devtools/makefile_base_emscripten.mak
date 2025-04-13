@@ -84,13 +84,19 @@ DEFINES += -D_GLIBCXX_USE_CXX11_ABI=0
 ARCH_FLAGS = 
 BUILDING_MULTI_ARCH = 0
 # Preserve cflags set in environment
-ENV_CFLAGS := $(CFLAGS) -fpermissive
+ENV_CFLAGS := $(CFLAGS)
 ENV_CXXFLAGS := $(CXXFLAGS) -fpermissive
 CPPFLAGS = $(DEFINES) $(addprefix -I, $(abspath $(INCLUDEDIRS) ))
 BASE_CFLAGS = $(ARCH_FLAGS) $(CPPFLAGS) $(WARN_FLAGS) -fvisibility=$(SymbolVisibility) $(OptimizerLevel) -pipe $(GCC_ExtraCompilerFlags) -Usprintf -Ustrncpy -UPROTECTED_THINGS_ENABLE
 
+# Browsers have a minimal amount of memory to use.
+BASE_CFLAGS += --no-entry -s ERROR_ON_UNDEFINED_SYMBOLS=0 -s STANDALONE_WASM=1 -s INITIAL_MEMORY=512MB -s ALLOW_MEMORY_GROWTH=1 MAXIMUM_MEMORY=4GB 
+# The Source Engine uses ZFS.
+BASE_CFLAGS += FORCE_FILESYSTEM=1
+
 # Emscripten can't find Linux headers, so we should add this.
-BASE_CFLAGS += -I/usr/include/
+# Uncomment if required!!!
+#BASE_CFLAGS += -I/usr/include/
 
 BASE_CXXFLAGS = -std=c++11
 # Additional CXXFLAGS when compiling PCH files
