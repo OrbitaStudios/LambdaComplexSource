@@ -85,12 +85,10 @@ static const char *gBugTokenTable[] = {
 inline void CS15ForwardStatusMsg( const char* text, int clientid )
 {
 	/* Removed for partner depot */
-	ConMsg("[forwardstatusmsg]%s", text);
 }
 inline void CS15ForwardStatusMsg( const wchar_t* text, int clientid )
 {
 	/* Removed for partner depot */
-	ConMsg("[forwardstatusmsg]%ls", text);
 }
 #endif // CSTRIKE15
 
@@ -757,7 +755,7 @@ CBaseHudChat::CBaseHudChat( const char *pElementName )
 	Assert( g_pHudChat == NULL );
 	g_pHudChat = this;
 
-	vgui::Panel *pParent = GetFullscreenClientMode()->GetViewport();
+	vgui::Panel *pParent = GetClientMode()->GetViewport();
 	SetParent( pParent );
 
 	vgui::HScheme scheme = vgui::scheme()->LoadSchemeFromFileEx( NULL, "resource/ChatScheme.res", "ChatScheme" );
@@ -1044,12 +1042,11 @@ bool CBaseHudChat::MsgFunc_TextMsg( const CCSUsrMsg_TextMsg &msg )
 
 		if ( szString[0] )
 		{
-		    static char tmpStrBuf[1024];
-			V_strncpy( tmpStrBuf, hudtextmessage->LookupString( szString, &msg_dest ), sizeof(tmpStrBuf) );
+			char *tmpStr = hudtextmessage->LookupString( szString, &msg_dest );
 			bool bTranslated = false;
-			if ( tmpStrBuf[ 0 ] == '#' )	// only translate parameters intended as localization tokens
+			if ( tmpStr[ 0 ] == '#' )	// only translate parameters intended as localization tokens
 			{
-				const wchar_t *pBuf = g_pVGuiLocalize->Find( tmpStrBuf );
+				const wchar_t *pBuf = g_pVGuiLocalize->Find( tmpStr );
 				if ( pBuf )
 				{
 					// Copy pBuf into szBuf[i].
@@ -1064,9 +1061,9 @@ bool CBaseHudChat::MsgFunc_TextMsg( const CCSUsrMsg_TextMsg &msg )
 			{
 				if ( i )
 				{
-					StripEndNewlineFromString( tmpStrBuf );  // these strings are meant for substitution into the main strings, so cull the automatic end newlines
+					StripEndNewlineFromString( tmpStr );  // these strings are meant for substitution into the main strings, so cull the automatic end newlines
 				}
-				g_pVGuiLocalize->ConvertANSIToUnicode( tmpStrBuf, szBuf[ i ], sizeof( szBuf[ i ] ) );
+				g_pVGuiLocalize->ConvertANSIToUnicode( tmpStr, szBuf[ i ], sizeof( szBuf[ i ] ) );
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -8,7 +8,7 @@
 #include <vgui/IScheme.h>
 #include <vgui/IVGui.h>
 #include "vgui/ISurface.h"
-#include <keyvalues.h>
+#include <KeyValues.h>
 
 #include <vgui_controls/Controls.h>
 #include <vgui_controls/Menu.h>
@@ -19,8 +19,6 @@
 #include <tier0/memdbgon.h>
 
 using namespace vgui;
-
-const int KEYBINDING_INSET = 5;
 
 //-----------------------------------------------------------------------------
 // Purpose: Check box image
@@ -224,7 +222,7 @@ void MenuItem::OnCursorEntered()
 	// forward the message on to the parent of this menu.
 	KeyValues *msg = new KeyValues ("CursorEnteredMenuItem");
 	// tell the parent this menuitem is the one that was entered so it can highlight it
-	msg->SetPtr("VPanel", (void*)GetVPanel());
+	msg->SetInt("VPanel", GetVPanel());
 
 	ivgui()->PostMessage(GetVParent(), msg, NULL);
 }
@@ -238,7 +236,7 @@ void MenuItem::OnCursorExited()
 	// forward the message on to the parent of this menu.
 	KeyValues *msg = new KeyValues ("CursorExitedMenuItem");
 	// tell the parent this menuitem is the one that was entered so it can unhighlight it
-	msg->SetPtr("VPanel", (void*)GetVPanel());
+	msg->SetInt("VPanel", GetVPanel());
 
 	ivgui()->PostMessage(GetVParent(), msg, NULL);
 }
@@ -360,7 +358,7 @@ void MenuItem::OpenCascadeMenu()
 		// if the window's been moved
 		m_pCascadeMenu->PerformLayout();
 		m_pCascadeMenu->SetVisible(true);
-		ArmItem();
+		m_pCascadeMenu->MoveToFront();
 	}
 }
 
@@ -396,9 +394,9 @@ void MenuItem::ApplySchemeSettings(IScheme *pScheme)
 	}	
 	else if (m_bCheckable)
 	{
-		m_pCheck->SetFont( pScheme->GetFont("Marlett", IsProportional()));
+		( static_cast<MenuItemCheckImage *>(m_pCheck) )->SetFont( pScheme->GetFont("Marlett", IsProportional()));
 		SetImageAtIndex(0, m_pCheck, CHECK_INSET);
-		m_pCheck->ResizeImageToContent();
+		( static_cast<MenuItemCheckImage *>(m_pCheck) )->ResizeImageToContent();
 	}
 
 	if ( m_pCurrentKeyBinding )
@@ -462,7 +460,7 @@ void MenuItem::GetCheckImageSize(int &wide, int &tall)
 	if (m_pCheck)
 	{
 		// resize the image to the contents size
-		m_pCheck->ResizeImageToContent();
+		( static_cast<MenuItemCheckImage *>(m_pCheck) )->ResizeImageToContent();
 	    m_pCheck->GetSize(wide, tall);
 
 		// include the inset for the check, since nobody but us know about the inset
@@ -599,6 +597,7 @@ void MenuItem::SetCurrentKeyBinding( char const *keyName )
 	InvalidateLayout( false, true );
 }
 
+#define KEYBINDING_INSET 5
 
 void MenuItem::Paint()
 {
@@ -645,24 +644,4 @@ void MenuItem::GetContentSize( int& cw, int &ch )
 
 	cw += iw + KEYBINDING_INSET;
 	ch = MAX( ch, ih );
-}
-
-// If we are doing "centered" menus, then we want to recenter the menu text in the text area if there is room.
-void MenuItem::RepositionTextImage( int &x, int &y, TextImage *pTextImage )
-{
-	if ( _contentAlignment != a_center )
-	{
-		return;
-	}
-
-	int iw, ih;
-	int cw, ch;
-
-	pTextImage->GetSize( iw, ih );
-	pTextImage->GetContentSize( cw, ch );
-
-	if ( cw < iw )
-	{
-		x = x + ( iw - cw ) / 2;
-	}
 }

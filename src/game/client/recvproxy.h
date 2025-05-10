@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: implements various common send proxies
 //
@@ -24,7 +24,7 @@ void RecvProxy_ShortSubOne( const CRecvProxyData *pData, void *pStruct, void *pO
 void RecvProxy_InterpolationAmountChanged( const CRecvProxyData *pData, void *pStruct, void *pOut );
 
 RecvProp RecvPropTime(
-	const char *pVarName,
+	char *pVarName, 
 	int offset, 
 	int sizeofVar=SIZEOF_IGNORE );
 
@@ -36,18 +36,18 @@ RecvProp RecvPropPredictableId(
 #endif
 
 RecvProp RecvPropEHandle(
-	const char *pVarName,
+	char *pVarName, 
 	int offset, 
 	int sizeofVar=SIZEOF_IGNORE,
 	RecvVarProxyFn proxyFn=RecvProxy_IntToEHandle );
 
 RecvProp RecvPropBool(
-	const char *pVarName,
+	char *pVarName, 
 	int offset, 
 	int sizeofVar );
 
 RecvProp RecvPropIntWithMinusOneFlag(
-	const char *pVarName,
+	char *pVarName, 
 	int offset, 
 	int sizeofVar=SIZEOF_IGNORE,
 	RecvVarProxyFn proxyFn=RecvProxy_IntSubOne );

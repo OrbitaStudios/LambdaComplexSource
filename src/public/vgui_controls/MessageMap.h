@@ -1,4 +1,4 @@
-//========= Copyright 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -12,21 +12,15 @@
 #pragma once
 #endif
 
-//#include "tier1/utlvector.h"
-#include "dmxloader/dmxelement.h"
+#include "tier1/utlvector.h"
 
 // more flexible than default pointers to members code required for casting member function pointers
-#pragma pointers_to_members( full_generality, virtual_inheritance )
+//#pragma pointers_to_members( full_generality, virtual_inheritance )
 
 namespace vgui
 {
 
 ////////////// MESSAGEMAP DEFINITIONS //////////////
-
-
-#ifndef ARRAYSIZE
-#define ARRAYSIZE(p)	(sizeof(p)/sizeof(p[0]))
-#endif
 
 
 //-----------------------------------------------------------------------------
@@ -39,7 +33,7 @@ enum DataType_t
 	DATATYPE_CONSTCHARPTR,
 	DATATYPE_INT,
 	DATATYPE_FLOAT,
-	DATATYPE_PTR,
+	DATATYPE_PTR,	
 	DATATYPE_BOOL,
 	DATATYPE_KEYVALUES,
 	DATATYPE_CONSTWCHARPTR,
@@ -47,8 +41,12 @@ enum DataType_t
 	DATATYPE_HANDLE,  // It's an int, really
 };
 
+#ifdef WIN32
+class __virtual_inheritance Panel;
+#else
 class Panel;
-typedef uintp VPANEL;
+#endif
+typedef unsigned int VPANEL;
 
 typedef void (Panel::*MessageFunc_t)(void);
 
@@ -130,7 +128,9 @@ struct MessageMapItem_t
 		return s_pMap;																	\
 	}
 
+#if !defined( _XBOX )
 #define VGUI_USEKEYBINDINGMAPS	1
+#endif
 
 #if defined( VGUI_USEKEYBINDINGMAPS )
 
@@ -206,6 +206,7 @@ public:							\
 #define MESSAGE_FUNC_UINT64( name, scriptname, p1 )	_MessageFuncCommon( name, scriptname, 1, vgui::DATATYPE_UINT64, #p1, 0, 0 );	virtual void name( uint64 p1 )
 #define MESSAGE_FUNC_PTR( name, scriptname, p1 )	_MessageFuncCommon( name, scriptname, 1, vgui::DATATYPE_PTR, #p1, 0, 0 );	virtual void name( vgui::Panel *p1 )
 #define MESSAGE_FUNC_HANDLE( name, scriptname, p1 )	_MessageFuncCommon( name, scriptname, 1, vgui::DATATYPE_HANDLE, #p1, 0, 0 );	virtual void name( vgui::VPANEL p1 )
+#define MESSAGE_FUNC_ENUM( name, scriptname, t1, p1 )	_MessageFuncCommon( name, scriptname, 1, vgui::DATATYPE_INT, #p1, 0, 0 );	virtual void name( t1 p1 )
 #define MESSAGE_FUNC_FLOAT( name, scriptname, p1 )	_MessageFuncCommon( name, scriptname, 1, vgui::DATATYPE_FLOAT, #p1, 0, 0 );	virtual void name( float p1 )
 #define MESSAGE_FUNC_CHARPTR( name, scriptname, p1 )	_MessageFuncCommon( name, scriptname, 1, vgui::DATATYPE_CONSTCHARPTR, #p1, 0, 0 );	virtual void name( const char *p1 )
 #define MESSAGE_FUNC_WCHARPTR( name, scriptname, p1 )	_MessageFuncCommon( name, scriptname, 1, vgui::DATATYPE_CONSTWCHARPTR, #p1, 0, 0 ); virtual void name( const wchar_t *p1 )
@@ -214,7 +215,7 @@ public:							\
 #define MESSAGE_FUNC_INT_INT( name, scriptname, p1, p2 )	_MessageFuncCommon( name, scriptname, 2, vgui::DATATYPE_INT, #p1, vgui::DATATYPE_INT, #p2 );	virtual void name( int p1, int p2 )
 #define MESSAGE_FUNC_PTR_INT( name, scriptname, p1, p2 )	_MessageFuncCommon( name, scriptname, 2, vgui::DATATYPE_PTR, #p1, vgui::DATATYPE_INT, #p2 );	virtual void name( vgui::Panel *p1, int p2 )
 #define MESSAGE_FUNC_HANDLE_INT( name, scriptname, p1, p2 )	_MessageFuncCommon( name, scriptname, 2, vgui::DATATYPE_HANDLE, #p1, vgui::DATATYPE_INT, #p2 );	virtual void name( vgui::VPANEL p1, int p2 )
-#define MESSAGE_FUNC_ENUM_ENUM( name, scriptname, t1, p1, t2, p2 )	_MessageFuncCommon( name, scriptname, 2, vgui::DATATYPE_PTR, #p1, vgui::DATATYPE_PTR, #p2 );	virtual void name( t1 p1, t2 p2 )
+#define MESSAGE_FUNC_ENUM_ENUM( name, scriptname, t1, p1, t2, p2 )	_MessageFuncCommon( name, scriptname, 2, vgui::DATATYPE_INT, #p1, vgui::DATATYPE_INT, #p2 );	virtual void name( t1 p1, t2 p2 )
 #define MESSAGE_FUNC_INT_CHARPTR( name, scriptname, p1, p2 )	_MessageFuncCommon( name, scriptname, 2, vgui::DATATYPE_INT, #p1, vgui::DATATYPE_CONSTCHARPTR, #p2 );	virtual void name( int p1, const char *p2 )
 #define MESSAGE_FUNC_PTR_CHARPTR( name, scriptname, p1, p2 )	_MessageFuncCommon( name, scriptname, 2, vgui::DATATYPE_PTR, #p1, vgui::DATATYPE_CONSTCHARPTR, #p2 );	virtual void name( vgui::Panel *p1, const char *p2 )
 #define MESSAGE_FUNC_HANDLE_CHARPTR( name, scriptname, p1, p2 )	_MessageFuncCommon( name, scriptname, 2, vgui::DATATYPE_HANDLE, #p1, vgui::DATATYPE_CONSTCHARPTR, #p2 );	virtual void name( vgui::VPANEL p1, const char *p2 )
@@ -283,7 +284,6 @@ PanelMessageMap *FindOrAddPanelMessageMap( char const *className );
 
 // if more parameters are needed, just use MAP_MESSAGE_PARAMS() and pass the keyvalue set into the function
 
-
 //-----------------------------------------------------------------------------
 // Purpose: stores the list of objects in the hierarchy
 //			used to iterate through an object's message maps
@@ -334,15 +334,6 @@ public:
 
 	static vgui::Panel *InstancePanel( char const *className );
 	static void GetFactoryNames( CUtlVector< char const * >& list );
-
-	static CDmxElement *CreatePanelDmxElement( vgui::Panel *pPanel );
-	static Panel* UnserializeDmxElementPanel( CDmxElement *pElement );
-
-	// DMX serializer fxns
-	static bool Serialize( CUtlBuffer &buf, vgui::Panel *pPanel );
-	static bool Unserialize( Panel **ppPanel, CUtlBuffer &buf, const char *pFileName = NULL );
-
-
 private:
 
 	static bool HasFactory( char const *className );

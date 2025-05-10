@@ -551,18 +551,6 @@ int CAudioSourceWave::GetQuality()
 	return ( m_format == WAVE_FORMAT_XMA ? m_quality : 0 );
 }
 
-PathTypeFilter_t GetAudioPathFilter()
-{
-	if ( XBX_IsAudioLocalized() && force_audio_english.GetBool() )
-	{
-		// skip the localized search paths and fall through to the primary zips
-		return FILTER_CULLLOCALIZED;
-	}
-
-	// No audio exists outside of zips, all the audio is inside the zips
-	return FILTER_CULLNONPACK;
-}
-
 //-----------------------------------------------------------------------------
 // Load a native xaudio or legacy wav
 //-----------------------------------------------------------------------------
@@ -581,7 +569,7 @@ bool CAudioSourceWave::GetXboxAudioStartupData()
 	V_FixDoubleSlashes( fileName );
 	PathTypeQuery_t pathType;
 	char szFullName[MAX_PATH];
-	if ( !g_pFullFileSystem->RelativePathToFullPath( fileName, "GAME", szFullName, sizeof( szFullName ), GetAudioPathFilter(), &pathType ) )
+	if ( !g_pFullFileSystem->RelativePathToFullPath( fileName, "GAME", szFullName, sizeof( szFullName ), FILTER_CULLNONPACK, &pathType ) )
 	{
 		// not found, not supported
 		return false;
@@ -1009,7 +997,7 @@ public:
 	virtual					~CAudioSourceMemWave();
 
 	// These are all implemented by CAudioSourceMemWave.
-	virtual CAudioMixer*	CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError );
+	virtual CAudioMixer*	CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError, hrtf_info_t* pHRTFVec );
 	virtual int				GetOutputData( void **pData, int64 samplePosition, int sampleCount, char copyBuf[AUDIOSOURCE_COPYBUF_SIZE] );
 	virtual int				ZeroCrossingBefore( int sample );
 	virtual int				ZeroCrossingAfter( int sample );
@@ -1088,9 +1076,17 @@ CAudioSourceMemWave::~CAudioSourceMemWave()
 //-----------------------------------------------------------------------------
 // Purpose: Creates a mixer and initializes it with an appropriate mixer
 //-----------------------------------------------------------------------------
-CAudioMixer *CAudioSourceMemWave::CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError )
+CAudioMixer *CAudioSourceMemWave::CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError, hrtf_info_t* pHRTFVector )
 {
-	CAudioMixer *pMixer = CreateWaveMixer( CreateWaveDataMemory(*this), m_format, m_channels, m_bits, initialStreamPosition, skipInitialSamples, bUpdateDelayForChoreo );
+	if (pHRTFVector && m_bits != 16)
+	{
+		char filename[256];
+		this->m_pSfx->GetFileName(filename, sizeof(filename));
+		DevMsg("Sound %s configured to use HRTF but is not a 16-bit sound\n", filename);
+		pHRTFVector = nullptr;
+	}
+
+	CAudioMixer *pMixer = CreateWaveMixer( CreateWaveDataHRTF(CreateWaveDataMemory(*this), pHRTFVector), m_format, pHRTFVector ? 2 : m_channels, m_bits, initialStreamPosition, skipInitialSamples, bUpdateDelayForChoreo );
 	if ( pMixer )
 	{
 		ReferenceAdd( pMixer );
@@ -1613,7 +1609,7 @@ public:
 	CAudioSourceStreamWave( CSfxTable *pSfx, CAudioSourceCachedInfo *info );
 	virtual ~CAudioSourceStreamWave();
 
-	CAudioMixer		*CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError );
+	CAudioMixer		*CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError, hrtf_info_t *pHRTFVec );
 	int				GetOutputData( void **pData, int64 samplePosition, int sampleCount, char copyBuf[AUDIOSOURCE_COPYBUF_SIZE] );
 	void			ParseChunk( IterateRIFF &walk, int chunkName );
 	bool			IsStreaming( void ) { return true; }
@@ -1709,7 +1705,7 @@ CAudioSourceStreamWave::~CAudioSourceStreamWave( void )
 // Purpose: Create an instance (mixer & wavedata) of this sound
 // Output : CAudioMixer * - pointer to the mixer
 //-----------------------------------------------------------------------------
-CAudioMixer *CAudioSourceStreamWave::CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError )
+CAudioMixer *CAudioSourceStreamWave::CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError, hrtf_info_t* pHRTFVec )
 {
 	char fileName[MAX_PATH];
 	const char *pFileName = m_pSfx->GetFileName(fileName, sizeof(fileName));
@@ -1741,11 +1737,19 @@ CAudioMixer *CAudioSourceStreamWave::CreateMixer( int initialStreamPosition, int
 		}
 	}
 
+	if (pHRTFVec && m_bits != 16)
+	{
+		char filename[256];
+		this->m_pSfx->GetFileName(filename, sizeof(filename));
+		DevMsg("Sound %s configured to use HRTF but is not a 16-bit sound\n", filename);
+		pHRTFVec = nullptr;
+	}
+
 	// BUGBUG: Source constructs the IWaveData, mixer frees it, fix this?
-	IWaveData *pWaveData = CreateWaveDataStream( *this, static_cast<IWaveStreamSource *>(this), pFileName, m_dataStart, m_dataSize, m_pSfx, initialStreamPosition, skipInitialSamples, soundError );
+	IWaveData *pWaveData = CreateWaveDataHRTF(CreateWaveDataStream( *this, static_cast<IWaveStreamSource *>(this), pFileName, m_dataStart, m_dataSize, m_pSfx, initialStreamPosition, skipInitialSamples, soundError ), pHRTFVec);
 	if ( pWaveData )
 	{
-		CAudioMixer *pMixer = CreateWaveMixer( pWaveData, m_format, m_channels, m_bits, initialStreamPosition, skipInitialSamples, bUpdateDelayForChoreo );
+		CAudioMixer *pMixer = CreateWaveMixer( pWaveData, m_format, pHRTFVec ? 2 : m_channels, m_bits, initialStreamPosition, skipInitialSamples, bUpdateDelayForChoreo );
 		if ( pMixer )
 		{
 			ReferenceAdd( pMixer );
@@ -2036,7 +2040,7 @@ void MaybeReportMissingWav( char const *wav )
 
 	CUtlSymbol sym;
 	sym = wavErrors.Find( wav );
-	if ( !sym.IsValid() )
+	if ( UTL_INVAL_SYMBOL == sym )
 	{
 		// See if file exists
 		if ( g_pFullFileSystem->FileExists( wav ) )
@@ -2578,6 +2582,7 @@ bool CAudioSourceCache::LoadMasterCache( char const *pchLanguage, bool bAllowEmp
 	Q_snprintf( fullpath, sizeof( fullpath ), "%s%s", m_szMODPath.String(), m_szMasterCache.String() );
 	// Just for display
 	Q_FixSlashes( fullpath, INCORRECT_PATH_SEPARATOR );
+	Q_strlower( fullpath );
 	DevMsg(	1, "Trying cache :  '%s'\n", fullpath );
 
 	CacheType_t *cache = AllocAudioCache( m_szMasterCache.String(), true );
@@ -2674,6 +2679,7 @@ bool CAudioSourceCache::Init( unsigned int memSize )
 	}
 
 	Q_FixSlashes( szDLCPath );
+	Q_strlower( szDLCPath );
 
 	m_szMODPath = szDLCPath;
 	// Add trailing slash

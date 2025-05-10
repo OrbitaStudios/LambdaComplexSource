@@ -32,7 +32,6 @@ enum VGuiPanel_t
 	PANEL_GAMEDLL,
 	PANEL_CLIENTDLL_TOOLS,
 	PANEL_GAMEUIBACKGROUND, // the console background, shows under all other stuff in 3d engine view
-	PANEL_TRANSITIONEFFECT,
 	PANEL_STEAMOVERLAY,
 };
 

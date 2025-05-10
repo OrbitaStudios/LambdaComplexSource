@@ -733,17 +733,9 @@ public:
 
 	int	GetSplitScreenPlayerSlot() const;
 
-	//=============================================================================
-	// HPE_BEGIN:
-	// [dwenger] - Convenience function for retrieving the max value of the convar
-	//=============================================================================
-	float GetMax() const;
-
-	// [jbright] - Convenience function for retrieving the min value of the convar
-	float GetMin() const;
-	//=============================================================================
-	// HPE_END
-	//=============================================================================
+	// True if it has a min/max setting
+	bool GetMin( float& minVal ) const;
+	bool GetMax( float& maxVal ) const;
 
 private:
 	// High-speed method to read convar data
@@ -844,24 +836,15 @@ FORCEINLINE_CVAR const char *ConVarRef::GetDefault() const
 	return m_pConVarState->m_pszDefaultValue;
 }
 
-//=============================================================================
-// HPE_BEGIN:
-// [dwenger] - Convenience function for retrieving the max value of the convar
-//=============================================================================
-FORCEINLINE_CVAR  float ConVarRef::GetMax() const
+FORCEINLINE_CVAR bool ConVarRef::GetMin( float& minVal ) const
 {
-	return m_pConVarState->m_fMaxVal;
+	return m_pConVarState->GetMin( minVal );
 }
 
-// [jbright] - Convenience function for retrieving the min value of the convar
-FORCEINLINE_CVAR  float ConVarRef::GetMin() const
+FORCEINLINE_CVAR bool ConVarRef::GetMax( float& maxVal ) const
 {
-	return m_pConVarState->m_fMinVal;
+	return m_pConVarState->GetMax( maxVal );
 }
-
-//=============================================================================
-// HPE_END
-//=============================================================================
 
 //-----------------------------------------------------------------------------
 // Helper for referencing splitscreen convars (i.e., "name" and "name2")

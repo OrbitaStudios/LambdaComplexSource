@@ -1736,11 +1736,6 @@ bool GroupProp( propBuildVector &vecSearch, propBuildVector &vecMoveTo )
 	return false;
 }
 
-inline bool UtlStringLessFunc( const CUtlString &lhs, const CUtlString &rhs )
-{
-	return V_strcmp( lhs.Get(), rhs.Get() ) < 0;
-}
-
 struct MaterialUsageInfo_t
 {
 	CUtlString matName;

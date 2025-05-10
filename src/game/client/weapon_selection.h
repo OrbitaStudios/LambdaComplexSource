@@ -10,7 +10,6 @@
 #pragma once
 #endif
 
-#include "inputsystem/ButtonCode.h"
 #include "hudelement.h"
 
 class C_BaseCombatWeapon;

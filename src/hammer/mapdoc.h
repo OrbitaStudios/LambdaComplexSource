@@ -255,8 +255,6 @@ class CMapDoc : public CDocument
 		bool FindEntitiesByClassName(CMapEntityList &Found, const char *szClassName, bool bVisiblesOnly);
 		bool FindEntitiesByNameOrClassName(CMapEntityList &Found, const char *pszName, bool bVisiblesOnly);
 
-		void GetUsedModels( CUtlVector<AssetUsageInfo_t> &usedModels );
-
 		bool			CheckOut( );
 		bool			CheckOutBsp( );
 		bool			AddToVersionControl( );

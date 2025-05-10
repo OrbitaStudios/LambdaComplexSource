@@ -88,8 +88,7 @@
 #endif
 
 #include "gametypes.h"
-#include "cs_workshop_manager.h"
-#include "ugc_file_info_manager.h"
+
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -2616,7 +2615,7 @@ namespace SpecHear
 }
 
 // NOTE: the indices here must match TEAM_TERRORIST, TEAM_CT, TEAM_SPECTATOR, etc.
-const char *sTeamNames[] =
+char *sTeamNames[] =
 {
 	"Unassigned",
 	"Spectator",
@@ -16139,7 +16138,7 @@ void CCSGameRules::RecordPlayerItemDrop( const CEconItemPreviewDataBlock &itemin
 #ifndef CLIENT_DLL
 const char *CCSGameRules::GetChatPrefix( bool bTeamOnly, CBasePlayer *pPlayer )
 {
-    const char *pszPrefix = NULL;
+    char *pszPrefix = NULL;
 
     if ( !pPlayer )  // dedicated server output
     {
@@ -17300,22 +17299,6 @@ const wchar_t* CCSGameRules::GetFriendlyMapName( const char* szShortName )
 	char szPath[MAX_PATH];
 	V_strcpy_safe( szPath, szShortName );
 	V_FixSlashes( szPath, '/' ); // internal path strings use forward slashes, make sure we compare like that.
-	if ( V_strstr( szPath, "workshop/" ) )
-	{
-		PublishedFileId_t ullId = GetMapIDFromMapPath( szPath );
-		const PublishedFileInfo_t *pInfo = WorkshopManager().GetPublishedFileInfoByID( ullId );
-		static wchar_t wszMapName[128];
-		if ( pInfo )
-		{
-			g_pVGuiLocalize->ConvertANSIToUnicode(pInfo->m_rgchTitle, wszMapName, sizeof(wszMapName));
-			return wszMapName;
-		}
-		else
-		{
-			g_pVGuiLocalize->ConvertANSIToUnicode( V_GetFileName( szShortName ), wszMapName, sizeof(wszMapName));
-			return wszMapName;
-		}
-	}
 
     static wchar_t wszMapName[128];
     g_pVGuiLocalize->ConvertANSIToUnicode(szShortName, wszMapName, sizeof(wszMapName));

@@ -19,7 +19,7 @@
 
 
 //-----------------------------------------------------------------------------
-// Purpose: encapsulates a LINUX font
+// Purpose: encapsulates a OSX font
 //-----------------------------------------------------------------------------
 class CLinuxFont
 {
@@ -101,20 +101,21 @@ private:
 
 
 
-	// abc widths
-	struct abc_t
-	{
-		short b;
-		char a;
-		char c;
-	};
+	static void CreateFontList();
+        // abc widths
+        struct abc_t
+        {
+                short b;
+                char a;
+                char c;
+        };
 
-	// cache for storing asian abc widths (since it's too big too just store them all)
-	struct abc_cache_t
-	{
-		wchar_t wch;
-		abc_t abc;
-	};
+        // cache for storing asian abc widths (since it's too big too just store them all)
+        struct abc_cache_t
+        {
+                wchar_t wch;
+                abc_t abc;
+        };
 
 	
 	CUtlRBTree<abc_cache_t, unsigned short> m_ExtendedABCWidthsCache;
@@ -164,4 +165,4 @@ private:
 	static bool ms_bSetFriendlyNameCacheLessFunc;
 };
 
-#endif // LINUXFONT_H
+#endif // OSXFONT_H

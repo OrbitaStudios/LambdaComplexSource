@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -86,7 +86,7 @@ BEGIN_PREDICTION_DATA( CHostageCarriableProp )
 END_PREDICTION_DATA()
 
 const int DEFAULT_NUM_HOSTAGE_MODELS = 4;
-static const char *HostageModel[DEFAULT_NUM_HOSTAGE_MODELS] =
+static char *HostageModel[DEFAULT_NUM_HOSTAGE_MODELS] = 
 {
 	"models/hostage/hostage.mdl",
 	"models/hostage/hostage_variantA.mdl",
@@ -448,8 +448,8 @@ int CHostage::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	// say something
 	if ( hostage_is_silent.GetBool() == false )
 	{
-		AIConcept_t AIconcept( "Pain" );
-		GetExpresser()->Speak( AIconcept );
+		AIConcept_t concept( "Pain" );
+		GetExpresser()->Speak( concept );
 	}
 
 	CCSPlayer *player = ToCSPlayer( info.GetAttacker() );
@@ -1422,8 +1422,8 @@ void CHostage::Follow( CCSPlayer *leader )
 		// say something
 		if ( hostage_is_silent.GetBool() == false )
 		{
-			AIConcept_t AIconcept( "StartFollowing" );
-			GetExpresser()->Speak( AIconcept, "leaderteam:CT" );		
+			AIConcept_t concept( "StartFollowing" );
+			GetExpresser()->Speak( concept, "leaderteam:CT" );		
 		}
 
 		// emit hostage_follows event
@@ -1635,8 +1635,8 @@ void CHostage::SetHostageStartFollowingPlayer( CCSPlayer *pPlayer )
 		if ( hostage_is_silent.GetBool() == false )
 		{
 			// say something
-			AIConcept_t AIconcept( "StopFollowing" );
-			GetExpresser()->Speak( AIconcept, "leaderteam:CT" );
+			AIConcept_t concept( "StopFollowing" );
+			GetExpresser()->Speak( concept, "leaderteam:CT" );
 		}
 	}
 	else
@@ -1708,8 +1708,8 @@ void CHostage::DropHostage( Vector vecPosition, bool bIsRescued )
 		// say something
 		if ( hostage_is_silent.GetBool() == false )
 		{
-			AIConcept_t AIconcept( "StopFollowing" );
-			GetExpresser()->Speak( AIconcept, "leaderteam:CT" );
+			AIConcept_t concept( "StopFollowing" );
+			GetExpresser()->Speak( concept, "leaderteam:CT" );
 		}
 
 		m_nHostageState = k_EHostageStates_GettingDropped;

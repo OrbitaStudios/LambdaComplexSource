@@ -1123,6 +1123,15 @@ void CHLTVClientState::SetLocalInfoConvarsForUpstreamConnection( CMsg_CVars &cva
 		}
 	}
 	NetMsgSetCVarUsingDictionary( cvars.add_cvars(), "hltv_addr", va( "%s:%u", netAdrHltvRelay.ToString( true ), m_pHLTV->GetUDPPort() ) );
+
+	static ConVarRef sv_steamdatagramtransport_port( "sv_steamdatagramtransport_port" );
+	if ( serverGameDLL->IsValveDS() && sv_steamdatagramtransport_port.GetInt() > 0 )
+	{
+		ns_address nsadrsdr;
+		nsadrsdr.SetAddrType( NSAT_PROXIED_GAMESERVER );
+		nsadrsdr.m_steamID.SetFromSteamID( Steam3Server().GetGSSteamID(), sv_steamdatagramtransport_port.GetInt() );
+		NetMsgSetCVarUsingDictionary( cvars.add_cvars(), "hltv_sdr", ns_address_render( nsadrsdr ).String() );
+	}
 }
 
 void CHLTVClientState::UpdateStats()

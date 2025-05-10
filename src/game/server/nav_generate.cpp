@@ -2119,7 +2119,7 @@ void CNavMesh::MergeGeneratedAreas( void )
 					area->m_node[ NORTH_EAST ] = adjArea->m_node[ NORTH_EAST ];
 
 					merged = true;
-					//Msg( "  Merged (north) areas #%d and #%d\n", area->m_id, adjArea->m_id );
+					//CONSOLE_ECHO( "  Merged (north) areas #%d and #%d\n", area->m_id, adjArea->m_id );
 
 					area->FinishMerge( adjArea );
 
@@ -2151,7 +2151,7 @@ void CNavMesh::MergeGeneratedAreas( void )
 					area->m_node[ SOUTH_EAST ] = adjArea->m_node[ SOUTH_EAST ];
 
 					merged = true;
-					//Msg( "  Merged (south) areas #%d and #%d\n", area->m_id, adjArea->m_id );
+					//CONSOLE_ECHO( "  Merged (south) areas #%d and #%d\n", area->m_id, adjArea->m_id );
 
 					area->FinishMerge( adjArea );
 
@@ -2185,7 +2185,7 @@ void CNavMesh::MergeGeneratedAreas( void )
 					area->m_node[ SOUTH_WEST ] = adjArea->m_node[ SOUTH_WEST ];
 
 					merged = true;
-					//Msg( "  Merged (west) areas #%d and #%d\n", area->m_id, adjArea->m_id );
+					//CONSOLE_ECHO( "  Merged (west) areas #%d and #%d\n", area->m_id, adjArea->m_id );
 
 					area->FinishMerge( adjArea );
 
@@ -2218,7 +2218,7 @@ void CNavMesh::MergeGeneratedAreas( void )
 					area->m_node[ SOUTH_EAST ] = adjArea->m_node[ SOUTH_EAST ];
 
 					merged = true;
-					//Msg( "  Merged (east) areas #%d and #%d\n", area->m_id, adjArea->m_id );
+					//CONSOLE_ECHO( "  Merged (east) areas #%d and #%d\n", area->m_id, adjArea->m_id );
 
 					area->FinishMerge( adjArea );
 

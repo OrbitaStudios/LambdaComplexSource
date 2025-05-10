@@ -82,10 +82,10 @@ IEngineEmulator *IEngineEmulator::Get()
 //-----------------------------------------------------------------------------
 
 
-ConVar rr_debugresponses( "rr_debugresponses", "0", FCVAR_NONE, "Show verbose matching output (1 for simple, 2 for rule scoring, 3 for noisy). If set to 4, it will only show response success/failure for npc_selected NPCs." );
-ConVar rr_debugrule( "rr_debugrule", "", FCVAR_NONE, "If set to the name of the rule, that rule's score will be shown whenever a concept is passed into the response rules system.");
-ConVar rr_dumpresponses( "rr_dumpresponses", "0", FCVAR_NONE, "Dump all response_rules.txt and rules (requires restart)" );
-ConVar rr_debugresponseconcept( "rr_debugresponseconcept", "", FCVAR_NONE, "If set, rr_debugresponses will print only responses testing for the specified concept" );
+ConVar rr_debugresponses( "rr_debugresponses", "0", FCVAR_RELEASE, "Show verbose matching output (1 for simple, 2 for rule scoring, 3 for noisy). If set to 4, it will only show response success/failure for npc_selected NPCs." );
+ConVar rr_debugrule( "rr_debugrule", "", FCVAR_RELEASE, "If set to the name of the rule, that rule's score will be shown whenever a concept is passed into the response rules system.");
+ConVar rr_dumpresponses( "rr_dumpresponses", "0", FCVAR_RELEASE, "Dump all response_rules.txt and rules (requires restart)" );
+ConVar rr_debugresponseconcept( "rr_debugresponseconcept", "", FCVAR_RELEASE, "If set, rr_debugresponses will print only responses testing for the specified concept" );
 #define RR_DEBUGRESPONSES_SPECIALCASE 4
 
 

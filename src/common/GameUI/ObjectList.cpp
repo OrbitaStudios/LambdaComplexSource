@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -6,11 +6,7 @@
 //
 //=============================================================================//
 #include <stdio.h>
-// dgoodenough - malloc.h doesn't exist on PS3
-// PS3_BUILDFIX
-#if !defined( _PS3 )
 #include <malloc.h>
-#endif
 #include "ObjectList.h"
 #include "tier1/strtools.h"
 

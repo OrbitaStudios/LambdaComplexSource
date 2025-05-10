@@ -1,4 +1,4 @@
-//===== Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ======//
+//===== Copyright © 1996-2005, Valve Corporation, All rights reserved. ======//
 //
 // Purpose: 
 //
@@ -439,8 +439,6 @@ void C_PhysPropClientside::Break()
 	// spwan break chunks
 	PropBreakableCreateAll( GetModelIndex(), pPhysics, params, this, -1, false );
 
-	STEAMWORKS_TESTSECRET_AMORTIZE(101);
-
 	Release(); // destroy object
 }
 
@@ -499,7 +497,7 @@ void C_PhysPropClientside::Clone( Vector &velocity )
 	}
 }
 
-void C_PhysPropClientside::ImpactTrace( trace_t *pTrace, int iDamageType, const char *pCustomImpactName )
+void C_PhysPropClientside::ImpactTrace( trace_t *pTrace, int iDamageType, char *pCustomImpactName )
 {
 	VPROF( "C_PhysPropClientside::ImpactTrace" );
 	IPhysicsObject *pPhysicsObject = VPhysicsGetObject();

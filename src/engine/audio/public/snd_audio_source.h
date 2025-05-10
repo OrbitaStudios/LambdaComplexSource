@@ -472,7 +472,7 @@ public:
 	virtual ~CAudioSource( void ) {}
 
 	// Create an instance (mixer) of this audio source
-	virtual CAudioMixer			*CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError ) = 0;
+	virtual CAudioMixer			*CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError, struct hrtf_info_t *pHRTFPos ) = 0;
 
 	// Serialization for caching
 	virtual int					GetType( void ) = 0;

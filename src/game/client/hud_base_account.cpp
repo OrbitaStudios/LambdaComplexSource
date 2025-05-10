@@ -1,4 +1,4 @@
-//========= Copyright � 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -6,16 +6,9 @@
 
 #include "cbase.h"
 #include <vgui_controls/Panel.h>
-#include <vgui/isurface.h>
+#include <vgui/ISurface.h>
 #include <vgui_controls/AnimationController.h>
-#include <vgui/ILocalize.h>
 #include "hud_base_account.h"
-#include "cs_gamerules.h"
-#include "iachievementmgr.h"
-
-// NOTE: This has to be the last file included!
-#include "tier0/memdbgon.h"
-
 
 using namespace vgui;
 
@@ -79,105 +72,70 @@ void CHudBaseAccount::Reset( void )
 
 void CHudBaseAccount::Paint()
 {
-	if ( CSGameRules()->IsPlayingGunGameProgressive() || CSGameRules()->IsPlayingGunGameTRBomb() )
+	int account  = GetPlayerAccount();
+
+	//don't show delta on initial money give
+	if( m_iPreviousAccount < 0 )
+		m_iPreviousAccount = account;
+
+	if( m_iPreviousAccount != account )
 	{
-		int weaponindex = GetPlayerGunGameWeapon();
+		m_iPreviousDelta = account - m_iPreviousAccount;
+		m_pszQueuedAnimationName = NULL;
 
-		// draw current gun game weapon index
-		wchar_t unicode[32];
-		wchar_t param1[32];
-		wchar_t param2[32];
-		wchar_t *pReason = g_pVGuiLocalize->Find( "Cstrike_Game_GunGameWeaponStatus" );
-		if ( !pReason )
+		if( m_iPreviousDelta < 0 )
 		{
-			pReason = L"%s1 / %s2";
+			m_pszLastAnimationName = "AccountMoneyRemoved";
 		}
-
-		V_snwprintf( param1, ARRAYSIZE(param1), L"%d", weaponindex + 1 );
-		V_snwprintf( param2, ARRAYSIZE(param2), L"%d", engine->GetAchievementMgr()->GetNumProgressiveGunGameWeapons() );
-
-		g_pVGuiLocalize->ConstructString( unicode, sizeof( unicode ), pReason, 2, param1, param2 );
-
-		static int width = 0;
-		for (wchar_t *ch = unicode; *ch != 0; ch++)
+		else 
 		{
-			width += vgui::surface()->GetCharacterWidth( m_hTextFont, *ch );
+			m_pszLastAnimationName = "AccountMoneyAdded";
 		}
+		GetAnimationController()->StartAnimationSequence( m_pszLastAnimationName );
+		m_flLastAnimationEnd = gpGlobals->curtime + GetAnimationController()->GetAnimationSequenceLength( m_pszLastAnimationName );
 
-		static int xpos = MIN( 0, ( digit_xpos - width ) );
+		m_iPreviousAccount = account;
+	}
+	else if ( m_pszQueuedAnimationName )
+	{
+		GetAnimationController()->StartAnimationSequence( m_pszQueuedAnimationName );
+		m_pszQueuedAnimationName = NULL;
+	}
 
-		vgui::surface()->DrawSetTextFont(m_hTextFont);
-		vgui::surface()->DrawSetTextColor(GetFgColor());
-		vgui::surface()->DrawSetTextPos(xpos, digit_ypos);
-		vgui::surface()->DrawUnicodeString( unicode );
+	if( m_pAccountIcon )
+	{
+		m_pAccountIcon->DrawSelf( icon_xpos, icon_ypos, icon_wide, icon_tall, GetFgColor() );
+	}
+
+	int xpos = digit_xpos - GetNumberWidth( m_hNumberFont, account );
+
+	// draw current account
+	vgui::surface()->DrawSetTextColor(GetFgColor());
+	PaintNumbers( m_hNumberFont, xpos, digit_ypos, account );
+
+	//draw account additions / subtractions
+	if( m_iPreviousDelta < 0 )
+	{
+		if( m_pMinusIcon )
+		{
+			m_pMinusIcon->DrawSelf( icon2_xpos, icon2_ypos, icon_wide, icon_tall, m_Ammo2Color );
+		}
 	}
 	else
 	{
-		int account = GetPlayerAccount();
-
-		//don't show delta on initial money give
-		if( m_iPreviousAccount < 0 )
-			m_iPreviousAccount = account;
-
-		if( m_iPreviousAccount != account )
+		if( m_pPlusIcon )
 		{
-			m_iPreviousDelta = account - m_iPreviousAccount;
-			m_pszQueuedAnimationName = NULL;
-
-			if( m_iPreviousDelta < 0 )
-			{
-				m_pszLastAnimationName = "AccountMoneyRemoved";
-			}
-			else 
-			{
-				m_pszLastAnimationName = "AccountMoneyAdded";
-			}
-			GetAnimationController()->StartAnimationSequence( m_pszLastAnimationName );
-			m_flLastAnimationEnd = gpGlobals->curtime + GetAnimationController()->GetAnimationSequenceLength( m_pszLastAnimationName );
-
-			m_iPreviousAccount = account;
+			m_pPlusIcon->DrawSelf( icon2_xpos, icon2_ypos, icon_wide, icon_tall, m_Ammo2Color );
 		}
-		else if ( m_pszQueuedAnimationName )
-		{
-			GetAnimationController()->StartAnimationSequence( m_pszQueuedAnimationName );
-			m_pszQueuedAnimationName = NULL;
-		}
-
-		if( m_pAccountIcon )
-		{
-			m_pAccountIcon->DrawSelf( icon_xpos, icon_ypos, icon_wide, icon_tall, GetFgColor() );
-		}
-
-		int xpos = digit_xpos - GetNumberWidth( m_hNumberFont, account );
-
-		// draw current account
-		vgui::surface()->DrawSetTextColor(GetFgColor());
-		PaintNumbers( m_hNumberFont, xpos, digit_ypos, account );
-
-		//draw account additions / subtractions
-		if( m_iPreviousDelta < 0 )
-		{
-			if( m_pMinusIcon )
-			{
-				m_pMinusIcon->DrawSelf( icon2_xpos, icon2_ypos, icon_wide, icon_tall, m_Ammo2Color );
-			}
-		}
-		else
-		{
-			if( m_pPlusIcon )
-			{
-				m_pPlusIcon->DrawSelf( icon2_xpos, icon2_ypos, icon_wide, icon_tall, m_Ammo2Color );
-			}
-		}
-
-		int delta = abs(m_iPreviousDelta);
-
-		xpos = digit2_xpos - GetNumberWidth( m_hNumberFont, delta );
-
-		// draw delta
-		vgui::surface()->DrawSetTextColor(m_Ammo2Color);
-		PaintNumbers( m_hNumberFont, xpos, digit2_ypos, delta );
 	}
+
+	int delta = abs(m_iPreviousDelta);
+
+	xpos = digit2_xpos - GetNumberWidth( m_hNumberFont, delta );
+
+	// draw delta
+	vgui::surface()->DrawSetTextColor(m_Ammo2Color);
+	PaintNumbers( m_hNumberFont, xpos, digit2_ypos, delta );
 }
 
 int CHudBaseAccount::GetNumberWidth(HFont font, int number)

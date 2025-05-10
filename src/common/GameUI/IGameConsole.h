@@ -1,4 +1,4 @@
-//===== Copyright © 1996-2005, Valve Corporation, All rights reserved. ======//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -34,9 +34,6 @@ public:
 	virtual bool IsConsoleVisible() = 0;
 
 	virtual void SetParent( int parent ) = 0;
-
-	// hides and deletes panel
-	virtual void Shutdown( void ) = 0;
 };
 
 #define GAMECONSOLE_INTERFACE_VERSION "GameConsole004"

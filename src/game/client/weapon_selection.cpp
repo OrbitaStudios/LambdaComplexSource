@@ -292,8 +292,6 @@ int	CBaseHudWeaponSelection::KeyInput( int down, ButtonCode_t keynum, const char
 //-----------------------------------------------------------------------------
 void CBaseHudWeaponSelection::OnWeaponPickup( C_BaseCombatWeapon *pWeapon )
 {
-	RANDOM_CEG_TEST_SECRET_PERIOD( 2, 3 )
-
 #if !defined( CSTRIKE15 )
 	// add to pickup history
 	CHudHistoryResource *pHudHR = GET_HUDELEMENT( CHudHistoryResource );

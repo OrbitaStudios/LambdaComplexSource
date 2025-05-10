@@ -512,13 +512,10 @@ CCSBot::PartInfo CCSBot::m_partInfo[ MAX_PLAYERS ];
  */
 void CCSBot::ComputePartPositions( CCSPlayer *player )
 {
-	const int headBox = 12;
-	const int gutBox = 9;
-	const int leftElbowBox = 14;
-	const int rightElbowBox = 17;
-	//const int hipBox = 0;
-	//const int leftFootBox = 4;
-	//const int rightFootBox = 8;
+	const int headBox = m_bUseNewAnimstate ? 0 : 11;
+	const int gutBox = m_bUseNewAnimstate ? 4 : 7;
+	const int leftElbowBox = m_bUseNewAnimstate ? 16 : 13;
+	const int rightElbowBox = m_bUseNewAnimstate ? 18 : 16;
 	const int maxBoxIndex = rightElbowBox;
 
 	VPROF_BUDGET( "CCSBot::ComputePartPositions", VPROF_BUDGETGROUP_NPCS );

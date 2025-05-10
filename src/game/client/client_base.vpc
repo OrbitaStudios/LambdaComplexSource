@@ -6,7 +6,6 @@
 
 $Macro OUTBINNAME	"client"
 $Macro OUTBINDIR	"$SRCDIR\..\game\$GAMENAME\bin"
-$Macro OUTCEGDIR	"$SRCDIR\..\game\$GAMENAME\bin\ceg"				[$WINDOWS && $CEG]
 $Macro DEVKITBINDIR	"$GAMENAME\bin"							[$X360]
 $Macro GENERATED_PROTO_DIR	"$SRCDIR\game\client\generated_proto"
 
@@ -322,7 +321,6 @@ $Project
 		$File	"hud_pdump.cpp"
 		$File	"hud_redraw.cpp"
 		$File	"hud_vehicle.cpp"
-		$File	"hud_savestatus.cpp"
 		$File	"hud_subtitles.cpp"
 		$File	"$SRCDIR\game\shared\igamesystem.cpp"
 		$File	"in_camera.cpp"
@@ -531,17 +529,6 @@ $Project
 						}
 					}
 				}
-
-		$File	"$SRCDIR\common\CegClientWrapper.cpp"
-		{
-			$Configuration
-			{
-				$Compiler [$WINDOWS]
-				{
-					$Create/UsePrecompiledHeader	"Not Using Precompiled Headers"
-				}
-			}
-		}
 
 		$Folder	"Precompiled Header"
 		{
@@ -871,8 +858,6 @@ $Project
 		$File	"vgui_hudvideo.h"
 		$File	"vgui_video.h"
 		$File	"subtitlepanel.h"
-		$File	"$SRCDIR\common\CegClientWrapper.h"
-		$File	"$SRCDIR\common\cegclient.h"			[$WINDOWS && $CEG]
 		$File	"render_to_rt_helper.h"
 	}
 

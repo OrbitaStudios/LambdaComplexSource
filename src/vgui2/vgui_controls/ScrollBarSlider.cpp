@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -13,7 +13,7 @@
 #include <vgui/IScheme.h>
 #include <vgui/ISurface.h>
 #include <vgui/MouseCode.h>
-#include <keyvalues.h>
+#include <KeyValues.h>
 
 #include <vgui_controls/ScrollBarSlider.h>
 #include <vgui_controls/Controls.h>
@@ -37,13 +37,9 @@ ScrollBarSlider::ScrollBarSlider(Panel *parent, const char *panelName, bool vert
 	_range[1]=0;
 	_rangeWindow=0;
 	_buttonOffset=0;
-	Q_memset( _ScrollBarSliderBorder, 0, sizeof( _ScrollBarSliderBorder ) );
-	m_bCursorOver = false;
+	_ScrollBarSliderBorder=NULL;
 	RecomputeNobPosFromValue();
 	SetBlockDragChaining( true );
-	m_NobFocusColor = Color( 255, 255, 255, 255 );
-	m_NobDragColor = Color( 255, 255, 255, 255 );
-	m_nNobInset = 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -121,6 +117,9 @@ void ScrollBarSlider::RecomputeNobPosFromValue()
 	float fvalue = (float)(_value - _range[0]);
 	float frangewindow = (float)(_rangeWindow);
 	float fper = ( frange != frangewindow ) ? fvalue / ( frange-frangewindow ) : 0;
+
+//	Msg( "fwide: %f  ftall: %f  frange: %f  fvalue: %f  frangewindow: %f  fper: %f\n",
+//		fwide, ftall, frange, fvalue, frangewindow, fper );
 
 	if ( frangewindow > 0 )
 	{
@@ -295,12 +294,6 @@ void ScrollBarSlider::SendScrollBarSliderMovedMessage()
 	PostActionSignal(new KeyValues("ScrollBarSliderMoved", "position", _value));
 }
 
-void ScrollBarSlider::SendScrollBarSliderReleasedMessage()
-{
-	// send a released message
-	PostActionSignal(new KeyValues("ScrollBarSliderReleased", "position", _value));
-}
-
 //-----------------------------------------------------------------------------
 // Purpose: Return true if this slider is actually drawing itself
 //-----------------------------------------------------------------------------
@@ -319,12 +312,6 @@ bool ScrollBarSlider::IsSliderVisible( void )
 	return true;
 }
 
-static char const *g_pBorderStyles[ ScrollBarSlider::Slider_Count ] = 
-{
-	"ScrollBarSliderBorder",
-	"ScrollBarSliderBorderHover",
-	"ScrollBarSliderBorderDragging",
-};
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
@@ -334,30 +321,30 @@ void ScrollBarSlider::ApplySchemeSettings(IScheme *pScheme)
 
 	SetFgColor(GetSchemeColor("ScrollBarSlider.FgColor", pScheme));
 	SetBgColor(GetSchemeColor("ScrollBarSlider.BgColor", pScheme));
-	SetNobFocusColor(GetSchemeColor("ScrollBarSlider.NobFocusColor", GetBgColor(), pScheme ));
-	SetNobDragColor( GetSchemeColor("ScrollBarSlider.NobDragColor", GetBgColor(), pScheme ));
 
-	IBorder *pButtonBorder = pScheme->GetBorder("ButtonBorder");
-	IBorder *pSliderBorder = pScheme->GetBorder("ScrollBarSliderBorder");
+	IBorder *newBorder = pScheme->GetBorder("ScrollBarSliderBorder");
 
-	// Prefer the sliderborder, but use ButtonBorder as a fallback
-	IBorder *pFallback = pSliderBorder ? pSliderBorder : pButtonBorder;
-
-	for ( int i = 0; i < Slider_Count; ++i )
+	if ( newBorder )
 	{
-		IBorder *pBorder = pScheme->GetBorder( g_pBorderStyles[ i ] );
-		_ScrollBarSliderBorder[ i ] = pBorder ? pBorder : pFallback;
+		_ScrollBarSliderBorder = newBorder;
 	}
-
-	const char *resourceString = pScheme->GetResourceString( "ScrollBarSlider.Inset" );
-	if ( resourceString )
+	else
 	{
-		int nValue = Q_atoi(resourceString);
-		if (IsProportional())
-		{
-			nValue = scheme()->GetProportionalScaledValueEx(GetScheme(), nValue);
-		}
-		m_nNobInset = MAX( nValue, 0 );
+		_ScrollBarSliderBorder = pScheme->GetBorder("ButtonBorder");
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose:
+//-----------------------------------------------------------------------------
+void ScrollBarSlider::ApplySettings( KeyValues *pInResourceData )
+{
+	BaseClass::ApplySettings( pInResourceData );
+
+	const char *pButtonBorderName = pInResourceData->GetString( "ButtonBorder", NULL );
+	if ( pButtonBorderName )
+	{
+		_ScrollBarSliderBorder = vgui::scheme()->GetIScheme( GetScheme() )->GetBorder( pButtonBorderName );
 	}
 }
 
@@ -372,45 +359,36 @@ void ScrollBarSlider::Paint()
 	if ( !IsSliderVisible() )	
 		return;
 
-	SliderBorderType_t bt = Slider_Idle;
 	Color col = GetFgColor();
-	if ( _dragging )
-	{
-		col = m_NobDragColor;
-		bt = Slider_Dragging;
-	}
-	else if ( m_bCursorOver && IsMouseOverNob() )
-	{
-		col = m_NobFocusColor;
-		bt = Slider_Hover;
-	}
-
-	surface()->DrawSetColor( col );
-
-	IBorder *pBorder = _ScrollBarSliderBorder[ bt ];
-
-	int nInset = m_nNobInset;
+	surface()->DrawSetColor(col);
 
 	if (_vertical)
 	{
-		// Nob
-		surface()->DrawFilledRect(nInset, _nobPos[0], wide - nInset, _nobPos[1]);
+		if ( GetPaintBackgroundType() == 2 )
+		{
+			DrawBox( 1, _nobPos[0], wide - 2, _nobPos[1] - _nobPos[0], col, 1.0f );
+		}
+		else
+		{
+			// Nob
+			surface()->DrawFilledRect(1, _nobPos[0], wide - 2, _nobPos[1]);
+		}
 
 		// border
-		if (pBorder)
+		if (_ScrollBarSliderBorder)
 		{
-			pBorder->Paint(nInset, _nobPos[0], wide - nInset, _nobPos[1]);
+			_ScrollBarSliderBorder->Paint(0, _nobPos[0], wide, _nobPos[1]);
 		}
 	}
 	else
 	{
 		// horizontal nob
-		surface()->DrawFilledRect(_nobPos[0], nInset, _nobPos[1], tall - nInset );
+		surface()->DrawFilledRect(_nobPos[0], 1, _nobPos[1], tall - 2 );
 
 		// border
-		if (pBorder)
+		if (_ScrollBarSliderBorder)
 		{
-			pBorder->Paint(_nobPos[0], nInset, _nobPos[1], tall - nInset );
+			_ScrollBarSliderBorder->Paint(_nobPos[0] - 1, 1, _nobPos[1], tall );
 		}
 	}
 
@@ -476,7 +454,6 @@ void ScrollBarSlider::OnCursorMoved(int x,int y)
 
 	int wide, tall;
 	GetPaintSize(wide, tall);
-	tall;
 
 	if (_vertical)
 	{
@@ -591,11 +568,8 @@ void ScrollBarSlider::OnMouseDoublePressed(MouseCode code)
 //-----------------------------------------------------------------------------
 void ScrollBarSlider::OnMouseReleased(MouseCode code)
 {
-	if ( !_dragging )
-		return;
 	_dragging = false;
-	input()->SetMouseCapture(0);
-	SendScrollBarSliderReleasedMessage();
+	input()->SetMouseCapture(NULL);
 }
 
 //-----------------------------------------------------------------------------
@@ -629,40 +603,4 @@ int ScrollBarSlider::GetRangeWindow()
 void ScrollBarSlider::SetButtonOffset(int buttonOffset)
 {
 	_buttonOffset = buttonOffset;
-}
-
-void ScrollBarSlider::OnCursorEntered()
-{
-	m_bCursorOver = true;
-}
-
-void ScrollBarSlider::OnCursorExited()
-{
-	m_bCursorOver = false;
-}
-
-void ScrollBarSlider::SetNobFocusColor( const Color &color )
-{
-	m_NobFocusColor = color;
-}
-
-void ScrollBarSlider::SetNobDragColor( const Color &color )
-{
-	m_NobDragColor = color;
-}
-
-bool ScrollBarSlider::IsMouseOverNob()
-{
-	int x,y;
-	input()->GetCursorPos(x,y);
-	ScreenToLocal(x,y);
-
-	int nCheckValue = _vertical ? y : x;
-
-	if ( ( nCheckValue >= _nobPos[0] ) && 
-		( nCheckValue < _nobPos[1] ) )
-	{
-		return true;
-	}
-	return false;
 }

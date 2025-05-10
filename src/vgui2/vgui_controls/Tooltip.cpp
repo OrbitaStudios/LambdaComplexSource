@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 // This class is a message box that has two buttons, ok and cancel instead of
@@ -25,6 +25,13 @@
 
 using namespace vgui;
 
+
+//------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------
+static vgui::DHANDLE< TextEntry > s_TooltipWindow;
+static int s_iTooltipWindowCount = 0;
+
+
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
@@ -35,6 +42,7 @@ BaseTooltip::BaseTooltip(Panel *parent, const char *text)
 	_displayOnOneLine = false;
 	_makeVisible = false;
 	_isDirty = false;
+	_enabled = true;
 
 	_tooltipDelay = 500; // default delay for opening tooltips
 	_delay = 0;
@@ -94,6 +102,11 @@ void BaseTooltip::ShowTooltip(Panel *currentPanel)
 	PerformLayout();
 }
 
+void BaseTooltip::SetEnabled( bool bState )
+{
+	_enabled = bState;
+}
+
 //-----------------------------------------------------------------------------
 // Purpose:
 //-----------------------------------------------------------------------------
@@ -143,6 +156,11 @@ void BaseTooltip::SetText(const char *text)
 		m_Text.AddToTail(text[i]);
 	}
 	m_Text.AddToTail('\0');
+	
+	if (s_TooltipWindow.Get() && m_pParent == s_TooltipWindow.Get()->GetParent())
+	{
+		s_TooltipWindow->SetText(m_Text.Base());
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -166,6 +184,16 @@ void BaseTooltip::PositionWindow( Panel *pTipPanel )
 
 	int wide, tall;
 	surface()->GetScreenSize(wide, tall);
+
+	int iParentX = 0, iParentY = 0;
+	if ( !pTipPanel->IsPopup() )
+	{
+		pTipPanel->GetParent()->GetPos( iParentX, iParentY );
+		pTipPanel->GetParent()->LocalToScreen( iParentX, iParentY );
+	}
+
+	cursorX -= iParentX;
+	cursorY -= iParentY;
 
 	if (wide - iTipW > cursorX)
 	{
@@ -199,18 +227,11 @@ void BaseTooltip::PositionWindow( Panel *pTipPanel )
 }
 
 
-//------------------------------------------------------------------------------------------------------
-//------------------------------------------------------------------------------------------------------
-static vgui::DHANDLE< TextEntry > s_TooltipWindow;
-static int s_iTooltipWindowCount = 0;
-
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
 TextTooltip::TextTooltip(Panel *parent, const char *text) : BaseTooltip( parent, text )
 {
-	m_pParent = parent;
-
 	if (!s_TooltipWindow.Get())
 	{
 		s_TooltipWindow = new TextEntry(NULL, "tooltip");
@@ -233,21 +254,10 @@ TextTooltip::TextTooltip(Panel *parent, const char *text) : BaseTooltip( parent,
 	s_TooltipWindow->SetMouseInputEnabled( false );
 	
 	SetText(text);
-	if (s_TooltipWindow.Get()->GetParent() == NULL)
-	{
-		s_TooltipWindow->SetText(m_Text.Base());
-		s_TooltipWindow->SetEditable(false);
-		s_TooltipWindow->SetMultiline(true);
-		s_TooltipWindow->SetVisible(false);
-	}
-
-	_displayOnOneLine = false;
-	_makeVisible = false;
-	_isDirty = false;
-	_enabled = true;
-
-	_tooltipDelay = 500; // default delay for opening tooltips
-	_delay = 0;
+	s_TooltipWindow->SetText(m_Text.Base());
+	s_TooltipWindow->SetEditable(false);
+	s_TooltipWindow->SetMultiline(true);
+	s_TooltipWindow->SetVisible(false);
 }
 
 
@@ -266,11 +276,6 @@ TextTooltip::~TextTooltip()
 	}
 }
 
-void BaseTooltip::SetEnabled( bool bState )
-{
-	_enabled = bState;
-}
-
 //-----------------------------------------------------------------------------
 // Purpose: Set the tooltip text
 //-----------------------------------------------------------------------------
@@ -278,9 +283,20 @@ void TextTooltip::SetText(const char *text)
 {
 	BaseTooltip::SetText( text );
 	
-	if (s_TooltipWindow.Get() && m_pParent == s_TooltipWindow.Get()->GetParent())
+	if (s_TooltipWindow.Get())
 	{
 		s_TooltipWindow->SetText(m_Text.Base());
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: gets the font from the scheme
+//-----------------------------------------------------------------------------
+void TextTooltip::ApplySchemeSettings(IScheme *pScheme)
+{
+	if ( s_TooltipWindow )
+	{
+		s_TooltipWindow->SetFont(pScheme->GetFont("DefaultSmall", s_TooltipWindow->IsProportional()));
 	}
 }
 
@@ -291,22 +307,23 @@ void TextTooltip::ShowTooltip(Panel *currentPanel)
 {
 	if ( s_TooltipWindow.Get() )
 	{
-		Panel *pCurrentParent = s_TooltipWindow->GetParent();
-
-		_isDirty = _isDirty || ( pCurrentParent != currentPanel );
-		s_TooltipWindow->SetText( m_Text.Base() );
-		s_TooltipWindow->SetParent(currentPanel);
-
 		int nLen = s_TooltipWindow->GetTextLength();
+
 		if ( nLen <= 0 )
 		{
 			// Empty tool tip, no need to show it
 			_makeVisible = false;
 			return;
 		}
-	}
 
-	
+		char *pBuf = (char*)_alloca( nLen+1 );
+		s_TooltipWindow->GetText( pBuf, nLen+1 );
+		Panel *pCurrentParent = s_TooltipWindow->GetParent();
+
+		_isDirty = _isDirty || ( pCurrentParent != currentPanel );
+		s_TooltipWindow->SetText( m_Text.Base() );
+		s_TooltipWindow->SetParent(currentPanel);
+	}
 	BaseTooltip::ShowTooltip( currentPanel );
 }
 
@@ -316,8 +333,7 @@ void TextTooltip::ShowTooltip(Panel *currentPanel)
 void TextTooltip::PerformLayout()
 {
 	if ( !ShouldLayout() )
-		return;		
-
+		return;
 	// we're ready, just make us visible
 	if ( !s_TooltipWindow.Get() )
 		return;
@@ -328,14 +344,10 @@ void TextTooltip::PerformLayout()
 	s_TooltipWindow->MakePopup( false, true );
 	s_TooltipWindow->SetKeyBoardInputEnabled( false );
 	s_TooltipWindow->SetMouseInputEnabled( false );
-	// force the tooltip window to apply scheme settings (and pick a font) before we size it and color it
-	surface()->SolveTraverse( s_TooltipWindow->GetVPanel(), true );
-	// get cursor position
-	int cursorX, cursorY;
-	input()->GetCursorPos(cursorX, cursorY);
-	
+
 	// relayout the textwindow immediately so that we know it's size
 	//m_pTextEntry->InvalidateLayout(true);
+
 	SizeTextWindow();
 	PositionWindow( s_TooltipWindow );
 }
@@ -398,6 +410,7 @@ void TextTooltip::HideTooltip()
 	{
 		s_TooltipWindow->SetVisible(false);
 	}
-	
+
 	BaseTooltip::HideTooltip();
 }
+

@@ -8,9 +8,6 @@
 // This is completely disabled in release builds. We overwrite client Rel DLLs with client Staging DLLs on our cluster.
 #if !defined( CSTRIKE_REL_BUILD )
 
-//lwss- add blank class here to fix compilation
-class MLTick;
-//lwss end
 // Records game state to a fat demo format.
 class CCSFatDemoRecorder : public CAutoGameSystem, public CGameEventListener
 {

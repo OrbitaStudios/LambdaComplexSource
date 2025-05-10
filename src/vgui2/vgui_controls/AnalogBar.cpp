@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -14,7 +14,7 @@
 #include <vgui/ILocalize.h>
 #include <vgui/IScheme.h>
 #include <vgui/ISurface.h>
-#include <keyvalues.h>
+#include <KeyValues.h>
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
@@ -254,6 +254,7 @@ void AnalogBar::ApplySchemeSettings(IScheme *pScheme)
 //-----------------------------------------------------------------------------
 bool AnalogBar::ConstructTimeRemainingString(wchar_t *output, int outputBufferSizeInBytes, float startTime, float currentTime, float currentAnalogValue, float lastAnalogValueUpdateTime, bool addRemainingSuffix)
 {
+	Assert( outputBufferSizeInBytes >= sizeof(output[0]) );
 	Assert(lastAnalogValueUpdateTime <= currentTime);
 	output[0] = 0;
 

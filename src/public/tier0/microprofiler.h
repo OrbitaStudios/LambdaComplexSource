@@ -22,19 +22,12 @@ PLATFORM_INTERFACE void MicroProfilerAddTS( CMicroProfiler *pProfiler, uint64 nu
 PLATFORM_INTERFACE int64 GetHardwareClockReliably();
 
 
-#if defined( __aarch64__ )
-#include <sse2neon.h>
-#elif defined( IS_WINDOWS_PC )
+#ifdef IS_WINDOWS_PC
 #include <intrin.h>	// get __rdtsc
 #endif
 
 
-#if defined( __aarch64__ )
-
-inline unsigned long long GetTimebaseRegister( void ) { return ( unsigned long long )_rdtsc(); }
-
-#elif defined(_LINUX) || defined( OSX )
-
+#if defined(_LINUX) || defined( OSX )
 inline unsigned long long GetTimebaseRegister( void )
 {
 #ifdef PLATFORM_64BITS
@@ -49,7 +42,6 @@ inline unsigned long long GetTimebaseRegister( void )
 }
 
 #else
-
 // Warning: THere's a hardware bug with 64-bit MFTB on PS3 (not sure about X360): sometimes it returns incorrect results (when low word overflows, the high word doesn't increment for some time)
 inline int64 GetTimebaseRegister()
 {
@@ -59,11 +51,12 @@ inline int64 GetTimebaseRegister()
 	// The timebase frequency on PS/3 is 79.8 MHz, see sys_time_get_timebase_frequency()
 	// this works out to 40.10025 clock ticks per timebase tick
 	return __mftb();
+#elif defined( OSX )
+	return GetTimebaseRegister();
 #else
 	return __rdtsc();
 #endif
 }
-
 #endif
 
 

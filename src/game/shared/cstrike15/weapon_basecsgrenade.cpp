@@ -6,7 +6,6 @@
 
 #include "cbase.h"
 #include "weapon_csbase.h"
-#include "../../client/weapon_selection.h"
 #include "gamerules.h"
 #include "npcevent.h"
 #include "engine/IEngineSound.h"
@@ -19,9 +18,11 @@
 #ifdef CLIENT_DLL
 
 	#include "c_cs_player.h"
-    #if defined( INCLUDE_SCALEFORM )
+#if defined( INCLUDE_SCALEFORM )
 	#include "HUD/sfweaponselection.h"
-    #endif
+#else
+	#include "weapon_selection.h"
+#endif
 	#include "c_rumble.h"
 	#include "rumble_shared.h"
 #else
@@ -456,8 +457,7 @@ void CBaseCSGrenade::ItemPostFrame()
 			{
 				pPlayer->SwitchToNextBestWeapon( this );
 			}
-#if defined (CLIENT_DLL)
-#if defined( INCLUDE_SCALEFORM )
+#if defined (CLIENT_DLL) && defined(INCLUDE_SCALEFORM)
 			// when a grenade is removed, force the local player to update thier inventory screen
 			C_CSPlayer *pLocalPlayer = C_CSPlayer::GetLocalCSPlayer();
 			if ( pLocalPlayer && pLocalPlayer == pPlayer )
@@ -477,7 +477,6 @@ void CBaseCSGrenade::ItemPostFrame()
 					}
 				}
 			}
-#endif
 #endif
 			return;	//don't animate this grenade any more!
 		}	

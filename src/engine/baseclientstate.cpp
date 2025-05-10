@@ -366,6 +366,11 @@ void CServerMsg_CheckReservation::SendMsg( const ns_address &serverAdr, int sock
 	msg.WriteLongLong( 0 );
 #endif
 
+	#ifndef DEDICATED
+		if ( serverAdr.GetAddressType() == NSAT_PROXIED_GAMESERVER )
+			NET_InitSteamDatagramProxiedGameserverConnection( serverAdr );
+	#endif
+
 	NET_SendPacket( NULL, socket, serverAdr, msg.GetData(), msg.GetNumBytesWritten() );
 }
 
@@ -426,6 +431,11 @@ void CServerMsg_Ping::SendMsg( const ns_address &serverAdr, int socket, uint32 t
 	msg.WriteByte( A2S_PING );
 	msg.WriteLong( GetHostVersion() );
 	msg.WriteLong( token );
+
+	#ifndef DEDICATED
+		if ( serverAdr.GetAddressType() == NSAT_PROXIED_GAMESERVER )
+			NET_InitSteamDatagramProxiedGameserverConnection( serverAdr );
+	#endif
 
 	DevMsg( "Pinging %s\n", ns_address_render( serverAdr ).String() );
 	NET_SendPacket( NULL, socket, serverAdr, msg.GetData(), msg.GetNumBytesWritten() );
@@ -1483,7 +1493,16 @@ void CBaseClientState::CheckForResend ( bool bForceResendNow /* = false */ )
 					break;
 
 				case NSAT_PROXIED_GAMESERVER:
-					Assert( false );
+					#ifdef DEDICATED
+						Assert( false );
+					#else
+
+						// Make sure we have a ticket, and are setup to talk to this guy
+						if ( !NET_InitSteamDatagramProxiedGameserverConnection( remote.m_adrRemote ) )
+							continue;
+
+						pszProtocol = "SteamDatagram";
+					#endif
 					break;
 			}
 			if ( developer.GetInt() != 0 )
@@ -1688,6 +1707,20 @@ bool CBaseClientState::ProcessConnectionlessPacket( netpacket_t *packet )
 				Disconnect();
 				return false;
 			}
+
+			// The host can disable access to secure servers if you load unsigned code (mods, plugins, hacks)
+			if ( dc.m_bGSSecure && !Host_IsSecureServerAllowed() )
+			{
+				m_netadrReserveServer.RemoveAll();
+				m_nServerReservationCookie = 0;				
+				m_pServerReservationCallback = NULL;
+#if !defined(DEDICATED)
+				g_pMatchFramework->CloseSession();
+				g_pMatchFramework->GetEventsSubscription()->BroadcastEvent( new KeyValues( "OnClientInsecureBlocked", "reason", "connect" ) );
+#endif
+				Disconnect();
+				return false;
+			}	
 
 			char context[ 256 ] = { 0 };
 			msg.ReadString( context, sizeof( context ) );
@@ -2262,11 +2295,28 @@ void CBaseClientState::HandleDeferredConnection()
 			kvCreateSession->SetPtr( "ptr", &uiReservationCookie );
 			g_pMatchFramework->GetEventsSubscription()->BroadcastEvent( kvCreateSession );
 		}
+
+		if ( !uiReservationCookie )
+		{
+			Disconnect( true );	// disconnect the current attempt, will retry with GC reservation
+			{
+				KeyValues *kvCreateSession = new KeyValues( "OnEngineLevelLoadingSession" );
+				kvCreateSession->SetString( "reason", "CreateSession" );
+				kvCreateSession->SetString( "adr", ns_address_render( dc.m_adrServerAddress ).String() );
+				kvCreateSession->SetUint64( "gsid", dc.m_unGSSteamID );
+				// NO PTR HERE, FORCE COOKIE: kvCreateSession->SetPtr( "ptr", &uiReservationCookie );
+				g_pMatchFramework->GetEventsSubscription()->BroadcastEvent( kvCreateSession );
+			}
+		}
+		else
+			SendConnectPacket( dc.m_adrServerAddress, dc.m_nChallenge, dc.m_nAuthprotocol, dc.m_unGSSteamID, dc.m_bGSSecure );
 #endif
 	}
+	else
 #endif
-
-	SendConnectPacket ( dc.m_adrServerAddress, dc.m_nChallenge, dc.m_nAuthprotocol, dc.m_unGSSteamID, dc.m_bGSSecure );
+	{
+		SendConnectPacket ( dc.m_adrServerAddress, dc.m_nChallenge, dc.m_nAuthprotocol, dc.m_unGSSteamID, dc.m_bGSSecure );
+	}
 }
 
 
@@ -2339,6 +2389,36 @@ bool CBaseClientState::InternalProcessStringCmd( const CNETMsg_StringCmd& msg )
 }
 
 
+#if defined( INCLUDE_SCALEFORM )
+#ifndef DEDICATED
+class CScaleformAvatarImageProviderImpl : public IScaleformAvatarImageProvider
+{
+public:
+	// Scaleform low-level image needs rgba bits of the inventory image (if it's ready)
+	virtual bool GetImageInfo( uint64 xuid, ImageInfo_t *pImageInfo ) OVERRIDE
+	{
+		CSteamID steamID( xuid );
+		if ( !steamID.IsValid() || !steamID.BIndividualAccount() || !steamID.GetAccountID() )
+			return false;
+
+		if ( !GetBaseLocalClient().IsConnected() )
+			return false;
+
+		// Find the player with the given account ID
+		CBaseClientState::PlayerAvatarDataMap_t const &data = GetBaseLocalClient().m_mapPlayerAvatarData;
+		CBaseClientState::PlayerAvatarDataMap_t::IndexType_t const idxData = data.Find( steamID.GetAccountID() );
+		if ( idxData == data.InvalidIndex() )
+			return false;
+
+		const CNETMsg_PlayerAvatarData& msg = *data.Element( idxData );
+		pImageInfo->m_cbImageData = msg.rgb().size();
+		pImageInfo->m_pvImageData = msg.rgb().data();
+		return true;
+	}
+} g_CScaleformAvatarImageProviderImpl;
+#endif
+#endif
+
 bool CBaseClientState::NETMsg_PlayerAvatarData( const CNETMsg_PlayerAvatarData& msg )
 {
 	PlayerAvatarDataMap_t::IndexType_t idxData = m_mapPlayerAvatarData.Find( msg.accountid() );
@@ -2351,6 +2431,13 @@ bool CBaseClientState::NETMsg_PlayerAvatarData( const CNETMsg_PlayerAvatarData& 
 	CNETMsg_PlayerAvatarData_t *pClientDataCopy = new CNETMsg_PlayerAvatarData_t;
 	pClientDataCopy->CopyFrom( msg );
 	m_mapPlayerAvatarData.Insert( pClientDataCopy->accountid(), pClientDataCopy );
+
+#if defined( INCLUDE_SCALEFORM )
+#ifndef DEDICATED
+	if ( g_pScaleformUI )
+		g_pScaleformUI->AvatarImageReload( uint64( pClientDataCopy->accountid() ), &g_CScaleformAvatarImageProviderImpl );
+#endif
+#endif
 
 	return true;
 }

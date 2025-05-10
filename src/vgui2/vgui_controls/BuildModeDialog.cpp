@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -14,7 +14,7 @@
 #include <vgui/ISurface.h>
 #include <vgui/ISystem.h>
 #include <vgui/KeyCode.h>
-#include <keyvalues.h>
+#include <KeyValues.h>
 #include <vgui/MouseCode.h>
 
 #include <vgui_controls/BuildModeDialog.h>
@@ -734,13 +734,11 @@ void BuildModeDialog::SetActiveControl(Panel *controlToEdit)
 		else if (datat == TYPE_CORNER)
 		{
 			// drop-down combo box
-			editCombo = new ComboBox(this, NULL, 5, false);
+			editCombo = new ComboBox(this, NULL, 4, false);
 			editCombo->AddItem("0 - top-left", NULL);
 			editCombo->AddItem("1 - top-right", NULL);
 			editCombo->AddItem("2 - bottom-left", NULL);
 			editCombo->AddItem("3 - bottom-right", NULL);
-			editCombo->AddItem("4 - no pin", NULL);
-			editCombo->ActivateItemByRow( 4 );
 		
 			edit = editCombo;
 		}
@@ -975,7 +973,7 @@ void BuildModeDialog::ApplyDataToControls()
 		{
 			char messageString[255];
 			Q_snprintf(messageString, sizeof( messageString ), "Fieldname is not unique: %s\nRename it and try again.", fieldName);
-			MessageBox *errorBox = new MessageBox("Cannot Apply", messageString );
+			MessageBox *errorBox = new MessageBox("Cannot Apply", messageString);
 			errorBox->DoModal();
 			UpdateControlData(m_pCurrentPanel);
 			m_pApplyButton->SetEnabled(false);

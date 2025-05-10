@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -6,15 +6,13 @@
 //=============================================================================//
 
 #include <vgui/KeyCode.h>
-#include <keyvalues.h>
+#include <KeyValues.h>
 #include "vgui/IInput.h"
 #include "vgui/MouseCode.h"
 #include "vgui/ISurface.h"
 
 #include <vgui_controls/ToolWindow.h>
 #include <vgui_controls/PropertySheet.h>
-
-#include "tier1/tokenset.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
@@ -53,10 +51,8 @@ ToolWindow::ToolWindow(
 	Panel *page /*= NULL*/, 
 	char const *title /*= NULL */,
 	bool contextMenu /*=false*/,
-	bool inGlobalList /*= true*/ ) : 
-	BaseClass( parent, "ToolWindow" ), 
-	m_bStickyEdges( true ),
-	m_pFactory( NULL )
+	bool inGlobalList /*= true*/ ) : BaseClass( parent, "ToolWindow" ),
+	m_pFactory( factory )
 {
 	if ( inGlobalList )
 	{
@@ -185,11 +181,6 @@ void ToolWindow::ActivateBuildMode()
 void ToolWindow::RequestFocus(int direction)
 {
     m_pPropertySheet->RequestFocus(direction);
-}
-
-void ToolWindow::OnSetFocus()
-{
-	m_pPropertySheet->RequestFocus();
 }
 
 //-----------------------------------------------------------------------------
@@ -484,235 +475,4 @@ void ToolWindow::OnMousePressed( MouseCode code )
 	default:
 		BaseClass::OnMousePressed( code );
 	}
-}
-
-void ToolWindow::OnPageChanged( )
-{
-	//char szTitle[ 256 ];
-	//m_pPropertySheet->GetActiveTabTitle( szTitle, sizeof( szTitle ) );
-	//SetTitle( szTitle, false );
-}
-
-static void GetParentSpaceExtents( Panel *p, int bounds[ 4 ] )
-{
-	// Get parent space bounds
-	p->GetBounds( bounds[ 0 ], bounds[ 1 ], bounds[ 2 ], bounds[ 3 ] );
-
-	// x1, y1
-	bounds[ 2 ] += bounds[ 0 ];
-	bounds[ 3 ] += bounds[ 1 ];
-}
-
-static ESharedEdge GetOppositeEdge( ESharedEdge eEdge )
-{
-	switch ( eEdge )
-	{
-	default:
-		break;
-	case TOOLWINDOW_LEFT:
-		return TOOLWINDOW_RIGHT;
-	case TOOLWINDOW_TOP:
-		return TOOLWINDOW_BOTTOM;
-	case TOOLWINDOW_RIGHT:
-		return TOOLWINDOW_LEFT;
-	case TOOLWINDOW_BOTTOM:
-		return TOOLWINDOW_TOP;
-	}
-
-	Assert( 0 );
-	return TOOLWINDOW_NONE;
-}
-
-static void GetParentSpaceEdge( Panel *p, int bounds[ 4 ], ESharedEdge eEdge )
-{
-	GetParentSpaceExtents( p, bounds );
-	// Collapse down to single edge
-	bounds[ GetOppositeEdge( eEdge ) ] = bounds[ eEdge ];
-}
-
-static const tokenset_t< ESharedEdge > s_EdgeTypes[] =
-{						 
-	{ "TOOLWINDOW_NONE",		TOOLWINDOW_NONE     },                         
-	{ "TOOLWINDOW_LEFT",		TOOLWINDOW_LEFT     },                         
-	{ "TOOLWINDOW_TOP",			TOOLWINDOW_TOP		}, 
-	{ "TOOLWINDOW_RIGHT",		TOOLWINDOW_RIGHT    }, 
-	{ "TOOLWINDOW_BOTTOM",		TOOLWINDOW_BOTTOM	},
-	{ NULL,						TOOLWINDOW_NONE		}
-};
-
-void ToolWindow::MoveSibling( ToolWindow *pSibling, ESharedEdge eEdge, int dpixels )
-{
-	int bounds[ 4 ];
-	GetParentSpaceExtents( pSibling, bounds );
-	bounds[ eEdge ] += dpixels;
-
-	// Convert back to local pos and width/height
-	bounds[ 2 ] = bounds[ 2 ] - bounds[ 0 ];
-	bounds[ 3 ] = bounds[ 3 ] - bounds[ 1 ];
-
-	pSibling->SetBounds( bounds[ 0 ], bounds[ 1 ], bounds[ 2 ], bounds[ 3 ] );
-}
-
-struct TWEdgePair_t
-{
-	ToolWindow *m_pWindow;
-	ESharedEdge m_EdgeType;
-
-	static bool Less( const TWEdgePair_t &lhs, const TWEdgePair_t &rhs )
-	{
-		if ( lhs.m_pWindow < rhs.m_pWindow )
-			return true;
-		if ( lhs.m_pWindow > rhs.m_pWindow )
-			return false;
-
-		return lhs.m_EdgeType < rhs.m_EdgeType;
-	}
-};
-
-static bool SpanOverlaps( int line1[ 4 ], int line2[ 4 ] )
-{
-	bool bXOverlap = ( MAX( line1[ 0 ], line2[ 0 ] ) - MIN( line1[ 2 ], line2[ 2 ] ) ) <= 0 ? true : false; 
-	bool bYOverlap = ( MAX( line1[ 1 ], line2[ 1 ] ) - MIN( line1[ 3 ], line2[ 3 ] ) ) <= 0 ? true : false; 
-	
-	return bXOverlap && bYOverlap;
-}
-
-// Find any parallel edges that overlap and aren't already in the tree.  If we add an edge, we recursively see if anything else overlaps it	on the same line
-void ToolWindow::FindOverlappingEdges_R( CUtlVector< ToolWindow * > &vecSiblings, CUtlRBTree< TWEdgePair_t > &rbCurrentEdges, ESharedEdge eEdgeType, int line[ 4 ] )
-{
-	// L/R or T/B
-	for ( int et = 0; et < 2; ++et )
-	{
-		for ( int i = 0; i < vecSiblings.Count(); ++i )
-		{
-			ToolWindow *pSibling = vecSiblings[ i ];
-
-			int edgeline[ 4 ];
-			GetParentSpaceEdge( pSibling, edgeline, eEdgeType );
-			if ( SpanOverlaps( edgeline, line ) )
-			{
-				TWEdgePair_t ep;
-				ep.m_pWindow = pSibling;
-				ep.m_EdgeType = eEdgeType;
-
-				if ( rbCurrentEdges.Find( ep ) == rbCurrentEdges.InvalidIndex() )
-				{
-					/*
-					Msg( "Found overlap %d, %d, %d, %d with %d %d %d %d on edge %s\n",
-						edgeline[ 0 ],edgeline[ 1 ],edgeline[ 2 ],edgeline[ 3 ],
-						line[ 0 ],line[ 1 ],line[ 2 ],line[ 3 ],
-						s_EdgeTypes->GetNameByToken( eEdgeType ) );
-					*/
-				
-					rbCurrentEdges.Insert( ep );
-					// Extend search out along the line!!!
-					FindOverlappingEdges_R( vecSiblings, rbCurrentEdges, eEdgeType, edgeline );
-				}
-			}
-		}
-
-		// Try opposite on next pass
-		eEdgeType = GetOppositeEdge( eEdgeType );
-	}
-}
-
-// Override Frame method in order to grow adjoining sibling tool windows if possible
-void ToolWindow::OnGripPanelMoved( int nNewX, int nNewY, int nNewW, int nNewH )
-{
-	bool bShiftDown = input()->IsKeyDown( KEY_LSHIFT ) || input()->IsKeyDown( KEY_RSHIFT );
-	if ( IsStickEdgesEnabled() && !bShiftDown )
-	{
-		// Snag old values
-		int x, y, w, h;
-		GetBounds( x, y, w, h );
-
-		// Get list of siblings
-		CUtlVector< ToolWindow * > vecSiblings;
-		GetSiblingToolWindows( vecSiblings );
-
-		// Msg( "%d siblings\n", vecSiblings.Count() );
-		if ( vecSiblings.Count() > 0 )
-		{
-			// Determine what type of grip panel movement(s) occurred
-			int d[ 4 ];
-			d[ 0 ] = nNewX - x;		// L
-			d[ 1 ] = nNewY - y;		// T
-			d[ 2 ] = ( nNewX + nNewW ) - ( x + w );		// R
-			d[ 3 ] = ( nNewY + nNewH ) - ( y + h );		// B
-
-			// For each moved edge, find and edges along the same line that overlap. If we find an overlap, check it for additional overlaps against the siblings:
-			//
-			//    ------------------------------------		e.g:  clicking at the base of panel B should find the "top" of panel C, which then recurses and gets the bottom line of panel A as well 
-			//    |                |				  |
-			//    |       A        |		B	      |
-			//    |                |				  |
-			//    |                |				  |
-			//    |-----------------xxxxxxxxxxxxxxxxxx|
-			//    |         C      				      |
-			//    |                				      |
-			//    -------------------------------------
-			//
-
-			for ( int edge = 0; edge < 4; ++edge )
-			{
-				if ( !d[ edge ] )
-					continue;
-
-				CUtlRBTree< TWEdgePair_t > rbEdges( 0, 0, TWEdgePair_t::Less );
-
-				ESharedEdge eEdge = (ESharedEdge)( edge );
-				
-				// Msg( "movement on edge %s is %d pixels\n", s_EdgeTypes->GetNameByToken( eEdge ), d[ edge ] );
-
-				// Now find any overlapping ones along the same "line"
-				int edgeline[ 4 ];
-				GetParentSpaceEdge( this, edgeline, eEdge );
-				FindOverlappingEdges_R( vecSiblings, rbEdges, eEdge, edgeline );
-				 
-				FOR_EACH_UTLRBTREE( rbEdges, i )
-				{
-					TWEdgePair_t &ep = rbEdges[ i ];
-					// Msg( "moving tw %p on edge %s\n", ep.m_pWindow, s_EdgeTypes->GetNameByToken( ep.m_EdgeType ) );
-					// Move the sibling
-					MoveSibling( ep.m_pWindow, ep.m_EdgeType, d[ edge ] );
-				}
-			}
-		}
-	}
-
-	// Move panel in question
-	BaseClass::OnGripPanelMoved( nNewX, nNewY, nNewW, nNewH );
-}
-
-void ToolWindow::GetSiblingToolWindows( CUtlVector< ToolWindow * > &vecSiblings )
-{
-	Panel *parent = GetParent();
-	if ( NULL == parent )
-		return;
-
-	int nChildCount = parent->GetChildCount();
-	for ( int i = 0 ; i < nChildCount; ++i )
-	{
-		ToolWindow *pChildTool = dynamic_cast< ToolWindow * >( parent->GetChild( i ) );
-		if ( !pChildTool || 
-			 !pChildTool->IsVisible() || 
-			 pChildTool == this )
-			continue;
-		vecSiblings.AddToTail( pChildTool );
-	}
-}
-
-void ToolWindow::OnGripPanelMoveFinished()
-{
-}
-
-// Static method
-void ToolWindow::EnableStickyEdges( bool bEnable )
-{
-	m_bStickyEdges = bEnable;
-}
-
-bool ToolWindow::IsStickEdgesEnabled() const
-{
-	return m_bStickyEdges;
 }

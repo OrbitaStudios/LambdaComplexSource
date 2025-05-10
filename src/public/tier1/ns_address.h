@@ -16,6 +16,10 @@
 #include "steam/steamclientpublic.h" // for CSteamID
 #include "tier1/strtools.h" // V_memset
 
+#if defined( NO_STEAM )
+typedef CSteamID uint64;
+#endif
+
 enum PeerToPeerAddressType_t
 {
 	P2P_STEAMID,

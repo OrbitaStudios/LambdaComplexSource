@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: Sets up the tasks for default AI.
 //
@@ -50,7 +50,7 @@ const char *TaskFailureToString( AI_TaskFailureCode_t code )
 {
 	const char *pszResult;
 	if ( code < 0 || code >= NUM_FAIL_CODES )
-		pszResult = "Unknown Code!"; //(const char *)code; // lwss: fix potential crash here to stop compiler warning.
+		pszResult = (const char *)code;
 	else
 		pszResult = g_ppszTaskFailureText[code];
 	return pszResult;

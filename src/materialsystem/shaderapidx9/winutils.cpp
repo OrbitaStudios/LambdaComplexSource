@@ -8,9 +8,7 @@
 
 #ifndef _WIN32
 
-#ifdef USE_SDL
-#include "SDL.h"
-#endif
+#include "appframework/ilaunchermgr.h"
 
 void GlobalMemoryStatus( MEMORYSTATUS *pOut )
 {
@@ -48,25 +46,9 @@ void SetThreadAffinityMask( void *hThread, int nMask )
 	DebuggerBreak();
 }
 
-void GetClientRect( void *hWnd, RECT *destRect )
+bool GUID::operator==( const struct _GUID &other ) const
 {
-	// the only useful answer this call can offer, is the size of the canvas.
-	// actually getting the window bounds is not useful.
-	// so, see if a D3D device is up and running, and if so,
-	// dig in and find out its backbuffer size and use that.
-
-	int width, height;
-#ifdef USE_SDL
-    SDL_GetWindowSize( (SDL_Window*)hWnd, &width, &height );
-#else
-#error
-#endif
-	Assert( width!=0 && height!=0 );
-
-	destRect->left = 0;
-	destRect->top = 0;
-	destRect->right = width;
-	destRect->bottom = height;		
+	DebuggerBreak();
+	return memcmp( this, &other, sizeof( GUID ) ) == 0;
 }
-
 #endif

@@ -1,14 +1,31 @@
+#ifndef RENDERMECHANISM_H
+#define RENDERMECHANISM_H
 
-#pragma once
+#if defined(DX_TO_GL_ABSTRACTION)
 
-#if defined(DX_TO_VK_ABSTRACTION)
+#undef PROTECTED_THINGS_ENABLE
 
-#include <d3d9.h>
-#include "togl/dxabstract.h"
+#include <GL/gl.h>
+#include <GL/glext.h>
+
+#include "tier0/basetypes.h"
+#include "tier0/platform.h"
+
+#include "togl/glmdebug.h"
+#include "togl/glbase.h"
+#include "togl/glentrypoints.h"
+#include "togl/glmdisplay.h"
+#include "togl/glmdisplaydb.h"
+#include "togl/glmgrbasics.h"
+#include "togl/glmgrext.h"
+#include "togl/cglmbuffer.h"
+#include "togl/cglmtex.h"
+#include "togl/cglmfbo.h"
+#include "togl/cglmprogram.h"
+#include "togl/cglmquery.h"
+#include "togl/glmgr.h"
 #include "togl/dxabstract_types.h"
-
-typedef void* VD3DHWND;
-typedef void* VD3DHANDLE;
+#include "togl/dxabstract.h"
 
 #else
 	//USE_ACTUAL_DX
@@ -21,12 +38,12 @@ typedef void* VD3DHANDLE;
 			#include "../../dx9sdk/include/d3d9.h"
 			#include "../../dx9sdk/include/d3dx9.h"
 		#endif
+		typedef HWND VD3DHWND;
 	#endif
 
-typedef HWND VD3DHWND;
-
+	#define	GLMPRINTF(args)	
+	#define	GLMPRINTSTR(args)
+	#define	GLMPRINTTEXT(args)
 #endif // defined(DX_TO_GL_ABSTRACTION)
 
-#define	GLMPRINTF(args)	
-#define	GLMPRINTSTR(args)
-#define	GLMPRINTTEXT(args)
+#endif // RENDERMECHANISM_H

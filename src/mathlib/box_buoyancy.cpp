@@ -326,8 +326,8 @@ inline FourVectors MsubSIMD( const FourVectors &a, const fltx4 &b, const FourVec
 const fltx4 g_f4_11h4 = {1,1,0.5f,4.0f};
 const fltx4 g_f4_4424 = {4,4,2,4};
 const fltx4 g_f4AlmostInifiniteSlope = {1e+24,1e+24,1e+24,1e+24};
-const int32 ALIGN16 g_SIMD_signmask_W[4] ALIGN16_POST = { (int)0x80000000, (int)0x80000000, (int)0x80000000, (int)0xFFFFFFFF };
-const int32 ALIGN16 g_SIMD_signmask_NoW[4] ALIGN16_POST = { (int)0x80000000, (int)0x80000000, (int)0x80000000, 0 };
+const int32 ALIGN16 g_SIMD_signmask_W[4] ALIGN16_POST = { 0x80000000, 0x80000000, 0x80000000, 0xFFFFFFFF };
+const int32 ALIGN16 g_SIMD_signmask_NoW[4] ALIGN16_POST = { 0x80000000, 0x80000000, 0x80000000, 0 };
 
 // physical interpretation: we're integrating the pressure force (pascals) along the submerged surface.
 // in other words, we substitute the usual volume integral for surface integral

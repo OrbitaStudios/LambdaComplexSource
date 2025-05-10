@@ -833,7 +833,7 @@ bool CGameEventManager::AddListenerGlobal( IGameEventListener2 *listener, bool b
 int CGameEventManager::LoadEventsFromFile( const char * filename )
 {
 	AUTO_LOCK_FM( m_mutex );
-	if ( !m_EventFiles.Find( filename ).IsValid() )
+	if ( UTL_INVAL_SYMBOL == m_EventFiles.Find( filename ) )
 	{
 		CUtlSymbol id = m_EventFiles.AddString( filename );
 		m_EventFileNames.AddToTail( id );

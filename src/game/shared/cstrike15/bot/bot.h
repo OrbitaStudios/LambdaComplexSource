@@ -35,13 +35,6 @@
 class BotProfile;
 
 //--------------------------------------------------------------------------------------------------------
-static char *CloneString( const char *str )
-{
-	char *cloneStr = new char [ strlen(str)+1 ];
-	strcpy( cloneStr, str );
-	return cloneStr;
-}
-
 extern bool AreBotsAllowed();
 
 
@@ -81,7 +74,7 @@ template < class T > T * CreateBot( const BotProfile *profile, int team )
 
 	if ( UTIL_ClientsInGame() >= gpGlobals->maxClients )
 	{
-        Msg( "Unable to create bot: Server is full (%d/%d clients).\n", UTIL_ClientsInGame(), gpGlobals->maxClients );
+		CONSOLE_ECHO( "Unable to create bot: Server is full (%d/%d clients).\n", UTIL_ClientsInGame(), gpGlobals->maxClients );
 		return NULL;
 	}
 
@@ -107,7 +100,7 @@ template < class T > T * CreateBot( const BotProfile *profile, int team )
 
 	if ( botEdict == NULL )
 	{
-        Msg( "Unable to create bot: CreateFakeClient() returned null.\n" );
+		CONSOLE_ECHO( "Unable to create bot: CreateFakeClient() returned null.\n" );
 		return NULL;
 	}
 
@@ -225,7 +218,7 @@ public:
 
 	bool IsLocalPlayerWatchingMe( void ) const;					///< return true if local player is observing this bot
 
-	void PrintIfWatched( const char *format, ... ) const;				///< output message to console if we are being watched by the local player
+	void PrintIfWatched( char *format, ... ) const;				///< output message to console if we are being watched by the local player
 
 	virtual void UpdatePlayer( void );							///< update player physics, movement, weapon firing commands, etc
 	virtual void BuildUserCmd( CUserCmd& cmd, const QAngle& viewangles, float forwardmove, float sidemove, float upmove, int buttons, byte impulse );
@@ -1126,7 +1119,7 @@ inline bool CBot< PlayerType >::IsLocalPlayerWatchingMe( void ) const
  * Output message to console if we are being watched by the local player
  */
 template < class PlayerType >
-inline void CBot< PlayerType >::PrintIfWatched( const char *format, ... ) const
+inline void CBot< PlayerType >::PrintIfWatched( char *format, ... ) const
 {
 	if (cv_bot_debug.GetInt() == 0)
 	{

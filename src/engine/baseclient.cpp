@@ -629,7 +629,7 @@ bool CBaseClient::SendSignonData( void )
 {
 	COM_TimestampedLog( " CBaseClient::SendSignonData" );
 #ifndef DEDICATED
-	EngineVGui()->UpdateProgressBar(PROGRESS_SENDSIGNONDATA, false );
+	EngineVGui()->UpdateProgressBar(PROGRESS_SENDSIGNONDATA );
 #endif
 
 	if ( m_Server->m_Signon.IsOverflowed() )
@@ -659,7 +659,7 @@ void CBaseClient::Connect( const char *szName, int nUserID, INetChannel *pNetCha
 #ifndef DEDICATED
 	if ( !bFakePlayer )
 	{
-		EngineVGui()->UpdateProgressBar(PROGRESS_SIGNONCONNECT, false);
+		EngineVGui()->UpdateProgressBar(PROGRESS_SIGNONCONNECT);
 	}
 #endif
 	Clear();

@@ -1,4 +1,4 @@
-//========= Copyright (c) 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: Implementation of vgui::TextImage control
 //
@@ -8,17 +8,15 @@
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
-#ifdef _PS3
-#include <wctype.h>
-#endif
 #include <assert.h>
+#include <malloc.h>
 
 #include <vgui/IPanel.h>
 #include <vgui/ISurface.h>
 #include <vgui/IScheme.h>
 #include <vgui/IInput.h>
 #include <vgui/ILocalize.h>
-#include <keyvalues.h>
+#include <KeyValues.h>
 
 #include <vgui_controls/TextImage.h>
 #include <vgui_controls/Controls.h>
@@ -45,7 +43,6 @@ TextImage::TextImage(const char *text) : Image()
 	_drawWidth = 0;
 	_textBufferLen = 0;
 	_textLen = 0;
-	m_bNoShortcutSyntax = false;
 	m_bWrap = false;
 	m_bWrapCenter = false;
 	m_LineBreaks.RemoveAll();
@@ -54,8 +51,6 @@ TextImage::TextImage(const char *text) : Image()
 	m_bUseFallbackFont = false;
 	m_bRenderUsingFallbackFont = false;
 	m_bAllCaps = false;
-	m_bUseAsianWordWrapping = false;
-	m_bRecalculateTruncation = true;
 	
 	SetText(text); // set the text.
 }
@@ -73,7 +68,6 @@ TextImage::TextImage(const wchar_t *wszText) : Image()
 	_drawWidth = 0;
 	_textBufferLen = 0;
 	_textLen = 0;
-	m_bNoShortcutSyntax = false;
 	m_bWrap = false;
 	m_bWrapCenter = false;
 	m_LineBreaks.RemoveAll();
@@ -81,8 +75,6 @@ TextImage::TextImage(const wchar_t *wszText) : Image()
 	m_bUseFallbackFont = false;
 	m_bRenderUsingFallbackFont = false;
 	m_bAllCaps = false;
-	m_bUseAsianWordWrapping = false;
-	m_bRecalculateTruncation = true;
 
 	SetText(wszText); // set the text.
 }
@@ -253,7 +245,7 @@ void TextImage::GetText(char *buffer, int bufferSize)
 //-----------------------------------------------------------------------------
 void TextImage::GetText(wchar_t *buffer, int bufLenInBytes)
 {
-	V_wcsncpy(buffer, _utext, bufLenInBytes );
+	wcsncpy(buffer, _utext, bufLenInBytes / sizeof(wchar_t));
 
 	if ( m_bAllCaps )
 	{
@@ -349,8 +341,10 @@ void TextImage::Paint()
 	DrawSetTextFont(font);
 
 	int lineHeight = surface()->GetFontTall(font);
-	int x = 0, y = 0;
+	float x = 0.0f;
+	int y = 0;
 	int iIndent = 0;
+	int iNextColorChange = 0;
 
 	int px, py;
 	GetPos(px, py);
@@ -371,8 +365,17 @@ void TextImage::Paint()
 			ch = towupper( ch );
 		}
 
+		if ( m_ColorChangeStream.Count() > iNextColorChange )
+		{
+			if ( m_ColorChangeStream[iNextColorChange].textStreamIndex == (wsz - _utext) )
+			{
+				DrawSetTextColor( m_ColorChangeStream[iNextColorChange].color );
+				iNextColorChange++;
+			}
+		}
+
 		// check for special characters
-		if (ch == '\r')
+		if ( ch == '\r' || ch <= 8 )
 		{
 			// ignore, just use \n for newlines
 			continue;
@@ -392,7 +395,7 @@ void TextImage::Paint()
 			y += lineHeight;
 			continue;
 		}
-		else if ((ch == '&') && !m_bNoShortcutSyntax)
+		else if (ch == '&')
 		{
 			// "&&" means draw a single ampersand, single one is a shortcut character
 			if (wsz[1] == '&')
@@ -445,31 +448,24 @@ void TextImage::Paint()
 		}
 
 		// Underlined text wants to draw the spaces anyway
-#if defined( PLATFORM_POSIX ) && !defined( _PS3 )
-		float xPos = x;
-    
+#if USE_GETKERNEDCHARWIDTH
 		wchar_t chBefore = 0;
 		wchar_t chAfter = 0;
 		if ( wsz > _utext )
 			chBefore = wsz[-1];
 		chAfter = wsz[1];
-		if ( m_bAllCaps )
-		{
-			chBefore = towupper( chBefore );
-			chAfter = towupper( chAfter );
-		}
-		float flWide = 0.0f, flabcA = 0.0f, flabcC = 0.0f;
-		surface()->GetKernedCharWidth( font, ch, chBefore, chAfter, flWide, flabcA, flabcC );
-        x += floor( flabcA + flWide + flabcC + 0.6f );
-    
-        //printf( "moving pen to %f,%d\n", floor( xPos + flabcA + 0.6f ) + px, y + py ); 
-		surface()->DrawSetTextPos( floor( xPos + flabcA + 0.6f ) + px, y + py );
-        //printf( "drawing '%C' - (%f,%f,%f) - %f pixels\n", ch, flabcA, flWide, flabcC, floor( flabcA + flWide + 0.6f ) ); 
+		float flWide = 0.0f, flabcA = 0.0f;
+		surface()->GetKernedCharWidth( font, ch, chBefore, chAfter, flWide, flabcA );
+		if ( ch == L' ' )
+			x = ceil( x );
+
+		surface()->DrawSetTextPos( x + px, y + py);
 		surface()->DrawUnicodeChar(ch);
+		x += floor(flWide + 0.6);
 #else
 		surface()->DrawSetTextPos( x + px, y + py);
 		surface()->DrawUnicodeChar(ch);
-		x+= surface()->GetCharacterWidth(font, ch);
+		x += surface()->GetCharacterWidth(font, ch);
 #endif
 	}
 
@@ -507,43 +503,40 @@ void TextImage::GetTextSize(int &wide, int &tall)
 	for (int i = 0; i < textLen; i++)
 	{
 		wchar_t ch = text[i];
-		
+
+		// handle stupid special characters, these should be removed
+		if ( ch == '&' )
+		{
+			continue;
+		}
+
 		if ( m_bAllCaps )
 		{
 			ch = towupper( ch );
 		}
 
-		// handle stupid special characters, these should be removed
-		if ( (ch == '&') && !m_bNoShortcutSyntax && (text[i + 1] != 0) )
-		{
-			continue;
-		}
-	
-		int nCharWidth;
-#if defined( PLATFORM_POSIX ) && !defined( _PS3 )
+#if USE_GETKERNEDCHARWIDTH
 		wchar_t chBefore = 0;
 		wchar_t chAfter = 0;
 		if ( i > 0 )
 			chBefore = text[i-1];
 		chAfter = text[i+1];
-		float flWide = 0.0f, flabcA, flabcC;
-		surface()->GetKernedCharWidth( font, ch, chBefore, chAfter, flWide, flabcA, flabcC );
-        // don't include a negative C measure here - over estimate slightly how long the string might be
-        flWide = flabcA + flWide; 
-        if ( flabcC > 0.0 )
-          flWide += flabcC;
-        nCharWidth = floor( flWide + 0.6f );
+		float flWide = 0.0f, flabcA;
+		surface()->GetKernedCharWidth( font, text[i], chBefore, chAfter, flWide, flabcA );
+		if ( text[i] == L' ' )
+			flWide = ceil( flWide );
+		wide += floor( flWide + 0.6);
 #else
 		int a, b, c;
 		surface()->GetCharABCwide(font, ch, a, b, c);
-		nCharWidth = (a + b + c);
+		wide += (a + b + c);
 #endif
-		wide += nCharWidth;
+		
 
 		if (ch == '\n')
 		{
 			tall += fontHeight;
-			if (wide > maxWide) 
+			if(wide>maxWide) 
 			{
 				maxWide=wide;
 			}
@@ -552,23 +545,22 @@ void TextImage::GetTextSize(int &wide, int &tall)
 
 		if ( m_bWrap || m_bWrapCenter )
 		{
-			for (int j=0; j<m_LineBreaks.Count(); j++)
+			for(int j=0; j<m_LineBreaks.Count(); j++)
 			{
 				if ( &text[i] == m_LineBreaks[j] )
 				{
 					tall += fontHeight;
-					if ( wide > maxWide ) 
+					if(wide>maxWide) 
 					{
-						maxWide = wide;
+						maxWide=wide;
 					}
-
-					wide = nCharWidth; // new line, wide is reset...			
+					wide=0; // new line, wide is reset...
 				}
 			}
 		}
 		
 	}
-#ifdef PLATFORM_OSX
+#ifdef OSX
 	wide += 2;
 	if ( textLen < 3 )
 		wide += 3;
@@ -605,12 +597,12 @@ void TextImage::RecalculateNewLinePositions()
 {
 	HFont font = GetFont();
 	
-	float charWidth;
-	float x = 0;
+	int charWidth;
+	int x = 0;
 	
 	//int wordStartIndex = 0;
 	wchar_t *wordStartIndex = _utext;
-	float wordLength = 0;
+	int wordLength = 0;
 	bool hasWord = false;
 	bool justStartedNewLine = true;
 	bool wordStartedOnNewLine = true;
@@ -627,25 +619,28 @@ void TextImage::RecalculateNewLinePositions()
 	{
 		startChar++;
 	}
-
-	// If we're using Asian word wrap rules, we need to know if the current potential line break is due to a space
-	// or because the rules allow us to break between the previous character and the current character.
-	bool bStartAsianWordHere = m_bUseAsianWordWrapping;
 		
 	// loop through all the characters	
 	for (wchar_t *wsz = &_utext[startChar]; *wsz != 0; wsz++)
 	{
+		// handle stupid special characters, these should be removed
+		// 0x01, 0x02 and 0x03 are color escape characters and should be ignored
+		if ( ( wsz[0] == '&' || wsz[0] == 0x01 || wsz[0] == 0x02 || wsz[0] == 0x03 ) && wsz[1] != 0 )
+		{
+			wsz++;
+		}
+
 		wchar_t ch = wsz[0];
 
 		if ( m_bAllCaps )
 		{
 			ch = towupper( ch );
 		}
-
+		
 		// line break only on whitespace characters
-		if ( !isbreakablewspace(ch) )
+		if (!iswspace(ch))
 		{
-			if ( !hasWord || bStartAsianWordHere ) // Asian word-breaking doesn't require spaces between "words"
+			if ( !hasWord )
 			{
 				// Start a new word
 				wordStartIndex = wsz;
@@ -661,20 +656,17 @@ void TextImage::RecalculateNewLinePositions()
 			// end the word
 			hasWord = false;
 		}
-
-		// Can we start a new word after the current character?
-		bStartAsianWordHere = m_bUseAsianWordWrapping && AsianWordWrap::CanBreakAfter( wsz );
-
+		
 		// get the width
-#if defined( PLATFORM_POSIX ) && !defined( _PS3 )
+#if USE_GETKERNEDCHARWIDTH
 		wchar_t chBefore = 0;
 		wchar_t chAfter = 0;
 		if ( wsz > _utext )
 			chBefore = wsz[-1];
 		chAfter = wsz[1];
-		float flWide = 0.0f, flabcA = 0.0f, flabcC = 0.0f;
-		surface()->GetKernedCharWidth( font, ch, chBefore, chAfter, flWide, flabcA, flabcC );
-		charWidth = floor(flWide + flabcA + flabcC + 0.6f);
+		float flWide = 0.0f, flabcA = 0.0f;
+		surface()->GetKernedCharWidth( font, ch, chBefore, chAfter, flWide, flabcA );
+		charWidth = floor( flWide + 0.6 );
 #else
 		charWidth = surface()->GetCharacterWidth(font, ch);
 #endif
@@ -774,7 +766,7 @@ void TextImage::RecalculateEllipsesPosition()
 				// ignore, just use \n for newlines
 				continue;
 			}
-			else if ((ch == '&') && !m_bNoShortcutSyntax)
+			else if (ch == '&')
 			{
 				// "&&" means draw a single ampersand, single one is a shortcut character
 				if (wsz[1] == '&')
@@ -788,17 +780,17 @@ void TextImage::RecalculateEllipsesPosition()
 				}
 			}
 
-#if defined( PLATFORM_POSIX ) && !defined( _PS3 )
+#if USE_GETKERNEDCHARWIDTH
 			wchar_t chBefore = 0;
 			wchar_t chAfter = 0;
 			if ( wsz > _utext )
 				chBefore = wsz[-1];
 			chAfter = wsz[1];
-			float flWide = 0.0f, flabcA = 0.0f, flabcC = 0.0f;
-			surface()->GetKernedCharWidth( font, ch, chBefore, chAfter, flWide, flabcA, flabcC );
-			float len = floor(flWide + flabcA + flabcC + 0.6f);
+			float flWide = 0.0f, flabcA = 0.0f;
+			surface()->GetKernedCharWidth( font, ch, chBefore, chAfter, flWide, flabcA );
+			int len = floor( flWide + 0.6 );
 #else
-			float len = surface()->GetCharacterWidth(font, ch);
+			int len = surface()->GetCharacterWidth(font, ch);
 #endif
 
 			// don't truncate the first character
@@ -814,15 +806,16 @@ void TextImage::RecalculateEllipsesPosition()
 				int remainingLength = len;
 				for (const wchar_t *rwsz = wsz + 1; *rwsz != 0; rwsz++)
 				{
-#if defined( PLATFORM_POSIX ) && !defined( _PS3 )
-                  wchar_t chBefore = 0;
-                  wchar_t chAfter = 0;
-                  if ( rwsz > _utext )
-                    chBefore = *(rwsz-1);
-                  chAfter = *(rwsz+1);
-                  float flWide = 0.0f, flabcA = 0.0f, flabcC = 0.0f;
-                  surface()->GetKernedCharWidth( font, *rwsz, chBefore, chAfter, flWide, flabcA, flabcC );
-                  remainingLength += floor(flWide + flabcA + flabcC + 0.6f);
+#if USE_GETKERNEDCHARWIDTH
+					wchar_t chBefore = 0;
+					wchar_t chAfter = 0;
+					if ( rwsz > _utext )
+						chBefore = rwsz[-1];
+					chAfter = rwsz[1];
+					float flWide = 0.0f, flabcA = 0.0f;
+					surface()->GetKernedCharWidth( font, *rwsz, chBefore, chAfter, flWide, flabcA );
+					int len = floor( flWide + 0.6 );
+					remainingLength += floor( flWide + 0.6 );
 #else
 					remainingLength += surface()->GetCharacterWidth(font, *rwsz);
 #endif
@@ -845,50 +838,14 @@ void TextImage::RecalculateEllipsesPosition()
 	}
 }
 
-void TextImage::SetUseAsianWordWrapping()
-{
-	static bool bCheckForAsianLanguage = false;
-	static bool bIsAsianLanguage = false;
-
-	if ( !bCheckForAsianLanguage )
-	{
-		bCheckForAsianLanguage = true;
-		const char *pLanguage = scheme()->GetLanguage();
-		if ( pLanguage )
-		{
-			if ( !V_stricmp( pLanguage, "japanese" ) ||
-				!V_stricmp( pLanguage, "schinese" ) ||
-				!V_stricmp( pLanguage, "tchinese" ) )
-			{
-				bIsAsianLanguage = true;
-			}
-		}
-	}
-
-	m_bUseAsianWordWrapping = bIsAsianLanguage;
-}
-
 void TextImage::SetWrap( bool bWrap )
 {
 	m_bWrap = bWrap;
-	if ( m_bWrap )
-	{
-		SetUseAsianWordWrapping();
-	}
 }
 
 void TextImage::SetCenterWrap( bool bWrap )
 {
 	m_bWrapCenter = bWrap;
-	if ( m_bWrapCenter )
-	{
-		SetUseAsianWordWrapping();
-	}
-}
-
-void TextImage::SetNoShortcutSyntax( bool bNoShortcutSyntax )
-{
-	m_bNoShortcutSyntax = bNoShortcutSyntax;
 }
 
 
@@ -939,7 +896,7 @@ void TextImage::RecalculateCenterWrapIndents()
 	GetPos(px, py);
 
 	int currentLineBreak = 0;
-	float iCurLineW = 0;
+	int iCurLineW = 0;
 
 	for (wchar_t *wsz = _utext; *wsz != 0; wsz++)
 	{
@@ -964,7 +921,7 @@ void TextImage::RecalculateCenterWrapIndents()
 			iCurLineW = 0;
 			continue;
 		}
-		else if ((ch == '&') && !m_bNoShortcutSyntax)
+		else if (ch == '&')
 		{
 			// "&&" means draw a single ampersand, single one is a shortcut character
 			if (wsz[1] == '&')
@@ -993,15 +950,15 @@ void TextImage::RecalculateCenterWrapIndents()
 			}
 		}
 
-#if defined( PLATFORM_POSIX ) && !defined( _PS3 )
+#if USE_GETKERNEDCHARWIDTH
 		wchar_t chBefore = 0;
 		wchar_t chAfter = 0;
 		if ( wsz > _utext )
 			chBefore = wsz[-1];
 		chAfter = wsz[1];
-		float flWide = 0.0f, flabcA = 0.0f, flabcC = 0.0f;
-		surface()->GetKernedCharWidth( font, ch, chBefore, chAfter, flWide, flabcA, flabcC );
-		iCurLineW += floor(flWide + flabcA + flabcC + 0.6f);
+		float flWide = 0.0f, flabcA = 0.0f;
+		surface()->GetKernedCharWidth( font, ch, chBefore, chAfter, flWide, flabcA );
+		iCurLineW += floor( flWide + 0.6 );
 #else
 		iCurLineW += surface()->GetCharacterWidth(font, ch);
 #endif
@@ -1012,16 +969,17 @@ void TextImage::RecalculateCenterWrapIndents()
 	m_LineXIndent[iIdx] = (_drawWidth - iCurLineW) * 0.5;
 }
 
-void TextImage::SetBounds( int x, int y, int w, int h )
-{
-	SetPos( x, y );
-	SetSize( w, h );
-}
-
 void TextImage::AddColorChange( Color col, int iTextStreamIndex )
 {
 	label_colorchange_t tmpChange;
 	tmpChange.color = col;
 	tmpChange.textStreamIndex = iTextStreamIndex;
 	m_ColorChangeStream.Insert( tmpChange );
+}
+
+void TextImage::SetColorChangeStream( CUtlSortVector<label_colorchange_t,CColorChangeListLess> *pUtlVecStream )
+{
+	ClearColorChangeStream();
+
+	m_ColorChangeStream = *pUtlVecStream;
 }

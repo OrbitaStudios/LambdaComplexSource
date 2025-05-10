@@ -40,6 +40,7 @@ class CSfxTable;
 
 extern IWaveData *CreateWaveDataStream( CAudioSource &source, IWaveStreamSource *pStreamSource, const char *pFileName, int dataStart, int dataSize, CSfxTable *pSfx, int startOffset, int skipInitialSamples, SoundError &soundError );
 extern IWaveData *CreateWaveDataMemory( CAudioSource &source );
+extern IWaveData *CreateWaveDataHRTF(IWaveData* pData, hrtf_info_t* dir);
 
 void PrefetchDataStream( const char *pFileName, int dataOffset, int dataSize );
 

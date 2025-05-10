@@ -93,8 +93,6 @@
 #include "playerdecals_signature.h"
 #endif
 
-#include "CegClientWrapper.h"
-
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -4508,7 +4506,7 @@ void CBasePlayer::CheckSuitUpdate()
 // seconds, then we won't repeat playback of this word or sentence
 // for at least that number of seconds.
 
-void CBasePlayer::SetSuitUpdate(const char *name, int fgroup, int iNoRepeatTime)
+void CBasePlayer::SetSuitUpdate(char *name, int fgroup, int iNoRepeatTime)
 {
 	int i;
 	int isentence;
@@ -7997,7 +7995,7 @@ BEGIN_DATADESC( CRevertSaved )
 
 END_DATADESC()
 
-CEG_NOINLINE CBaseEntity *CreatePlayerLoadSave( Vector vOrigin, float flDuration, float flHoldTime, float flLoadTime )
+CBaseEntity *CreatePlayerLoadSave( Vector vOrigin, float flDuration, float flHoldTime, float flLoadTime )
 {
 	CRevertSaved *pRevertSaved = (CRevertSaved *) CreateEntityByName( "player_loadsaved" );
 
@@ -8013,8 +8011,6 @@ CEG_NOINLINE CBaseEntity *CreatePlayerLoadSave( Vector vOrigin, float flDuration
 
 	return pRevertSaved;
 }
-
-CEG_PROTECT_FUNCTION( CreatePlayerLoadSave );
 
 void CRevertSaved::Use( CBaseEntity *pActivator, CBaseEntity *pCaller, USE_TYPE useType, float value )
 {

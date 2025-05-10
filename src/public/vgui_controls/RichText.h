@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -32,8 +32,8 @@ public:
 	~RichText();
 
 	// text manipulation
-	void SetText(const char *text);
-	void SetText(const wchar_t *text);
+	virtual void SetText(const char *text);
+	virtual void SetText(const wchar_t *text);
 	void GetText(int offset, OUT_Z_BYTECAP(bufLenInBytes) wchar_t *buf, int bufLenInBytes);
 	void GetText(int offset, OUT_Z_BYTECAP(bufLenInBytes) char *pch, int bufLenInBytes);
 
@@ -112,6 +112,10 @@ public:
 	virtual void SetDrawOffsets( int ofsx, int ofsy );
 	bool IsScrollbarVisible();
 
+	// sets how URL's are handled
+	// if set, a "URLClicked" "url" "<data>" message will be sent to that panel
+	void SetURLClickedHandler( Panel *pPanelToHandleClickMsg );
+
 	void SetUnderlineFont( HFont font );
 
 	bool IsAllTextAlphaZero() const;
@@ -161,6 +165,9 @@ protected:
 	ScrollBar			*_vertScrollBar;	// the scroll bar used in the window
 
 private:
+	int GetLineHeight();
+	HFont GetDefaultFont();
+
 	const wchar_t *ResolveLocalizedTextAndVariables( char const *pchLookup, OUT_Z_BYTECAP(outbufsizeinbytes) wchar_t *outbuf, size_t outbufsizeinbytes );
 	void CheckRecalcLineBreaks();
 
@@ -246,6 +253,7 @@ private:
 	int					_drawOffsetY;
 
 	Panel				*m_pInterior;
+	PHandle				m_hPanelToHandleClickingURLs;
 
 
 	// sub-controls

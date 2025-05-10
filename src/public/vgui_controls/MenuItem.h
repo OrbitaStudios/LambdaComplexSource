@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -12,7 +12,7 @@
 #pragma once
 #endif
 
-#include <vgui/vgui.h>
+#include <vgui/VGUI.h>
 #include <vgui_controls/Button.h>
 #include <vgui_controls/Menu.h>
 
@@ -116,15 +116,13 @@ protected:
 	virtual void ApplySchemeSettings(IScheme *pScheme);
 	virtual IBorder *GetBorder(bool depressed, bool armed, bool selected, bool keyfocus);
 
-	virtual void RepositionTextImage( int &x, int &y, TextImage *pTextImage );
-
 private:
 	enum { CHECK_INSET = 6 };
 	Menu *m_pCascadeMenu;  // menu triggered to open upon selecting this menu item
  	bool m_bCheckable;     // can this menu item have a little check to the left of it when you select it?
 	bool m_bChecked;       // whether item is checked or not.
 	TextImage *m_pCascadeArrow; // little arrow that appears to the right of menuitems that open a menu
-	TextImage *m_pCheck;  // the check that appears to the left of checked menu items
+	Image *m_pCheck;  // the check that appears to the left of checked menu items
 	TextImage *m_pBlankCheck;  // a blank image same size as the check for when items are not checked.
 
 	TextImage	*m_pCurrentKeyBinding; // An optional indicator for the key currently bound to this menu item

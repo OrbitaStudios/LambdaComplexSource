@@ -2572,7 +2572,7 @@ void CBaseCombatWeapon::AddViewKick( void )
 //-----------------------------------------------------------------------------
 // Purpose: Get the string to print death notices with
 //-----------------------------------------------------------------------------
-const char *CBaseCombatWeapon::GetDeathNoticeName( void )
+char *CBaseCombatWeapon::GetDeathNoticeName( void )
 {
 #if !defined( CLIENT_DLL )
 	return (char*)STRING( m_iszName );
@@ -3389,12 +3389,12 @@ END_NETWORK_TABLE()
 
 const CEconItemView* CBaseCombatWeapon::GetEconItemView( void ) const
 {
-    return BaseClass::GetEconItemView();
+	return BaseClass::GetEconItemView();
 }
 
 CEconItemView* CBaseCombatWeapon::GetEconItemView( void )
 {
-    return (CEconItemView*)BaseClass::GetEconItemView();
+	return (CEconItemView*)BaseClass::GetEconItemView();
 }
 
 int CBaseCombatWeapon::GetReserveAmmoCount( AmmoPosition_t nAmmoPosition, CBaseCombatCharacter * pForcedOwner/* = NULL*/  )

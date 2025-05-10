@@ -1,4 +1,4 @@
-//===== Copyright © 1996-2005, Valve Corporation, All rights reserved. ======//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -15,10 +15,6 @@
 #include "vgui/IVGui.h"
 #include "vgui_controls/ToolWindow.h"
 #include "tier2/renderutils.h"
-
-// NOTE: This has to be the last file included!
-#include "tier0/memdbgon.h"
-
 
 using namespace vgui;
 

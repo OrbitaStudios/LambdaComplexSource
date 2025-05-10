@@ -65,12 +65,6 @@ static char *s_SpectatorModes[] =
 
 using namespace vgui;
 
-ConVar cl_spec_mode(
-	"cl_spec_mode",
-	"1",
-	FCVAR_ARCHIVE | FCVAR_USERINFO | FCVAR_SERVER_CAN_EXECUTE,
-	"spectator mode" );
-
 
 
 //-----------------------------------------------------------------------------
@@ -824,7 +818,7 @@ CON_COMMAND_F( spec_mode, "Set spectator mode", FCVAR_CLIENTCMD_CAN_EXECUTE )
 		}
 
 			// turn off auto director once user tried to change view settings
-		HLTVCamera()->SetAutoDirector( false );
+		HLTVCamera()->SetAutoDirector( C_HLTVCamera::AUTODIRECTOR_OFF );
 	}
 #if defined( REPLAY_ENABLED )
 	else if ( engine->IsReplay() )

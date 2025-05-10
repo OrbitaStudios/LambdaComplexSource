@@ -10,7 +10,7 @@
 #pragma once
 #endif
 
-#define S_CALLTYPE
+#define S_CALLTYPE __cdecl
 
 // Steam-specific types. Defined here so this header file can be included in other code bases.
 #ifndef WCHARTYPES_H

@@ -2271,6 +2271,43 @@ void KeyValues::RecursiveMergeKeyValues( KeyValues *baseKV )
 }
 
 //-----------------------------------------------------------------------------
+// Returns whether a keyvalues conditional evaluates to true or false
+// Needs more flexibility with conditionals, checking convars would be nice.
+//-----------------------------------------------------------------------------
+bool EvaluateConditional( const char *str )
+{
+	if ( !str )
+		return false;
+
+	if ( *str == '[' )
+		str++;
+
+	bool bNot = false; // should we negate this command?
+	if ( *str == '!' )
+		bNot = true;
+
+	if ( Q_stristr( str, "$X360" ) )
+		return IsX360() ^ bNot;
+	
+	if ( Q_stristr( str, "$WIN32" ) )
+		return IsPC() ^ bNot; // hack hack - for now WIN32 really means IsPC
+
+	if ( Q_stristr( str, "$WINDOWS" ) )
+		return IsPlatformWindows() ^ bNot;
+	
+	if ( Q_stristr( str, "$OSX" ) )
+		return IsOSX() ^ bNot;
+	
+	if ( Q_stristr( str, "$LINUX" ) )
+		return IsLinux() ^ bNot;
+
+	if ( Q_stristr( str, "$POSIX" ) )
+		return IsPosix() ^ bNot;
+	
+	return false;
+}
+
+//-----------------------------------------------------------------------------
 // Returns whether a keyvalues conditional expression string evaluates to true or false
 //-----------------------------------------------------------------------------
 bool KeyValues::EvaluateConditional( const char *pExpressionString, GetSymbolProc_t pfnEvaluateSymbolProc )
@@ -2294,24 +2331,6 @@ static CThreadFastMutex g_KVMutex;
 bool KeyValues::LoadFromBuffer( char const *resourceName, CUtlBuffer &buf, IBaseFileSystem* pFileSystem, const char *pPathID, GetSymbolProc_t pfnEvaluateSymbolProc )
 {
 	AUTO_LOCK_FM( g_KVMutex );
-
-	if ( IsGameConsole() )
-	{
-		// Let's not crash if the buffer is empty
-		unsigned char *pData = buf.Size() > 0 ? (unsigned char *)buf.PeekGet() : NULL;
-		if ( pData && (unsigned int)pData[0] == KV_BINARY_POOLED_FORMAT )
-		{
-			// skip past binary marker
-			buf.GetUnsignedChar();
-			// get the pool identifier, allows the fs to bind the expected string pool
-			unsigned int poolKey = buf.GetUnsignedInt();
-
-			RemoveEverything();
-			Init();
-
-			return ReadAsBinaryPooledFormat( buf, pFileSystem, poolKey, pfnEvaluateSymbolProc );
-		}
-	}
 
 	KeyValues *pPreviousKey = NULL;
 	KeyValues *pCurrentKey = this;
@@ -3176,161 +3195,6 @@ bool KeyValues::ReadAsBinaryFiltered( CUtlBuffer &buffer, int nStackDepth )
 
 		if ( !buffer.IsValid() ) // error occured
 			return false;
-	}
-
-	return buffer.IsValid();
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: memory allocator
-//-----------------------------------------------------------------------------
-bool KeyValues::ReadAsBinaryPooledFormat( CUtlBuffer &buffer, IBaseFileSystem *pFileSystem, unsigned int poolKey, GetSymbolProc_t pfnEvaluateSymbolProc )
-{
-	// xbox only support
-	if ( !IsGameConsole() )
-	{
-		Assert( 0 );
-		return false;
-	}
-
-	if ( buffer.IsText() ) // must be a binary buffer
-		return false;
-
-	if ( !buffer.IsValid() ) // must be valid, no overflows etc
-		return false;
-
-	char token[KEYVALUES_TOKEN_SIZE];
-	KeyValues *dat = this;
-	types_t type = (types_t)buffer.GetUnsignedChar();
-
-	// loop through all our peers
-	while ( true )
-	{
-		if ( type == TYPE_NUMTYPES )
-			break; // no more peers
-
-		dat->m_iDataType = type;
-
-		unsigned int stringKey = buffer.GetUnsignedInt();
-		if ( !((IFileSystem*)pFileSystem)->GetStringFromKVPool( poolKey, stringKey, token, sizeof( token ) ) )
-			return false;
-		dat->SetName( token );
-
-		switch ( type )
-		{
-		case TYPE_NONE:
-			{
-				dat->m_pSub = new KeyValues( "" );
-				if ( !dat->m_pSub->ReadAsBinaryPooledFormat( buffer, pFileSystem, poolKey, pfnEvaluateSymbolProc ) )
-					return false;
-				break;
-			}
-
-		case TYPE_STRING:
-			{
-				stringKey = buffer.GetUnsignedInt();
-				if ( !((IFileSystem*)pFileSystem)->GetStringFromKVPool( poolKey, stringKey, token, sizeof( token ) ) )
-					return false;
-				int len = Q_strlen( token );
-				dat->m_sValue = new char[len + 1];
-				Q_memcpy( dat->m_sValue, token, len+1 );			
-				break;
-			}
-
-		case TYPE_WSTRING:
-			{
-				int nLength = buffer.GetShort();
-				dat->m_wsValue = new wchar_t[nLength + 1];
-				for ( int k = 0; k < nLength; ++k )
-				{
-					dat->m_wsValue[k] = buffer.GetShort();
-				}
-				dat->m_wsValue[nLength] = 0;
-				break;
-			}
-
-		case TYPE_INT:
-			{
-				dat->m_iValue = buffer.GetInt();
-				break;
-			}
-
-		case TYPE_UINT64:
-			{
-				dat->m_sValue = new char[sizeof(uint64)];
-				*((uint64 *)dat->m_sValue) = buffer.GetInt64();
-				break;
-			}
-
-		case TYPE_FLOAT:
-			{
-				dat->m_flValue = buffer.GetFloat();
-				break;
-			}
-
-		case TYPE_COLOR:
-			{
-				dat->m_Color[0] = buffer.GetUnsignedChar();
-				dat->m_Color[1] = buffer.GetUnsignedChar();
-				dat->m_Color[2] = buffer.GetUnsignedChar();
-				dat->m_Color[3] = buffer.GetUnsignedChar();
-				break;
-			}
-
-		case TYPE_PTR:
-			{
-#if defined( PLATFORM_64BITS )
-				// We need to ensure we only read 32 bits out of the stream because 32 bit clients only wrote 
-				// 32 bits of data there. The actual pointer is irrelevant, all that we really care about here
-				// contractually is whether the pointer is zero or not zero.
-				dat->m_pValue = ( void* )( intp )buffer.GetInt();
-#else
-				dat->m_pValue = buffer.GetPtr();
-#endif
-				break;
-			}
-
-		case TYPE_COMPILED_INT_0:
-			{
-				// only for dense storage purposes, flip back to preferred internal format
-				dat->m_iDataType = TYPE_INT;
-				dat->m_iValue = 0;
-				break;
-			}
-
-		case TYPE_COMPILED_INT_1:
-			{
-				// only for dense storage purposes, flip back to preferred internal format
-				dat->m_iDataType = TYPE_INT;
-				dat->m_iValue = 1;
-				break;
-			}
-
-		case TYPE_COMPILED_INT_BYTE:
-			{
-				// only for dense storage purposes, flip back to preferred internal format
-				dat->m_iDataType = TYPE_INT;
-				dat->m_iValue = buffer.GetChar();
-				break;
-			}
-
-		default:
-			break;
-		}
-
-		if ( !buffer.IsValid() ) // error occured
-			return false;
-
-		if ( !buffer.GetBytesRemaining() )
-			break;
-
-		type = (types_t)buffer.GetUnsignedChar();
-		if ( type == TYPE_NUMTYPES )
-			break;
-
-		// new peer follows
-		dat->m_pPeer = new KeyValues("");
-		dat = dat->m_pPeer;
 	}
 
 	return buffer.IsValid();

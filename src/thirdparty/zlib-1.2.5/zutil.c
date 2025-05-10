@@ -117,7 +117,7 @@ uLong ZEXPORT zlibCompileFlags()
 #  ifndef verbose
 #    define verbose 0
 #  endif
-int ZLIB_INTERNAL z_verbose;
+int ZLIB_INTERNAL z_verbose = verbose;
 
 void ZLIB_INTERNAL z_error (m)
     char *m;

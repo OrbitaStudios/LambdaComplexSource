@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -10,7 +10,7 @@
 #include <vgui/ISurface.h>
 #include <vgui/ISystem.h>
 #include <vgui/ILocalize.h>
-#include <keyvalues.h>
+#include <KeyValues.h>
 #include "vgui/IVGui.h"
 
 #include <vgui_controls/BuildGroup.h>
@@ -36,6 +36,9 @@
 #include <vgui_controls/RichText.h>
 #include <vgui_controls/BitmapImagePanel.h>
 
+#include "filesystem.h"
+#include "fmtstr.h"
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/memdbgon.h>
 
@@ -54,9 +57,10 @@ EditablePanel::EditablePanel(Panel *parent, const char *panelName) : Panel(paren
 	m_pszConfigName = NULL;
 	m_iConfigID = 0;
 	m_pDialogVariables = NULL;
+	m_bShouldSkipAutoResize = false;
 
 	// add ourselves to the build group
-	_buildGroup->PanelAdded( this );
+	SetBuildGroup(GetBuildGroup());
 }
 
 //-----------------------------------------------------------------------------
@@ -68,9 +72,10 @@ EditablePanel::EditablePanel(Panel *parent, const char *panelName, HScheme hSche
 	m_pszConfigName = NULL;
 	m_iConfigID = 0;
 	m_pDialogVariables = NULL;
+	m_bShouldSkipAutoResize = false;
 
 	// add ourselves to the build group
-	_buildGroup->PanelAdded( this );
+	SetBuildGroup(GetBuildGroup());
 }
 
 #pragma warning( default : 4355 )
@@ -80,8 +85,6 @@ EditablePanel::EditablePanel(Panel *parent, const char *panelName, HScheme hSche
 //-----------------------------------------------------------------------------
 EditablePanel::~EditablePanel()
 {
-	SetBuildGroup( NULL );
-
 	delete [] m_pszConfigName;
 	delete _buildGroup;
 
@@ -110,48 +113,79 @@ void EditablePanel::OnChildAdded(VPANEL child)
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void EditablePanel::OnKeyCodeTyped(KeyCode code)
+void EditablePanel::OnKeyCodePressed( KeyCode code )
 {
-	if (code == KEY_ENTER)
+	static ConVarRef vgui_nav_lock_default_button( "vgui_nav_lock_default_button" );
+	if ( !vgui_nav_lock_default_button.IsValid() || vgui_nav_lock_default_button.GetInt() == 0 )
 	{
+		ButtonCode_t nButtonCode = GetBaseButtonCode( code );
+
 		// check for a default button
 		VPANEL panel = GetFocusNavGroup().GetCurrentDefaultButton();
-		if (panel && ipanel()->IsVisible( panel ) && ipanel()->IsEnabled( panel ) && !IsConsoleStylePanel() )
+		if ( panel && !IsConsoleStylePanel() )
 		{
-			// Activate the button
-			PostMessage(panel, new KeyValues("Hotkey"));
-		}
-		else
-		{
-			BaseClass::OnKeyCodeTyped(code);
+			switch ( nButtonCode )
+			{
+			case KEY_XBUTTON_UP:
+			case KEY_XSTICK1_UP:
+			case KEY_XSTICK2_UP:
+			case KEY_UP:
+			case STEAMCONTROLLER_DPAD_UP:
+			case KEY_XBUTTON_DOWN:
+			case KEY_XSTICK1_DOWN:
+			case KEY_XSTICK2_DOWN:
+			case KEY_DOWN:
+			case STEAMCONTROLLER_DPAD_DOWN:
+			case KEY_XBUTTON_LEFT:
+			case KEY_XSTICK1_LEFT:
+			case KEY_XSTICK2_LEFT:
+			case KEY_LEFT:
+			case KEY_XBUTTON_RIGHT:
+			case KEY_XSTICK1_RIGHT:
+			case KEY_XSTICK2_RIGHT:
+			case KEY_RIGHT:
+			case KEY_XBUTTON_B:
+			case STEAMCONTROLLER_B:
+				// Navigating menus
+				vgui_nav_lock_default_button.SetValue( 1 );
+				PostMessage( panel, new KeyValues( "KeyCodePressed", "code", code ) );
+				return;
+			
+			case KEY_XBUTTON_A:
+			case STEAMCONTROLLER_A:
+			case KEY_ENTER:
+				if ( ipanel()->IsVisible( panel ) && ipanel()->IsEnabled( panel ) )
+				{
+					// Activate the button
+					PostMessage( panel, new KeyValues( "Hotkey" ) );
+					return;
+				}
+			}
 		}
 	}
-	else
-	{
-		BaseClass::OnKeyCodeTyped(code);
-	}
+
+	if ( !m_PassUnhandledInput )
+		return;
+
+	// Nothing to do with the button
+	BaseClass::OnKeyCodePressed( code );
 }
 
 
-//-----------------------------------------------------------------------------
-// Performs layout
-//-----------------------------------------------------------------------------
-void EditablePanel::PerformLayout()
-{
-	BaseClass::PerformLayout( );
 
-	int wide, tall;
-	GetSize( wide, tall );
+//-----------------------------------------------------------------------------
+// Purpose: Callback for when the panel size has been changed
+//-----------------------------------------------------------------------------
+void EditablePanel::OnSizeChanged(int wide, int tall)
+{
+	BaseClass::OnSizeChanged(wide, tall);
+	InvalidateLayout();
+
 	for (int i = 0; i < GetChildCount(); i++)
 	{
 		// perform auto-layout on the child panel
 		Panel *child = GetChild(i);
 		if ( !child )
-			continue;
-
-		PinCorner_e pinCorner = child->GetPinCorner();
-		AutoResize_e resize = child->GetAutoResize(); 
-		if ( pinCorner == PIN_NO && resize == AUTORESIZE_NO )
 			continue;
 
 		int x, y, w, h;
@@ -166,67 +200,57 @@ void EditablePanel::PerformLayout()
 		int ex;
 		int ey;
 
+		AutoResize_e resize = child->GetAutoResize(); 
 		bool bResizeHoriz = ( resize == AUTORESIZE_RIGHT || resize == AUTORESIZE_DOWNANDRIGHT );
 		bool bResizeVert = ( resize == AUTORESIZE_DOWN || resize == AUTORESIZE_DOWNANDRIGHT );
 
-		if ( pinCorner == PIN_TOPRIGHT || pinCorner == PIN_BOTTOMRIGHT )
+		// The correct version of this code would say:
+		// if ( resize != AUTORESIZE_NO )
+		// but we're very close to shipping and this causes artifacts in other vgui panels that now
+		// depend on this bug.  So, I've added m_bShouldSkipAutoResize, which defaults to false but can
+		// be set using "skip_autoresize" in a .res file
+		if ( !m_bShouldSkipAutoResize )
 		{
-			// move along with the right edge
-			ex = wide + px;
-			x = bResizeHoriz ? ox : ex - w;
-		}
-		else
-		{
-			x = px;
-			ex = bResizeHoriz ? wide + ox : px + w;
-		}
+			PinCorner_e pinCorner = child->GetPinCorner();
+			if ( pinCorner == PIN_TOPRIGHT || pinCorner == PIN_BOTTOMRIGHT )
+			{
+				// move along with the right edge
+				ex = wide + px;
+				x = bResizeHoriz ? ox : ex - w;
+			}
+			else
+			{
+				x = px;
+				ex = bResizeHoriz ? wide + ox : px + w;
+			}
 
-		if ( pinCorner == PIN_BOTTOMLEFT || pinCorner == PIN_BOTTOMRIGHT )
-		{
-			// move along with the right edge
-			ey = tall + py;
-			y = bResizeVert ? oy : ey - h;
-		}
-		else
-		{
-			y = py;
-			ey = bResizeVert ? tall + oy : py + h;
-		}
+			if ( pinCorner == PIN_BOTTOMLEFT || pinCorner == PIN_BOTTOMRIGHT )
+			{
+				// move along with the right edge
+				ey = tall + py;
+				y = bResizeVert ? oy : ey - h;
+			}
+			else
+			{
+				y = py;
+				ey = bResizeVert ? tall + oy : py + h;
+			}
 
-		// Clamp..
-		if ( ex < x )
-		{
-			ex = x;
-		}
-		if ( ey < y )
-		{
-			ey = y;
-		}
+			// Clamp..
+			if ( ex < x )
+			{
+				ex = x;
+			}
+			if ( ey < y )
+			{
+				ey = y;
+			}
 
-		child->SetBounds( x, y, ex - x, ey - y );
+			child->SetBounds( x, y, ex - x, ey - y );
+			child->InvalidateLayout();
+		}
 	}
-}
-
-
-//-----------------------------------------------------------------------------
-// Purpose: Callback for when the panel size has been changed
-//-----------------------------------------------------------------------------
-void EditablePanel::OnSizeChanged(int wide, int tall)
-{
-	BaseClass::OnSizeChanged(wide, tall);
-
-	for (int i = 0; i < GetChildCount(); i++)
-	{
-		// perform auto-layout on the child panel
-		Panel *child = GetChild(i);
-		if ( !child )
-			continue;
-
-		if ( child->GetAutoResize() == AUTORESIZE_NO )
-			continue;
-
-		child->InvalidateLayout();
-	}
+	Repaint();
 }
 
 
@@ -544,6 +568,15 @@ void EditablePanel::ActivateBuildMode()
 //-----------------------------------------------------------------------------
 void EditablePanel::LoadControlSettings(const char *resourceName, const char *pathID, KeyValues *pKeyValues, KeyValues *pConditions)
 {
+#if defined( DBGFLAG_ASSERT ) && !defined(OSX) && !defined(LINUX)
+	// Since nobody wants to fix this assert, I'm making it a Msg instead:
+	//     editablepanel.cpp (535) : Resource file "resource\DebugOptionsPanel.res" not found on disk!
+	// AssertMsg( g_pFullFileSystem->FileExists( resourceName ), CFmtStr( "Resource file \"%s\" not found on disk!", resourceName ).Access() );
+	if ( !g_pFullFileSystem->FileExists( resourceName ) )
+	{
+		Msg( "Resource file \"%s\" not found on disk!", resourceName );
+	}
+#endif
 	_buildGroup->LoadControlSettings(resourceName, pathID, pKeyValues, pConditions);
 	ForceSubPanelsToUpdateWithNewDialogVariables();
 	InvalidateLayout();
@@ -772,6 +805,8 @@ void EditablePanel::ApplySettings(KeyValues *inResourceData)
 	BaseClass::ApplySettings(inResourceData);
 
 	_buildGroup->ApplySettings(inResourceData);
+
+	m_bShouldSkipAutoResize = inResourceData->GetBool( "skip_autoresize", false );
 }
 
 
@@ -850,9 +885,9 @@ void EditablePanel::SetControlEnabled(const char *controlName, bool enabled)
 //-----------------------------------------------------------------------------
 // Purpose: Shortcut function to setting visibility state of control
 //-----------------------------------------------------------------------------
-void EditablePanel::SetControlVisible(const char *controlName, bool visible)
+void EditablePanel::SetControlVisible(const char *controlName, bool visible, bool bRecurseDown /*= false*/ )
 {
-	Panel *control = FindChildByName(controlName);
+	Panel *control = FindChildByName(controlName, bRecurseDown);
 	if (control)
 	{
 		control->SetVisible(visible);

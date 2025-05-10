@@ -416,7 +416,7 @@ static bool HasValidDirection(trace_t *pTrace)
 // Input   :
 // Output  :
 //------------------------------------------------------------------------------
-void UTIL_ImpactTrace( trace_t *pTrace, int iDamageType, const char *pCustomImpactName )
+void UTIL_ImpactTrace( trace_t *pTrace, int iDamageType, char *pCustomImpactName )
 {
 	C_BaseEntity *pEntity = pTrace->m_pEnt;
 
@@ -682,9 +682,9 @@ CBaseEntity *CEntitySphereQuery::GetCurrentEntity()
 int UTIL_ComputeStringWidth( vgui::HFont& font, const char *str )
 {
 	float pixels = 0;
-	const char *p = (char *)str;
-	const char *pAfter = p + 1;
-	const char *pBefore = "\0";
+	char *p = (char *)str;
+	char *pAfter = p + 1;
+	char *pBefore = "\0";
 	while ( *p )
 	{
 #ifdef OSX
@@ -714,9 +714,9 @@ int UTIL_ComputeStringWidth( vgui::HFont& font, const char *str )
 int UTIL_ComputeStringWidth( vgui::HFont& font, const wchar_t *str )
 {
 	float pixels = 0;
-	const wchar_t *p = (wchar_t *)str;
-	const wchar_t *pAfter = p + 1;
-	const wchar_t *pBefore = L"\0";
+	wchar_t *p = (wchar_t *)str;
+	wchar_t *pAfter = p + 1;
+	wchar_t *pBefore = L"\0";
 	while ( *p )
 	{
 #ifdef OSX
@@ -1400,40 +1400,6 @@ wchar_t *UTIL_GetLocalizedKeyString( const char *command, const char *fmt, const
 
 	g_pVGuiLocalize->ConstructString( useString[index], sizeof( useString[index] ), g_pVGuiLocalize->Find( fmt ), argCount, wszKey, arg1, arg2, arg3 );
 	return useString[index];
-}
-
-void UTIL_GetClientStatusText( char *buffer, int nSize )
-{
-	if ( !buffer || nSize==0 ) {return;}
-	buffer[0] = 0;
-
-#if defined ( CSTRIKE15 )
-	extern float g_flReadyToCheckForPCBootInvite;
-	bool bStartupFinished = g_flReadyToCheckForPCBootInvite && ( ( Plat_FloatTime() - g_flReadyToCheckForPCBootInvite ) > 1.5f );
-	if ( bStartupFinished )
-		Q_snprintf( buffer, nSize, "+" );
-	if ( nSize <= 2 )
-		return;
-
-	C_CS_PlayerResource *pCSPR = ( C_CS_PlayerResource* )GameResources();
-	if (pCSPR)
-	{
-		Q_snprintf( buffer, nSize, "%sPlayers: ", ( bStartupFinished ? "+" : "" ) );
-		for ( int i = 1; i <= MAX_PLAYERS; i++ )
-		{
-			if ( pCSPR->IsConnected(i) )
-			{
-				const char *name = pCSPR->GetPlayerName(i);
-				if (name && name[0])
-				{
-					V_strncat( buffer, name, nSize );
-					V_strncat( buffer, ", ", nSize );
-				}
-			}
-		}
-		buffer[nSize-1]=0;
-	}
-#endif
 }
 
 void UTIL_ClearTrace( trace_t &trace )

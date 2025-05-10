@@ -32,7 +32,7 @@ void EngineBitBufErrorHandler( BitBufErrorType errorType, const char *pDebugName
 	CUtlSymbol sym = g_ErrorNames[ errorType ].Find( pDebugName );
 	g_ErrorNamesLock.UnlockRead();
 
-	if ( !sym.IsValid() )
+	if ( UTL_INVAL_SYMBOL == sym )
 	{
 		g_ErrorNamesLock.LockForWrite();
 		g_ErrorNames[ errorType ].AddString( pDebugName );

@@ -56,7 +56,6 @@ $Project $SPROJ
 		$File	"$SRVSRCDIR\server_log_http_dispatcher.h"
 		$File	"$SRCDIR\game\shared\teamplayroundbased_gamerules.cpp"
 		$File	"$SRCDIR\game\shared\teamplayroundbased_gamerules.h"
-		$File	"$SRCDIR\game\shared\cstrike15\dlchelper.h"
 
 		$Folder	"Economy" [!$X360 && !$PS3]
 		{

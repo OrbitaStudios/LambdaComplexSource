@@ -46,8 +46,8 @@ CRR_Concept &CRR_Concept::operator=(const char *fromString)
 
 bool CRR_Concept::operator==(const char *pszConcept)
 {
-	CUtlSymbol otherConcept = g_pRRConceptTable->Find(pszConcept);
-	return ( otherConcept.IsValid() && otherConcept == m_iConcept );
+	int otherConcept = g_pRRConceptTable->Find(pszConcept);
+	return ( otherConcept != UTL_INVAL_SYMBOL && otherConcept == m_iConcept );
 }
 
 const char *CRR_Concept::GetStringConcept() const

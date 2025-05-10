@@ -387,8 +387,7 @@ void CHudMenu::ShowMenu( const char * menuName, int validSlots )
 
 	// we have the whole string, so we can localise it now
 	char szMenuString[MAX_MENU_STRING];
-    hudtextmessage->LocaliseTextString( g_szPrelocalisedMenuString, szMenuString, sizeof( szMenuString ) );
-    ConvertCRtoNL( szMenuString );
+	Q_strncpy( szMenuString, ConvertCRtoNL( hudtextmessage->BufferedLocaliseTextString( g_szPrelocalisedMenuString ) ), sizeof( szMenuString ) );
 	g_pVGuiLocalize->ConvertANSIToUnicode( szMenuString, g_szMenuString, sizeof( g_szMenuString ) );
 	
 	ProcessText();
@@ -478,8 +477,7 @@ bool CHudMenu::MsgFunc_ShowMenu( const CCSUsrMsg_ShowMenu &msg)
 			
 		// we have the whole string, so we can localise it now
 		char szMenuString[MAX_MENU_STRING];
-		hudtextmessage->LocaliseTextString( g_szPrelocalisedMenuString, szMenuString, sizeof( szMenuString ) );
-		ConvertCRtoNL( szMenuString );
+		Q_strncpy( szMenuString, ConvertCRtoNL( hudtextmessage->BufferedLocaliseTextString( g_szPrelocalisedMenuString ) ), sizeof( szMenuString ) );
 		g_pVGuiLocalize->ConvertANSIToUnicode( szMenuString, g_szMenuString, sizeof( g_szMenuString ) );
 			
 		ProcessText();

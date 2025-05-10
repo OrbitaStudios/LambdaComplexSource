@@ -665,11 +665,10 @@ float ramp( float x, float a, float b )
 	return ( x - a ) / ( b - a );
 }
 
-float V_lerp( float x, float a, float b )
+float lerp( float x, float a, float b )
 {
 	return a + x * ( b - a );
 }
-#define lerp( x, a, b ) V_lerp( x, a, b )
 
 float smoothstep( float x )
 {

@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: Contains the CMessageDialog declaration
 //
@@ -76,21 +76,7 @@ enum EDialogType
 	MD_LOAD_FAILED_WARNING,
 	MD_OPTION_CHANGE_FROM_X360_DASHBOARD,
 	MD_STORAGE_DEVICES_CORRUPT,
-	MD_CHECKING_STORAGE_DEVICE,
-
-	//=============================================================================
-	// HPE_BEGIN:
-	// [mhansen] Added some new messages.
-	//=============================================================================
-	MD_PROFILE_READ_FAILED,
-	MD_PROFILE_READ_FAILED_CRC,
-	MD_PROFILE_WRITE_FAILED,
-	MD_PROFILE_RESET,
-	MD_PROFILE_RESET_CONFIRM,
-	MD_QUIT_CONFIRMATION_TEAM_MENU,
-	//=============================================================================
-	// HPE_END
-	//=============================================================================
+	MD_CHECKING_STORAGE_DEVICE
 };
 
 #include "vgui_controls/Frame.h"

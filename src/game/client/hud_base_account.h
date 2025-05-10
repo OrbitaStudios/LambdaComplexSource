@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2006, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -21,7 +21,7 @@ class CHudBaseAccount : public CHudElement, public CHudNumericDisplay
 public:
 	DECLARE_CLASS_SIMPLE( CHudBaseAccount, CHudNumericDisplay );
 
-	explicit CHudBaseAccount( const char *name );
+	CHudBaseAccount( const char *name );
 
 	virtual bool ShouldDraw();	
 	virtual void Paint();
@@ -35,10 +35,7 @@ public:
 	// How much money does the player have
 	virtual int	GetPlayerAccount( void ) { return 0; }
 
-	// Which gun game weapon does the player have
-	virtual int	GetPlayerGunGameWeapon( void ) { return 1; }
-
-	// Requires game-specific GetClientMode() call, push to derived class
+	// Requires game-specific g_pClientMode call, push to derived class
 	virtual vgui::AnimationController *GetAnimationController( void ) { Assert( 0 ); return NULL; }
 
 private:

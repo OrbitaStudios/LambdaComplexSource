@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -53,7 +53,7 @@ IMatSystemSurface *MatSystemSurface();
 // #include <istudiorender.h"
 IStudioRender *StudioRender();
 
-// #include <materialsystem/IMaterialSystemHardwareConfig.h>
+// #include <materialsystem/imaterialsystemhardwareconfig.h>
 IMaterialSystemHardwareConfig *MaterialSystemHardwareConfig();
 
 } // end namespace vgui

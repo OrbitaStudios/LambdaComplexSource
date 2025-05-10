@@ -13,15 +13,16 @@
 
 #include <tier0/platform.h>
 #include <tier0/threadtools.h>
+#include <tier0/tslist.h>
 #include <tier2/tier2.h>
 
 #include "filesystem.h"
 #include "tier1/utlintrusivelist.h"
 #include "tier1/utlvector.h"
-#include "tier1/utlsortvector.h"
+#include "tier1/utllinkedlist.h"
+#include "tier1/UtlSortVector.h"
 #include "tier1/utlmap.h"
-
-//#define VPK_ENABLE_SIGNING
+#include "tier1/checksum_md5.h"
 
 const int k_nVPKDefaultChunkSize = 200 * 1024 * 1024;
 
@@ -197,7 +198,6 @@ struct CachedVPKRead_t
 	int m_hMD5RequestHandle;// bookkeeping
 	int m_cFailedHashes;	// did the MD5 match what it was supposed to?
 	MD5Value_t m_md5Value;
-	MD5Value_t m_md5ValueRetry;
 
 	static bool Less( const CachedVPKRead_t& lhs, const CachedVPKRead_t& rhs )
 	{
@@ -226,19 +226,17 @@ class CPackedStoreReadCache
 public:
 	CPackedStoreReadCache( IBaseFileSystem *pFS );
 
-	bool ReadCacheLine( FileHandleTracker_t &fHandle, CachedVPKRead_t &cachedVPKRead, int &nRead );
+	bool ReadCacheLine( FileHandleTracker_t &fHandle, CachedVPKRead_t &cachedVPKRead );
 	bool BCanSatisfyFromReadCache( uint8 *pOutData, CPackedStoreFileHandle &handle, FileHandleTracker_t &fHandle, int nDesiredPos, int nNumBytes, int &nRead );
 	bool BCanSatisfyFromReadCacheInternal( uint8 *pOutData, CPackedStoreFileHandle &handle, FileHandleTracker_t &fHandle, int nDesiredPos, int nNumBytes, int &nRead );
-	bool CheckMd5Result( CachedVPKRead_t &cachedVPKRead, MD5Value_t &md5Value );
+	bool CheckMd5Result( CachedVPKRead_t &cachedVPKRead );
 	int FindBufferToUse();
-	void RereadBadCacheLine( CachedVPKRead_t &cachedVPKRead );
-	void RecheckBadCacheLine( CachedVPKRead_t &cachedVPKRead );
+	void RetryBadCacheLine( CachedVPKRead_t &cachedVPKRead );
 	void RetryAllBadCacheLines();
 
 
-	// cache 8 MB total. Caching more wastes too much memory.
-	// On dedicated servers this cache is not used.
-	static const int k_nCacheBuffersToKeep = 8;
+	// cache 64 MB total
+	static const int k_nCacheBuffersToKeep = 4;
 	static const int k_cubCacheBufferSize = 0x00100000; // 1MB
 	static const int k_nCacheBufferMask = 0x7FF00000;
 
@@ -338,7 +336,6 @@ public:
 	CUtlSortVector<ChunkHashFraction_t, ChunkHashFractionLess_t > &AccessPackFileHashes() { return m_vecChunkHashFraction; }
 	bool FindFileHashFraction( int nPackFileNumber, int nFileFraction, ChunkHashFraction_t &chunkFileHashFraction );
 	void GetPackFileLoadErrorSummary( CUtlString &sErrors );
-	void GetPackFileLoadErrorSummaryKV( KeyValues *pKV );
 
 	void GetPackFileName( CPackedStoreFileHandle &handle, char *pchFileNameOut, int cchFileNameOut ) const;
 	void GetDataFileName( char *pchFileNameOut, int cchFileNameOut, int nFileNumber ) const;

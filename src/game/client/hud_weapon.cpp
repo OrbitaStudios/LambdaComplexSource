@@ -20,11 +20,11 @@ using namespace vgui;
 
 #if defined( CSTRIKE15 )
 
+#if defined( INCLUDE_SCALEFORM )
 extern bool IsTakingAFreezecamScreenshot( void );
-bool IsTakingAFreezecamScreenshot( void )
-{
-    return false;
-}
+#else
+bool IsTakingAFreezecamScreenshot( void ) { return false; }
+#endif
 
 extern ConVar cl_drawhud;
 //extern ConVar sfcrosshair;

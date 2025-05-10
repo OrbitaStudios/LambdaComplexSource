@@ -563,6 +563,12 @@ public:
 		m_pD3DDevice->GetDeviceCaps( pCaps );
 	}
 
+	LPCSTR GetPixelShaderProfile( void )
+	{
+		Synchronize();
+		return D3DXGetPixelShaderProfile( m_pD3DDevice );
+	}
+
 	HRESULT TestCooperativeLevel( void )
 	{
 	// hack!  We are going to assume that calling this immediately when in buffered mode isn't going to cause problems.
@@ -934,7 +940,7 @@ public:
 				StretchRect( pSourceSurface, pSourceRect, pDestSurface, pDestRect, Filter );
 	}
 
-#ifdef USE_ACTUAL_DX
+#ifndef DX_TO_GL_ABSTRACTION
 	NvAPI_Status StretchRectEx_NvAPI( IDirect3DResource9 *pSourceResource,
 									  CONST RECT * pSourceRect,
 									  IDirect3DResource9 * pDestResource,

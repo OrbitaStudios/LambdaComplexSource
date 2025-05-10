@@ -45,7 +45,7 @@ struct CpuIdResult_t
 
 static bool cpuid( unsigned long function, CpuIdResult_t &out )
 {
-#if defined( _X360 ) || defined( _PS3 ) || defined( __aarch64__ )
+#if defined( _X360 ) || defined( _PS3 )
 	return false;
 #elif defined(GNUC)
 	unsigned long out_eax,out_ebx,out_ecx,out_edx;
@@ -124,7 +124,7 @@ static bool cpuid( unsigned long function, CpuIdResult_t &out )
 
 static bool cpuidex( unsigned long function, unsigned long subfunction, CpuIdResult_t &out )
 {
-#if defined( _X360 ) || defined( _PS3 ) || defined( __aarch64__ )
+#if defined( _X360 ) || defined( _PS3 )
 	return false;
 #elif defined(GNUC)
 	unsigned long out_eax, out_ebx, out_ecx, out_edx;
@@ -212,19 +212,72 @@ static CpuIdResult_t cpuidex( unsigned long function, unsigned long subfunction 
 	return out;
 }
 
+//-----------------------------------------------------------------------------
+// Purpose: This is a bit of a hack because it appears 
+// Output : Returns true on success, false on failure.
+//-----------------------------------------------------------------------------
+static bool IsWin98OrOlder()
+{
+#if defined( _X360 ) || defined( _PS3 ) || defined( POSIX )
+	return false;
+#else
+	bool retval = false;
+
+	OSVERSIONINFOEX osvi;
+	ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
+	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+	
+	BOOL bOsVersionInfoEx = GetVersionEx ((OSVERSIONINFO *) &osvi);
+	if( !bOsVersionInfoEx )
+	{
+		// If OSVERSIONINFOEX doesn't work, try OSVERSIONINFO.
+		
+		osvi.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);
+		if ( !GetVersionEx ( (OSVERSIONINFO *) &osvi) )
+		{
+			Error( _T("IsWin98OrOlder:  Unable to get OS version information") );
+		}
+	}
+
+	switch (osvi.dwPlatformId)
+	{
+	case VER_PLATFORM_WIN32_NT:
+		// NT, XP, Win2K, etc. all OK for SSE
+		break;
+	case VER_PLATFORM_WIN32_WINDOWS:
+		// Win95, 98, Me can't do SSE
+		retval = true;
+		break;
+	case VER_PLATFORM_WIN32s:
+		// Can't really run this way I don't think...
+		retval = true;
+		break;
+	default:
+		break;
+	}
+
+	return retval;
+#endif
+}
+
 
 static bool CheckSSETechnology(void)
 {
-#if defined( _X360 ) || defined( _PS3 ) || defined( __aarch64__ )
+#if defined( _X360 ) || defined( _PS3 )
 	return true;
 #else
+	if ( IsWin98OrOlder() )
+	{
+		return false;
+	}
+
     return ( cpuid( 1 ).edx & 0x2000000L ) != 0;
 #endif
 }
 
 static bool CheckSSE2Technology(void)
 {
-#if defined( _X360 ) || defined( _PS3 ) || defined( __aarch64__ )
+#if defined( _X360 ) || defined( _PS3 )
 	return false;
 #else
     return ( cpuid( 1 ).edx & 0x04000000 ) != 0;
@@ -233,7 +286,7 @@ static bool CheckSSE2Technology(void)
 
 bool CheckSSE3Technology(void)
 {
-#if defined( _X360 ) || defined( _PS3 ) || defined( __aarch64__ )
+#if defined( _X360 ) || defined( _PS3 )
 	return false;
 #else
 	return ( cpuid( 1 ).ecx & 0x00000001 ) != 0;	// bit 1 of ECX
@@ -242,7 +295,7 @@ bool CheckSSE3Technology(void)
 
 bool CheckSSSE3Technology(void)
 {
-#if defined( _X360 ) || defined( _PS3 ) || defined( __aarch64__ )
+#if defined( _X360 ) || defined( _PS3 )
 	return false;
 #else
 	// SSSE 3 is implemented by both Intel and AMD
@@ -253,7 +306,7 @@ bool CheckSSSE3Technology(void)
 
 bool CheckSSE41Technology(void)
 {
-#if defined( _X360 ) || defined( _PS3 ) || defined( __aarch64__ )
+#if defined( _X360 ) || defined( _PS3 )
 	return false;
 #else
 	// SSE 4.1 is implemented by both Intel and AMD
@@ -265,7 +318,7 @@ bool CheckSSE41Technology(void)
 
 bool CheckSSE42Technology(void)
 {
-#if defined( _X360 ) || defined( _PS3 ) || defined( __aarch64__ )
+#if defined( _X360 ) || defined( _PS3 )
 	return false;
 #else
 	// SSE4.2 is an Intel-only feature
@@ -281,7 +334,7 @@ bool CheckSSE42Technology(void)
 
 bool CheckSSE4aTechnology( void )
 {
-#if defined( _X360 ) || defined( _PS3 ) || defined( __aarch64__ )
+#if defined( _X360 ) || defined( _PS3 )
 	return false;
 #else
 	// SSE 4a is an AMD-only feature
@@ -297,7 +350,7 @@ bool CheckSSE4aTechnology( void )
 
 static bool Check3DNowTechnology(void)
 {
-#if defined( _X360 ) || defined( _PS3 ) || defined( __aarch64__ )
+#if defined( _X360 ) || defined( _PS3 )
 	return false;
 #else
 	if ( cpuid( 0x80000000 ).eax > 0x80000000L )
@@ -310,7 +363,7 @@ static bool Check3DNowTechnology(void)
 
 static bool CheckCMOVTechnology()
 {
-#if defined( _X360 ) || defined( _PS3 ) || defined( __aarch64__ )
+#if defined( _X360 ) || defined( _PS3 )
 	return false;
 #else
 	return ( cpuid( 1 ).edx & ( 1 << 15 ) ) != 0;
@@ -319,7 +372,7 @@ static bool CheckCMOVTechnology()
 
 static bool CheckFCMOVTechnology(void)
 {
-#if defined( _X360 ) || defined( _PS3 ) || defined( __aarch64__ )
+#if defined( _X360 ) || defined( _PS3 )
 	return false;
 #else
 	return ( cpuid( 1 ).edx & ( 1 << 16 ) ) != 0;
@@ -328,7 +381,7 @@ static bool CheckFCMOVTechnology(void)
 
 static bool CheckRDTSCTechnology(void)
 {
-#if defined( _X360 ) || defined( _PS3 ) || defined( __aarch64__ )
+#if defined( _X360 ) || defined( _PS3 )
 	return false;
 #else
 	return ( cpuid( 1 ).edx & 0x10 ) != 0;
@@ -336,7 +389,7 @@ static bool CheckRDTSCTechnology(void)
 }
 
 
-static tchar s_CpuVendorID[16] = "unknown";
+static tchar s_CpuVendorID[ 13 ] = "unknown";
 
 bool s_bCpuVendorIdInitialized = false;
 
@@ -354,8 +407,6 @@ const tchar* GetProcessorVendorId()
 {
 #if defined( _X360 ) || defined( _PS3 )
 	return "PPC";
-#elif defined( __aarch64__ )
-	return "ARM";
 #else
 	if ( s_bCpuVendorIdInitialized )
 	{
@@ -397,8 +448,6 @@ const tchar* GetProcessorBrand()
 	return "Xenon";
 #elif defined( _PS3 )
 	return "Cell Broadband Engine";
-#elif defined( __aarch64__ )
-	return "ARM";
 #else
 	if ( s_bCpuBrandInitialized )
 	{
@@ -434,8 +483,6 @@ static bool HTSupported(void)
 	// not entirtely sure about the semantic of HT support, it being an intel name
 	// are we asking about HW threads or HT?
 	return true;
-#elif defined( __aarch64__ )
-	return false;
 #else
 	enum {
 		HT_BIT		 = 0x10000000,  // EDX[28] - Bit 28 set indicates Hyper-Threading Technology is supported in hardware.
@@ -468,8 +515,6 @@ static uint8 LogicalProcessorsPerPackage(void)
 {
 #if defined( _X360 )
 	return 2;
-#elif defined( __aarch64__ )
-	return 1;
 #else
 	// EBX[23:16] indicate number of logical processors per package
 	const unsigned NUM_LOGICAL_BITS = 0x00FF0000;
@@ -492,7 +537,7 @@ uint64 CalculateCPUFreq(); // from cpu_linux.cpp
 // for some fraction of a second, then measuring the elapsed number of cycles.
 static int64 CalculateClockSpeed()
 {
-#if defined( _X360 ) || defined(_PS3) || defined( __aarch64__ )
+#if defined( _X360 ) || defined(_PS3)
 	// Xbox360 and PS3 have the same clock speed and share a lot of characteristics on PPU
 	return 3200000000LL;
 #else	
@@ -528,11 +573,121 @@ static int64 CalculateClockSpeed()
 #endif
 }
 
+static CPUInformation s_cpuInformation;
+
+struct IntelCacheDesc_t
+{
+	uint8 nDesc;
+	uint16 nCacheSize;
+};
+
+static IntelCacheDesc_t s_IntelL1DataCacheDesc[] = {
+	{ 0xA, 8 },
+	{ 0xC, 16 },
+	{ 0xD, 16 },
+	{ 0x2C, 32 },
+	{ 0x30, 32 },
+	{ 0x60, 16 },
+	{ 0x66, 8 },
+	{ 0x67, 16 },
+	{ 0x68, 32 }
+};
+
+
+static IntelCacheDesc_t s_IntelL2DataCacheDesc[] =
+{
+	{ 0x21, 256 },
+	{ 0x39, 128 },
+	{ 0x3a, 192 },
+	{ 0x3b, 128 },
+	{ 0x3c, 256 },
+	{ 0x3D, 384 },
+	{ 0x3E, 512 },
+	{ 0x41, 128 },
+	{ 0x42, 256 },
+	{ 0x43, 512 },
+	{ 0x44, 1024 },
+	{ 0x45, 2048 },
+	{ 0x48, 3 * 1024 },
+	{ 0x4e, 6 * 1024 },
+	{ 0x78, 1024 },
+	{ 0x79, 128 },
+	{ 0x7a, 256 },
+	{ 0x7b, 512 },
+	{ 0x7c, 1024 },
+	{ 0x7d, 2048 },
+	{ 0x7f, 512 },
+	{ 0x82, 256 },
+	{ 0x83, 512 },
+	{ 0x84, 1024 },
+	{ 0x85, 2048 },
+	{ 0x86, 512 },
+	{ 0x87, 1024 }
+};
+
+
+static IntelCacheDesc_t s_IntelL3DataCacheDesc[] = {
+	{ 0x22, 512 },
+	{ 0x23, 1024 },
+	{ 0x25, 2 * 1024 },
+	{ 0x29, 4 * 1024 },
+	{ 0x46, 4 * 1024 },
+	{ 0x47, 8 * 1024 },
+	// { 49, 
+	{ 0x4a, 6 * 1024 },
+	{ 0x4b, 8 * 1024 },
+	{ 0x4c, 12 * 1024 },
+	{ 0x4d, 16 * 1014 },
+	{ 0xD0, 512 },
+	{ 0xD1, 1024 },
+	{ 0xD2, 2048 },
+	{ 0xD6, 1024 },
+	{ 0xD7, 2048 },
+	{ 0xD8, 4096 },
+	{ 0xDC, 1536 },
+	{ 0xDD, 3 * 1024 },
+	{ 0xDE, 6 * 1024 },
+	{ 0xE2, 2048 },
+	{ 0xE3, 4096 },
+	{ 0xE4, 8 * 1024 },
+	{ 0xEA, 12 * 1024 },
+	{ 0xEB, 18 * 1024 },
+	{ 0xEC, 24 * 1024 }
+};
+
+static void FindIntelCacheDesc( uint8 nDesc, const IntelCacheDesc_t *pDesc, int nDescCount, uint32 &nCache, uint32 &nCacheDesc )
+{
+	for ( int i = 0; i < nDescCount; ++i )
+	{
+		if ( pDesc->nDesc == nDesc )
+		{
+			nCache = pDesc->nCacheSize;
+			nCacheDesc = nDesc;
+			break;
+		}
+	}
+}
+
+// see "Output of the CPUID instruction" from Intel, page 26
+static void InterpretIntelCacheDescriptors( uint32 nPackedDesc )
+{
+	if ( nPackedDesc & 0x80000000 )
+	{
+		return; // this is a wrong descriptor
+	}
+	for ( int i = 0; i < 4; ++i )
+	{
+		FindIntelCacheDesc( nPackedDesc & 0xFF, s_IntelL1DataCacheDesc, ARRAYSIZE( s_IntelL1DataCacheDesc ), s_cpuInformation.m_nL1CacheSizeKb, s_cpuInformation.m_nL1CacheDesc );
+		FindIntelCacheDesc( nPackedDesc & 0xFF, s_IntelL2DataCacheDesc, ARRAYSIZE( s_IntelL2DataCacheDesc ), s_cpuInformation.m_nL2CacheSizeKb, s_cpuInformation.m_nL2CacheDesc );
+		FindIntelCacheDesc( nPackedDesc & 0xFF, s_IntelL3DataCacheDesc, ARRAYSIZE( s_IntelL3DataCacheDesc ), s_cpuInformation.m_nL3CacheSizeKb, s_cpuInformation.m_nL3CacheDesc );
+		nPackedDesc >>= 8;
+	}
+}
+
 
 const CPUInformation& GetCPUInformation()
 {
-	static CPUInformation pi;
-
+	CPUInformation &pi = s_cpuInformation;
 	// Has the structure already been initialized and filled out?
 	if ( pi.m_Size == sizeof(pi) )
 		return pi;
@@ -682,8 +837,89 @@ const CPUInformation& GetCPUInformation()
 		pi.m_nFeatures[ 0 ] = cpuid1.edx; // x87+ features
 		pi.m_nFeatures[ 1 ] = cpuid1.ecx; // sse3+ features
 		pi.m_nFeatures[ 2 ] = cpuid1.ebx; // some additional features
+
+		if ( bGenuineIntel )
+		{
+			if ( cpuid0.eax >= 4 )
+			{
+				// we have CPUID.4, use it to find all the cache parameters
+				const uint nCachesToQuery = 4; // leve 0 is not used
+				uint nCacheSizeKiB[ nCachesToQuery ];
+				for ( uint i = 0; i < nCachesToQuery; ++i )
+				{
+					nCacheSizeKiB[ i ] = 0;
+				}
+				for ( unsigned long nSub = 0; nSub < 1024 ; ++nSub )
+				{
+					CpuIdResult_t cpuid4 = cpuidex( 4, nSub );
+					uint nCacheType = cpuid4.eax & 0x1F;
+					if ( nCacheType == 0 )
+					{
+						// no more caches
+						break; 
+					}
+					if ( nCacheType & 1 )
+					{
+						// this cache includes data cache: it's either data or unified. Instuction cache type is 2
+						uint nCacheLevel = ( cpuid4.eax >> 5 ) & 7;
+						if ( nCacheLevel < nCachesToQuery )
+						{
+							uint nCacheWays = 1 + ( ( cpuid4.ebx >> 22 ) & 0x3F );
+							uint nCachePartitions = 1 + ( ( cpuid4.ebx >> 12 ) & 0x3F );
+							uint nCacheLineSize = 1 + ( cpuid4.ebx & 0xFF );
+							uint nCacheSets = 1 + cpuid4.ecx;
+							uint nCacheSizeBytes = nCacheWays * nCachePartitions * nCacheLineSize * nCacheSets;
+							nCacheSizeKiB[ nCacheLevel ] = nCacheSizeBytes >> 10;
+						}
+					}
+				}
+
+				pi.m_nL1CacheSizeKb = nCacheSizeKiB[ 1 ];
+				pi.m_nL2CacheSizeKb = nCacheSizeKiB[ 2 ];
+				pi.m_nL3CacheSizeKb = nCacheSizeKiB[ 3 ];
+			}
+			else if ( cpuid0.eax >= 2 )
+			{
+				// get the cache
+				CpuIdResult_t cpuid2 = cpuid( 2 );
+				for ( int i = ( cpuid2.eax & 0xFF ); i-- > 0; )
+				{
+					InterpretIntelCacheDescriptors( cpuid2.eax & ~0xFF );
+					InterpretIntelCacheDescriptors( cpuid2.ebx );
+					InterpretIntelCacheDescriptors( cpuid2.ecx );
+					InterpretIntelCacheDescriptors( cpuid2.edx );
+					cpuid2 = cpuid( 2 ); // read the next
+				}
+			}
+		}
 	}
 
+	CpuIdResult_t cpuid0ex = cpuid( 0x80000000 );
+	if ( bAuthenticAMD )
+	{
+		if ( cpuid0ex.eax >= 0x80000005 )
+		{
+			CpuIdResult_t cpuid5ex = cpuid( 0x80000005 );
+			pi.m_nL1CacheSizeKb = cpuid5ex.ecx >> 24;
+			pi.m_nL1CacheDesc = cpuid5ex.ecx & 0xFFFFFF;
+		}
+		if ( cpuid0ex.eax >= 0x80000006 )
+		{
+			CpuIdResult_t cpuid6ex = cpuid( 0x80000006 );
+			pi.m_nL2CacheSizeKb = cpuid6ex.ecx >> 16;
+			pi.m_nL2CacheDesc = cpuid6ex.ecx & 0xFFFF;
+			pi.m_nL3CacheSizeKb = ( cpuid6ex.edx >> 18 ) * 512;
+			pi.m_nL3CacheDesc = cpuid6ex.edx & 0xFFFF;
+		}
+	}
+	else if ( bGenuineIntel )
+	{
+		if ( cpuid0ex.eax >= 0x80000006 )
+		{
+			// make sure we got the L2 cache info right
+			pi.m_nL2CacheSizeKb = ( cpuid( 0x80000006 ).ecx >> 16 );
+		}
+	}
 	return pi;
 }
 

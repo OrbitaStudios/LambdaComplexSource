@@ -985,7 +985,7 @@ void CCSPlayer::Precache()
 	PrecacheScriptSound( "Player.DamageHelmet" );
 	//PrecacheScriptSound( "Player.DamageHelmetOtherFar" );
 	PrecacheScriptSound( "Player.DamageHeadShot" );
-	//PrecacheScriptSound( "Player.DamageHeadShotOtherFar" );
+	PrecacheScriptSound( "Player.DamageHeadShotOtherFar" );
 	PrecacheScriptSound( "Flesh.BulletImpact" );
 	PrecacheScriptSound( "Player.DamageKevlar" );
 	PrecacheScriptSound( "Player.PickupWeapon" );
@@ -7271,6 +7271,7 @@ void CCSPlayer::TransferInventory( CCSPlayer* pTargetPlayer )
 		Msg( "-- %s\t\t\t(total: %d)\tTransferInventory to %s\n", GetPlayerName(), pTargetPlayer->m_iAccount, pTargetPlayer->GetPlayerName() );
 	}
 
+	// as part of transferring inventory, remove what WE have
 	SetArmorValue( 0 );
 	m_bHasHelmet = false;
 	m_bHasHeavyArmor = false;
@@ -8538,7 +8539,7 @@ void CCSPlayer::Radio( const char *pszRadioSound, const char *pszRadioText, bool
 
 	if ( bot_chatter_use_rr.GetBool() )
 	{
-		AIConcept_t AIconcept( pszRadioSound );
+		AIConcept_t concept( pszRadioSound );
 
 		AI_CriteriaSet botCriteria;
 		if ( IsBot() )
@@ -8553,7 +8554,7 @@ void CCSPlayer::Radio( const char *pszRadioSound, const char *pszRadioText, bool
 			}
 		}	
 
-		Speak( AIconcept, &botCriteria, NULL, 0, &filter );
+		Speak( concept, &botCriteria, NULL, 0, &filter );
 	}
 	else
 	{
@@ -9389,7 +9390,7 @@ bool CCSPlayer::ClientCommand( const CCommand &args )
 		*/
 		return true;
 	}
-	else if ( FStrEq( pcmd, "spec_next" ) || FStrEq( pcmd, "spec_prev" ) || FStrEq( pcmd, "spec_grenade" ) || FStrEq( pcmd, "spec_scoreboard" ) )
+	else if ( FStrEq( pcmd, "spec_scoreboard" ) )
 	{
 		if ( GetTeamNumber() == TEAM_SPECTATOR )
 		{
@@ -10653,12 +10654,11 @@ void CCSPlayer::State_Enter_WELCOME()
 	// Show info panel (if it's not a simple demo map ).
 	if ( !CSGameRules()->IsLogoMap() )
 	{
-		const bool enableMOTD = true;
 		if ( CommandLine()->FindParm( "-makereslists" ) ) // don't show the MOTD when making reslists
 		{
 			engine->ClientCommand( edict(), "jointeam 3\n" );
 		}
-		else if ( enableMOTD )
+		else
 		{
 			KeyValues *data = new KeyValues("data" );
 			data->SetString( "title", title );		// info panel title

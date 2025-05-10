@@ -64,7 +64,7 @@ public:
 	const char *StringFromSymbol( int token );
 
 private:
-#ifndef _rotr
+#ifndef _WIN32
 	unsigned _rotr ( unsigned val, int shift);
 #endif
 	unsigned int HashString( const char *pszToken );
@@ -521,7 +521,7 @@ inline const char *CSaveRestoreSegment::StringFromSymbol( int token )
 	return "<<illegal>>";
 }
 
-#ifndef _rotr
+#ifndef _WIN32
 inline unsigned CSaveRestoreSegment::_rotr ( unsigned val, int shift)
 {
 		register unsigned lobit;        /* non-zero means lo bit set */

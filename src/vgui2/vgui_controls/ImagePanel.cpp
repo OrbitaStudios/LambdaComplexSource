@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -11,7 +11,7 @@
 #include <vgui/ISurface.h>
 #include <vgui/IScheme.h>
 #include <vgui/IBorder.h>
-#include <keyvalues.h>
+#include <KeyValues.h>
 
 #include <vgui_controls/ImagePanel.h>
 #include <vgui_controls/Image.h>
@@ -32,22 +32,17 @@ ImagePanel::ImagePanel(Panel *parent, const char *name) : Panel(parent, name)
 	m_pImage = NULL;
 	m_pszImageName = NULL;
 	m_pszFillColorName = NULL;
-	m_pszDrawColorName = NULL;
+	m_pszDrawColorName = NULL;	// HPE addition
+	m_bCenterImage = false;
 	m_bScaleImage = false;
 	m_bTileImage = false;
 	m_bTileHorizontally = false;
 	m_bTileVertically = false;
-	m_iTileHorizontalOverride = 0;
-	m_iTileVerticalOverride = 0;
-	m_flTileHorizontalOverride = 0;
-	m_flTileVerticalOverride = 0;
+	m_bPositionImage = true;
 	m_fScaleAmount = 0.0f;
 	m_FillColor = Color(0, 0, 0, 0);
 	m_DrawColor = Color(255,255,255,255);
 	m_iRotation = ROTATED_UNROTATED;
-
-	m_bFrameImage = false;
-	m_iFrame = 0;
 
 	SetImage( m_pImage );
 
@@ -62,7 +57,7 @@ ImagePanel::~ImagePanel()
 {
 	delete [] m_pszImageName;
 	delete [] m_pszFillColorName;
-	delete [] m_pszDrawColorName;
+	delete [] m_pszDrawColorName;	// HPE addition
 }
 
 //-----------------------------------------------------------------------------
@@ -94,7 +89,7 @@ void ImagePanel::SetImage(const char *imageName)
 	delete [] m_pszImageName;
 	m_pszImageName = new char[ len ];
 	Q_strncpy(m_pszImageName, imageName, len );
-	InvalidateLayout(false, true); // forrce applyschemesettings to run
+	InvalidateLayout(false, true); // force applyschemesettings to run
 }
 
 //-----------------------------------------------------------------------------
@@ -134,15 +129,45 @@ void ImagePanel::PaintBackground()
 		surface()->DrawSetColor(m_FillColor);
 		surface()->DrawFilledRect(0, 0, wide, tall);
 	}
-	if (m_pImage)
+	if ( m_pImage )
 	{
+		//=============================================================================
+		// HPE_BEGIN:
+		// [pfreese] Color should be always set from GetDrawColor(), not just when 
+		// scaling is true (see previous code)
+		//=============================================================================
+		
+		// surface()->DrawSetColor( 255, 255, 255, GetAlpha() );
 		m_pImage->SetColor( GetDrawColor() );
-
-		m_pImage->SetPos(0, 0);
 		m_pImage->SetRotation( m_iRotation );
+		
+		//=============================================================================
+		// HPE_END
+		//=============================================================================
 
-		if ( m_bFrameImage )
-			m_pImage->SetFrame( m_iFrame );
+		if ( m_bPositionImage )
+		{
+			if ( m_bCenterImage )
+			{
+				int wide, tall;
+				GetSize(wide, tall);
+
+				int imageWide, imageTall;
+				m_pImage->GetSize( imageWide, imageTall );
+
+				if ( m_bScaleImage && m_fScaleAmount > 0.0f )
+				{
+					imageWide = static_cast<int>( static_cast<float>(imageWide) * m_fScaleAmount );
+					imageTall = static_cast<int>( static_cast<float>(imageTall) * m_fScaleAmount );
+				}
+
+				m_pImage->SetPos( (wide - imageWide) / 2, (tall - imageTall) / 2 );
+			}
+			else
+			{
+				m_pImage->SetPos(0, 0);
+			}
+		}
 
 		if (m_bScaleImage)
 		{
@@ -177,35 +202,12 @@ void ImagePanel::PaintBackground()
 			int imageWide, imageTall;
 			m_pImage->GetSize( imageWide, imageTall );
 
-			bool bUseAbsolute = false;
-			if ( m_flTileHorizontalOverride || m_flTileVerticalOverride )
-			{
-				bUseAbsolute = true;
-				m_pImage->SetSize( m_flTileHorizontalOverride ? m_flTileHorizontalOverride : imageWide, m_flTileVerticalOverride ? m_flTileVerticalOverride : imageTall );
-			}
-
 			int y = 0;
-			int iStepY = 0;
 			while ( y < tall )
 			{
 				int x = 0;
-				int iStepX = 0;
 				while (x < wide)
 				{
-					if ( bUseAbsolute )
-					{
-						if ( m_flTileHorizontalOverride )
-						{
-							x = (m_flTileHorizontalOverride * iStepX);
-						}
-						if ( m_flTileVerticalOverride )
-						{
-							y = (m_flTileVerticalOverride * iStepY);
-						}
-
-						iStepX++;
-					}
-
 					m_pImage->SetPos(x,y);
 					m_pImage->Paint();
 
@@ -216,12 +218,15 @@ void ImagePanel::PaintBackground()
 				}
 
 				y += imageTall;
-				iStepY++;
 
 				if ( !m_bTileVertically )
 					break;
 			}
-			m_pImage->SetPos(0, 0);
+
+			if ( m_bPositionImage )
+			{
+				m_pImage->SetPos(0, 0);
+			}
 		}
 		else
 		{
@@ -245,22 +250,30 @@ void ImagePanel::GetSettings(KeyValues *outResourceData)
 	{
 		outResourceData->SetString("fillcolor", m_pszFillColorName);
 	}
+
+	//=============================================================================
+	// HPE_BEGIN:
+	// [pfreese] Added support for specifying drawcolor
+	//=============================================================================
 	if (m_pszDrawColorName)
 	{
 		outResourceData->SetString("drawcolor", m_pszDrawColorName);
 	}
+	//=============================================================================
+	// HPE_END
+	//=============================================================================
+
 	if (GetBorder())
 	{
 		outResourceData->SetString("border", GetBorder()->GetName());
 	}
 
-	outResourceData->SetBool("scaleImage", m_bScaleImage);
+	outResourceData->GetInt("positionImage", m_bPositionImage );
+	outResourceData->SetInt("scaleImage", m_bScaleImage);
 	outResourceData->SetFloat("scaleAmount", m_fScaleAmount);
-	outResourceData->SetBool("tileImage", m_bTileImage);
-	outResourceData->SetBool("tileHorizontally", m_bTileHorizontally);
-	outResourceData->SetBool("tileVertically", m_bTileVertically);
-	outResourceData->SetInt("tileHorizontalOverride", m_iTileHorizontalOverride);
-	outResourceData->SetInt("tileVerticalOverride", m_iTileVerticalOverride);
+	outResourceData->SetInt("tileImage", m_bTileImage);
+	outResourceData->SetInt("tileHorizontally", m_bTileHorizontally);
+	outResourceData->SetInt("tileVertically", m_bTileVertically);
 }
 
 //-----------------------------------------------------------------------------
@@ -270,41 +283,22 @@ void ImagePanel::ApplySettings(KeyValues *inResourceData)
 {
 	delete [] m_pszImageName;
 	delete [] m_pszFillColorName;
-	delete [] m_pszDrawColorName;
+	delete [] m_pszDrawColorName;	// HPE addition
 	m_pszImageName = NULL;
 	m_pszFillColorName = NULL;
-	m_pszDrawColorName = NULL;
+	m_pszDrawColorName = NULL;		// HPE addition
 
-	m_bScaleImage = inResourceData->GetBool("scaleImage", false);
+	m_bPositionImage = inResourceData->GetInt("positionImage", 1);
+	m_bScaleImage = inResourceData->GetInt("scaleImage", 0);
 	m_fScaleAmount = inResourceData->GetFloat("scaleAmount", 0.0f);
-	m_bTileImage = inResourceData->GetBool("tileImage", false);
-	m_bTileHorizontally = inResourceData->GetBool("tileHorizontally", m_bTileImage);
-	m_bTileVertically = inResourceData->GetBool("tileVertically", m_bTileImage);
-	m_flTileHorizontalOverride = m_iTileHorizontalOverride = inResourceData->GetInt("tileHorizontalOverride", 0);
-	m_flTileVerticalOverride = m_iTileVerticalOverride = inResourceData->GetInt("tileVerticalOverride", 0);
-
-	if ( IsProportional() )
-	{
-		int screenwide, screentall;
-		vgui::surface()->GetScreenSize( screenwide, screentall );
-		int proH, proW;
-		vgui::surface()->GetProportionalBase( proW, proH );
-		double scale = (double)screentall / (double)proH;
-
-		m_flTileHorizontalOverride = m_iTileHorizontalOverride * scale;
-		m_flTileVerticalOverride = m_iTileVerticalOverride * scale;
-	}
-
+	m_bTileImage = inResourceData->GetInt("tileImage", 0);
+	m_bTileHorizontally = inResourceData->GetInt("tileHorizontally", m_bTileImage);
+	m_bTileVertically = inResourceData->GetInt("tileVertically", m_bTileImage);
+	m_iRotation = inResourceData->GetInt( "rotation", ROTATED_UNROTATED );
 	const char *imageName = inResourceData->GetString("image", "");
 	if ( *imageName )
 	{
 		SetImage( imageName );
-	}
-
-	if ( KeyValues *pKeyFrame = inResourceData->FindKey( "frame" ) )
-	{
-		m_iFrame = inResourceData->GetInt( "frame", m_iFrame );
-		m_bFrameImage = true;
 	}
 
 	const char *pszFillColor = inResourceData->GetString("fillcolor", "");
@@ -327,10 +321,14 @@ void ImagePanel::ApplySettings(KeyValues *inResourceData)
 		}
 	}
 
+	//=============================================================================
+	// HPE_BEGIN:
+	// [pfreese] Added support for specifying drawcolor
+	//=============================================================================
 	const char *pszDrawColor = inResourceData->GetString("drawcolor", "");
 	if (*pszDrawColor)
 	{
-		int r = 0, g = 0, b = 0, a = 255;
+		int r = 255, g = 255, b = 255, a = 255;
 		int len = Q_strlen(pszDrawColor) + 1;
 		m_pszDrawColorName = new char[ len ];
 		Q_strncpy( m_pszDrawColorName, pszDrawColor, len );
@@ -343,9 +341,12 @@ void ImagePanel::ApplySettings(KeyValues *inResourceData)
 		else
 		{
 			IScheme *pScheme = scheme()->GetIScheme( GetScheme() );
-			m_DrawColor = pScheme->GetColor(pszDrawColor, Color(0, 0, 0, 0));
+			m_DrawColor = pScheme->GetColor(pszDrawColor, Color(255, 255, 255, 255));
 		}
 	}
+	//=============================================================================
+	// HPE_END
+	//=============================================================================
 
 	const char *pszBorder = inResourceData->GetString("border", "");
 	if (*pszBorder)
@@ -465,11 +466,10 @@ int ImagePanel::GetNumFrames()
 
 void ImagePanel::SetFrame( int nFrame )
 {
-	m_bFrameImage = true;
-	m_iFrame = nFrame;
-}
+	if ( !m_pImage )
+	{
+		return;
+	}
 
-int ImagePanel::GetFrame() const
-{
-	return m_iFrame;
+	return m_pImage->SetFrame( nFrame );
 }

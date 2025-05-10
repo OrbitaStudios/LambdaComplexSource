@@ -70,7 +70,6 @@
 #include "tls_ps3.h"
 #endif
 #include "filesystem/IQueuedLoader.h"
-#include "filesystem/IXboxInstaller.h"
 #include "toolframework/itoolframework.h"
 #include "fmtstr.h"
 #include "tier3/tier3.h"
@@ -638,16 +637,21 @@ void Host_PrintStatus( cmd_source_t commandSource, void ( *print )(const char *f
 			}
 		}
 		print( "udp/ip  : %s:%i%s\n", net_local_adr.ToString(true), sv.GetUDPPort(), sPublicIPInfo.String() );
+		static ConVarRef sv_steamdatagramtransport_port( "sv_steamdatagramtransport_port" );
+		if ( bWithAddresses && sv_steamdatagramtransport_port.GetInt() > 0 )
+		{
+			print( "sdt     : =%s on port %d\n", Steam3Server().GetGSSteamID().Render(), sv_steamdatagramtransport_port.GetInt() );
+		}
 
 		const char *osType =
 #if defined( WIN32 )
 			"Windows";
 #elif defined( _LINUX )
-			"Linux";
+		"Linux";
 #elif defined( PLATFORM_OSX )
-			"OSX";
+		"OSX";
 #else
-			"Unknown";
+		"Unknown";
 #endif
 
 		print( "os      :  %s\n", osType );
@@ -1363,7 +1367,6 @@ void Host_SplitScreen_Map_f( const CCommand &args )
 {
 #ifndef _DEMO
 	Host_Map_Helper( args, EMAP_SPLITSCREEN );
-	host_state.max_splitscreen_players = 2;
 #endif
 }
 

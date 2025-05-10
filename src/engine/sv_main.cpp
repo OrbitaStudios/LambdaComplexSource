@@ -171,7 +171,7 @@ static void SV_CheatsChanged_f( IConVar *pConVar, const char *pOldString, float 
 	}
 }
 
-static int g_sv_pure_mode = 1; // default to on
+static int g_sv_pure_mode = 0;
 static void SV_Pure_f( const CCommand &args )
 {
     int pure_mode = -1;
@@ -2775,67 +2775,42 @@ static void SV_AllocateEdicts()
 
 void CGameServer::ReloadWhitelist( const char *pMapName )
 {
-	// listen servers should not ever run sv_pure
-	if ( !sv.IsDedicated() )
+	// Always return - until we get the whitelist stuff resolved for TF2.
+	if ( m_pPureServerWhitelist )
 	{
-		g_sv_pure_mode = 0;
+		m_pPureServerWhitelist->Release();
+		m_pPureServerWhitelist = NULL;
 	}
 
-    // Always return - until we get the whilelist stuff resolved for TF2.
-    if ( m_pPureServerWhitelist )
-    {
-        m_pPureServerWhitelist->Release();
-        m_pPureServerWhitelist = NULL;
-    }
+	// Don't do sv_pure stuff in SP games.
+	if ( GetMaxClients() <= 1 )
+		return;
 
-    // Don't do sv_pure stuff in SP games.
-    if ( GetMaxClients() <= 1 )
-        return;
+	// Don't use the whitelist if sv_pure is not set.
+	if ( g_sv_pure_mode < 0 )
+		return;
 
-    // Get rid of the old whitelist.
-    if ( m_pPureServerWhitelist )
-    {
-        m_pPureServerWhitelist->Release();
-        m_pPureServerWhitelist = NULL;
-    }
+	m_pPureServerWhitelist = CPureServerWhitelist::Create( g_pFileSystem );
 
-    // Don't use the whitelist if sv_pure is not set.
-    if ( g_sv_pure_mode == 0 )
-        return;
+	// Load it
+	m_pPureServerWhitelist->Load( g_sv_pure_mode );
 
-    m_pPureServerWhitelist = CPureServerWhitelist::Create( g_pFileSystem );
-    if ( g_sv_pure_mode == 2 )
-    {
-        // sv_pure 2 means to ignore the pure_server_whitelist.txt file and force everything to come from Steam.
-        m_pPureServerWhitelist->EnableFullyPureMode();
-        Msg( "Server using sv_pure 2.\n" );
-    }
-    else
-    {
-        const char *pGlobalWhitelistFilename = "pure_server_whitelist.txt";
-        const char *pMapWhitelistSuffix = "_whitelist.txt";
-        
-        // Load the new whitelist.
-        KeyValues *kv = new KeyValues( "" );
-        bool bLoaded = kv->LoadFromFile( g_pFileSystem, pGlobalWhitelistFilename, "game" );
-        if ( bLoaded )
-            bLoaded = m_pPureServerWhitelist->LoadFromKeyValues( kv );
-        
-        if ( !bLoaded )
-            Warning( "Can't load pure server whitelist in %s.\n", pGlobalWhitelistFilename );
-        
-        // Load the per-map whitelist.
-        char testFilename[MAX_PATH] = "maps";
-        V_AppendSlash( testFilename, sizeof( testFilename ) );
-        V_strncat( testFilename, pMapName, sizeof( testFilename ) );
-        V_strncat( testFilename, pMapWhitelistSuffix, sizeof( testFilename ) );
-        
-        kv->Clear();
-        if ( kv->LoadFromFile( g_pFileSystem, testFilename ) )
-            m_pPureServerWhitelist->LoadFromKeyValues( kv );
-
-        kv->deleteThis();
-    }
+	// Load user whitelists, if allowed
+	if ( g_sv_pure_mode == 1 )
+	{
+		
+		// Load the per-map whitelist.
+		const char *pMapWhitelistSuffix = "_whitelist.txt";
+		char testFilename[MAX_PATH] = "maps";
+		V_AppendSlash( testFilename, sizeof( testFilename ) );
+		V_strncat( testFilename, pMapName, sizeof( testFilename ) );
+		V_strncat( testFilename, pMapWhitelistSuffix, sizeof( testFilename ) );
+		
+		KeyValues *kv = new KeyValues( "" );
+		if ( kv->LoadFromFile( g_pFileSystem, testFilename ) )
+			m_pPureServerWhitelist->LoadCommandsFromKeyValues( kv );
+		kv->deleteThis();
+	}
 
 }
 

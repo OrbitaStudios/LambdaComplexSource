@@ -78,8 +78,6 @@ public:
 	virtual ConCommand		*FindCommand( const char *name ) = 0;
 	virtual const ConCommand *FindCommand( const char *name ) const = 0;
 
-
-
 	// Install a global change callback (to be called when any convar changes) 
 	virtual void			InstallGlobalChangeCallback( FnChangeCallback_t callback ) = 0;
 	virtual void			RemoveGlobalChangeCallback( FnChangeCallback_t callback ) = 0;

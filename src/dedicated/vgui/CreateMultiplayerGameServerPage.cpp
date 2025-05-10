@@ -38,10 +38,6 @@ using namespace vgui;
 //#define ALLOW_OLD_ENGINE_GAMES
 
 
-// filesystem_steam.cpp implements this useful function - mount all the caches for a given app ID.
-extern void MountDependencies( int iAppId, CUtlVector<unsigned int> &depList );
-
-
 bool IsEp1EraAppID( int iSteamAppId )
 {
 	return iSteamAppId == 211 || iSteamAppId == 215;
@@ -434,27 +430,6 @@ void CCreateMultiplayerGameServerPage::OnCommand(const char *cmd)
 
 			// mount the caches
 			KeyValues *gameData = m_pGameCombo->GetActiveItemUserData();
-			if (CommandLine()->CheckParm("-steam"))
-			{
-				if (gameData)
-				{
-					KeyValues *pFileSystem = gameData->FindKey( "FileSystem" );
-					if ( !pFileSystem )
-						Error( "Game %s missing FileSystem key.", gameData->GetString( "game" ) );
-
-					// Mods just specify their app ID (CS, HL2, HL2MP, etc), and it mounts all the necessary caches.
-					int iAppId = pFileSystem->GetInt( "SteamAppId" );
-					if ( iAppId )
-					{
-						CUtlVector<unsigned int> depList;
-						MountDependencies( iAppId, depList );
-
-						char gameinfoFilename[MAX_PATH];
-						Q_snprintf( gameinfoFilename, sizeof( gameinfoFilename ), "%s\\gameinfo.txt", m_iServer.gameDir );
-						g_pFullFileSystem->GetLocalCopy( gameinfoFilename );
-					}
-				}
-			}
 
 			// Launch the old dedicated server if necessary.
 			if ( LaunchOldDedicatedServer( gameData ) )

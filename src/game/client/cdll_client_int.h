@@ -7,7 +7,6 @@
 
 #ifndef CDLL_CLIENT_INT_H
 #define CDLL_CLIENT_INT_H
-
 #ifdef _WIN32
 #pragma once
 #endif
@@ -20,8 +19,6 @@
 #include "tier3/tier3.h"
 #include "tier2/tier2_logging.h"
 #include "videocfg/videocfg.h"
-
-#include "google/protobuf/message.h"
 
 #if defined( INCLUDE_SCALEFORM )
 #include "scaleformui/scaleformui.h"
@@ -104,8 +101,6 @@ extern IUploadGameStats *gamestatsuploader;
 extern CSteamAPIContext *steamapicontext;
 #endif
 extern ISoundEmitterSystemBase *soundemitterbase;
-
-#include "CegClientWrapper.h"
 
 #if defined( CSTRIKE15 )
 extern IGameTypes *g_pGameTypes;

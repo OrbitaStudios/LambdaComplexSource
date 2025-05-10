@@ -1,21 +1,21 @@
-//====== Copyright 1996-2005, Valve Corporation, All rights reserved. =======
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
 //=============================================================================
 
-#if defined(WIN32) && !defined( _GAMECONSOLE )
+#if defined(WIN32) && !defined( _X360 )
 #include <windows.h>
 #endif
 #include "filesystem.h"
 #include "filesystem_init.h"
 #include "appframework/IAppSystemGroup.h"
-#include "appframework/iappsystem.h"
+#include "appframework/IAppSystem.h"
 #include "appframework/AppFramework.h"
 #include "filesystem_helpers.h"
 
 #include "matsys_controls/QCGenerator.h"
-#include "tier1/keyvalues.h"
+#include "tier1/KeyValues.h"
 #include "tier2/vconfig.h"
 #include "vgui_controls/ListPanel.h"
 #include "vgui_controls/TextEntry.h"
@@ -33,10 +33,6 @@
 #if defined( _X360 )
 #include "xbox/xbox_win32stubs.h"
 #endif
-
-// NOTE: This has to be the last file included!
-#include "tier0/memdbgon.h"
-
 
 using namespace vgui;
 
@@ -136,15 +132,15 @@ void QCInfo::SyncFromControls()
 
     pTargetField = pQCGenerator->FindChildByName( "collisionSMDField" );
 	((TextEntry *)pTargetField)->GetText( tempText, MAX_PATH );	
-	Q_strcpy( pszCollisionPath, tempText );
+	V_strcpy_safe( pszCollisionPath, tempText );
 
 	pTargetField = pQCGenerator->FindChildByName( "surfacePropertyDropDown" );
 	((ComboBox *)pTargetField)->GetText( tempText, MAX_PATH );
-    Q_strcpy( pszSurfaceProperty, tempText );
+    V_strcpy_safe( pszSurfaceProperty, tempText );
 
 	pTargetField = pQCGenerator->FindChildByName( "materialsField" );
 	((TextEntry *)pTargetField)->GetText( tempText, MAX_PATH );
-	Q_strcpy( pszMaterialPath, tempText );
+	V_strcpy_safe( pszMaterialPath, tempText );
 
 	LODs.RemoveAll();
 	pTargetField = pQCGenerator->FindChildByName( "LODList" );
@@ -154,7 +150,7 @@ void QCInfo::SyncFromControls()
 		KeyValues *key = ((ListPanel *)pTargetField)->GetItem( i );
 		LODInfo newLOD;
 
-		Q_strcpy( newLOD.pszFilename, key->GetString( "SMD" ) );
+		V_strcpy_safe( newLOD.pszFilename, key->GetString( "SMD" ) );
 		newLOD.iLOD = key->GetInt( "LOD" );		
         LODs.AddToTail( newLOD );
 	}
@@ -246,7 +242,7 @@ void CBrowseButton::SetCharVar( char **pVar, const char *pszNewText )
 	}
 }
 
-void CBrowseButton::InitBrowseInfo( int x, int y, char *pszName, const char *pszDir, char *pszFilter, char *pszField )
+void CBrowseButton::InitBrowseInfo( int x, int y, const char *pszName, const char *pszDir, const char *pszFilter, const char *pszField )
 {
 	SetSize( 24, 24 );
 	SetPos( x, y );
@@ -340,7 +336,8 @@ CQCGenerator::CQCGenerator( vgui::Panel *pParent, const char *pszPath, const cha
 		//TODO:  This only works if they are in a subdirectory that is a peer to an hl2 directory 
 		//		that contains the file.  It potentially needs to search the entire drive or prompt for the location
 		char *pszEndGamePath = Q_strrchr( szGamePath, '\\' );
-		Q_strcpy( pszEndGamePath, "\\hl2" );
+		pszEndGamePath[0] = 0;
+		V_strcat_safe( szGamePath, "\\hl2" );
 		sprintf( szSearchPath, "%s%s", szGamePath, pSurfacePropFilename );
 		fp = g_pFullFileSystem->Open( szSearchPath, "rb" );	
 	}
@@ -414,7 +411,7 @@ void CQCGenerator::OnKeyCodeTyped( KeyCode code )
 
 void CQCGenerator::OnBrowse( KeyValues *data )
 {
-    Q_strcpy( m_szTargetField, data->GetString( "targetField" ) );
+    V_strcpy_safe( m_szTargetField, data->GetString( "targetField" ) );
 	const char *filter = data->GetString( "filter" );
 	
 	if ( Q_strlen( filter ) == 0 )
@@ -477,9 +474,9 @@ bool CQCGenerator::GenerateQCFile()
 	char szPath[MAX_PATH];
 	char szName[MAX_PATH];
 	Q_strncpy( szPath, m_QCInfo_t.pszSMDPath, nameBegin - m_QCInfo_t.pszSMDPath + 2 );
-	strcpy( szName, szPath);
-	strcat( szName, m_QCInfo_t.pszSceneName);
-	strcat( szName, ".qc" );
+	V_strcpy_safe( szName, szPath);
+	V_strcat_safe( szName, m_QCInfo_t.pszSceneName);
+	V_strcat_safe( szName, ".qc" );
 	FileHandle_t pSaveFile = g_pFullFileSystem->Open( szName, "wt" );
 	if (!pSaveFile)
 	{
@@ -496,7 +493,7 @@ bool CQCGenerator::GenerateQCFile()
 	char *modelStart = strrchrcount( szName, '\\', 2) + 1;
 	char *modelEnd = strrchr( szName, '.' );
 	Q_strncpy( szModelName, modelStart, modelEnd - modelStart + 1 );
-	strcat( szModelName, ".mdl" );
+	V_strcat_safe( szModelName, ".mdl" );
 	g_pFullFileSystem->FPrintf( pSaveFile, "$modelname %s\n\n", szModelName );
 	//write out scale info
 	g_pFullFileSystem->FPrintf( pSaveFile, "$scale %f\n", m_QCInfo_t.fScale );
@@ -587,7 +584,7 @@ bool CQCGenerator::GenerateQCFile()
 
 	
 	sprintf( szCommand, "%s -game %s %s", studiomdlPath, szGamePath, szName);
-	bool bReturn = CreateProcess( NULL, szCommand, NULL, NULL, TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &startup, &process) ? true : false;
+	bool bReturn = CreateProcess( NULL, szCommand, NULL, NULL, TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &startup, &process);
 #else
 	Assert( !"Implement me, why aren't we using a thread tool abstraction?" );
 	bool bReturn = false;
@@ -597,7 +594,7 @@ bool CQCGenerator::GenerateQCFile()
 
 void CQCGenerator::InitializeSMDPaths( const char *pszPath, const char *pszScene )
 {
-	strcpy( m_QCInfo_t.pszSceneName, pszScene );
+	V_strcpy_safe( m_QCInfo_t.pszSceneName, pszScene );
 
 	FileFindHandle_t *pFileHandle = new FileFindHandle_t();
 
@@ -625,15 +622,15 @@ void CQCGenerator::InitializeSMDPaths( const char *pszPath, const char *pszScene
 			{
 				bFoundReference = true;
 				//we have found the reference smd.
-				strcpy( m_QCInfo_t.pszSMDPath, pszPath );
-				strcat( m_QCInfo_t.pszSMDPath, filename );
+				V_strcpy_safe( m_QCInfo_t.pszSMDPath, pszPath );
+				V_strcat_safe( m_QCInfo_t.pszSMDPath, filename );
 			}
 			if ( !strncmp( filenameEnd, "_phy", 4) || !strncmp( filenameEnd, "_col", 4 ) )
 			{
 				bFoundCollision = true;
 				//we have found the collision smd.
-				strcpy( m_QCInfo_t.pszCollisionPath, pszPath );
-				strcat( m_QCInfo_t.pszCollisionPath, filename );
+				V_strcpy_safe( m_QCInfo_t.pszCollisionPath, pszPath );
+				V_strcat_safe( m_QCInfo_t.pszCollisionPath, filename );
 			}
 			if ( !strncmp( filenameEnd, "_lod", 4) )
 			{
@@ -654,21 +651,21 @@ void CQCGenerator::InitializeSMDPaths( const char *pszPath, const char *pszScene
 	char pszColMessage[1024] = "";
 	if (!bFoundReference )
 	{
-		strcat( m_QCInfo_t.pszSMDPath, pszPath );
-		strcat( m_QCInfo_t.pszSMDPath, pszScene );		
-		strcat( m_QCInfo_t.pszSMDPath, ".smd" );
+		V_strcat_safe( m_QCInfo_t.pszSMDPath, pszPath );
+		V_strcat_safe( m_QCInfo_t.pszSMDPath, pszScene );		
+		V_strcat_safe( m_QCInfo_t.pszSMDPath, ".smd" );
 		Q_snprintf( pszRefMessage, 1024, "Reference SMD not found.\n\nValid default reference SMDs are %s%s_ref*.smd and %s%s.smd\nUsing default of %s. Model will not compile.\n\n", pszPath, pszScene, pszPath, pszScene, m_QCInfo_t.pszSMDPath );		
 	}
 	if ( !bFoundCollision )
 	{
 		Q_snprintf( pszColMessage, 1024, "Collision SMD not found.\n\nThe valid default collision SMD is %s%s_phy*.smd.\nUsing reference SMD as default.\n", pszPath, pszScene );
-		strcpy( m_QCInfo_t.pszCollisionPath, m_QCInfo_t.pszSMDPath );
+		V_strcpy_safe( m_QCInfo_t.pszCollisionPath, m_QCInfo_t.pszSMDPath );
 		m_QCInfo_t.bReferenceAsPhys = true;
 	}
 	if ( !bFoundReference || !bFoundCollision)
 	{
-		Q_strcpy( pszMessage, pszRefMessage );
-		Q_strcat( pszMessage, pszColMessage, 1024 );
+		V_strcpy_safe( pszMessage, pszRefMessage );
+		V_strcat_safe( pszMessage, pszColMessage );
 		VGUIMessageBox( this, "Error Initializing Paths", pszMessage );
 	}
 }
@@ -692,8 +689,8 @@ void CQCGenerator::EditLOD()
 	{
 		if ( m_pLODEdit )
 		{
-			m_pLODEdit->DeletePanel();
-			m_pLODEdit = 0;
+			m_pLODEdit->MarkForDeletion();
+			m_pLODEdit = NULL;
 		}
 		m_pLODEdit = new vgui::TextEntry( this, "Edit" );
 		m_pLODEdit->SendNewLine( true );

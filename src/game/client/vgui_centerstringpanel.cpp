@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -18,18 +18,15 @@
 #include "vgui/IScheme.h"
 #include "vgui/IPanel.h"
 
-#if defined ( CSTRIKE15 )
-#if defined( INCLUDE_SCALEFORM )
+#if defined ( CSTRIKE15 ) && defined ( INCLUDE_SCALEFORM )
 #include "Scaleform/HUD/sfhudinfopanel.h"
-#endif
 #endif // CSTRIKE15
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
 // [jason] Forward the message to the Scaleform info panel
-#if defined ( CSTRIKE15 )
-#if defined( INCLUDE_SCALEFORM )
+#if defined ( CSTRIKE15 ) && defined ( INCLUDE_SCALEFORM )
 #define FORWARD_PRIORITY_MSG( x )												\
 		{																		\
 			CHudElement *pElement = GetHud().FindElement( "SFHudInfoPanel" );	\
@@ -38,9 +35,6 @@
 				((SFHudInfoPanel *)pElement)->SetPriorityText( x );				\
 			}																	\
 		}
-#else
-#define FORWARD_PRIORITY_MSG( x ) (void)0
-#endif
 #endif // CSTRIKE15
 
 #ifdef TF_CLIENT_DLL
@@ -67,10 +61,10 @@ public:
 
 	// CVGuiCenterPrint
 	virtual void		SetTextColor( int r, int g, int b, int a );
-	virtual void		Print( const char *text );
-	virtual void		Print( const wchar_t *text );
-	virtual void		ColorPrint( int r, int g, int b, int a, const char *text );
-	virtual void		ColorPrint( int r, int g, int b, int a, const wchar_t *text );
+	virtual void		Print( char *text );
+	virtual void		Print( wchar_t *text );
+	virtual void		ColorPrint( int r, int g, int b, int a, char *text );
+	virtual void		ColorPrint( int r, int g, int b, int a, wchar_t *text );
 	virtual void		Clear( void );
 
 protected:
@@ -169,7 +163,7 @@ void CCenterStringLabel::SetTextColor( int r, int g, int b, int a )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CCenterStringLabel::Print( const char *text )
+void CCenterStringLabel::Print( char *text )
 {
 	SetText( text );
 	
@@ -179,7 +173,7 @@ void CCenterStringLabel::Print( const char *text )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CCenterStringLabel::Print( const wchar_t *text )
+void CCenterStringLabel::Print( wchar_t *text )
 {
 	SetText( text );
 	
@@ -189,7 +183,7 @@ void CCenterStringLabel::Print( const wchar_t *text )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CCenterStringLabel::ColorPrint( int r, int g, int b, int a, const char *text )
+void CCenterStringLabel::ColorPrint( int r, int g, int b, int a, char *text )
 {
 	SetTextColor( r, g, b, a );
 	Print( text );
@@ -198,7 +192,7 @@ void CCenterStringLabel::ColorPrint( int r, int g, int b, int a, const char *tex
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CCenterStringLabel::ColorPrint( int r, int g, int b, int a, const wchar_t *text )
+void CCenterStringLabel::ColorPrint( int r, int g, int b, int a, wchar_t *text )
 {
 	SetTextColor( r, g, b, a );
 	Print( text );
@@ -268,10 +262,10 @@ void CCenterPrint::SetTextColor( int r, int g, int b, int a )
 	}
 }
 
-void CCenterPrint::Print( const char *text )
+void CCenterPrint::Print( char *text )
 {
 	// [jason] Forward the message to the Scaleform info panel
-#if defined ( CSTRIKE15 )
+#if defined ( CSTRIKE15 ) && defined ( INCLUDE_SCALEFORM )
 	FORWARD_PRIORITY_MSG( text );
 	return;
 #endif
@@ -282,10 +276,10 @@ void CCenterPrint::Print( const char *text )
 	}
 }
 
-void CCenterPrint::Print( const wchar_t *text )
+void CCenterPrint::Print( wchar_t *text )
 {
 	// [jason] Forward the message to the Scaleform info panel
-#if defined ( CSTRIKE15 )
+#if defined ( CSTRIKE15 ) && defined ( INCLUDE_SCALEFORM )
 	FORWARD_PRIORITY_MSG( text );
 	return;
 #endif
@@ -299,7 +293,7 @@ void CCenterPrint::Print( const wchar_t *text )
 void CCenterPrint::ColorPrint( int r, int g, int b, int a, char *text )
 {
 	// [jason] Forward the message to the Scaleform info panel
-#if defined ( CSTRIKE15 )
+#if defined ( CSTRIKE15 ) && defined ( INCLUDE_SCALEFORM )
 	FORWARD_PRIORITY_MSG( text );
 	return;
 #endif
@@ -313,7 +307,7 @@ void CCenterPrint::ColorPrint( int r, int g, int b, int a, char *text )
 void CCenterPrint::ColorPrint( int r, int g, int b, int a, wchar_t *text )
 {
 	// [jason] Forward the message to the Scaleform info panel
-#if defined ( CSTRIKE15 )
+#if defined ( CSTRIKE15 ) && defined ( INCLUDE_SCALEFORM )
 	FORWARD_PRIORITY_MSG( text );
 	return;
 #endif
@@ -327,7 +321,7 @@ void CCenterPrint::ColorPrint( int r, int g, int b, int a, wchar_t *text )
 void CCenterPrint::Clear( void )
 {
 	// [jason] Forward the message to the Scaleform info panel
-#if defined ( CSTRIKE15 )
+#if defined ( CSTRIKE15 ) && defined ( INCLUDE_SCALEFORM )
 	FORWARD_PRIORITY_MSG( static_cast<wchar_t*>(NULL) );
 	return;
 #endif

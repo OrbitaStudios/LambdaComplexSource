@@ -65,7 +65,7 @@ void CHud::DoElementThink( CHudElement* pElement, vgui::Panel* pPanel )
 	
 	bool bProcessInput = visible;
 #if defined( INCLUDE_SCALEFORM )
-    if ( bProcessInput )
+	if ( bProcessInput )
 	{
 		if ( SFHudFlashInterface *pHudFlashInterface = dynamic_cast< SFHudFlashInterface * >( pElement ) )
 		{

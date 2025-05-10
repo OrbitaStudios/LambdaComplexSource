@@ -28,7 +28,6 @@ $Configuration
 		$PreprocessorDefinitions	"$BASE;$EXTRADEFINES;USE_CONVARS;VOICE_OVER_IP;BUMPMAP;__USEA3D;_ADD_EAX_;ENGINE_DLL;VERSION_SAFE_STEAM_API_INTERFACES;PROTECTED_THINGS_ENABLE;USE_BREAKPAD_HANDLER" 
 		$PreprocessorDefinitions	"$BASE;$EXTRADEFINES;fopen=dont_use_fopen" [!$POSIX&&!$PS3]
 		$PreprocessorDefinitions	"$BASE;DEDICATED;SWDS;NO_BINK" [$DEDICATED]
-		$PreprocessorDefinitions	"$BASE;INCLUDE_SCALEFORM" [!$DEDICATED]
 		$PreprocessorDefinitions	"$BASE;ALLOW_TEXT_MODE=1" [$CSTRIKE_TRUNK_BUILD||$CSTRIKE_STAGING_BUILD]
 	}
 
@@ -107,7 +106,6 @@ $Project $EPROJ
 		$File	"$ESRCDIR\r_efx.cpp" 	[!$DEDICATED]
 		$File	"$ESRCDIR\view.cpp" 	[!$DEDICATED]
 		$File	"$SRCDIR\avi\bink.cpp"	[$X360 || $PS3]
-		$File	"$SRCDIR\game\shared\cstrike15\dlchelper.h"
 
 		$File	"$ESRCDIR\baseclientstate.cpp"			\
 				"$ESRCDIR\cbenchmark.cpp"				[!$DEDICATED]\

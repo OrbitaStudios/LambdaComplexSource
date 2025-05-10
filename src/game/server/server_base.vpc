@@ -5,7 +5,6 @@
 //-----------------------------------------------------------------------------
 
 $Macro OUTBINDIR	"$SRCDIR\..\game\$GAMENAME\bin"
-$Macro OUTCEGDIR	"$SRCDIR\..\game\$GAMENAME\bin\ceg"		[$WINDOWS && $CEG]
 $Macro DEVKITBINDIR	"$GAMENAME\bin"							[$X360]
 $Macro GENERATED_PROTO_DIR	"generated_proto"
 
@@ -778,18 +777,6 @@ $Project
 			}
 		}
 
-		$File	"$SRCDIR\common\CegClientWrapper.cpp"
-		{
-			$Configuration
-			{
-				$Compiler
-				{
-					$Create/UsePrecompiledHeader	"Not Using Precompiled Headers"
-				}
-			}
-		}
-
-
 		$Folder	"Precompiled Header"
 		{
 			$File	"$SRVSRCDIR\stdafx.cpp"
@@ -1107,8 +1094,6 @@ $Project
 		$File	"$SRCDIR\public\bittools.h"
 		$File	"$SRCDIR\game\shared\cellcoord.h"
 		$File   "$SRVSRCDIR\sendprop_priorities.h"
-		$File	"$SRCDIR\common\CegClientWrapper.h"
-		$File	"$SRCDIR\common\cegclient.h"			[$WINDOWS && $CEG]
 	}
 
 	$Folder	"Tools Framework"

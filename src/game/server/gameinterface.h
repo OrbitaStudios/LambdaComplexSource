@@ -18,8 +18,6 @@
 #include "steam/steam_gameserver.h"
 #endif
 
-#include "engine_gcmessages.pb.h"
-
 extern INetworkStringTable *g_pStringTableInfoPanel;
 
 // Player / Client related functions
@@ -195,8 +193,8 @@ public:
 
 	// Network channel notification from engine to game server code
 	virtual void OnEngineClientNetworkEvent( edict_t *edictClient, uint64 ullSteamID, int nEventType, void *pvParam ) OVERRIDE;
-
-	virtual void EngineGotvSyncPacket( const CEngineGotvSyncPacket *pPkt );
+	
+	virtual void EngineGotvSyncPacket( const CEngineGotvSyncPacket *pPkt ) OVERRIDE;
 
 	// GOTV client attempt redirect over SDR
 	virtual bool OnEngineClientProxiedRedirect( uint64 ullClient, const char *adrProxiedRedirect, const char *adrRegular ) OVERRIDE;

@@ -227,15 +227,6 @@ void *CGameUISystemMgr::QueryInterface( const char *pInterfaceName )
 
 
 //-----------------------------------------------------------------------------
-// Less function for use with CUtlMap and CUtlString keys
-//-----------------------------------------------------------------------------
-bool UtlStringLessFunc( const CUtlString &lhs, const CUtlString &rhs )
-{
-	return ( Q_stricmp( lhs, rhs ) < 0 );
-}
-
-
-//-----------------------------------------------------------------------------
 // Constructor
 //-----------------------------------------------------------------------------
 CGameUISystemMgr::CGameUISystemMgr() :

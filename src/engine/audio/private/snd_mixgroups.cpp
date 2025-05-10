@@ -636,9 +636,6 @@ void MXR_SetSoloActive(void)
 
 	if ( !snd_disable_mixer_solo.GetBool() )
 	{
-		if( g_isoundmixer < 0 )
-			return;
-
 		soundmixer_t *pmixer = &g_soundmixers[g_isoundmixer];
 
 		// for every entry in mapMixgroupidToSolo which is not 0

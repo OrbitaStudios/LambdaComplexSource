@@ -1314,38 +1314,16 @@ void CBaseGameStats_Driver::CollectData( StatSendType_t sendType )
 
 	// add common data
 	pGamestatsData->m_bHaveData |= AddBaseDataForSend( pKV, sendType );
-    
-#if defined(CLIENT_DLL) && !defined(NO_STEAM)
-#if !defined( _GAMECONSOLE )
+	
+#if defined(STEAMWORKS_GAMESTATS_ACTIVE)
 	// At the end of every map, clients submit their perfdata for the map
 	if ( sendType == STATSEND_LEVELSHUTDOWN && pGamestatsData && pGamestatsData->m_bHaveData )
 	{
-		// dgoodenough - Remove this for now, since this fails on PS3
-		// PS3_BUILDFIX
-		GetSteamWorksGameStatsClient().AddClientPerfData( pGamestatsData->m_pKVData );
+		GetSteamWorksSGameStatsUploader().AddClientPerfData( pGamestatsData->m_pKVData );
 	}
-	// Time to reset ClientPerfData so we're ready for future recording. We clear the data
-	// whether we submitted or not so that perf data has a clear meaning.
-	ResetData();
-    // The ResetData call realloced m_pGamestatsData. Need to point pGamestatsData to the new m_pGamestatsData !
-    pGamestatsData = m_pGamestatsData;
+	GetSteamWorksSGameStatsUploader().LevelShutdown();
 #endif
-	if ( sendType == STATSEND_LEVELSHUTDOWN )
-	{
-#if !defined( _GAMECONSOLE )
-		KeyValues *pKVFileStats = new KeyValues( "FileSystemStats" );
-		filesystem->GetVPKFileStatisticsKV( pKVFileStats );
-		GetSteamWorksGameStatsClient().AddVPKLoadStats( pKVFileStats );
-		GetSteamWorksGameStatsClient().AddVPKFileLoadErrorData( pKVFileStats );
-		pKVFileStats->deleteThis();
-		
-		// On Server Disconnect, session is ended later than when a match restarts. This allows ClientPerfData and VPK stats to report properly
-		// Alternately you could place ClientPerfData and VPK in the cs_game_disconnected event, but this event may fire more frequently than we want for CPD/VPK.
-		GetSteamWorksGameStatsClient().EndSession();
-		GetSteamWorksGameStatsClient().ResetServerState();
-#endif
-	}
-#endif
+
 	// add game-specific data
 	pGamestatsData->m_bHaveData |= gamestats->AddDataForSend( pKV, sendType );
 }

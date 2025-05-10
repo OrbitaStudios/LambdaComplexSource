@@ -9,14 +9,8 @@
 #ifndef PLATFORM_H
 #define PLATFORM_H
 
-#pragma once
-
-#if defined( __EMSCRIPTEN__)
-#include <time.h>
-#include <emscripten/emscripten.h>
-// Missing a bunch of std shit.
-#include <stdio.h>
-#include <stdarg.h>
+#if defined(__x86_64__) || defined(_WIN64)
+#define PLATFORM_64BITS 1
 #endif
 
 #if defined( LINUX ) && ((__GNUC__ * 100) + __GNUC_MINOR__) >= 406
@@ -77,6 +71,10 @@
 #define PLATFORM_PPC 1
 #endif
 
+
+#ifdef COMPILER_MSVC
+#pragma once
+#endif
 
 #if defined (_PS3)
 
@@ -212,7 +210,18 @@
 #define BINK_ENABLED_FOR_CONSOLE
 #endif
 
+#if defined( _MSC_VER )
 #define OVERRIDE override
+// warning C4481: nonstandard extension used: override specifier 'override'
+#pragma warning(disable : 4481)
+#elif defined( __clang__ )
+#define OVERRIDE override
+// warning: 'override' keyword is a C++11 extension [-Wc++11-extensions]
+// Disabling this warning is less intrusive than enabling C++11 extensions
+#pragma GCC diagnostic ignored "-Wc++11-extensions"
+#else
+#define OVERRIDE
+#endif
 
 #if _MSC_VER >= 1800
 #define	VECTORCALL __vectorcall 
@@ -673,7 +682,7 @@ typedef void * HINSTANCE;
 #define VALVE_RAND_MAX 0x7fff
 
 // Maximum and minimum representable values
-#ifdef COMPILER_MSVC
+#ifndef PLATFORM_OSX
 
 #if _MSC_VER >= 1800 // VS 2013 or higher
 	// Copied from stdint.h
@@ -711,7 +720,7 @@ typedef void * HINSTANCE;
 #define  UINT32_MIN			0
 #define  UINT64_MIN			0
 
-#endif // public/tier0/platform.h
+#endif // PLATFORM_OSX
 
 #ifndef  UINT_MIN
 #define  UINT_MIN			UINT32_MIN
@@ -720,10 +729,20 @@ typedef void * HINSTANCE;
 #define  FLOAT32_MAX		FLT_MAX
 #define  FLOAT64_MAX		DBL_MAX
 
+#ifdef GNUC
+#undef offsetof
+// Note: can't use builtin offsetof because many use cases (esp. in templates) wouldn't compile due to restrictions on the builtin offsetof
+//#define offsetof( type, var ) __builtin_offsetof( type, var ) 
+#define offsetof(s,m)	( (size_t)&(((s *)0x1000000)->m) - 0x1000000u )
+#else
+#include <stddef.h>
+#undef offsetof
+#define offsetof(s,m)	(size_t)&(((s *)0)->m)
+#endif
+
+
 #define  FLOAT32_MIN		FLT_MIN
 #define  FLOAT64_MIN		DBL_MIN
-
-#include <stddef.h>
 
 //-----------------------------------------------------------------------------
 // Long is evil because it's treated differently by different compilers
@@ -934,7 +953,20 @@ typedef void * HINSTANCE;
 
 // This implementation of compile time assert has zero cost (so it can safely be
 // included in release builds) and can be used at file scope or function scope.
-#define COMPILE_TIME_ASSERT( pred ) static_assert( pred, "Compile time assert constraint is not true: " #pred )
+#ifdef __GNUC__
+       #define COMPILE_TIME_ASSERT( pred ) typedef int UNIQUE_ID[ (pred) ? 1 : -1 ]
+#else
+       #if _MSC_VER >= 1600
+       // If available use static_assert instead of weird language tricks. This
+       // leads to much more readable messages when compile time assert constraints
+       // are violated.
+       #define COMPILE_TIME_ASSERT( pred ) static_assert( pred, "Compile time assert constraint is not true: " #pred )
+       #else
+       // Due to gcc bugs this can in rare cases (some template functions) cause redeclaration
+       // errors when used multiple times in one scope. Fix by adding extra scoping.
+       #define COMPILE_TIME_ASSERT( pred ) typedef char compile_time_assert_type[(pred) ? 1 : -1];
+       #endif
+#endif
 // ASSERT_INVARIANT used to be needed in order to allow COMPILE_TIME_ASSERTs at global
 // scope. However the new COMPILE_TIME_ASSERT macro supports that by default.
 #define ASSERT_INVARIANT( pred )	COMPILE_TIME_ASSERT( pred )
@@ -1098,12 +1130,10 @@ typedef void * HINSTANCE;
 		#else
 		#define DebuggerBreak() {  __asm volatile ("tw 31,1,1"); } 
 		#endif
-	#elif !defined( __aarch64__ )
-		#if defined( OSX )
-			#define DebuggerBreak()  if ( Plat_IsInDebugSession() ) asm( "int3" ); else { raise(SIGTRAP); }
-		#elif defined( PLATFORM_CYGWIN ) || defined( PLATFORM_POSIX )
-			#define DebuggerBreak()		__asm__( "int $0x3;")
-		#endif
+	#elif defined( OSX )
+		#define DebuggerBreak()  if ( Plat_IsInDebugSession() ) asm( "int3" ); else { raise(SIGTRAP); }
+	#elif defined( PLATFORM_CYGWIN ) || defined( PLATFORM_POSIX )
+		#define DebuggerBreak()		__asm__( "int $0x3;")
 	#else
 		#define DebuggerBreak()	raise(SIGTRAP)
 	#endif
@@ -1218,6 +1248,10 @@ PLATFORM_INTERFACE void Plat_MessageBox( const char *pTitle, const tchar *pMessa
 #define _wtoi(arg) wcstol(arg, NULL, 10)
 #define _wtoi64(arg) wcstoll(arg, NULL, 10)
 
+#ifndef _PS3
+typedef uintp HMODULE;
+#endif
+typedef void *HANDLE;
 #define __cdecl
 
 #if !defined( _snprintf )	// some vpc's define this on the command line
@@ -1230,7 +1264,6 @@ PLATFORM_INTERFACE void Plat_MessageBox( const char *pTitle, const tchar *pMessa
 #include <errno.h>
 #endif
 
-#include <windows.h>
 
 #endif // PLATFORM_POSIX
 
@@ -1723,7 +1756,6 @@ PLATFORM_INTERFACE void				Plat_GetLocalTime( struct tm *pNow );
 
 // Convert a time_t (specified in nTime - seconds since Jan 1, 1970 UTC) to a local calendar time in a threadsafe and non-crash-prone way.
 PLATFORM_INTERFACE void				Plat_ConvertToLocalTime( uint64 nTime, struct tm *pNow );
-// In Emscripten, it loves being a bitch.
 PLATFORM_INTERFACE struct tm *		Plat_localtime( const time_t *timep, struct tm *result );
 
 // Get a time string (same as ascstring, but threadsafe).
@@ -1770,9 +1802,7 @@ PLATFORM_INTERFACE size_t Plat_FileSize(const char *pFileName);
 PLATFORM_INTERFACE bool Plat_IsDirectory(const char *pFilepath);
 PLATFORM_INTERFACE bool Plat_FileIsReadOnly(const char *pFileName);
 
-#if defined( __aarch64__ )
-#include <sse2neon.h>
-#elif defined( _WIN32 ) && defined( _MSC_VER ) && ( _MSC_VER >= 1400 )
+#if defined( _WIN32 ) && defined( _MSC_VER ) && ( _MSC_VER >= 1400 )
 extern "C" unsigned __int64 __rdtsc();
 #pragma intrinsic(__rdtsc)
 #endif
@@ -1781,8 +1811,6 @@ inline uint64 Plat_Rdtsc()
 {
 #if defined( _X360 )
 	return ( uint64 )__mftb32();
-#elif defined( __aarch64__ )
-	return ( uint64 )_rdtsc();
 #elif defined( _WIN64 )
 	return ( uint64 )__rdtsc();
 #elif defined( _WIN32 )
@@ -1800,12 +1828,6 @@ inline uint64 Plat_Rdtsc()
 	uint32 lo, hi;
 	__asm__ __volatile__ ( "rdtsc" : "=a" (lo), "=d" (hi));
 	return ( ( ( uint64 )hi ) << 32 ) | lo;
-#elif defined( __EMSCRIPTEN__ )
-// TODO: Recreate the rdtsc loader func to Emscripten
-//uint64 val {
-//    return emscripten_get_now * 1000.0(); // microseconds
-//};
-uint64 val;
 #else
 #error
 #endif
@@ -1862,6 +1884,12 @@ struct CPUInformation
 
 	uint32 m_nModel;
 	uint32 m_nFeatures[ 3 ];
+	uint32 m_nL1CacheSizeKb;
+	uint32 m_nL1CacheDesc;
+	uint32 m_nL2CacheSizeKb;
+	uint32 m_nL2CacheDesc;
+	uint32 m_nL3CacheSizeKb;
+	uint32 m_nL3CacheDesc;
 
 	CPUInformation(): m_Size(0){}
 };
@@ -2328,7 +2356,7 @@ FORCEINLINE void ResetBaseTime( void )						  // reset plat_floattime to 0 for a
 #endif
 
 
-#ifdef _rotl64
+#ifdef COMPILER_MSVC
 /*
 FORCEINLINE uint8 RotateBitsLeft8( uint8 nValue, int nRotateBits )
 {

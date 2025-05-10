@@ -32,7 +32,28 @@
 #include "isteamvideo.h"
 
 
-#define S_API inline 
+// Steam API export macro
+#if defined( _WIN32 ) && !defined( _X360 )
+	#if defined( STEAM_API_EXPORTS )
+	#define S_API extern "C" __declspec( dllexport ) 
+	#elif defined( STEAM_API_NODLL )
+	#define S_API extern "C"
+	#else
+	#define S_API extern "C" __declspec( dllimport ) 
+	#endif // STEAM_API_EXPORTS
+#elif defined( GNUC )
+	#if defined( STEAM_API_EXPORTS )
+	#define S_API extern "C" __attribute__ ((visibility("default"))) 
+	#else
+	#define S_API extern "C" 
+	#endif // STEAM_API_EXPORTS
+#else // !WIN32
+	#if defined( STEAM_API_EXPORTS )
+	#define S_API extern "C"  
+	#else
+	#define S_API extern "C" 
+	#endif // STEAM_API_EXPORTS
+#endif
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------//
 //	Steam API setup & shutdown
@@ -44,10 +65,10 @@
 
 // SteamAPI_Init must be called before using any other API functions. If it fails, an
 // error message will be output to the debugger (or stderr) with further information.
-S_API bool S_CALLTYPE SteamAPI_Init() { return true; }
+S_API bool S_CALLTYPE SteamAPI_Init();
 
 // SteamAPI_Shutdown should be called during process shutdown if possible.
-S_API void S_CALLTYPE SteamAPI_Shutdown() {}
+S_API void S_CALLTYPE SteamAPI_Shutdown();
 
 // SteamAPI_RestartAppIfNecessary ensures that your executable was launched through Steam.
 //
@@ -59,18 +80,18 @@ S_API void S_CALLTYPE SteamAPI_Shutdown() {}
 //
 // NOTE: If you use the Steam DRM wrapper on your primary executable file, this check is unnecessary
 // since the DRM wrapper will ensure that your application was launched properly through Steam.
-S_API bool S_CALLTYPE SteamAPI_RestartAppIfNecessary( uint32 unOwnAppID ) { return false; }
+S_API bool S_CALLTYPE SteamAPI_RestartAppIfNecessary( uint32 unOwnAppID );
 
 // Most Steam API functions allocate some amount of thread-local memory for parameter storage.
 // SteamAPI_ReleaseCurrentThreadMemory() will free API memory associated with the calling thread.
 // This function is also called automatically by SteamAPI_RunCallbacks(), so a single-threaded
 // program never needs to explicitly call this function.
-S_API void S_CALLTYPE SteamAPI_ReleaseCurrentThreadMemory() {}
+S_API void S_CALLTYPE SteamAPI_ReleaseCurrentThreadMemory();
 
 
 // crash dump recording functions
-S_API void S_CALLTYPE SteamAPI_WriteMiniDump( uint32 uStructuredExceptionCode, void* pvExceptionInfo, uint32 uBuildID ) {}
-S_API void S_CALLTYPE SteamAPI_SetMiniDumpComment( const char *pchMsg ) {}
+S_API void S_CALLTYPE SteamAPI_WriteMiniDump( uint32 uStructuredExceptionCode, void* pvExceptionInfo, uint32 uBuildID );
+S_API void S_CALLTYPE SteamAPI_SetMiniDumpComment( const char *pchMsg );
 
 
 // If your application contains modules or libraries which could be built against different SDK
@@ -186,7 +207,7 @@ private:
 // but if you choose to do this, callback code could be executed on any thread.
 // One alternative is to call SteamAPI_RunCallbacks from the main thread only,
 // and call SteamAPI_ReleaseCurrentThreadMemory regularly on other threads.
-S_API void S_CALLTYPE SteamAPI_RunCallbacks() {}
+S_API void S_CALLTYPE SteamAPI_RunCallbacks();
 
 
 // Declares a callback member function plus a helper member variable which
@@ -203,11 +224,11 @@ S_API void S_CALLTYPE SteamAPI_RunCallbacks() {}
 
 
 // Internal functions used by the utility CCallback objects to receive callbacks
-S_API void S_CALLTYPE SteamAPI_RegisterCallback( class CCallbackBase *pCallback, int iCallback ) {}
-S_API void S_CALLTYPE SteamAPI_UnregisterCallback( class CCallbackBase *pCallback ) {}
+S_API void S_CALLTYPE SteamAPI_RegisterCallback( class CCallbackBase *pCallback, int iCallback );
+S_API void S_CALLTYPE SteamAPI_UnregisterCallback( class CCallbackBase *pCallback );
 // Internal functions used by the utility CCallResult objects to receive async call results
-S_API void S_CALLTYPE SteamAPI_RegisterCallResult( class CCallbackBase *pCallback, SteamAPICall_t hAPICall ) {}
-S_API void S_CALLTYPE SteamAPI_UnregisterCallResult( class CCallbackBase *pCallback, SteamAPICall_t hAPICall ) {}
+S_API void S_CALLTYPE SteamAPI_RegisterCallResult( class CCallbackBase *pCallback, SteamAPICall_t hAPICall );
+S_API void S_CALLTYPE SteamAPI_UnregisterCallResult( class CCallbackBase *pCallback, SteamAPICall_t hAPICall );
 
 
 //-----------------------------------------------------------------------------
@@ -335,35 +356,37 @@ public:
 //----------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 // SteamAPI_IsSteamRunning() returns true if Steam is currently running
-S_API bool S_CALLTYPE SteamAPI_IsSteamRunning() { return false; }
+S_API bool S_CALLTYPE SteamAPI_IsSteamRunning();
 
 // Pumps out all the steam messages, calling registered callbacks.
 // NOT THREADSAFE - do not call from multiple threads simultaneously.
-S_API void Steam_RunCallbacks( HSteamPipe hSteamPipe, bool bGameServerCallbacks ) {}
+S_API void Steam_RunCallbacks( HSteamPipe hSteamPipe, bool bGameServerCallbacks );
 
 // register the callback funcs to use to interact with the steam dll
-S_API void Steam_RegisterInterfaceFuncs( void *hModule ) {}
+S_API void Steam_RegisterInterfaceFuncs( void *hModule );
 
 // returns the HSteamUser of the last user to dispatch a callback
-S_API HSteamUser Steam_GetHSteamUserCurrent() { return 0; }
+S_API HSteamUser Steam_GetHSteamUserCurrent();
 
 // returns the filename path of the current running Steam process, used if you need to load an explicit steam dll by name.
 // DEPRECATED - implementation is Windows only, and the path returned is a UTF-8 string which must be converted to UTF-16 for use with Win32 APIs
-S_API const char *SteamAPI_GetSteamInstallPath() { return ""; }
+S_API const char *SteamAPI_GetSteamInstallPath();
 
 // returns the pipe we are communicating to Steam with
-S_API HSteamPipe SteamAPI_GetHSteamPipe() { return 0; }
+S_API HSteamPipe SteamAPI_GetHSteamPipe();
 
 // sets whether or not Steam_RunCallbacks() should do a try {} catch (...) {} around calls to issuing callbacks
-S_API void SteamAPI_SetTryCatchCallbacks( bool bTryCatchCallbacks ) {}
+S_API void SteamAPI_SetTryCatchCallbacks( bool bTryCatchCallbacks );
 
 // backwards compat export, passes through to SteamAPI_ variants
-S_API HSteamPipe GetHSteamPipe() { return 0; }
-S_API HSteamUser GetHSteamUser() { return 0; }
+S_API HSteamPipe GetHSteamPipe();
+S_API HSteamUser GetHSteamUser();
 
 
+#if defined( VERSION_SAFE_STEAM_API_INTERFACES )
 // backwards compat with older SDKs
-S_API bool S_CALLTYPE SteamAPI_InitSafe() { return true; }
+S_API bool S_CALLTYPE SteamAPI_InitSafe();
+#endif
 
 #include "steam_api_internal.h"
 

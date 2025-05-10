@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -69,11 +69,6 @@ public:
 
 	virtual bool WeaponHasBurst( void ) const { return GetCSWpnData().HasBurstMode( GetEconItemView() ); }
 	virtual bool IsInBurstMode() const;
-    //lwss - added some more that were missing
-    virtual float GetBurstModeTimeBetweenShots() OVERRIDE  { return GetCSWpnData().GetBurstModeTimeBetweenShots( GetEconItemView() ); }
-    virtual float GetBurstModeCycleTime() OVERRIDE { return GetCSWpnData().GetBurstModeCycleTime( GetEconItemView() ); }
-    virtual float GetZoomedCycleTime() OVERRIDE { return GetCSWpnData().GetZoomedCycleTime( GetEconItemView() ); }
-    //lwss end
 
 	virtual bool IsFullAuto() const;
 

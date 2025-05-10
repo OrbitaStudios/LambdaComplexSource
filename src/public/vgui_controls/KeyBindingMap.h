@@ -1,4 +1,4 @@
-//====== Copyright 1996-2005, Valve Corporation, All rights reserved. =======
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -13,7 +13,7 @@
 #include "tier1/utlvector.h"
 
 // more flexible than default pointers to members code required for casting member function pointers
-#pragma pointers_to_members( full_generality, virtual_inheritance )
+//#pragma pointers_to_members( full_generality, virtual_inheritance )
 
 namespace vgui
 {
@@ -220,5 +220,6 @@ PanelKeyBindingMap *FindPanelKeyBindingMap( char const *className );
 PanelKeyBindingMap *FindOrAddPanelKeyBindingMap( char const *className );
 
 } // namespace vgui
+
 
 #endif // KEYBINDINGMAP_H

@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -10,7 +10,7 @@
 #include <vgui/ISurface.h>
 #include <vgui/ISystem.h>
 #include <vgui/IVGui.h>
-#include <keyvalues.h>
+#include <KeyValues.h>
 
 #include <vgui_controls/Button.h>
 #include <vgui_controls/Controls.h>
@@ -239,7 +239,7 @@ void ProgressBox::UpdateTitle()
 	wchar_t completion[64];
 	if ((int)(m_flCurrentProgress * 100.0f) > 0)
 	{
-		Q_snwprintf(completion, sizeof(completion) / sizeof(wchar_t), L"- %d%% complete", (int)(m_flCurrentProgress * 100.0f));
+		_snwprintf(completion, sizeof(completion) / sizeof(wchar_t), L"- %d%% complete", (int)(m_flCurrentProgress * 100.0f));
 	}
 	else
 	{

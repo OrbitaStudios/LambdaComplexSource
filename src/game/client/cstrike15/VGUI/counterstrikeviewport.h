@@ -1,4 +1,4 @@
-//========= Copyright � 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -28,7 +28,7 @@ class CCSClientScoreBoard;
 class CBuyMenu;
 class CCSClientScoreBoardDialog;
 
-void PrintBuyTimeOverMessage( void );
+
 
 //==============================================================================
 class CounterStrikeViewport : public CBaseViewport
@@ -39,7 +39,7 @@ private:
 
 public:
 
-	IViewPortPanel* CreatePanelByName( const char *szPanelName );
+	IViewPortPanel* CreatePanelByName(const char *szPanelName);
 	void CreateDefaultPanels( void );
 
 	virtual void ApplySchemeSettings( vgui::IScheme *pScheme );
@@ -47,39 +47,14 @@ public:
 		
 	int GetDeathMessageStartHeight( void );
 
-	virtual void ShowBackGround( bool bShow )
+	virtual void ShowBackGround(bool bShow) 
 	{
 		m_pBackGround->SetVisible( false );	// CS:S menus paint their own backgrounds...
 	}
-	//=============================================================================
-	// HPE_BEGIN:
-	// [mhansen] We want to let the team screen know if this is the first time
-	// we chose a team so we can decide what the "back" action is
-	//=============================================================================
-	bool GetChoseTeamAndClass() { return m_bChoseTeamAndClass; }
-	void SetChoseTeamAndClass( bool chose ) { m_bChoseTeamAndClass = chose; }
-	//=============================================================================
-	// HPE_END
-	//=============================================================================
-
-	virtual void FireGameEvent( IGameEvent * event );
-
-	virtual void UpdateAllPanels( void );
-
-
 
 private:
 	void CenterWindow( vgui::Frame *win );
 
-	//=============================================================================
-	// HPE_BEGIN:
-	// [mhansen] We want to let the team screen know if this is the first time
-	// we chose a team so we can decide what the "back" action is
-	//=============================================================================
-	bool m_bChoseTeamAndClass;
-	//=============================================================================
-	// HPE_END
-	//=============================================================================
 };
 
 

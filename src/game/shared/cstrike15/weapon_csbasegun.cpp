@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -7,7 +7,7 @@
 #include "cbase.h"
 #include "weapon_csbasegun.h"
 #include "fx_cs_shared.h"
-#include "in_buttons.h"
+#include "in_buttons.h"	
 
 #ifdef CLIENT_DLL
 #include "c_cs_player.h"
@@ -320,15 +320,17 @@ void CWeaponCSBaseGun::PrimaryAttack()
 	// change a few things if we're in burst mode
 	if ( IsInBurstMode() )
 	{
-        //lwss - replaced usage of CALL_ATTRIB_HOOK* for GET_WEAPON_ATTR_FUNC() instead.
-        flCycleTime = GetBurstModeCycleTime();
+		CALL_ATTRIB_HOOK_FLOAT( flCycleTime, cycletime_when_in_burst_mode );
+
 		m_iBurstShotsRemaining = 2;
-		m_fNextBurstShot = gpGlobals->curtime + GetBurstModeTimeBetweenShots();
+
+		m_fNextBurstShot = gpGlobals->curtime;
+		CALL_ATTRIB_HOOK_FLOAT( m_fNextBurstShot, time_between_burst_shots );		
 	}
 
 	if ( IsZoomed() )
 	{
-        CALL_ATTRIB_HOOK_FLOAT( flCycleTime, cycletime_when_zoomed );
+		CALL_ATTRIB_HOOK_FLOAT( flCycleTime, cycletime_when_zoomed );
 	}
 																	
 	if ( !CSBaseGunFire( flCycleTime, m_weaponMode ) )								// <--	'PEW PEW' HAPPENS HERE
@@ -629,8 +631,8 @@ void CWeaponCSBaseGun::BurstFireRemaining()
 		return;
 	}
 
-    const CCSWeaponInfo& weaponInfo = GetCSWpnData();
-    uint16 nItemDefIndex = GetEconItemView()->GetItemIndex();
+	const CCSWeaponInfo& weaponInfo = GetCSWpnData();
+	uint16 nItemDefIndex = GetEconItemView()->GetItemIndex();
 
 	FX_FireBullets(
 		pPlayer->entindex(),
@@ -656,8 +658,7 @@ void CWeaponCSBaseGun::BurstFireRemaining()
 
 	if ( m_iBurstShotsRemaining > 0 )
 	{
-	    //lwss - replaced usage of CALL_ATTRIB_HOOK* for GET_WEAPON_ATTR_FUNC() instead.
-		m_fNextBurstShot = gpGlobals->curtime + weaponInfo.GetBurstModeTimeBetweenShots( GetEconItemView() );
+		CALL_ATTRIB_HOOK_FLOAT( m_fNextBurstShot, time_between_burst_shots );
 	}
 	else
 	{
@@ -721,7 +722,7 @@ bool CWeaponCSBaseGun::CSBaseGunFire( float flCycleTime, CSWeaponMode weaponMode
 	else
 	{
 		SendWeaponAnim( ACT_VM_PRIMARYATTACK );
-	}
+	}		
 
 	// player "shoot" animation
 	pPlayer->SetAnimation( PLAYER_ATTACK1 );

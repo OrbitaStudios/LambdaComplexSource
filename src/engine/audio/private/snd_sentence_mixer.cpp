@@ -275,7 +275,7 @@ CAudioMixer *CSentenceMixer::LoadWord( int nWord )
 		{
 			pSource->SetSentenceWord( true );
 			SoundError soundError;
-			pMixer = pSource->CreateMixer( 0, 0, false, soundError );
+			pMixer = pSource->CreateMixer( 0, 0, false, soundError, nullptr );
 		}
 	}
 

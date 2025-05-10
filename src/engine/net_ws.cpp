@@ -18,6 +18,9 @@
 #include "ienginetoolinternal.h"
 #include "server.h"
 #include "mathlib/IceKey.H"
+#include "steamdatagram/isteamdatagramclient.h"
+#include "steamdatagram/isteamdatagramserver.h"
+#include "steamdatagram/isteamnetworkingutils.h"
 #include "engine/inetsupport.h"
 
 #if !defined( _X360 ) && !defined( NO_STEAM )
@@ -88,6 +91,8 @@ static void NET_LogServerCallback( IConVar *var, const char *pOldString, float f
 static ConVar net_logserver( "net_logserver", "0", 0,  "Dump server stats to a file", NET_LogServerCallback );
 static ConVar net_loginterval( "net_loginterval", "1", 0, "Time in seconds between server logs" );
 #endif
+
+static ConVar sv_steamdatagramtransport_port( "sv_steamdatagramtransport_port", "", FCVAR_RELEASE, "If non zero, listen for proxied traffic on the specified port" );
 
 //-----------------------------------------------------------------------------
 // Toggle Xbox 360 network security to allow cross-platform testing
@@ -230,6 +235,20 @@ static CUtlVectorMT< CUtlVector< pendingsocket_t > >	s_PendingSockets;
 
 CTSQueue<loopback_t *> s_LoopBacks[LOOPBACK_SOCKETS];
 static netpacket_t*	s_pLagData[MAX_SOCKETS];  // List of lag structures, if fakelag is set.
+
+ISteamDatagramTransportGameserver *g_pSteamDatagramGameserver = nullptr;
+ISteamDatagramTransportClient *g_pSteamDatagramClient = nullptr;
+ns_address g_addrSteamDatagramProxiedGameServer;
+
+static void CloseSteamDatagramClientConnection()
+{
+	if ( g_pSteamDatagramClient )
+	{
+		g_pSteamDatagramClient->Close();
+		g_pSteamDatagramClient = nullptr;
+	}
+	g_addrSteamDatagramProxiedGameServer.Clear();
+}
 
 unsigned short NET_HostToNetShort( unsigned short us_in )
 {
@@ -420,6 +439,13 @@ void NET_CloseSocket( int hSocket, int sock = -1)
 				net_sockets[sock].hTCP = 0;
 				net_sockets[sock].bListening = false;
 			}
+		}
+
+		// If closing client socket, make sure we don't keep trying
+		// to talk to server
+		if ( sock == NS_CLIENT )
+		{
+			CloseSteamDatagramClientConnection();
 		}
 	}
 
@@ -1357,6 +1383,59 @@ static int NET_ReceiveRawPacket( int sock, void *buf, int len, ns_address *from 
 	if ( ret > 0 )
 		return ret;
 
+	// Still nothing?  Check proxied clients
+	if ( g_pSteamDatagramGameserver )
+	{
+		CSteamID remoteSteamID;
+		uint64 usecTimeRecv;
+		if ( sock == NS_SERVER )
+		{
+			ret = g_pSteamDatagramGameserver->RecvDatagram( buf, len, &remoteSteamID, &usecTimeRecv, STEAM_P2P_GAME_SERVER );
+			if ( ret > 0 )
+			{
+	            from->SetFromSteamID( remoteSteamID, STEAM_P2P_GAME_CLIENT );
+				from->m_AddrType = NSAT_PROXIED_CLIENT;
+				return ret;
+			}
+		}
+		else if ( sock == NS_HLTV )
+		{
+			ret = g_pSteamDatagramGameserver->RecvDatagram( buf, len, &remoteSteamID, &usecTimeRecv, STEAM_P2P_HLTV );
+			if ( ret > 0 )
+			{
+	            from->SetFromSteamID( remoteSteamID, STEAM_P2P_GAME_CLIENT );
+				from->m_AddrType = NSAT_PROXIED_CLIENT;
+				return ret;
+			}
+		}
+		else if ( sock == NS_HLTV1 )
+		{
+			ret = g_pSteamDatagramGameserver->RecvDatagram( buf, len, &remoteSteamID, &usecTimeRecv, STEAM_P2P_HLTV1 );
+			if ( ret > 0 )
+			{
+	            from->SetFromSteamID( remoteSteamID, STEAM_P2P_GAME_CLIENT );
+				from->m_AddrType = NSAT_PROXIED_CLIENT;
+				return ret;
+			}
+		}
+	}
+
+	// Still nothing?  Check proxied server
+	#ifndef DEDICATED
+		if ( sock == NS_CLIENT && ret <= 0 && g_pSteamDatagramClient && g_addrSteamDatagramProxiedGameServer.IsValid() )
+		{
+			//CSteamID remoteSteamID;
+			uint64 usecTimeRecv;
+			int ret = g_pSteamDatagramClient->RecvDatagram( buf, len, &usecTimeRecv, STEAM_P2P_GAME_CLIENT );
+			if ( ret > 0 )
+			{
+				*from = g_addrSteamDatagramProxiedGameServer;
+				//pReceiveData->usTime = usecTimeRecv;
+				return ret;
+			}
+		}
+	#endif
+
 	// nothing
 	return 0;
 }
@@ -2017,17 +2096,38 @@ static int NET_SendRawPacket( SOCKET s, const void *buf, int len, const ns_addre
 
 		case NSAT_PROXIED_GAMESERVER:
 		{
-			Assert( false );
-			Warning( "Tried to send packet to proxied gameserver, but no ISteamDatagramTransportClient\n" );
-			return -1;
+			if ( !g_pSteamDatagramClient )
+			{
+				Assert( false );
+				Warning( "Tried to send packet to proxied gameserver, but no ISteamDatagramTransportClient\n" );
+				return -1;
+			}
+			if ( to != g_addrSteamDatagramProxiedGameServer )
+			{
+				Assert( false );
+				Warning( "Tried to send packet to proxied gameserver %s, but client is currently pointed at gameserver %s\n", ns_address_render( to ).String(), ns_address_render( g_addrSteamDatagramProxiedGameServer ).String() );
+				return -1;
+			}
+
+			EResult result = g_pSteamDatagramClient->SendDatagram( buf, len, to.m_steamID.GetSteamChannel() );
+			if ( result == k_EResultOK || result == k_EResultNoConnection )
+				return len;
 		}
 		break;
 
 		case NSAT_PROXIED_CLIENT:
 		{
-			Assert( false );
-			Warning( "Tried to send packet to proxied client, but no ISteamDatagramTransportGameserver\n" );
-			return -1;
+			if ( !g_pSteamDatagramGameserver )
+			{
+				Assert( false );
+				Warning( "Tried to send packet to proxied client, but no ISteamDatagramTransportGameserver\n" );
+				return -1;
+			}
+
+			EResult result = g_pSteamDatagramGameserver->SendDatagram( buf, len, to.m_steamID.GetSteamID(), to.m_steamID.GetSteamChannel() );
+			if ( result == k_EResultOK )
+				return len;
+
 		}
 		break;
 	}
@@ -2744,6 +2844,16 @@ void NET_CloseAllSockets (void)
 	// Close steam sockets as well
 	g_pSteamSocketMgr->Shutdown();
 	g_pSteamSocketMgr->Init();
+
+	// Shutdown steam datagram server, if we were listening
+	if ( g_pSteamDatagramGameserver )
+	{
+		g_pSteamDatagramGameserver->Destroy();
+		g_pSteamDatagramGameserver = NULL;
+	}
+
+	// Shutdown steam datagram client, if we have one
+	CloseSteamDatagramClientConnection();
 }
 
 /*
@@ -2834,6 +2944,104 @@ private:
 static CBindAddressHelper g_BindAddressHelper;
 #endif
 
+#ifndef DEDICATED
+
+// Initialize steam client datagram lib if we haven't already
+static bool CheckInitSteamDatagramClientLib()
+{
+	static bool bInittedNetwork = false;
+	if ( bInittedNetwork )
+		return true;
+
+	if ( !Steam3Client().SteamHTTP() )
+	{
+		Warning( "Cannot init steam datagram client, no Steam HTTP interface\n" );
+		return false;
+	}
+
+	// Locate the first PLATFORM path
+	char szAbsPlatform[MAX_FILEPATH] = "";
+	const char *pszConfigDir = "config";
+	g_pFullFileSystem->GetSearchPath( "PLATFORM", false, szAbsPlatform, sizeof(szAbsPlatform) );
+
+	char *semi = strchr( szAbsPlatform, ';' );
+	if ( semi )
+		*semi = '\0';
+
+	// Set partner.  Running in china?
+	ESteamDatagramPartner ePartner = k_ESteamDatagramPartner_Steam;
+	if ( CommandLine()->HasParm( "-perfectworld" ) )
+		ePartner = k_ESteamDatagramPartner_China;
+	int iPartnerMark = -1; // CSGO doesn't prune the config based on partner!
+
+	char szAbsConfigDir[ MAX_FILEPATH];
+	V_ComposeFileName( szAbsPlatform, pszConfigDir, szAbsConfigDir, sizeof(szAbsConfigDir) );
+	SteamDatagramClient_Init( szAbsConfigDir, ePartner, iPartnerMark );
+	bInittedNetwork = true;
+
+	return true;
+}
+
+void NET_PrintSteamdatagramClientStatus()
+{
+	if ( !g_pSteamDatagramClient )
+	{
+		Msg( "No steam datagram client connection active\n" );
+		return;
+	}
+	ISteamDatagramTransportClient::ConnectionStatus status;
+	g_pSteamDatagramClient->GetConnectionStatus( status );
+	int sz = status.Print( NULL, 0 );
+	CUtlMemory<char> buf;
+	buf.EnsureCapacity( sz );
+	char *p = buf.Base();
+	status.Print( p, sz );
+	for (;;)
+	{
+		char *newline = strchr( p, '\n' );
+		if ( newline )
+			*newline = '\0';
+		Msg( "%s\n", p );
+		if ( !newline )
+			break;
+		p = newline+1;
+	}
+}
+CON_COMMAND( steamdatagram_client_status, "Print steam datagram client status" )
+{
+	NET_PrintSteamdatagramClientStatus();
+}
+
+bool NET_InitSteamDatagramProxiedGameserverConnection( const ns_address &adr )
+{
+	Assert( adr.GetAddressType() == NSAT_PROXIED_GAMESERVER );
+
+	// Most common case - talking to the same server as before
+	if ( g_pSteamDatagramClient )
+	{
+		if ( g_addrSteamDatagramProxiedGameServer.m_steamID.GetSteamID() == adr.m_steamID.GetSteamID() )
+		{
+			g_addrSteamDatagramProxiedGameServer.m_steamID.SetSteamChannel( adr.m_steamID.GetSteamChannel() );
+			return true;
+		}
+
+		// We have a client, but it was to talk to a different server.  Clear our ticket!
+		g_pSteamDatagramClient->Close();
+		g_addrSteamDatagramProxiedGameServer.Clear();
+	}
+
+	// Get a client to talk to this server
+	g_pSteamDatagramClient = SteamDatagramClient_Connect( adr.m_steamID.GetSteamID() );
+	if ( !g_pSteamDatagramClient )
+		return false;
+
+	// OK, remember who we're talking to
+	g_addrSteamDatagramProxiedGameServer = adr;
+	return true;
+}
+
+#endif
+
 static void OpenSocketInternal( int nModule, int nSetPort, int nDefaultPort, const char *pName, int nProtocol, bool bTryAny )
 {
 	CUtlVector< CUtlString > vecBindableAddresses;
@@ -2916,6 +3124,10 @@ static void OpenSocketInternal( int nModule, int nSetPort, int nDefaultPort, con
 	{
 		g_pSteamSocketMgr->OpenSocket( *handle, nModule, nSetPort, nDefaultPort, pName, nProtocol, bTryAny );
 	}
+	#ifndef DEDICATED
+		if ( nModule == NS_CLIENT )
+			CheckInitSteamDatagramClientLib();
+	#endif
 }
 
 /*
@@ -3948,6 +4160,15 @@ void NET_Init( bool bIsDedicated )
 	NET_InitParanoidMode();
 
 	NET_SetMultiplayer( !!( g_pMatchFramework->GetMatchTitle()->GetTitleSettingsFlags() & MATCHTITLE_SETTING_MULTIPLAYER ) );
+
+	// Go ahead and create steam datagram client, and start measuring pings to data centers
+	#ifndef DEDICATED
+	if ( CheckInitSteamDatagramClientLib() )
+	{
+		if ( ::SteamNetworkingUtils() )
+			::SteamNetworkingUtils()->CheckPingDataUpToDate( 0.0f );
+	}
+	#endif
 }
 
 /*
@@ -3972,6 +4193,9 @@ void NET_Shutdown (void)
 
 	NET_CloseAllSockets();
 	NET_ConfigLoopbackBuffers( false );
+#ifndef DEDICATED
+	SteamDatagramClient_Kill();
+#endif
 
 #if defined(_WIN32)
 	if ( !net_noip )
@@ -4223,6 +4447,32 @@ bool NET_GetPublicAdr( netadr_t &adr )
 	return bRet;
 }
 
+void NET_SteamDatagramServerListen()
+{
+	// Receiving on steam datagram transport?
+	// We only open one interface object (corresponding to one UDP port).
+	// The other "sockets" are different channels on this interface
+	if ( sv_steamdatagramtransport_port.GetInt() == 0 )
+		return;
+	if ( g_pSteamDatagramGameserver )
+		return;
+
+	SteamDatagramErrMsg errMsg;
+	EResult result;
+	g_pSteamDatagramGameserver = SteamDatagram_GameserverListen( GetSteamUniverse(), sv_steamdatagramtransport_port.GetInt(), &result, errMsg );
+	if ( g_pSteamDatagramGameserver )
+	{
+		Msg( "Listening for Steam datagram transport on port %d\n", sv_steamdatagramtransport_port.GetInt() );
+	}
+	else
+	{
+		Warning( "SteamDatagram_GameserverListen failed with error code %d.  %s\n", result, errMsg );
+
+		// Clear the convar so we don't advertise that we are listening!
+		sv_steamdatagramtransport_port.SetValue( 0 );
+	}
+}
+
 void NET_TerminateConnection( int sock, const ns_address &peer )
 {
 #if defined( USE_STEAM_SOCKETS )
@@ -4232,7 +4482,76 @@ void NET_TerminateConnection( int sock, const ns_address &peer )
 		NET_TerminateSteamConnection( steamIDRemote );
 	}
 #endif
+#ifndef DEDICATED
+	if ( peer == g_addrSteamDatagramProxiedGameServer )
+		CloseSteamDatagramClientConnection();
+#endif		
 }
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Cryptography support code
+//
+//////////////////////////////////////////////////////////////////////////
+
+#ifdef Verify
+#undef Verify
+#endif
+
+#define bswap_16 __bswap_16
+#define bswap_64 __bswap_64
+
+#include "cryptlib.h"
+#include "rsa.h"
+#include "osrng.h"
+
+using namespace CryptoPP;
+typedef AutoSeededX917RNG<AES> CAutoSeededRNG;
+
+// list of auto-seeded RNG pointers
+// these are very expensive to construct, so it makes sense to cache them
+CTSList<CAutoSeededRNG>&
+GlobalRNGList()
+{
+	static CTSList<CAutoSeededRNG> g_tslistPAutoSeededRNG;
+	return g_tslistPAutoSeededRNG;
+}
+
+// to avoid deconstructor order issuses we allow to manually free the list
+void FreeListRNG()
+{
+	GlobalRNGList().Purge();
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: thread-safe access to a pool of cryptoPP random number generators
+//-----------------------------------------------------------------------------
+class CPoolAllocatedRNG
+{
+public:
+	CPoolAllocatedRNG()
+	{
+		m_pRNGNode = GlobalRNGList().Pop();
+		if ( !m_pRNGNode )
+		{
+			m_pRNGNode = new CTSList<CAutoSeededRNG>::Node_t;
+		}
+	}
+
+	~CPoolAllocatedRNG()
+	{
+		GlobalRNGList().Push( m_pRNGNode );
+	}
+
+	CAutoSeededRNG &GetRNG()
+	{
+		return m_pRNGNode->elem;
+	}
+
+private:
+	CTSList<CAutoSeededRNG>::Node_t *m_pRNGNode;
+};
+
 
 //////////////////////////////////////////////////////////////////////////
 //
@@ -4245,8 +4564,152 @@ bool NET_CryptVerifyServerCertificateAndAllocateSessionKey( bool bOfficial, cons
 	const byte *pchKeySgn, int numKeySgn,
 	byte **pbAllocatedKey, int *pnAllocatedCryptoBlockSize )
 {
-	Assert(false);
-	return false;
+	static const byte CsgoMasterPublicKey[] = { 0 }; // Removed for partner depot
+
+	// For now, only IPv4 addresses allowed.  Shouldn't be too hard to figure out how to
+	// generate blocks to sign for other types of addresses
+	uint32 unCertIP = 0;
+	switch ( from.GetAddressType() )
+	{
+		case NSAT_NETADR:
+			unCertIP = from.AsType<netadr_t>().GetIPHostByteOrder();
+			break;
+		case NSAT_PROXIED_GAMESERVER:
+		{
+			unCertIP = SteamNetworkingUtils()->GetIPForServerSteamIDFromTicket( from.m_steamID.GetSteamID() );
+			if ( unCertIP == 0 )
+			{
+				Warning( "NET_CryptVerifyServerCertificateAndAllocateSessionKey - cannot check signature for proxied server '%s', because we don't have an SDR ticket to that server.\n", ns_address_render( from ).String() );
+				Assert(false);
+				return false;
+			}
+			break;
+		}
+	}
+	if ( unCertIP == 0 )
+	{
+		Warning( "NET_CryptVerifyServerCertificateAndAllocateSessionKey - cannot check signature for '%s', cannot determine IP to use\n", ns_address_render( from ).String() );
+		Assert(false);
+		return false;
+	}
+
+	//
+	// Verify certificate
+	//
+	bool bCertificateValidated = false;
+	for ( int numAddrBits = 32; ( numAddrBits >= 16 ) && !bCertificateValidated; -- numAddrBits )
+	{
+		CUtlBuffer bufSignature;
+		try           // handle any exceptions crypto++ may throw
+		{
+			StringSource stringSourcePublicKey( CsgoMasterPublicKey, Q_ARRAYSIZE( CsgoMasterPublicKey ), true );
+			RSASSA_PKCS1v15_SHA_Verifier pub( stringSourcePublicKey );
+			CUtlBuffer bufDataFile;
+			bufDataFile.EnsureCapacity( numKeyPub + 20 );
+			bufDataFile.Put( pchKeyPub, numKeyPub );
+
+			netadr_t adrMasked( unCertIP & ( (~0) << (32-numAddrBits) ), 0 );
+			char chBuffer[20] = {};
+			V_sprintf_safe( chBuffer, "%s/%u", adrMasked.ToString( true ), numAddrBits );
+			bufDataFile.Put( chBuffer, V_strlen( chBuffer ) );
+
+			bCertificateValidated = pub.VerifyMessage( ( byte* ) bufDataFile.Base(), bufDataFile.TellPut(), pchKeySgn, numKeySgn );
+#ifdef _DEBUG
+			DevMsg( "NET_CryptVerifyServerCertificateAndAllocateSessionKey: VerifyMessage for %s %s\n",
+				chBuffer, bCertificateValidated ? "succeeded" : "failed" );
+#endif
+		}
+		catch ( Exception e )
+		{
+#ifdef _DEBUG
+			Warning( "NET_CryptVerifyServerCertificateAndAllocateSessionKey: VerifyMessage threw exception %s (%d)\n",
+				e.what(), e.GetErrorType() );
+#endif
+		}
+		catch ( ... )
+		{
+#ifdef _DEBUG
+			Warning( "NET_CryptVerifyServerCertificateAndAllocateSessionKey: VerifyMessage threw unknown exception\n" );
+#endif
+		}
+	}
+	if ( !bCertificateValidated )
+		return false;
+
+	//
+	// Allocate client key
+	//
+	float flTime = Plat_FloatTime();
+	RandomSeed( * reinterpret_cast< int * >( &flTime ) );
+	byte ubClientKey[NET_CRYPT_KEY_LENGTH];
+	for ( int j = 0; j < NET_CRYPT_KEY_LENGTH; ++j )
+	{
+		ubClientKey[ j ] = ( byte ) ( unsigned int ) RandomInt( 0, 255 );
+	}
+
+	//
+	// Encrypt client key using the public key
+	//
+	try           // handle any exceptions crypto++ may throw
+	{
+		StringSource stringSourcePublicKey( pchKeyPub, numKeyPub, true );
+		RSAES_OAEP_SHA_Encryptor rsaEncryptor( stringSourcePublicKey );
+
+		// calculate how many blocks of encryption will we need to do
+		AssertFatal( rsaEncryptor.FixedMaxPlaintextLength() <= UINT32_MAX );
+		uint32 cBlocks = 1 + ( ( NET_CRYPT_KEY_LENGTH - 1 ) / ( uint32 ) rsaEncryptor.FixedMaxPlaintextLength() );
+		// calculate how big the output will be
+		AssertFatal( rsaEncryptor.FixedCiphertextLength() <= UINT32_MAX / cBlocks );
+		uint32 cubCipherText = cBlocks * ( uint32 ) rsaEncryptor.FixedCiphertextLength();
+
+		// ensure there is sufficient room in output buffer for result
+		byte *pbResult = new byte[ NET_CRYPT_KEY_LENGTH + cubCipherText ];
+		Q_memcpy( pbResult, ubClientKey, NET_CRYPT_KEY_LENGTH );
+		
+		*pbAllocatedKey = pbResult;
+		*pnAllocatedCryptoBlockSize = cubCipherText;
+
+		// Encryption pass
+		uint32 cubPlaintextData = NET_CRYPT_KEY_LENGTH;
+		const byte *pubPlaintextData = ubClientKey;
+		byte *pubEncryptedData = pbResult + NET_CRYPT_KEY_LENGTH;
+
+		// encrypt the message, using as many blocks as required
+		CPoolAllocatedRNG rng;
+		for ( uint32 nBlock = 0; nBlock < cBlocks; nBlock++ )
+		{
+			// encrypt either all remaining plaintext, or maximum allowed plaintext per RSA encryption operation
+			uint32 cubToEncrypt = MIN( cubPlaintextData, ( uint32 ) rsaEncryptor.FixedMaxPlaintextLength() );
+			// encrypt the plaintext
+			rsaEncryptor.Encrypt( rng.GetRNG(), pubPlaintextData, cubToEncrypt, pubEncryptedData );
+			// adjust input and output pointers and remaining plaintext byte count
+			pubPlaintextData += cubToEncrypt;
+			cubPlaintextData -= cubToEncrypt;
+			pubEncryptedData += rsaEncryptor.FixedCiphertextLength();
+		}
+		Assert( 0 == cubPlaintextData );         // should have no remaining plaintext to encrypt
+
+#ifdef _DEBUG
+		DevMsg( "NET_CryptVerifyServerCertificateAndAllocateSessionKey: Encrypted %u bytes key as %u bytes ciphertext\n",
+			NET_CRYPT_KEY_LENGTH, cubCipherText );
+#endif
+		return true;
+	}
+	catch ( Exception e )
+	{
+#ifdef _DEBUG
+		Warning( "NET_CryptVerifyServerCertificateAndAllocateSessionKey: Encrypt threw exception %s (%d)\n",
+			e.what(), e.GetErrorType() );
+#endif
+		return false;
+	}
+	catch ( ... )
+	{
+#ifdef _DEBUG
+		Warning( "NET_CryptVerifyServerCertificateAndAllocateSessionKey: Encrypt threw unknown exception\n" );
+#endif
+		return false;
+	}
 }
 
 bool NET_CryptVerifyClientSessionKey( bool bOfficial,
@@ -4254,13 +4717,444 @@ bool NET_CryptVerifyClientSessionKey( bool bOfficial,
 	const byte *pbEncryptedKey, int numEncryptedBytes,
 	byte *pbPlainKey, int numPlainKeyBytes )
 {
-	Assert(false);
-	return false;
+	try           // handle any exceptions crypto++ may throw
+	{
+		StringSource stringSourcePrivateKey( pchKeyPri, numKeyPri, true );
+		RSAES_OAEP_SHA_Decryptor rsaDecryptor( stringSourcePrivateKey );
+
+		// calculate how many blocks of decryption will we need to do
+		AssertFatal( rsaDecryptor.FixedCiphertextLength() <= UINT32_MAX );
+		uint32 cubFixedCiphertextLength = ( uint32 ) rsaDecryptor.FixedCiphertextLength();
+		
+		// Ensure encrypted data is valid and has length that is exact multiple of 128 bytes
+		uint32 cubEncryptedData = numEncryptedBytes;
+		if ( 0 != ( cubEncryptedData % cubFixedCiphertextLength ) )
+		{
+#ifdef _DEBUG
+			Warning( "NET_CryptVerifyClientSessionKey: invalid ciphertext length %d, needs to be a multiple of %d\n",
+				cubEncryptedData, cubFixedCiphertextLength );
+#endif
+			return false;
+		}
+		uint32 cBlocks = cubEncryptedData / cubFixedCiphertextLength;
+
+		// calculate how big the maximum output will be
+		size_t cubMaxPlaintext = rsaDecryptor.MaxPlaintextLength( rsaDecryptor.FixedCiphertextLength() );
+		AssertFatal( cubMaxPlaintext <= UINT32_MAX / cBlocks );
+		uint32 cubPlaintextDataMax = cBlocks * ( uint32 ) cubMaxPlaintext;
+		Assert( cubPlaintextDataMax > 0 );
+		// ensure there is sufficient room in output buffer for result
+		if ( int( cubPlaintextDataMax ) >= numPlainKeyBytes )
+		{
+#ifdef _DEBUG
+			Warning( "NET_CryptVerifyClientSessionKey: insufficient output buffer for decryption, needed %d got %d\n",
+				cubPlaintextDataMax, numPlainKeyBytes );
+#endif
+			return false;
+		}
+
+		// decrypt the data, using as many blocks as required
+		CPoolAllocatedRNG rng;
+		uint32 cubPlaintextData = 0;
+		for ( uint32 nBlock = 0; nBlock < cBlocks; nBlock++ )
+		{
+			// decrypt one block (always of fixed size)
+			int cubToDecrypt = cubFixedCiphertextLength;
+			DecodingResult decodingResult = rsaDecryptor.Decrypt( rng.GetRNG(), pbEncryptedKey, cubToDecrypt, pbPlainKey );
+			if ( !decodingResult.isValidCoding )
+			{
+#ifdef _DEBUG
+				Warning( "NET_CryptVerifyClientSessionKey: failed to decrypt\n" );
+#endif
+				return false;
+			}
+			// adjust input and output pointers and remaining encrypted byte count
+			pbEncryptedKey += cubToDecrypt;
+			cubEncryptedData -= cubToDecrypt;
+			pbPlainKey += decodingResult.messageLength;
+			AssertFatal( decodingResult.messageLength <= UINT32_MAX );
+			cubPlaintextData += ( uint32 ) decodingResult.messageLength;
+		}
+		Assert( 0 == cubEncryptedData );  // should have no remaining encrypted data to decrypt
+		
+		if ( cubPlaintextData != NET_CRYPT_KEY_LENGTH )
+		{
+#ifdef _DEBUG
+			Warning( "NET_CryptVerifyClientSessionKey: decrypted %u bytes when expecting %u bytes\n", cubPlaintextData, NET_CRYPT_KEY_LENGTH );
+#endif
+			return false;
+		}
+
+		return true;
+	}
+	catch ( Exception e )
+	{
+#ifdef _DEBUG
+		Warning( "NET_CryptVerifyClientSessionKey: Decrypt threw exception %s (%d)\n",
+			e.what(), e.GetErrorType() );
+#endif
+		return false;
+	}
+	catch ( ... )
+	{
+#ifdef _DEBUG
+		Warning( "NET_CryptVerifyClientSessionKey: Decrypt threw unknown exception\n" );
+#endif
+		return false;
+	}
 }
 
 bool NET_CryptGetNetworkCertificate( ENetworkCertificate_t eType, const byte **pbData, int *pnumBytes )
 {
-	Assert(false);
-	return false;
+	static char const *s_szCertificateFile = CommandLine()->ParmValue( "-certificate", ( char const * ) NULL );
+	if ( !s_szCertificateFile )
+		return false;
+
+	static bool s_bCertificateFilesLoaded = false;
+	static CUtlBuffer bufCertificate;
+	static int s_nCertificateOffset[ k_ENetworkCertificate_Max ] = {};
+	static int s_nCertificateLength[ k_ENetworkCertificate_Max ] = {};
+	if ( !s_bCertificateFilesLoaded )
+	{
+		s_bCertificateFilesLoaded = true;
+
+		if ( !g_pFullFileSystem->ReadFile( s_szCertificateFile, NULL, bufCertificate ) ||
+			!bufCertificate.Base() || ( bufCertificate.Size() < ( k_ENetworkCertificate_Max + 1 ) * 3 * sizeof( int ) ) )
+		{
+			Warning( "NET_CryptGetNetworkCertificate failed to load certificate '%s'\n", s_szCertificateFile );
+			Plat_ExitProcess( 0 );	// we must exit process, but we will skip writing the core dump
+			return false;
+		}
+
+		if ( V_memcmp( bufCertificate.Base(), "CSv1", 4 ) )
+		{
+			Warning( "NET_CryptGetNetworkCertificate certificate version mismatch '%s'\n", s_szCertificateFile );
+			Plat_ExitProcess( 0 );	// we must exit process, but we will skip writing the core dump
+			return false;
+		}
+		
+		bufCertificate.GetInt(); // CSv1
+		int nTOC = bufCertificate.GetInt();
+		if ( nTOC != k_ENetworkCertificate_Max )
+		{
+			Warning( "NET_CryptGetNetworkCertificate certificate TOC length mismatch '%s'\n", s_szCertificateFile );
+			Plat_ExitProcess( 0 );	// we must exit process, but we will skip writing the core dump
+			return false;
+		}
+
+		for ( int j = 0; j < k_ENetworkCertificate_Max; ++ j )
+		{
+			int nFileID = bufCertificate.GetInt();
+			if ( nFileID != j )
+			{
+				Warning( "NET_CryptGetNetworkCertificate certificate TOC entry %d invalid in '%s'\n", j, s_szCertificateFile );
+				Plat_ExitProcess( 0 );	// we must exit process, but we will skip writing the core dump
+				return false;
+			}
+
+			s_nCertificateOffset[j] = bufCertificate.GetInt();
+			s_nCertificateLength[j] = bufCertificate.GetInt();
+		}
+	}
+
+	*pbData = ( ( const byte * ) bufCertificate.Base() ) + s_nCertificateOffset[eType];
+	*pnumBytes = s_nCertificateLength[eType];
+
+	return true;
 }
+
+#ifdef _DEBUG
+CON_COMMAND( net_encrypt_key_generate, "Generate a public/private keypair" )
+{
+	if ( args.ArgC() <= 2 )
+	{
+		Warning( "Usage: net_encrypt_key_generate <numbits> <filename>\n" );
+		return;
+	}
+
+	uint32 cKeyBits = Q_atoi( args.Arg( 1 ) );
+
+	bool bSuccess = false;
+	std::string strPrivateKey;
+	std::string strPublicKey;
+
+	try           // handle any exceptions crypto++ may throw
+	{
+		// generate private key
+		StringSink stringSinkPrivateKey( strPrivateKey );
+		CPoolAllocatedRNG rng;
+		RSAES_OAEP_SHA_Decryptor priv( rng.GetRNG(), cKeyBits );
+		priv.DEREncode( stringSinkPrivateKey );
+
+		// generate public key
+		StringSink stringSinkPublicKey( strPublicKey );
+		RSAES_OAEP_SHA_Encryptor pub( priv );
+		pub.DEREncode( stringSinkPublicKey );
+		bSuccess = true;
+	}
+	catch ( Exception e )
+	{
+		Warning( "net_encrypt_key_generate: crypto++ threw exception %s (%d)\n",
+			e.what(), e.GetErrorType() );
+	}
+	catch ( ... )
+	{
+		Warning( "net_encrypt_key_generate: crypto++ threw unknown exception\n" );
+	}
+
+	if ( bSuccess )
+	{
+		char chFile[256];
+		
+		CUtlBuffer bufPrivate( strPrivateKey.c_str(), strPrivateKey.length(), CUtlBuffer::READ_ONLY );
+		V_sprintf_safe( chFile, "%s.private", args.Arg( 2 ) );
+		if ( !g_pFullFileSystem->WriteFile( chFile, NULL, bufPrivate ) )
+		{
+			Warning( "net_encrypt_key_generate: failed to write %u bits keypair file '%s'\n", cKeyBits, chFile );
+			return;
+		}
+
+		CUtlBuffer bufPublic( strPublicKey.c_str(), strPublicKey.length(), CUtlBuffer::READ_ONLY );
+		V_sprintf_safe( chFile, "%s.public", args.Arg( 2 ) );
+		if ( !g_pFullFileSystem->WriteFile( chFile, NULL, bufPublic ) )
+		{
+			Warning( "net_encrypt_key_generate: failed to write %u bits keypair file '%s'\n", cKeyBits, chFile );
+			return;
+		}
+
+		Msg( "net_encrypt_key_generate: wrote %u bits keypair files '%s.private/public'\n", cKeyBits, args.Arg( 2 ) );
+	}
+	else
+	{
+		Warning( "net_encrypt_key_generate: failed to generate %u bits keypair files '%s.private/public'\n", cKeyBits, args.Arg( 2 ) );
+	}
+}
+
+CON_COMMAND( net_encrypt_key_signature, "Compute key signature for the payloads" )
+{
+	if ( args.ArgC() <= 4 )
+	{
+		Warning( "Usage: net_encrypt_key_signature <file.privatekey> <file.payload> <string.payload> <output.file>\n" );
+		return;
+	}
+
+	bool bRet = false;
+	CUtlBuffer bufSignature;
+	try           // handle any exceptions crypto++ may throw
+	{
+		CUtlBuffer bufPrivateKey;
+		if ( !g_pFullFileSystem->ReadFile( args.Arg( 1 ), NULL, bufPrivateKey ) )
+		{
+			Warning( "net_encrypt_key_signature: failed to read private key file '%s'\n", args.Arg( 1 ) );
+			return;
+		}
+
+		CUtlBuffer bufDataFile;
+		if ( !g_pFullFileSystem->ReadFile( args.Arg( 2 ), NULL, bufDataFile ) )
+		{
+			Warning( "net_encrypt_key_signature: failed to read data file '%s'\n", args.Arg( 2 ) );
+			return;
+		}
+
+		char const *szStringPayload = args.Arg( 3 );
+		int nStringPayloadLength = Q_strlen( szStringPayload );
+		if ( nStringPayloadLength > 0 )
+			bufDataFile.Put( szStringPayload, nStringPayloadLength );
+
+		StringSource stringSourcePrivateKey( ( byte * ) bufPrivateKey.Base(), bufPrivateKey.TellPut(), true );
+		RSASSA_PKCS1v15_SHA_Signer rsaSigner( stringSourcePrivateKey );
+		CPoolAllocatedRNG rng;
+
+		bufSignature.EnsureCapacity( rsaSigner.MaxSignatureLength() );
+		{
+			size_t len = rsaSigner.SignMessage( rng.GetRNG(), ( byte * ) bufDataFile.Base(), bufDataFile.TellPut(), ( byte * ) bufSignature.Base() );
+			bufSignature.SeekPut( CUtlBuffer::SEEK_HEAD, ( int32 ) ( uint32 ) len );
+			bRet = true;
+			Msg( "net_encrypt_key_signature: generated %u bytes signature for payload data +%u=%u bytes\n", bufSignature.TellPut(), nStringPayloadLength, bufDataFile.TellPut() );
+		}
+	}
+	catch ( Exception e )
+	{
+		Warning( "net_encrypt_key_signature: SignMessage threw exception %s (%d)\n",
+			e.what(), e.GetErrorType() );
+	}
+	catch ( ... )
+	{
+		Warning( "net_encrypt_key_signature: SignMessage threw unknown exception\n" );
+	}
+
+	if ( bRet )
+	{
+		if ( !g_pFullFileSystem->WriteFile( args.Arg( 4 ), NULL, bufSignature ) )
+		{
+			Warning( "net_encrypt_key_signature: failed to write file '%s'\n", args.Arg( 4 ) );
+			return;
+		}
+
+		Msg( "net_encrypt_key_generate: wrote %u bytes signature file '%s'\n", bufSignature.TellPut(), args.Arg( 4 ) );
+	}
+	else
+	{
+		Warning( "net_encrypt_key_signature: failed\n" );
+	}
+}
+
+CON_COMMAND( net_encrypt_key_compress, "Compress all key signatures into a single file" )
+{
+	if ( args.ArgC() <= 1 )
+	{
+		Warning( "Usage: net_encrypt_key_compress <file>\n" );
+		return;
+	}
+
+	CUtlBuffer bufComposite;
+
+	char const * arrFiles[] = { "public", "private", "signature" }; // ENetworkCertificate_t order
+	CUtlBuffer bufData[ Q_ARRAYSIZE( arrFiles ) ];
+	for ( int j = 0; j < Q_ARRAYSIZE( arrFiles ); ++ j )
+	{
+		char chFile[ 1024 ] = {};
+		V_sprintf_safe( chFile, "%s.%s", args.Arg( 1 ), arrFiles[j] );
+		if ( !g_pFullFileSystem->ReadFile( chFile, NULL, bufData[j] ) )
+		{
+			Warning( "net_encrypt_key_compress: failed to read data file '%s'\n", chFile );
+			return;
+		}
+	}
+
+	bufComposite.Put( "CSv1", 4 );
+	bufComposite.PutInt( Q_ARRAYSIZE( arrFiles ) );
+	int nDataOffsetBase = bufComposite.TellPut() + Q_ARRAYSIZE( arrFiles )*3*4;
+	int nDataOffset = nDataOffsetBase;
+	for ( int j = 0; j < Q_ARRAYSIZE( arrFiles ); ++ j )
+	{
+		bufComposite.PutInt( j );						// file ID
+		bufComposite.PutInt( nDataOffset );				// offset
+		bufComposite.PutInt( bufData[j].TellPut() );	// length
+		nDataOffset += bufData[j].TellPut();
+	}
+	if ( bufComposite.TellPut() != nDataOffsetBase )
+	{
+		Warning( "net_encrypt_key_compress: failed to align composite TOC for '%s'\n", args.Arg( 1 ) );
+		return;
+	}
+	for ( int j = 0; j < Q_ARRAYSIZE( arrFiles ); ++ j )
+	{
+		bufComposite.Put( bufData[j].Base(), bufData[j].TellPut() );
+	}
+
+	if ( !g_pFullFileSystem->WriteFile( args.Arg( 1 ), NULL, bufComposite ) )
+	{
+		Warning( "net_encrypt_key_compress: failed to write file '%s'\n", args.Arg( 1 ) );
+		return;
+	}
+
+	for ( int j = 0; j < Q_ARRAYSIZE( arrFiles ); ++ j )
+	{
+		char chFile[ 1024 ] = {};
+		V_sprintf_safe( chFile, "%s.%s", args.Arg( 1 ), arrFiles[j] );
+		g_pFullFileSystem->RemoveFile( chFile );
+	}
+
+	Msg( "net_encrypt_key_compress: compressed file '%s' (%u bytes)\n", args.Arg( 1 ), bufComposite.TellPut() );
+}
+
+CON_COMMAND( net_encrypt_key_make_clusters, "Generate certificates and their signatures using master key" )
+{
+	if ( args.ArgC() <= 2 )
+	{
+		Warning( "Usage: net_encrypt_key_make_clusters <numbits> <file.privatekey>\n" );
+		return;
+	}
+
+	char const * arrAddressMasks[] = {
+//		"atl-1", "162.254.199.0/25"  ,
+// 		"dxb-1", "185.25.183.0/25"  ,
+// 		"eat-1", "192.69.96.0/23"	,
+// 		"eat-2", "192.69.96.0/23"	,
+//		"eat-3", "192.69.96.0/23"	,
+// 		"eat-4", "192.69.96.0/23"	,
+// 		"gru-4", "205.185.194.0/24"	,
+//		"iad-1", "208.78.164.90/23"	,
+// 		"iad-2", "208.78.164.0/23"	,
+// 		"iad-3", "208.78.164.0/23"	,
+// 		"iad-4", "208.78.166.0/24"	,
+//		"lax-1", "162.254.194.0/24"	,
+// 		"lux-1", "146.66.152.0/23"	,
+// 		"lux-2", "146.66.152.0/23"	,
+// 		"lux-3", "146.66.152.0/23"	,
+// 		"lux-4", "146.66.158.0/23"	,
+// 		"lux-5", "146.66.158.0/23"	,
+// 		"lux-6", "146.66.158.0/23"	,
+//		"lux-7", "155.133.240.0/23"	,
+//		"lux-8", "155.133.240.0/23"	,
+// 		"sgp-1", "103.28.54.0/23"	,
+// 		"sgp-2", "103.28.54.0/23"	,
+// 		"sgp-3", "103.28.54.0/23"	,
+// 		"sto-1", "146.66.156.0/23"	,
+// 		"sto-2", "146.66.156.0/23"	,
+// 		"sto-3", "146.66.156.0/23"	,
+// 		"sto-4", "185.25.180.0/23"	,
+// 		"sto-5", "185.25.180.0/23"	,
+// 		"sto-6", "185.25.180.0/23"	,
+//		"sto-7", "155.133.242.0/23"	,
+//		"sto-8", "155.133.242.0/23"	,
+// 		"syd-1", "103.10.125.0/24",
+// 		"vie-1", "146.66.155.0/24"	,
+// 		"vie-2", "185.25.182.0/24"	,
+// 		"jhb-1", "197.80.200.48/29"	,
+ 		"jhb-1", "155.133.238.0/24"	,
+ 		"jhb-2", "155.133.238.0/24"	,
+//		"cpt-1", "197.84.209.20/30",
+// 		"bom-1", "45.113.191.128/27",
+//		"bom-1", "45.113.137.128/27",
+//		"tyo-1", "45.121.186.0/23",
+//		"tyo-2", "45.121.186.0/23",
+//		"hkg-1", "155.133.244.0/24",
+//		"mad-1", "155.133.246.0/23",
+// 		"blv-1", "172.16.0.0/16",
+//		"scl-1", "155.133.249.0/24",
+//		"lim-1", "143.137.146.0/24",
+//		"ord-1", "155.133.226.0/24",
+//		"vie-3", "155.133.228.0/23",
+//		"syd-2", "155.133.227.0/24",
+//		"gru-5", "155.133.224.0/23",
+//		"jhb-2", "155.133.238.0/24",
+//		"bom-2", "155.133.233.0/24",
+//		"maa-1", "155.133.232.0/24",
+//		"waw-1", "155.133.230.0/23",
+//		"lim-2", "190.216.121.0/24",
+//		"atl-2", "155.133.234.0/24",
+//		"ord-1", "208.78.167.0/24",
+//		"ord-2", "208.78.167.0/24",
+//		"tsn-1", "125.39.181.0/24",
+//		"tsn-2", "60.28.165.128/25",
+//		"can-2", "125.88.174.0/24",
+//		"sha-3", "121.46.225.0/24",
+//		"eleague-major-atlanta-2017", "172.27.10.20/31",
+	};
+
+	for ( int j = 0; j < Q_ARRAYSIZE( arrAddressMasks )/2; ++j )
+	{
+		char const *szName = arrAddressMasks[ 2*j ];
+		char const *szAddr = arrAddressMasks[ 2*j+1 ];
+		char const *szSlash = strchr( szAddr, '/' );
+		if ( !szSlash ) continue;
+
+		char chBuffer[ 1024 ] = {};
+		V_sprintf_safe( chBuffer, "net_encrypt_key_generate %s %s.certificate;\n", args.Arg( 1 ), szName );
+		Cbuf_AddText( CBUF_FIRST_PLAYER, chBuffer );
+
+		V_sprintf_safe( chBuffer, "net_encrypt_key_signature \"%s\" %s.certificate.public \"%s\" %s.certificate.signature;",
+			args.Arg( 2 ), szName, szAddr, szName );
+		Cbuf_AddText( CBUF_FIRST_PLAYER, chBuffer );
+
+		V_sprintf_safe( chBuffer, "net_encrypt_key_compress %s.certificate;\n", szName );
+		Cbuf_AddText( CBUF_FIRST_PLAYER, chBuffer );
+
+		Cbuf_Execute();
+	}
+}
+#endif
+
 

@@ -1,8 +1,6 @@
 #ifndef TIER1_STRTOOLS_INLINES_H
 #define TIER1_STRTOOLS_INLINES_H
 
-#include "platform.h"
-
 inline int	_V_strlen_inline( const char *str )
 {
 #ifdef POSIX

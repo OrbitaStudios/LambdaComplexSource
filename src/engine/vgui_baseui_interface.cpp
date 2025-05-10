@@ -320,32 +320,6 @@ public:
 	bool DrawKeyFocusPanel( void );
 };
 
-//-----------------------------------------------------------------------------
-// Purpose: 
-//-----------------------------------------------------------------------------
-class CTransitionEffectPanel : public EditablePanel
-{
-	typedef EditablePanel BaseClass;
-
-public:
-	CTransitionEffectPanel( Panel *pParent, const char *pName ) : BaseClass( pParent, pName )
-	{
-		SetBounds( 0, 0, videomode->GetModeWidth(), videomode->GetModeHeight() );
-		SetPaintBorderEnabled( false );
-		SetPaintBackgroundEnabled( false );
-		SetPaintEnabled( true );
-		SetVisible( true );
-		SetCursor( dc_none );
-		SetMouseInputEnabled( false );
-		SetKeyBoardInputEnabled( true );
-	}
-
-	bool IsEffectEnabled()
-	{
-		return staticGameUIFuncs->IsTransitionEffectEnabled();
-	}
-};
-
 
 //-----------------------------------------------------------------------------
 //
@@ -394,14 +368,10 @@ public:
 	virtual void OnLevelLoadingFinished();
 	virtual void NotifyOfServerConnect(const char *game, int IP, int connectionPort, int queryPort);
 	virtual void NotifyOfServerDisconnect();
-	virtual void UpdateProgressBar(LevelLoadingProgress_e progress, bool showDialog = true );
+	virtual void UpdateProgressBar(LevelLoadingProgress_e progress);
 	virtual void UpdateCustomProgressBar( float progress, const wchar_t *desc );
 	virtual void StartCustomProgress();
 	virtual void FinishCustomProgress();
-	virtual void UpdateSecondaryProgressBarWithFile( float progress, const char *pDesc, int nBytesTotal );
-	virtual void UpdateSecondaryProgressBar( float progress, const wchar_t *desc );
-	virtual void StartLoadingScreenForCommand( const char* command );
-	virtual void StartLoadingScreenForKeyValues( KeyValues* keyValues );
 
 	virtual void EnabledProgressBarForNextLoad()
 	{
@@ -452,13 +422,10 @@ public:
 	virtual void OnToolModeChanged( bool bGameMode );
 	virtual InputContextHandle_t GetGameUIInputContext() { return m_hGameUIInputContext; }
 
-	virtual void NeedConnectionProblemWaitScreen();
 	virtual void ShowPasswordUI( char const *pchCurrentPW );
 
 	void SetProgressBias( float bias );
-	void UpdateProgressBar( float progress, const char *pszDesc = NULL, bool showDialog = true );
-
-	virtual bool IsPlayingFullScreenVideo();
+	void UpdateProgressBar( float progress, const char *pszDesc = NULL );
 
 private:
 	Panel *GetRootPanel( VGuiPanel_t type );
@@ -506,7 +473,6 @@ private:
 	CDebugSystemPanel *staticDebugSystemPanel;
 	CEnginePanel *staticSteamOverlayPanel;
 	CFocusOverlayPanel *staticFocusOverlayPanel;
-	CTransitionEffectPanel *staticTransitionPanel;
 
 #ifdef VPROF_ENABLED
 	CVProfPanel *m_pVProfPanel;
@@ -568,7 +534,6 @@ public:
 	{ 
 		// initialize to disabled state
 		m_SnappedProgress = -1;
-		m_flLastProgress = 0.0f;
 	}
 
 	void BeginProgress()
@@ -577,13 +542,9 @@ public:
 		m_SnappedProgress = 0;
 	}
 
-	void UpdateProgress( float progress, bool bForce )
+	void UpdateProgress( float progress )
 	{
-		if ( !bForce )
-		{
-			m_flLastProgress = progress;
-		}
-		if ( m_SnappedProgress == - 1 && !bForce )
+		if ( m_SnappedProgress == - 1 )
 		{
 			// not enabled
 			return;
@@ -591,8 +552,8 @@ public:
 
 		int snappedProgress = progress * 15;
 
-		// Need excessive updates on the console to keep the XBox slider inny bar/XMB active
-		if ( !IsGameConsole() && ( snappedProgress <= m_SnappedProgress ) )
+		// Need excessive updates on the 360 to keep the XBox slider inny bar active
+		if ( !IsX360() && ( snappedProgress <= m_SnappedProgress ) )
 		{
 			// prevent excessive updates
 			return;
@@ -600,7 +561,7 @@ public:
 		m_SnappedProgress = snappedProgress;
 
 		// up to reserved
-		g_EngineVGuiImp.UpdateProgressBar( bForce ? 1.0f : ( PROGRESS_RESERVE * progress ) );
+		g_EngineVGuiImp.UpdateProgressBar( PROGRESS_RESERVE * progress );
 	}
 
 	void EndProgress()
@@ -610,14 +571,8 @@ public:
 		m_SnappedProgress = -1;
 	}
 
-	void PauseNonInteractiveProgress( bool bPause )
-	{
-		PauseLoadingUpdates( bPause );
-	}
-
 private:
 	int m_SnappedProgress;
-	float m_flLastProgress;
 };
 static CLoaderProgress s_LoaderProgress;
 
@@ -637,7 +592,6 @@ CEngineVGui::CEngineVGui()
 	staticDebugSystemPanel = NULL;
 	staticSteamOverlayPanel = NULL;
 	staticFocusOverlayPanel = NULL;
-	staticTransitionPanel = NULL;
 
 	m_hGameUIInputContext = INPUT_CONTEXT_HANDLE_INVALID;
 	m_hStaticGameUIModule = NULL;
@@ -707,27 +661,15 @@ void CEngineVGui::PreparePanel( Panel *panel, int nZPos, bool bVisible /*= true*
 //-----------------------------------------------------------------------------
 void CEngineVGui::Init()
 {
-	const char *szDllName = "";
-	
-	if ( CommandLine()->FindParm( "-gameuidll" ) )
-	{
-		COM_TimestampedLog( "Loading gameui.dll" );
+	COM_TimestampedLog( "Loading gameui.dll" );
 
-		// load the GameUI dll
-		szDllName = "gameui";
-		m_hStaticGameUIModule = g_pFileSystem->LoadModule(szDllName, "GAMEBIN", true); // LoadModule() does a GetLocalCopy() call
-		m_GameUIFactory = Sys_GetFactory(m_hStaticGameUIModule);
-		if ( !m_GameUIFactory )
-		{
-			Error( "Could not load: %s\n", szDllName );
-		}
-	}
-	else
+	// load the GameUI dll
+	const char *szDllName = "GameUI";
+	m_hStaticGameUIModule = g_pFileSystem->LoadModule(szDllName, "EXECUTABLE_PATH", true); // LoadModule() does a GetLocalCopy() call
+	m_GameUIFactory = Sys_GetFactory(m_hStaticGameUIModule);
+	if ( !m_GameUIFactory )
 	{
-		// Get the gameui interfaces from client.dll
-		extern CreateInterfaceFn g_ClientFactory;
-		m_GameUIFactory = g_ClientFactory;
-		szDllName = "client";
+		Error( "Could not load: %s\n", szDllName );
 	}
 	
 	// get the initialization func
@@ -780,6 +722,13 @@ void CEngineVGui::Init()
 		Sys_Error( "Error loading file %s\n", pStr );
 		return;
 	}
+	
+	pStr = "Resource/ClientScheme.res";
+	if ( !scheme()->LoadSchemeFromFile( pStr, "ClientScheme" ))
+	{
+		Sys_Error( "Error loading file %s\n", pStr );
+		return;
+	}
 
 	if ( IsGameConsole() )
 	{
@@ -811,7 +760,6 @@ void CEngineVGui::Init()
 
 	//		staticGameUIBackgroundPanel ( loading image only ) (zpos 0)
 	//      staticClientDLLPanel ( zpos == 25 )
-	//		staticClientDLLPanelFullscreen ( zpos == 26 )
 	//		staticGameUIPanel ( GameUI stuff, zpos 40 )
 	//		staticClientDLLToolsPanel ( zpos == 28 )
 	//		staticGameDLLPanel ( zpos == 50 )  [ Tool Framework Root ]
@@ -862,7 +810,7 @@ void CEngineVGui::Init()
 #if defined( TOOLFRAMEWORK_VGUI_REFACTOR )
 	PreparePanel( staticGameDLLPanel, 50 );
 #else
-	PreparePanel( staticGameDLLPanel, 135 );
+	PreparePanel( staticGameDLLPanel, 135, CommandLine()->CheckParm( "-tools" ) != NULL );
 #endif
 	staticGameDLLPanel->SetKeyBoardInputEnabled( false );	// popups in the game DLL can enable this.
 
@@ -912,11 +860,6 @@ void CEngineVGui::Init()
 		colorcorrectiontools->InstallColorCorrectionUI( staticEngineToolsPanel );
 		colorcorrectiontools->Init();
 	}
-
-	COM_TimestampedLog( "Building Panels (staticTransitionPanel)" );
-
-	staticTransitionPanel = new CTransitionEffectPanel( staticPanel, "TransitionEffect" );
-	staticTransitionPanel->SetZPos( 135 );
 
 	if ( IsPS3() )
 	{
@@ -995,7 +938,7 @@ void CEngineVGui::Init()
 
 
 	// load the base localization file
-	g_pVGuiLocalize->AddFile( "resource/valve_%language%.txt" );
+	g_pVGuiLocalize->AddFile( "Resource/valve_%language%.txt" );
 
 	char szFileName[MAX_PATH];
 
@@ -1020,6 +963,9 @@ void CEngineVGui::Init()
 		szFileName[ sizeof( szFileName ) - 1 ] = '\0';
 		g_pVGuiLocalize->AddFile( szFileName );
 	}
+
+	// PiMoN: add cstrike language for backwards compatibility
+	g_pVGuiLocalize->AddFile( "Resource/cstrike_%language%.txt" );
 
 	COM_TimestampedLog( "staticGameUIFuncs->Initialize" );
 
@@ -1201,7 +1147,6 @@ void CEngineVGui::Shutdown()
 
 	if ( staticGameConsole )
 	{
-		staticGameConsole->Shutdown();
 		staticGameConsole = NULL;
 	}
 
@@ -1280,8 +1225,6 @@ inline Panel *CEngineVGui::GetRootPanel( VGuiPanel_t type )
 		return staticClientDLLToolsPanel;
 	case PANEL_GAMEUIBACKGROUND:
 		return staticGameUIBackgroundPanel;
-	case PANEL_TRANSITIONEFFECT:
-		return staticTransitionPanel;
 	case PANEL_STEAMOVERLAY:
 		return staticSteamOverlayPanel;
 	}
@@ -1580,7 +1523,7 @@ void CEngineVGui::OnLevelLoadingStarted( char const *levelName, bool bLocalServe
 	}
 
 	// we've starting loading a level/connecting to a server
-	staticGameUIFuncs->OnLevelLoadingStarted( levelName, m_bShowProgressDialog );
+	staticGameUIFuncs->OnLevelLoadingStarted( m_bShowProgressDialog );
 
 	// reset progress bar timers
 	m_flLoadingStartTime = Plat_FloatTime();
@@ -1606,16 +1549,6 @@ void CEngineVGui::OnLevelLoadingStarted( char const *levelName, bool bLocalServe
 	}
 
 	m_bShowProgressDialog = false;
-}
-
-void CEngineVGui::StartLoadingScreenForCommand( const char* command )
-{
-	staticGameUIFuncs->StartLoadingScreenForCommand( command );
-}
-
-void CEngineVGui::StartLoadingScreenForKeyValues( KeyValues* keyValues )
-{
-	staticGameUIFuncs->StartLoadingScreenForKeyValues( keyValues );
 }
 
 //-----------------------------------------------------------------------------
@@ -1720,7 +1653,7 @@ void CEngineVGui::ShowErrorMessage()
 //-----------------------------------------------------------------------------
 #define LOADING_PRESENT_UPDATE_INTERVAL 0.05f
 double g_flLastUpdateTime = 0.0f;
-void CEngineVGui::UpdateProgressBar( LevelLoadingProgress_e progress, bool showDialog )
+void CEngineVGui::UpdateProgressBar( LevelLoadingProgress_e progress )
 {
 	if (!staticGameUIFuncs)
 		return;
@@ -1805,7 +1738,7 @@ void CEngineVGui::UpdateProgressBar( LevelLoadingProgress_e progress, bool showD
 	// Send loading progress to the server
 	GetBaseLocalClient().SendLoadingProgress( (int)(flPerc * 100) );
 
-	UpdateProgressBar( flPerc, desc.pszDesc, showDialog );
+	UpdateProgressBar( flPerc, desc.pszDesc );
 
 	// Help with profiling load times.
 	ETWMarkPrintf( "UpdateProgressBar to %s, stage %d, took %1.3f s", desc.pszDesc, progress, Plat_FloatTime() - g_flLastUpdateTime );
@@ -1834,7 +1767,7 @@ void CEngineVGui::StartCustomProgress()
 		return;
 
 	// we've starting loading a level/connecting to a server
-	staticGameUIFuncs->OnLevelLoadingStarted( NULL, true );
+	staticGameUIFuncs->OnLevelLoadingStarted( true );
 	m_bSaveProgress = staticGameUIFuncs->SetShowProgressText( true );
 }
 
@@ -1852,91 +1785,17 @@ void CEngineVGui::SetProgressBias( float bias )
 	m_ProgressBias = bias;
 }
 
-void CEngineVGui::UpdateProgressBar( float progress, const char *pDesc, bool showDialog )
+void CEngineVGui::UpdateProgressBar( float progress, const char *pDesc )
 {
 	if ( !staticGameUIFuncs )
 		return;
 
-	bool bUpdated = staticGameUIFuncs->UpdateProgressBar( progress, pDesc ? pDesc : "", showDialog );
-	if ( staticGameUIFuncs->LoadingProgressWantsIsolatedRender( false ) )
+	bool bUpdated = staticGameUIFuncs->UpdateProgressBar( progress, pDesc ? pDesc : "" );
+	if ( bUpdated )
 	{
-		while ( staticGameUIFuncs->LoadingProgressWantsIsolatedRender( true ) )
-		{
-			extern void V_RenderVGuiOnly();
-			V_RenderVGuiOnly();
-
-			if ( g_ClientGlobalVariables.frametime != 0.0f && g_ClientGlobalVariables.frametime != 0.1f)
-			{
-				static ConVarRef host_timescale( "host_timescale" );
-				float timeScale = host_timescale.GetFloat() * sv.GetTimescale();
-				if ( timeScale <= 0.0f )
-					timeScale = 1.0f;
-			}
-			else
-			{
-				break;
-			}
-		}
-	}
-	else if ( bUpdated )
-	{
-		// re-render vgui on screen
-		extern void V_RenderVGuiOnly();
-		V_RenderVGuiOnly();
-	}
-}
-
-void CEngineVGui::UpdateSecondaryProgressBarWithFile( float progress, const char *pPath, int nBytesTotal )
-{
-	if ( !pPath )
-		return;
-
-	char szFile[MAX_PATH];
-	V_strcpy_safe( szFile, pPath );
-	//V_StripFilename(szFile);
-	wchar_t wszPercent[ 10 ];
-	V_snwprintf( wszPercent, ARRAYSIZE( wszPercent ), L"%d%%",  (int)(100*progress) );
-	wchar_t wszMegs[ 64 ];
-	
-	char szBytes[32];
-	V_strcpy_safe( szBytes, V_pretifymem(nBytesTotal) );
-	V_strtowcs( szBytes, -1, wszMegs, ARRAYSIZE( wszMegs ) );
-
-	wchar_t wszFile[ MAX_PLAYER_NAME_LENGTH ];
-	g_pVGuiLocalize->ConvertANSIToUnicode( szFile, wszFile, sizeof( wszFile ) );
-	wchar_t szWideBuff[ 256 ];
-	g_pVGuiLocalize->ConstructString( szWideBuff, sizeof( szWideBuff ), g_pVGuiLocalize->Find( "#SFUI_DownLoading_" ), 3, wszFile, wszPercent, wszMegs );
-	UpdateSecondaryProgressBar( progress, szWideBuff );
-}
-
-void CEngineVGui::UpdateSecondaryProgressBar( float progress, const wchar_t *desc )
-{
-	if ( !staticGameUIFuncs )
-		return;
-
-	bool bUpdated = staticGameUIFuncs->UpdateSecondaryProgressBar( progress, desc ? desc : L"" );
-	if ( staticGameUIFuncs->LoadingProgressWantsIsolatedRender( false ) )
-	{
-		while ( staticGameUIFuncs->LoadingProgressWantsIsolatedRender( true ) )
-		{
-			extern void V_RenderVGuiOnly();
-			V_RenderVGuiOnly();
-
-			if ( g_ClientGlobalVariables.frametime != 0.0f && g_ClientGlobalVariables.frametime != 0.1f)
-			{
-				static ConVarRef host_timescale( "host_timescale" );
-				float timeScale = host_timescale.GetFloat() * sv.GetTimescale();
-				if ( timeScale <= 0.0f )
-					timeScale = 1.0f;
-			}
-			else
-			{
-				break;
-			}
-		}
-	}
-	else if ( bUpdated )
-	{
+#if defined( INCLUDE_SCALEFORM )
+		g_pScaleformUI->RunFrame( 0 );
+#endif
 		// re-render vgui on screen
 		extern void V_RenderVGuiOnly();
 		V_RenderVGuiOnly();
@@ -2004,7 +1863,7 @@ bool CEngineVGui::Key_Event( const InputEvent_t &event )
 			{
 				HideConsole();
 			}
-			else if ( IsGameUIVisible()  )
+			else if ( IsGameUIVisible() )
 			{
 				// Don't allow hiding of the game ui if there's no level
 				const char *pLevelName = engineClient->GetLevelName();
@@ -2260,8 +2119,6 @@ void CEngineVGui::Paint( PaintMode_t mode )
 	// Paint both ( backward compatibility support )
 	CVGuiPaintHelper helper;
 
-	VPANEL fullscreenClientDLLPanel = ClientDLL_GetFullscreenClientDLLVPanel();
-
 	switch( mode )
 	{
 	case PAINT_UIPANELS:
@@ -2272,11 +2129,7 @@ void CEngineVGui::Paint( PaintMode_t mode )
 			{
 				// child always returns null, not in the same module!
 				VPANEL child = ipanel()->GetChild( staticClientDLLPanel->GetVPanel(), i );
-
-				if ( child && child != fullscreenClientDLLPanel )
-				{
-					helper.AddUIPanel( child );
-				}
+				helper.AddUIPanel( child );
 			}
 		}
 		break;
@@ -2288,15 +2141,11 @@ void CEngineVGui::Paint( PaintMode_t mode )
 			{
 				// child always returns null, not in the same module!
 				VPANEL child = ipanel()->GetChild( staticClientDLLPanel->GetVPanel(), i );
+				int iMessageContext = ipanel()->GetMessageContextId( child );
 
-				if ( child && child != fullscreenClientDLLPanel )
+				if ( iMessageContext == -1 || iMessageContext == splitscreen->GetActiveSplitScreenPlayerSlot() )
 				{
-					int iMessageContext = ipanel()->GetMessageContextId( child );
-
-					if ( iMessageContext == splitscreen->GetActiveSplitScreenPlayerSlot() )
-					{
-						helper.AddUIPanel( child );
-					}			
+					helper.AddUIPanel( child );
 				}
 			}
 		}
@@ -2317,22 +2166,8 @@ void CEngineVGui::Paint( PaintMode_t mode )
 		ipanel()->SetVisible( staticSteamOverlayPanel->GetVPanel(), false );
 	}
 
-	if ( staticTransitionPanel )
-	{
-		ipanel()->SetVisible( staticTransitionPanel->GetVPanel(), false );
-	}
-
 	// It's either the full screen, or just the client .dll stuff
 	helper.Paint( pVPanel, mode );
-
-	if ( staticTransitionPanel && ( mode & PAINT_UIPANELS ) && staticTransitionPanel->IsEffectEnabled() )
-	{
-		ipanel()->SetVisible( staticTransitionPanel->GetVPanel(), true );
-		VPANEL vPanelRememberParent = ipanel()->GetParent( staticTransitionPanel->GetVPanel() );
-		ipanel()->SetParent( staticTransitionPanel->GetVPanel(), 0 );
-		surface()->PaintTraverseEx( staticTransitionPanel->GetVPanel(), false );
-		ipanel()->SetParent( staticTransitionPanel->GetVPanel(), vPanelRememberParent );
-	}
 
 	// Paint Steam Overlay
 	if ( staticSteamOverlayPanel && ( mode & PAINT_UIPANELS ) )
@@ -2942,19 +2777,9 @@ void CEngineVGui::OnToolModeChanged( bool bGameMode )
 //#endif
 }
 
-void CEngineVGui::NeedConnectionProblemWaitScreen()
-{
-	return staticGameUIFuncs->NeedConnectionProblemWaitScreen();
-}
-
 void CEngineVGui::ShowPasswordUI( char const *pchCurrentPW )
 {
 //	staticGameUIFuncs->ShowPasswordUI( pchCurrentPW );
-}
-
-bool CEngineVGui::IsPlayingFullScreenVideo()
-{
-	return staticGameUIFuncs->IsPlayingFullScreenVideo();
 }
 
 //-----------------------------------------------------------------------------

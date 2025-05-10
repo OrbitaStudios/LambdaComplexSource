@@ -1927,15 +1927,6 @@ void CLocatorPanel::DrawStaticIcon( CLocatorTarget *pTarget )
 		int nWide = pVguiTarget->GetWide();
 		int nTall = pVguiTarget->GetTall();
 
-		const char *pchLookup = pTarget->GetVguiTargetLookup();
-		if ( pchLookup[ 0 ] != '\0' )
-		{
-			bool bLookupSuccess = false;
-			bLookupSuccess = pVguiTarget->LookupElementBounds( pchLookup, nPanelX, nPanelY, nWide, nTall );
-
-			Assert( bLookupSuccess );
-		}
-
 		if ( nVguiTargetEdge == vgui::Label::a_north || 
 			 nVguiTargetEdge == vgui::Label::a_center || 
 			 nVguiTargetEdge == vgui::Label::a_south )
@@ -2079,14 +2070,6 @@ void CLocatorPanel::DrawDynamicIcon( CLocatorTarget *pTarget, bool bDrawCaption,
 
 		int nWide = pVguiTarget->GetWide();
 		int nTall = pVguiTarget->GetTall();
-
-		const char *pchLookup = pTarget->GetVguiTargetLookup();
-		if ( pchLookup[ 0 ] != '\0' )
-		{
-			bool bLookupSuccess = false;
-			bLookupSuccess = pVguiTarget->LookupElementBounds( pchLookup, nTargetX, nTargetY, nWide, nTall );
-			Assert( bLookupSuccess );
-		}
 
 		if ( nVguiTargetEdge == vgui::Label::a_north || 
 			 nVguiTargetEdge == vgui::Label::a_center || 

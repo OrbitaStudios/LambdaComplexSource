@@ -1,4 +1,4 @@
-//========= Copyright (c) 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -10,14 +10,6 @@
 // memdbgon must be the last include file in a .cpp file
 #include "tier0/memdbgon.h"
 #define MENU_SEPARATOR_HEIGHT 3
-
-#if defined(_PS3) || defined(POSIX)
-//!!BUG!! "wcsnicmp unsupported on PS3"
-#ifdef wcsicmp
-#undef wcsicmp
-#endif
-#define wcsnicmp wcsncmp
-#endif
 
 using namespace vgui;
 
@@ -76,6 +68,7 @@ Menu::Menu(Panel *parent, const char *panelName) : Panel(parent, panelName)
 	MakePopup(false);
 	SetParent(parent);
 	_recalculateWidth = true;
+	m_bUseMenuManager = true;
 	m_iInputMode = MOUSE;
 	m_iCheckImageWidth = 0;
 	m_iActivatedItem = 0;
@@ -530,14 +523,7 @@ void Menu::SetContentAlignment( Label::Alignment alignment )
 		int nCount = m_MenuItems.Count();
 		for ( int i = 0; i < nCount; ++i )
 		{
-			MenuItem *pItem = m_MenuItems[ i ];
-			pItem->SetContentAlignment( alignment );
-			// Recurse on cascading menus
-			Menu *pSubMenu = pItem->GetMenu();
-			if ( pSubMenu )
-			{
-				pSubMenu->SetContentAlignment( alignment );
-			}
+			m_MenuItems[i]->SetContentAlignment( alignment );
 		}
 	}
 }
@@ -1196,6 +1182,14 @@ void Menu::SetNumberOfVisibleItems( int numItems )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+void Menu::EnableUseMenuManager( bool bUseMenuManager )
+{
+	m_bUseMenuManager = bUseMenuManager;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
 MenuItem *Menu::GetMenuItem(int itemID)
 {
 	if ( !m_MenuItems.IsValidIndex(itemID) )
@@ -1273,7 +1267,8 @@ void Menu::OnKeyCodeTyped(KeyCode keycode)
 	switch (code)
 	{
 	case KEY_ESCAPE:
-	case KEY_XBUTTON_B: 
+	case KEY_XBUTTON_B:
+	case STEAMCONTROLLER_B:
 		{
 			// hide the menu on ESC
 			SetVisible(false);
@@ -1283,23 +1278,33 @@ void Menu::OnKeyCodeTyped(KeyCode keycode)
 		// they should also scroll the scroll bar if needed
 	case KEY_UP:
 	case KEY_XBUTTON_UP: 
-	case KEY_XSTICK1_UP: 
+	case KEY_XSTICK1_UP:
+	case STEAMCONTROLLER_DPAD_UP:
 		{	
 			MoveAlongMenuItemList(MENU_UP, 0);
 			if ( m_MenuItems.IsValidIndex( m_iCurrentlySelectedItemID ) )
 			{
 				m_MenuItems[m_iCurrentlySelectedItemID]->ArmItem();
 			}
+			else
+			{
+				BaseClass::OnKeyCodeTyped( keycode ); // chain up
+			}
 			break;
 		}
 	case KEY_DOWN:
 	case KEY_XBUTTON_DOWN: 
 	case KEY_XSTICK1_DOWN: 
+	case STEAMCONTROLLER_DPAD_DOWN:
 		{
 			MoveAlongMenuItemList(MENU_DOWN, 0);
 			if ( m_MenuItems.IsValidIndex( m_iCurrentlySelectedItemID ) )
 			{
 				m_MenuItems[m_iCurrentlySelectedItemID]->ArmItem();	
+			}
+			else
+			{
+				BaseClass::OnKeyCodeTyped( keycode ); // chain up
 			}
 			break;
 		}
@@ -1307,6 +1312,7 @@ void Menu::OnKeyCodeTyped(KeyCode keycode)
 	case KEY_RIGHT:
 	case KEY_XBUTTON_RIGHT: 
 	case KEY_XSTICK1_RIGHT: 
+	case STEAMCONTROLLER_DPAD_RIGHT:
 		{
 			// make sure a menuItem is currently selected
 			if ( m_MenuItems.IsValidIndex(m_iCurrentlySelectedItemID) )
@@ -1329,6 +1335,7 @@ void Menu::OnKeyCodeTyped(KeyCode keycode)
 	case KEY_LEFT:
 	case KEY_XBUTTON_LEFT: 
 	case KEY_XSTICK1_LEFT: 
+	case STEAMCONTROLLER_DPAD_LEFT:
 		{
 			// if our parent is a menu item then we are a submenu so close us.
 			if (GetParentMenuItem())
@@ -1343,6 +1350,7 @@ void Menu::OnKeyCodeTyped(KeyCode keycode)
 		}
 	case KEY_ENTER:
 	case KEY_XBUTTON_A:
+	case STEAMCONTROLLER_A:
 		{
 			// make sure a menuItem is currently selected
 			if ( m_MenuItems.IsValidIndex(m_iCurrentlySelectedItemID) )
@@ -1490,7 +1498,9 @@ void Menu::OnTypeAhead(wchar_t unichar)
 		wchar_t menuItemName[255];
 		m_MenuItems[i]->GetText(menuItemName, 254);
 
-		if ( wcsnicmp( m_szTypeAheadBuf, menuItemName, m_iNumTypeAheadChars) == 0 )			
+		// This is supposed to be case insensitive but we don't have a portable case
+		// insensitive wide-character routine.
+		if ( wcsncmp( m_szTypeAheadBuf, menuItemName, m_iNumTypeAheadChars) == 0 )			
 		{
 			itemToSelect = i;
 			break;			
@@ -1532,20 +1542,24 @@ void Menu::OnKeyTyped(wchar_t unichar)
 		break;
 	}
 
-	if ( m_MenuItems.Count() <= 0)
-		return;
-
 	int itemToSelect = m_iCurrentlySelectedItemID;
-	if ( itemToSelect < 0 || itemToSelect >= m_MenuItems.Count())
+	if ( itemToSelect < 0 )
 	{
 		itemToSelect = 0;
 	}
 
-	int i = (itemToSelect+1) % m_MenuItems.Count();
+	int i;
+    wchar_t menuItemName[255];
+
+	i = itemToSelect + 1;
+	if ( i >= m_MenuItems.Count() )
+	{
+		i = 0;
+	}
+
 	while ( i != itemToSelect )
 	{
-		wchar_t menuItemName[255];
-		m_MenuItems[i]->GetText(menuItemName, 254);
+		 m_MenuItems[i]->GetText(menuItemName, 254);
 
 		if ( tolower( unichar ) == tolower( menuItemName[0] ) )
 		{
@@ -1553,11 +1567,15 @@ void Menu::OnKeyTyped(wchar_t unichar)
 			break;			
 		}
 
-		i = (i+1) % m_MenuItems.Count();
-	} 
+		i++;
+		if ( i >= m_MenuItems.Count() )
+		{
+			i = 0;
+		}
+	}
 
 	if ( itemToSelect >= 0 )
-	{
+    {
 		SetCurrentlyHighlightedItem( itemToSelect );
 		InvalidateLayout();
 	}
@@ -1828,12 +1846,7 @@ void Menu::SetVisible(bool state)
 		PostActionSignal(new KeyValues("MenuClose"));
 		CloseOtherMenus(NULL);
 
-		// Clearing the selected item when hiding the menu caused keyboard selection
-		// of items within the combo box to not work properly because the combo box
-		// would try to change the selection from the current to the next or previous 
-		// item, but the current was always -1 because of this line, so it always
-		// reset the first time you pressed a key.
-		//SetCurrentlySelectedItem(-1);
+		SetCurrentlySelectedItem(-1);
 
 		g_MenuMgr.RemoveMenu( this );
 	}
@@ -1842,7 +1855,11 @@ void Menu::SetVisible(bool state)
 		MoveToFront();
 		RequestFocus();
 
-		g_MenuMgr.AddMenu( this );
+		// Add to menu manager?
+		if ( m_bUseMenuManager )
+		{
+			g_MenuMgr.AddMenu( this );
+		}
 	}
 	
 	// must be after movetofront()
@@ -1870,7 +1887,7 @@ void Menu::ApplySchemeSettings(IScheme *pScheme)
 			int wide, tall;
 			m_MenuItems[i]->GetCheckImageSize( wide, tall );
 
-			m_iCheckImageWidth = MAX( m_iCheckImageWidth, wide );
+			m_iCheckImageWidth = MAX ( m_iCheckImageWidth, wide );
 		}
 	}
 	_recalculateWidth = true;
@@ -2062,6 +2079,22 @@ void Menu::ActivateItem(int itemID)
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
+void Menu::SilentActivateItem(int itemID)
+{
+	if ( m_MenuItems.IsValidIndex( itemID ) )
+	{
+		MenuItem *menuItem = dynamic_cast<MenuItem *>(m_MenuItems[itemID]);
+		// make sure its enabled since disabled items get highlighted.
+		if (menuItem && menuItem->IsEnabled())
+		{
+			m_iActivatedItem = itemID;
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
 void Menu::ActivateItemByRow(int row)
 {
 	if (m_SortedItems.IsValidIndex(row))
@@ -2073,7 +2106,7 @@ void Menu::ActivateItemByRow(int row)
 //-----------------------------------------------------------------------------
 // Purpose: Return the number of items currently in the menu list
 //-----------------------------------------------------------------------------
-int Menu::GetItemCount()
+int Menu::GetItemCount() const
 {
 	return m_MenuItems.Count();
 }
@@ -2203,8 +2236,8 @@ void Menu::OnCursorMoved(int x, int y)
 	
 	// chain up
 	CallParentFunction(new KeyValues("OnCursorMoved", "x", x, "y", y));
-	RequestFocus();
-	InvalidateLayout();
+	//RequestFocus();
+	//InvalidateLayout();
 }
 
 //-----------------------------------------------------------------------------
@@ -2218,6 +2251,8 @@ void Menu::OnKeyCodePressed(KeyCode code)
 	{
 		ivgui()->PostMessage(GetVParent(), new KeyValues("KeyModeSet"), GetVPanel());
 	}
+
+	BaseClass::OnKeyCodePressed( code );
 }
 
 //-----------------------------------------------------------------------------
@@ -2282,7 +2317,8 @@ void Menu::SetCurrentlyHighlightedItem(int itemID)
 {
 	SetCurrentlySelectedItem(itemID);
 	int row = m_SortedItems.Find(itemID);
-	Assert(row != -1);
+	// If we have no items, then row will be -1. The dev console, for example...
+	Assert( ( m_SortedItems.Count() == 0 ) || ( row != -1 ) );
 	if ( row == -1 )
 		return;
 
@@ -2322,7 +2358,7 @@ int Menu::GetCurrentlyHighlightedItem()
 //-----------------------------------------------------------------------------
 // Purpose: Respond to cursor entering a menuItem.
 //-----------------------------------------------------------------------------
-void Menu::OnCursorEnteredMenuItem(vgui::Panel* VPanel)
+void Menu::OnCursorEnteredMenuItem(int VPanel)
 {
 	VPANEL menuItem = (VPANEL)VPanel;
 	// if we are in mouse mode
@@ -2331,16 +2367,22 @@ void Menu::OnCursorEnteredMenuItem(vgui::Panel* VPanel)
 		MenuItem *item = static_cast<MenuItem *>(ipanel()->GetPanel(menuItem, GetModuleName()));
 		// arm the menu
 		item->ArmItem();
-		// open the cascading menu if there is one.
-		item->OpenCascadeMenu();
 		SetCurrentlySelectedItem(item);
+
+		// open the cascading menu if there is one.
+		if ( item->HasMenu() )
+		{
+			// open the cascading menu if there is one.
+			item->OpenCascadeMenu();
+			ActivateItem( m_iCurrentlySelectedItemID );
+		}
 	}
 }
 
 //-----------------------------------------------------------------------------
 // Purpose: Respond to cursor exiting a menuItem
 //-----------------------------------------------------------------------------
-void Menu::OnCursorExitedMenuItem(vgui::Panel* VPanel)
+void Menu::OnCursorExitedMenuItem(int VPanel)
 {
 	VPANEL menuItem = (VPANEL)VPanel;
 	// only care if we are in mouse mode
@@ -2664,3 +2706,39 @@ void Menu::Validate( CValidator &validator, char *pchName )
 	validator.Pop();
 }
 #endif // DBGFLAG_VALIDATE
+
+
+MenuBuilder::MenuBuilder( Menu *pMenu, Panel *pActionTarget )
+	: m_pMenu( pMenu )
+	, m_pActionTarget( pActionTarget )
+	, m_pszLastCategory( NULL )
+{}
+
+MenuItem* MenuBuilder::AddMenuItem( const char *pszButtonText, const char *pszCommand, const char *pszCategoryName )
+{
+	AddSepratorIfNeeded( pszCategoryName );
+	return m_pMenu->GetMenuItem( m_pMenu->AddMenuItem( pszButtonText, pszCommand, m_pActionTarget ) );
+}
+
+MenuItem* MenuBuilder::AddMenuItem( const char *pszButtonText, KeyValues *kvUserData, const char *pszCategoryName )
+{
+	AddSepratorIfNeeded( pszCategoryName );
+	return m_pMenu->GetMenuItem( m_pMenu->AddMenuItem( pszButtonText, kvUserData, m_pActionTarget ) );
+}
+
+MenuItem* MenuBuilder::AddCascadingMenuItem( const char *pszButtonText, Menu *pSubMenu, const char *pszCategoryName )
+{
+	AddSepratorIfNeeded( pszCategoryName );
+	return m_pMenu->GetMenuItem( m_pMenu->AddCascadingMenuItem( pszButtonText, m_pActionTarget, pSubMenu ) );
+}
+
+void MenuBuilder::AddSepratorIfNeeded( const char *pszCategoryName )
+{
+	// Add a separator if the categories are different
+	if ( m_pszLastCategory && V_stricmp( pszCategoryName, m_pszLastCategory ) != 0 )
+	{
+		m_pMenu->AddSeparator();
+	}
+
+	m_pszLastCategory = pszCategoryName;
+}

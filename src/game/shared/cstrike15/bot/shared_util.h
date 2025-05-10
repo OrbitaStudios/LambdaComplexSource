@@ -41,13 +41,13 @@ bool SharedTokenWaiting( const char *buffer );
 /**
  * Simple utility function to allocate memory and duplicate a string
  */
-/*
+
 inline char *CloneString( const char *str )
 {
 	char *cloneStr = new char [ strlen(str)+1 ];
 	strcpy( cloneStr, str );
 	return cloneStr;
-}*/
+}
 
 
 //--------------------------------------------------------------------------------------------------------

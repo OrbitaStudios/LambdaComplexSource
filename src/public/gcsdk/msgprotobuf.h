@@ -1,4 +1,4 @@
-//====== Copyright ï¿½ 1996-2004, Valve Corporation, All rights reserved. =======
+//====== Copyright © 1996-2004, Valve Corporation, All rights reserved. =======
 //
 // Purpose: 
 //
@@ -19,7 +19,12 @@
 #undef TYPE_BOOL
 #endif
 
+#pragma warning(push)
+#pragma warning( disable:4512 )
+#include <tier0/valve_minmax_off.h>
 #include "steammessages.pb.h"
+#include <tier0/valve_minmax_on.h>
+#pragma warning(pop)
 
 
 namespace GCSDK
@@ -38,31 +43,28 @@ class CProtoBufNetPacket : public IMsgNetPacket
 public:
 	CProtoBufNetPacket( CNetPacket *pNetPacket, GCProtoBufMsgSrc eReplyType, const CSteamID steamID, uint32 nGCDirIndex, MsgType_t msgType );
 
-	//IMsgNetPacket
-
-	virtual EMsgFormatType GetEMsgFormatType() const OVERRIDE { return k_EMsgFormatTypeProtocolBuffer; }
-	virtual CNetPacket *GetCNetPacket() const OVERRIDE { return m_pNetPacket; }
-	virtual uint8 *PubData() const OVERRIDE { return m_pNetPacket->PubData(); }
-	virtual uint CubData() const OVERRIDE { return m_pNetPacket->CubData(); }
-
-	virtual MsgType_t GetEMsg() const OVERRIDE { return m_msgType; }
-	virtual JobID_t GetSourceJobID() const OVERRIDE { return m_pHeader->job_id_source(); }
-	virtual JobID_t GetTargetJobID() const OVERRIDE { return m_pHeader->job_id_target(); }
-	virtual void SetTargetJobID( JobID_t ulJobID ) OVERRIDE { m_pHeader->set_job_id_target( ulJobID ); }
-
-	virtual CSteamID GetSteamID() const OVERRIDE { return m_steamID; }
-	virtual void SetSteamID( CSteamID steamID ) OVERRIDE { m_steamID = steamID; }
-
-	virtual AppId_t GetSourceAppID() const OVERRIDE { return m_pHeader->source_app_id(); };
-	virtual void SetSourceAppID( AppId_t appId ) OVERRIDE { m_pHeader->set_source_app_id( appId ); }
-
-	virtual bool BHasTargetJobName() const OVERRIDE { return m_pHeader->has_target_job_name(); }
-	virtual const char *GetTargetJobName() const OVERRIDE { return m_pHeader->target_job_name().c_str(); }
-
+	EMsgFormatType GetEMsgFormatType() const { return k_EMsgFormatTypeProtocolBuffer; }
+	CNetPacket *GetCNetPacket() const { return m_pNetPacket; }
+	uint8 *PubData() const { return m_pNetPacket->PubData(); }
+	uint CubData() const { return m_pNetPacket->CubData(); }
 
 	bool IsValid() const { return m_bIsValid; }
-	ProtoBufMsgHeader_t &GetFixedHeader() const { return *( ( ProtoBufMsgHeader_t * )PubData() ); }
+	ProtoBufMsgHeader_t &GetFixedHeader() const { return *( (ProtoBufMsgHeader_t *)PubData() ); }
 	CMsgProtoBufHeader *GetProtoHeader() const { return m_pHeader; }
+
+	MsgType_t GetEMsg() const { return m_msgType; }
+	JobID_t GetSourceJobID() const { return m_pHeader->job_id_source(); }
+	JobID_t GetTargetJobID() const { return m_pHeader->job_id_target(); }
+	void SetTargetJobID( JobID_t ulJobID ) { m_pHeader->set_job_id_target( ulJobID ); }
+
+	CSteamID GetSteamID() const { return m_steamID; }
+	void SetSteamID( CSteamID steamID ) { m_steamID = steamID; }
+
+	AppId_t GetSourceAppID() const { return m_pHeader->source_app_id(); };
+	void SetSourceAppID( AppId_t appId ) { m_pHeader->set_source_app_id( appId ); }
+
+	virtual bool BHasTargetJobName() const { return m_pHeader->has_target_job_name(); }
+	virtual const char *GetTargetJobName() const { return m_pHeader->target_job_name().c_str(); }
 
 	//called to obtain access to the body portion of the net packet associated with this message. Will return NULL if not in a valid state
 	bool GetMsgBody( const uint8*& pubData, uint32& cubData ) const;
@@ -112,7 +114,7 @@ public:
 	const CMsgProtoBufHeader &ConstHdr() const	{ return *m_pProtoBufHdr; }
 
 	MsgType_t	GetEMsg()			const		{ return m_eMsg & (~k_EMsgProtoBufFlag); }
-	CSteamID	GetClientSteamID()	const		{ return CSteamID( uint64(m_pProtoBufHdr->client_steam_id()) ); }
+	CSteamID	GetClientSteamID()	const		{ return CSteamID( static_cast<uint64>( m_pProtoBufHdr->client_steam_id() ) ); }
 	JobID_t		GetJobIDTarget()	const		{ return m_pProtoBufHdr->job_id_target(); }
 	JobID_t		GetJobIDSource()	const		{ return m_pProtoBufHdr->job_id_source(); }
 	AppId_t		GetSourceAppID()	const		{ return m_pProtoBufHdr->source_app_id(); }
@@ -259,7 +261,7 @@ private:
 
 		PB_OBJECT_TYPE *pObject = (PB_OBJECT_TYPE *)pMsg;
 		Destruct( pObject );
-		FreePv( pObject );
+		free( pObject );
 	}
 };
 
@@ -374,8 +376,8 @@ public:
 		VPROF_BUDGET( "CProtoBufMsg::CProtoBufMsg( MsgType_t, CSteamID, int32 )", VPROF_BUDGETGROUP_OTHER_NETWORKING );
 
 		m_pProtoBufBody = AllocProto();
-		Hdr().set_client_steam_id( steamIDClient.ConvertToUint64() );
-		Hdr().set_client_session_id( nSessionIDClient );
+		Hdr()->set_client_steam_id( steamIDClient.ConvertToUint64() );
+		Hdr()->set_client_session_id( nSessionIDClient );
 	}
 
 	// Constructor from an incoming netpacket

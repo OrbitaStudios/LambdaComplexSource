@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: Bot radio chatter system
 //
@@ -41,7 +41,6 @@ class BotMeme
 {
 public:
 	void Transmit( CCSBot *sender ) const;									///< transmit meme to other bots
-	virtual ~BotMeme() = default; //lwss: add a meme destructor
 	virtual void Interpret( CCSBot *sender, CCSBot *receiver ) const = 0;	///< cause the given bot to act on this meme
 };
 
@@ -53,7 +52,7 @@ public:
 	{
 		m_place = place;
 	}
-    virtual ~BotHelpMeme() = default;
+
 	virtual void Interpret( CCSBot *sender, CCSBot *receiver ) const;		///< cause the given bot to act on this meme
 
 private:
@@ -71,7 +70,7 @@ public:
 		m_zoneIndex = zoneIndex;
 		m_status = status;
 	}
-    virtual ~BotBombsiteStatusMeme() = default;
+
 	virtual void Interpret( CCSBot *sender, CCSBot *receiver ) const;		///< cause the given bot to act on this meme
 
 private:
@@ -88,7 +87,7 @@ public:
 		m_state = state;
 		m_pos = pos;
 	}
-    virtual ~BotBombStatusMeme() = default;
+
 	virtual void Interpret( CCSBot *sender, CCSBot *receiver ) const;		///< cause the given bot to act on this meme
 
 private:
@@ -100,8 +99,7 @@ private:
 class BotFollowMeme : public BotMeme
 {
 public:
-    virtual ~BotFollowMeme() = default;
-    virtual void Interpret( CCSBot *sender, CCSBot *receiver ) const;		///< cause the given bot to act on this meme
+	virtual void Interpret( CCSBot *sender, CCSBot *receiver ) const;		///< cause the given bot to act on this meme
 };
 
 //----------------------------------------------------------------------------------------------------
@@ -112,7 +110,7 @@ public:
 	{
 		m_pos = pos;
 	}
-    virtual ~BotDefendHereMeme() = default;
+
 	virtual void Interpret( CCSBot *sender, CCSBot *receiver ) const;		///< cause the given bot to act on this meme
 
 private:
@@ -123,7 +121,6 @@ private:
 class BotWhereBombMeme : public BotMeme
 {
 public:
-    virtual ~BotWhereBombMeme() = default;
 	virtual void Interpret( CCSBot *sender, CCSBot *receiver ) const;		///< cause the given bot to act on this meme
 };
 
@@ -131,40 +128,35 @@ public:
 class BotRequestReportMeme : public BotMeme
 {
 public:
-    virtual ~BotRequestReportMeme() = default;
-    virtual void Interpret( CCSBot *sender, CCSBot *receiver ) const;		///< cause the given bot to act on this meme
+	virtual void Interpret( CCSBot *sender, CCSBot *receiver ) const;		///< cause the given bot to act on this meme
 };
 
 //----------------------------------------------------------------------------------------------------
 class BotAllHostagesGoneMeme : public BotMeme
 {
 public:
-    virtual ~BotAllHostagesGoneMeme() = default;
-    virtual void Interpret( CCSBot *sender, CCSBot *receiver ) const;		///< cause the given bot to act on this meme
+	virtual void Interpret( CCSBot *sender, CCSBot *receiver ) const;		///< cause the given bot to act on this meme
 };
 
 //----------------------------------------------------------------------------------------------------
 class BotHostageBeingTakenMeme : public BotMeme
 {
 public:
-    virtual ~BotHostageBeingTakenMeme() = default;
-    virtual void Interpret( CCSBot *sender, CCSBot *receiver ) const;		///< cause the given bot to act on this meme
+	virtual void Interpret( CCSBot *sender, CCSBot *receiver ) const;		///< cause the given bot to act on this meme
 };
 
 //----------------------------------------------------------------------------------------------------
 class BotHeardNoiseMeme : public BotMeme
 {
 public:
-    virtual ~BotHeardNoiseMeme() = default;
-    virtual void Interpret( CCSBot *sender, CCSBot *receiver ) const;		///< cause the given bot to act on this meme
+	virtual void Interpret( CCSBot *sender, CCSBot *receiver ) const;		///< cause the given bot to act on this meme
 };
 
 //----------------------------------------------------------------------------------------------------
 class BotWarnSniperMeme : public BotMeme
 {
 public:
-    virtual ~BotWarnSniperMeme() = default;
-    virtual void Interpret( CCSBot *sender, CCSBot *receiver ) const;		///< cause the given bot to act on this meme
+	virtual void Interpret( CCSBot *sender, CCSBot *receiver ) const;		///< cause the given bot to act on this meme
 };
 
 //----------------------------------------------------------------------------------------------------

@@ -39,7 +39,7 @@ IAchievementMgr * CAchievementMgr::GetInstanceInterface()
 
 // [dwenger] Necessary for sorting achievements by award time
 #include <vgui/ISystem.h>
-#include "../../public/vgui_controls/Controls.h"
+#include "vgui_controls/Controls.h"
 
 #endif // CLIENT_DLL
 

@@ -4003,6 +4003,20 @@ void MathLib_Init( float gamma, float texGamma, float brightness, int overbright
 	pDebugString = "mathlib.lib built debug!";
 #endif
 
+	// FIXME: Hook SSE into VectorAligned + Vector4DAligned
+
+#if !defined( _GAMECONSOLE )
+	// Grab the processor information:
+	const CPUInformation& pi = GetCPUInformation();
+
+	if ( ! ( pi.m_bSSE && pi.m_bSSE2 ) )
+	{
+		Assert( 0 );
+		Error( "SSE and SSE2 are required." );
+	}
+#endif //!360
+
+
 	s_bMathlibInitialized = true;
 
 	InitSinCosTable();

@@ -5390,7 +5390,7 @@ void CBaseEntity::PrecacheSoundHelper( const char *pName )
 		return;
 	}
 
-	if ( !g_ModelSoundsSymbolHelper.Find( pName ).IsValid() )
+	if ( UTL_INVAL_SYMBOL == g_ModelSoundsSymbolHelper.Find( pName ) )
 	{
 		g_ModelSoundsSymbolHelper.AddString( pName );
 
@@ -6113,11 +6113,6 @@ void CC_Ent_FireTarget( const CCommand& args )
 	ConsoleFireTargets(UTIL_GetCommandClient(),args[1]);
 }
 static ConCommand firetarget("firetarget", CC_Ent_FireTarget, 0, FCVAR_CHEAT);
-
-static bool UtlStringLessFunc( const CUtlString &lhs, const CUtlString &rhs )
-{
-	return Q_stricmp( lhs.String(), rhs.String() ) < 0;
-}
 
 class CEntFireAutoCompletionFunctor : public ICommandCallback, public ICommandCompletionCallback
 {

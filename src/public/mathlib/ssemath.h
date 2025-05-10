@@ -11,20 +11,11 @@
 #elif defined ( _PS3 )
 #include <vectormath/c/vectormath_aos.h>
 #include <vectormath/c/vectormath_aos_v.h>
-#if !defined(EMSCRIPTEN)
-#elif defined( __aarch64__ )
-#include <sse2neon.h>
 #else
 #include <xmmintrin.h>
 #ifndef _LINUX
 #include <emmintrin.h>
 #endif
-#endif
-#else
-#include <wasm_simd128.h>
-#include "../emscripten/sse_def.h"
-//#include <xmmintrin.h>
-//#include <emmintrin.h>
 #endif
 
 #ifndef SPU
@@ -53,7 +44,6 @@ typedef const fltx4 & FLTX4;
 // A 16-byte aligned int32 datastructure
 // (for use when writing out fltx4's as SIGNED
 // ints).
-#ifndef EMSCRIPTEN
 struct ALIGN16 intx4
 {
 	int32 m_i32[4];
@@ -85,39 +75,7 @@ struct ALIGN16 intx4
 			m_i32[3] == other.m_i32[3] 	;
 	}
 } ALIGN16_POST;
-#else
-struct ALIGN16 intx4
-{
-	int64_t m_i64[4];
 
-	inline int64_t& operator[](int64_t which) 
-	{
-		return m_i64[which];
-	}
-
-	inline const int & operator[](int64_t which) const
-	{
-		return m_i64[which];
-	}
-
-	inline int64_t *Base() {
-		return m_i64;
-	}
-
-	inline const int64_t *Base() const
-	{
-		return m_i64;
-	}
-
-	inline bool operator==(const intx4 &other) const
-	{
-		return m_i64[0] == other.m_i64[0] &&
-			m_i64[1] == other.m_i64[1] &&
-			m_i64[2] == other.m_i64[2] &&
-			m_i64[3] == other.m_i64[3] 	;
-	}
-} ALIGN16_POST;
-#endif
 
 #if defined( _DEBUG ) && defined( _X360 )
 FORCEINLINE void TestVPUFlags()
@@ -4415,16 +4373,14 @@ FORCEINLINE void ConvertStoreAsIntsSIMD(intx4 * RESTRICT pDest, const fltx4 &vSr
 	(*pDest)[1] = (int)SubFloat(vSrc, 1);
 	(*pDest)[2] = (int)SubFloat(vSrc, 2);
 	(*pDest)[3] = (int)SubFloat(vSrc, 3);
-#elif !defined(__EMSCRIPTEN__)
+#else
 	__m64 bottom = _mm_cvttps_pi32( vSrc );
 	__m64 top    = _mm_cvttps_pi32( _mm_movehl_ps(vSrc,vSrc) );
 
 	*reinterpret_cast<__m64 *>(&(*pDest)[0]) = bottom;
 	*reinterpret_cast<__m64 *>(&(*pDest)[2]) = top;
+
 	_mm_empty();
-#else
-	__m128i intVals = _mm_cvttps_epi32(vSrc);
-  	 _mm_storeu_si128(reinterpret_cast<__m128i*>(pDest), intVals);
 #endif
 }
 

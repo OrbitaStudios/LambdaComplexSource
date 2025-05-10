@@ -1,4 +1,4 @@
-//========= Copyright (c) Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -12,7 +12,7 @@
 #include <vgui/ILocalize.h>
 #include <vgui/IScheme.h>
 #include <vgui/ISurface.h>
-#include <keyvalues.h>
+#include <KeyValues.h>
 #include <vgui/MouseCode.h>
 
 #include <vgui_controls/SectionedListPanel.h>
@@ -30,69 +30,60 @@
 
 using namespace vgui;
 
-enum
-{
-	BUTTON_HEIGHT_DEFAULT = 20,
-	BUTTON_HEIGHT_SPACER = 7,
-	SECTION_GAP = 8, 
-	COLUMN_DATA_INDENT = 6,
-	COLUMN_DATA_GAP = 2,
-};
-
 namespace vgui
 {
 
 //-----------------------------------------------------------------------------
 // Purpose: header label that separates and names each section
 //-----------------------------------------------------------------------------
-class CSectionHeader : public Label
+SectionedListPanelHeader::SectionedListPanelHeader(SectionedListPanel *parent, const char *name, int sectionID) : Label(parent, name, "")
 {
-	DECLARE_CLASS_SIMPLE( CSectionHeader, Label );
+	m_pListPanel = parent;
+	m_iSectionID = sectionID;
+	SetTextImageIndex(-1);
+	ClearImages();
+	SetPaintBackgroundEnabled( false );
+	m_bDrawDividerBar = true;
+}
 
-public:
-	CSectionHeader(SectionedListPanel *parent, const char *name, int sectionID) : Label(parent, name, "")
+SectionedListPanelHeader::SectionedListPanelHeader(SectionedListPanel *parent, const wchar_t *name, int sectionID) : Label(parent, "SectionHeader", "")
+{
+	SetText(name);	
+	SetVisible(false);
+	m_pListPanel = parent;
+	m_iSectionID = sectionID;
+	SetTextImageIndex(-1);
+	ClearImages();
+	m_bDrawDividerBar = true;
+}
+
+void SectionedListPanelHeader::ApplySchemeSettings(IScheme *pScheme)
+{
+	BaseClass::ApplySchemeSettings(pScheme);
+
+	SetFgColor(GetSchemeColor("SectionedListPanel.HeaderTextColor", pScheme));
+	m_SectionDividerColor = GetSchemeColor("SectionedListPanel.DividerColor", pScheme);
+	SetBgColor(GetSchemeColor("SectionedListPanelHeader.BgColor", GetBgColor(), pScheme));
+	SetFont(pScheme->GetFont("DefaultVerySmall", IsProportional()));
+	ClearImages();
+	
+	HFont hFont = m_pListPanel->GetHeaderFont();
+	if ( hFont != INVALID_FONT )
 	{
-		m_pListPanel = parent;
-		m_iSectionID = sectionID;
-		SetTextImageIndex(-1);
-		ClearImages();
-		SetPaintBackgroundEnabled( false );
+		SetFont( hFont );
 	}
-
-	CSectionHeader(SectionedListPanel *parent, const wchar_t *name, int sectionID) : Label(parent, "SectionHeader", "")
+	else
 	{
-		SetText(name);	
-		SetVisible(false);
-		m_pListPanel = parent;
-		m_iSectionID = sectionID;
-		SetTextImageIndex(-1);
-		ClearImages();
+		SetFont(pScheme->GetFont("DefaultVerySmall", IsProportional()));
 	}
+}
 
-	void ApplySchemeSettings(IScheme *pScheme)
+void SectionedListPanelHeader::Paint()
+{
+	BaseClass::Paint();
+
+	if ( m_bDrawDividerBar )
 	{
-		BaseClass::ApplySchemeSettings(pScheme);
-
-		SetFgColor(GetSchemeColor("SectionedListPanel.HeaderTextColor", pScheme));
-		m_SectionDividerColor = GetSchemeColor("SectionedListPanel.DividerColor", pScheme);
-		SetBgColor(GetSchemeColor("SectionedListPanelHeader.BgColor", GetBgColor(), pScheme));
-
-		HFont hFont = m_pListPanel->GetHeaderFont();
-		if ( hFont != INVALID_FONT )
-		{
-			SetFont( hFont );
-		}
-		else
-		{
-			SetFont(pScheme->GetFont("DefaultVerySmall", IsProportional()));
-		}
-		ClearImages();
-	}
-
-	void Paint()
-	{
-		BaseClass::Paint();
-
 		int x, y, wide, tall;
 		GetBounds(x, y, wide, tall);
 
@@ -101,124 +92,119 @@ public:
 		surface()->DrawSetColor(m_SectionDividerColor);
 		surface()->DrawFilledRect(1, y, GetWide() - 2, y + 1);
 	}
+}
 
-	void SetColor(Color col)
-	{
-		m_SectionDividerColor = col;
-		SetFgColor(col);
-	}
-	void SetDividerColor(Color col )
-	{
-		m_SectionDividerColor = col;
-	}
+void SectionedListPanelHeader::SetColor(Color col)
+{
+	m_SectionDividerColor = col;
+	SetFgColor(col);
+}
+void SectionedListPanelHeader::SetDividerColor(Color col )
+{
+	m_SectionDividerColor = col;
+}
 
-	void PerformLayout()
-	{
-		BaseClass::PerformLayout();
+void SectionedListPanelHeader::PerformLayout()
+{
+	BaseClass::PerformLayout();
 
-		// set up the text in the header
-		int colCount = m_pListPanel->GetColumnCountBySection(m_iSectionID);
-		if (colCount != GetImageCount())
+	// set up the text in the header
+	int colCount = m_pListPanel->GetColumnCountBySection(m_iSectionID);
+	if (colCount != GetImageCount())
+	{
+		// rebuild the image list
+		for (int i = 0; i < colCount; i++)
 		{
-			// rebuild the image list
-			for (int i = 0; i < colCount; i++)
+			int columnFlags = m_pListPanel->GetColumnFlagsBySection(m_iSectionID, i);
+			IImage *image = NULL;
+			if (columnFlags & SectionedListPanel::HEADER_IMAGE)
 			{
-				int columnFlags = m_pListPanel->GetColumnFlagsBySection(m_iSectionID, i);
-				IImage *image = NULL;
-				if (columnFlags & SectionedListPanel::HEADER_IMAGE)
-				{
-					//!! need some kind of image reference
-					image = NULL;
-				}
-				else 
-				{
-					TextImage *textImage = new TextImage("");
-					textImage->SetFont(GetFont());
-					HFont fallback = m_pListPanel->GetColumnFallbackFontBySection( m_iSectionID, i );
-					if ( INVALID_FONT != fallback )
-					{
-						textImage->SetUseFallbackFont( true, fallback );
-					}
-					textImage->SetColor(GetFgColor());
-					image = textImage;
-				}
-
-				SetImageAtIndex(i, image, 0);
+				//!! need some kind of image reference
+				image = NULL;
 			}
-		}
-
-		for (int repeat = 0; repeat <= 1; repeat++)
-		{
-			int xpos = 0;
-			for (int i = 0; i < colCount; i++)
+			else 
 			{
-				int columnFlags = m_pListPanel->GetColumnFlagsBySection(m_iSectionID, i);
-				int columnWidth = m_pListPanel->GetColumnWidthBySection(m_iSectionID, i);
-				int maxWidth = columnWidth;
-
-				IImage *image = GetImageAtIndex(i);
-				if (!image)
+				TextImage *textImage = new TextImage("");
+				textImage->SetFont(GetFont());
+				HFont fallback = m_pListPanel->GetColumnFallbackFontBySection( m_iSectionID, i );
+				if ( INVALID_FONT != fallback )
 				{
-					xpos += columnWidth;
-					continue;
+					textImage->SetUseFallbackFont( true, fallback );
 				}
+				textImage->SetColor(GetFgColor());
+				image = textImage;
+			}
 
-				// set the image position within the label
-				int contentWide, wide, tall;
-				image->GetContentSize(wide, tall);
-				contentWide = wide;
+			SetImageAtIndex(i, image, 0);
+		}
+	}
 
-				// see if we can draw over the next few column headers (if we're left-aligned)
-				if (!(columnFlags & SectionedListPanel::COLUMN_RIGHT))
-				{
-					for (int j = i + 1; j < colCount; j++)
-					{
-						// see if this column header has anything for a header
-						int iwide = 0, itall = 0;
-						if (GetImageAtIndex(j))
-						{
-							GetImageAtIndex(j)->GetContentSize(iwide, itall);
-						}
+	for (int repeat = 0; repeat <= 1; repeat++)
+	{
+		int xpos = 0;
+		for (int i = 0; i < colCount; i++)
+		{
+			int columnFlags = m_pListPanel->GetColumnFlagsBySection(m_iSectionID, i);
+			int columnWidth = m_pListPanel->GetColumnWidthBySection(m_iSectionID, i);
+			int maxWidth = columnWidth;
 
-						if (iwide == 0)
-						{
-							// it's a blank header, ok to draw over it
-							maxWidth += m_pListPanel->GetColumnWidthBySection(m_iSectionID, j);
-						}
-					}
-				}
-				if (maxWidth >= 0)
-				{
-					wide = maxWidth;
-				}
-
-				if (columnFlags & SectionedListPanel::COLUMN_RIGHT)
-				{
-					SetImageBounds(i, xpos + wide - contentWide, contentWide - COLUMN_DATA_GAP);
-				}
-				else
-				{
-					SetImageBounds(i, xpos, wide - COLUMN_DATA_GAP);
-				}
+			IImage *image = GetImageAtIndex(i);
+			if (!image)
+			{
 				xpos += columnWidth;
+				continue;
+			}
 
-				if (!(columnFlags & SectionedListPanel::HEADER_IMAGE))
+			// set the image position within the label
+			int contentWide, wide, tall;
+			image->GetContentSize(wide, tall);
+			contentWide = wide;
+
+			// see if we can draw over the next few column headers (if we're left-aligned)
+			if (!(columnFlags & SectionedListPanel::COLUMN_RIGHT))
+			{
+				for (int j = i + 1; j < colCount; j++)
 				{
-					Assert(dynamic_cast<TextImage *>(image) != NULL);
-					TextImage *textImage = (TextImage *)image;
-					textImage->SetFont(GetFont()); 
-					textImage->SetText(m_pListPanel->GetColumnTextBySection(m_iSectionID, i));
-					textImage->ResizeImageToContentMaxWidth( maxWidth );
+					// see if this column header has anything for a header
+					int iwide = 0, itall = 0;
+					if (GetImageAtIndex(j))
+					{
+						GetImageAtIndex(j)->GetContentSize(iwide, itall);
+					}
+
+					if (iwide == 0)
+					{
+						// it's a blank header, ok to draw over it
+						maxWidth += m_pListPanel->GetColumnWidthBySection(m_iSectionID, j);
+					}
 				}
+			}
+			if (maxWidth >= 0)
+			{
+				wide = maxWidth;
+			}
+
+			if (columnFlags & SectionedListPanel::COLUMN_RIGHT)
+			{
+				SetImageBounds(i, xpos + wide - contentWide, wide - SectionedListPanel::COLUMN_DATA_GAP);
+			}
+			else
+			{
+				SetImageBounds(i, xpos, wide - SectionedListPanel::COLUMN_DATA_GAP);
+			}
+			xpos += columnWidth;
+
+			if (!(columnFlags & SectionedListPanel::HEADER_IMAGE))
+			{
+				Assert(dynamic_cast<TextImage *>(image) != NULL);
+				TextImage *textImage = (TextImage *)image;
+				textImage->SetFont(GetFont()); 
+				textImage->SetText(m_pListPanel->GetColumnTextBySection(m_iSectionID, i));
+				textImage->ResizeImageToContentMaxWidth( maxWidth );
 			}
 		}
 	}
-
-private:
-	int m_iSectionID;
-	Color m_SectionDividerColor;
-	SectionedListPanel *m_pListPanel;
-};
+}
 
 //-----------------------------------------------------------------------------
 // Purpose: Individual items in the list
@@ -234,6 +220,7 @@ public:
 		m_iID = itemID;
 		m_pData = NULL;
 		Clear();
+		m_nHorizFillInset = 0;
 	}
 
 	~CItemButton()
@@ -253,7 +240,7 @@ public:
 		m_bSelected = false;
 		m_bOverrideColors = false;
 		m_iSectionID = -1;
-		SetPaintBackgroundEnabled( true );
+		SetPaintBackgroundEnabled( false );
 		SetTextImageIndex(-1);
 		ClearImages();
 	}
@@ -384,7 +371,15 @@ public:
 					TextImage *textImage = dynamic_cast<TextImage *>(GetImageAtIndex(i));
 					if (textImage)
 					{
-						textImage->SetText(m_pData->GetString(keyname, ""));
+						const wchar* pwszOverride = m_pData->GetWString( keyname, NULL );
+						if ( pwszOverride && pwszOverride[0] != '#' )
+						{
+							textImage->SetText( pwszOverride );
+						}
+						else
+						{
+							textImage->SetText(m_pData->GetString(keyname, ""));
+						}
 						textImage->ResizeImageToContentMaxWidth( maxWidth );
 
 						// set the text color based on the selection state - if one of the children of the SectionedListPanel has focus, then 'we have focus' if we're selected
@@ -420,7 +415,8 @@ public:
 							}
 							else
 							{
-								textImage->SetColor(GetFgColor());
+								Color *clrOverride = m_pListPanel->GetColorOverrideForCell(m_iSectionID, m_iID, i);
+								textImage->SetColor( (clrOverride != NULL) ? *clrOverride : GetFgColor());
 							}
 						}
 					}
@@ -446,22 +442,22 @@ public:
 				if (i == 0 && !(columnFlags & SectionedListPanel::COLUMN_IMAGE))
 				{
 					// first column has an extra indent
-					SetImageBounds(i, xpos + COLUMN_DATA_INDENT, wide - (COLUMN_DATA_INDENT + COLUMN_DATA_GAP));
+					SetImageBounds(i, xpos + SectionedListPanel::COLUMN_DATA_INDENT, wide - (SectionedListPanel::COLUMN_DATA_INDENT + SectionedListPanel::COLUMN_DATA_GAP));
 				}
 				else
 				{
 					if (columnFlags & SectionedListPanel::COLUMN_CENTER)
 					{
 						int offSet = (wide / 2) - (imageWide / 2);
-						SetImageBounds(i, xpos + offSet, wide - offSet - COLUMN_DATA_GAP);
+						SetImageBounds(i, xpos + offSet, wide - offSet - SectionedListPanel::COLUMN_DATA_GAP);
 					}
 					else if (columnFlags & SectionedListPanel::COLUMN_RIGHT)
 					{
-						SetImageBounds(i, xpos + wide - imageWide, wide - COLUMN_DATA_GAP);
+						SetImageBounds(i, xpos + wide - imageWide, wide - SectionedListPanel::COLUMN_DATA_GAP);
 					}
 					else
 					{
-						SetImageBounds(i, xpos, wide - COLUMN_DATA_GAP);
+						SetImageBounds(i, xpos, wide - SectionedListPanel::COLUMN_DATA_GAP);
 					}
 				}
 				xpos += wide;
@@ -485,7 +481,6 @@ public:
 		m_BgColor = GetSchemeColor("SectionedListPanel.BgColor", GetBgColor(), pScheme);
 		m_SelectionBG2Color = GetSchemeColor("SectionedListPanel.OutOfFocusSelectedBgColor", pScheme);
 
-		m_MouseOverBgColor = GetSchemeColor("SectionedListPanel.MouseOverBgColor", pScheme);
 
 		HFont hFont = m_pListPanel->GetRowFont();
 		if ( hFont != INVALID_FONT )
@@ -525,16 +520,9 @@ public:
 		}
 		else
 		{
-			if ( IsCursorOver() && !m_pListPanel->IsInEditMode() )
-			{
-				surface()->DrawSetColor( m_MouseOverBgColor );
-			}
-			else
-			{
-				surface()->DrawSetColor(GetBgColor());
-			}
+			surface()->DrawSetColor(GetBgColor());
 		}
-		surface()->DrawFilledRect(0, 0, wide, tall);
+		surface()->DrawFilledRect(0, m_nHorizFillInset, wide, tall - m_nHorizFillInset);
 	}
 
 	virtual void Paint()
@@ -581,8 +569,7 @@ public:
 					image = GetImageAtIndex(i);
 				}
 
-				int imageWide = 0, tall = 0;
-				int wide;
+				int imageWide = 0;
 				if (image)
 				{
 					image->GetContentSize(imageWide, tall);
@@ -604,11 +591,7 @@ public:
 
 	virtual void OnMousePressed(MouseCode code)
 	{
-		//=============================================================================
-		// HPE_BEGIN:
-		// [tj] Only do this if clicking is enabled.
-		//=============================================================================
-		if (m_pListPanel && m_pListPanel->IsClickable())
+		if ( m_pListPanel && m_pListPanel->IsClickable() && IsEnabled() )
 		{
 			if (code == MOUSE_LEFT)
 			{
@@ -623,9 +606,6 @@ public:
 
 			m_pListPanel->SetSelectedItem(this);
 		}
-		//=============================================================================
-		// HPE_END
-		//=============================================================================
 	}
 
 	void SetSelected(bool state)
@@ -637,6 +617,7 @@ public:
                 RequestFocus();
             }
 			m_bSelected = state;
+			SetPaintBackgroundEnabled( state );
 			InvalidateLayout();
 			Repaint();
 		}
@@ -670,7 +651,6 @@ public:
 			if (code == MOUSE_LEFT)
 			{
 				m_pListPanel->PostActionSignal(new KeyValues("ItemDoubleLeftClick", "itemID", m_iID));
-
 
 				// post up an enter key being hit
 				m_pListPanel->OnKeyCodeTyped(KEY_ENTER);
@@ -756,6 +736,8 @@ public:
 		m_bShowColumns = bShow;
 	}
 
+	void SetItemBgHorizFillInset( int nHorizFillInset ){ m_nHorizFillInset = nHorizFillInset; }
+
 private:
 	SectionedListPanel *m_pListPanel;
 	int m_iID;
@@ -768,12 +750,12 @@ private:
 	Color m_OutOfFocusSelectedTextColor;
 	Color m_ArmedBgColor;
 	Color m_SelectionBG2Color;
-	Color m_MouseOverBgColor;
 	CUtlVector<vgui::TextImage *> m_TextImages;
 
 	bool m_bSelected;
 	bool m_bOverrideColors;
 	bool m_bShowColumns;
+	int m_nHorizFillInset;
 };
 
 }; // namespace vgui
@@ -793,14 +775,15 @@ SectionedListPanel::SectionedListPanel(vgui::Panel *parent, const char *name) : 
 	m_iEditModeColumn = 0;
 	m_bSortNeeded = false;
 	m_bVerticalScrollbarEnabled = true;
-	m_iLineSpacing = 20;
+	m_iLineSpacing = DEFAULT_LINE_SPACING;
+	m_iLineGap = 0;
+	m_iSectionGap = DEFAULT_SECTION_GAP;
 
 	m_pImageList = NULL;
 	m_bDeleteImageListWhenDone = false;
 
 	m_hHeaderFont = INVALID_FONT;
 	m_hRowFont = INVALID_FONT;
-
 
 	//=============================================================================
 	// HPE_BEGIN:	
@@ -908,7 +891,15 @@ void SectionedListPanel::PerformLayout()
 	else
 	{
 		m_pScrollBar->SetValue(0);
+
+		bool bWasVisible = m_pScrollBar->IsVisible();
 		m_pScrollBar->SetVisible(false);
+
+		// When we hide the scrollbar, we need to layout the buttons because they'll have more width to work with
+		if ( bWasVisible )
+		{
+			LayoutPanels(m_iContentHeight);
+		}
 	}
 }
 
@@ -931,6 +922,7 @@ void SectionedListPanel::LayoutPanels(int &contentTall)
     int iEnd = -1;
 
 	// layout the buttons
+	bool bFirstVisibleSection = true;
 	for (int sectionIndex = 0; sectionIndex < m_Sections.Count(); sectionIndex++)
 	{
 		section_t &section = m_Sections[sectionIndex];
@@ -947,17 +939,24 @@ void SectionedListPanel::LayoutPanels(int &contentTall)
             }
         }
 
-		// don't draw this section at all if their are no item in it
+		// don't draw this section at all if there are no items in it
 		if (iStart == -1 && !section.m_bAlwaysVisible)
 		{
 			section.m_pHeader->SetVisible(false);
 			continue;
 		}
 
+		// Skip down a bit if this is not the first section to be drawn
+		if ( bFirstVisibleSection )
+			bFirstVisibleSection = false;
+		else
+			y += m_iSectionGap;
+
 		//=============================================================================
 		// HPE_BEGIN:
 		// [tj] Only draw the header if it is enabled
 		//=============================================================================
+		int nMinNextSectionY = y + section.m_iMinimumHeight;
 		if (m_bDrawSectionHeaders)
 		{
 			// draw the header
@@ -983,7 +982,7 @@ void SectionedListPanel::LayoutPanels(int &contentTall)
 			{
 				CItemButton *item = m_SortedItems[i]; //items[i];
 				item->SetBounds(x, y, wide, m_iLineSpacing);
-				
+			
 				// setup edit mode
 				if (m_hEditModePanel.Get() && m_iEditModeItemID == item->GetID())
 				{
@@ -992,12 +991,13 @@ void SectionedListPanel::LayoutPanels(int &contentTall)
 					m_hEditModePanel->SetBounds(cx, y, cwide, tall);
 				}
 
-				y += m_iLineSpacing;
+				y += m_iLineSpacing + m_iLineGap;
 			}
 		}
 
-		// add in a little boundry at the bottom
-		y += SECTION_GAP;
+		// Add space, if needed to fulfill minimum requested content height
+		if ( y < nMinNextSectionY )
+			y = nMinNextSectionY;
 	}
 
 	// calculate height
@@ -1109,11 +1109,23 @@ void SectionedListPanel::ApplySettings(KeyValues *inResourceData)
 	m_iLineSpacing = inResourceData->GetInt("linespacing", 0);
 	if (!m_iLineSpacing)
 	{
-		m_iLineSpacing = 20;
+		m_iLineSpacing = DEFAULT_LINE_SPACING;
 	}
 	if (IsProportional())
 	{
 		m_iLineSpacing = scheme()->GetProportionalScaledValueEx(GetScheme(), m_iLineSpacing);
+	}
+
+	m_iSectionGap = inResourceData->GetInt("sectiongap", 0);
+	if (!m_iSectionGap)
+	{
+		m_iSectionGap = DEFAULT_SECTION_GAP;
+	}
+	m_iLineGap = inResourceData->GetInt( "linegap", 0 );
+	if (IsProportional())
+	{
+		m_iSectionGap = scheme()->GetProportionalScaledValueEx(GetScheme(), m_iSectionGap);
+		m_iLineGap = scheme()->GetProportionalScaledValueEx( GetScheme(), m_iLineGap );
 	}
 }
 
@@ -1149,8 +1161,8 @@ void SectionedListPanel::SetVerticalScrollbar(bool state)
 //-----------------------------------------------------------------------------
 void SectionedListPanel::AddSection(int sectionID, const char *name, SectionSortFunc_t sortFunc)
 {
-	CSectionHeader *header = SETUP_PANEL(new CSectionHeader(this, name, sectionID));
-	AddSectionHelper(sectionID, header, sortFunc);
+	SectionedListPanelHeader *header = new SectionedListPanelHeader(this, name, sectionID);
+	AddSection(sectionID, header, sortFunc);
 }
 
 //-----------------------------------------------------------------------------
@@ -1158,20 +1170,22 @@ void SectionedListPanel::AddSection(int sectionID, const char *name, SectionSort
 //-----------------------------------------------------------------------------
 void SectionedListPanel::AddSection(int sectionID, const wchar_t *name, SectionSortFunc_t sortFunc)
 {
-	CSectionHeader *header = SETUP_PANEL(new CSectionHeader(this, name, sectionID));
-	AddSectionHelper(sectionID, header, sortFunc);
+	SectionedListPanelHeader *header = new SectionedListPanelHeader(this, name, sectionID);
+	AddSection(sectionID, header, sortFunc);
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: helper function for AddSection
+// Purpose: Adds a new section, given object
 //-----------------------------------------------------------------------------
-void SectionedListPanel::AddSectionHelper(int sectionID, CSectionHeader *header, SectionSortFunc_t sortFunc)
+void SectionedListPanel::AddSection(int sectionID, SectionedListPanelHeader *header, SectionSortFunc_t sortFunc)
 {
+	header = SETUP_PANEL( header );
 	int index = m_Sections.AddToTail();
 	m_Sections[index].m_iID = sectionID;
 	m_Sections[index].m_pHeader = header;
 	m_Sections[index].m_pSortFunc = sortFunc;
 	m_Sections[index].m_bAlwaysVisible = false;
+	m_Sections[index].m_iMinimumHeight = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -1324,6 +1338,15 @@ void SectionedListPanel::SetItemBgColor( int itemID, Color color )
 	m_Items[itemID]->InvalidateLayout();
 }
 
+void SectionedListPanel::SetItemBgHorizFillInset( int itemID, int nInset )
+{
+	Assert( m_Items.IsValidIndex( itemID ) );
+	if ( !m_Items.IsValidIndex( itemID ) )
+		return;
+
+	m_Items[itemID]->SetItemBgHorizFillInset( nInset );
+}
+
 void SectionedListPanel::SetItemFont( int itemID, HFont font )
 {
 	Assert( m_Items.IsValidIndex(itemID) );
@@ -1331,6 +1354,15 @@ void SectionedListPanel::SetItemFont( int itemID, HFont font )
 		return;
 
 	m_Items[itemID]->SetFont( font );
+}
+
+void SectionedListPanel::SetItemEnabled( int itemID, bool bEnabled )
+{
+	Assert( m_Items.IsValidIndex(itemID) );
+	if ( !m_Items.IsValidIndex(itemID) )
+		return;
+
+	m_Items[itemID]->SetEnabled( bEnabled );
 }
  
 //=============================================================================
@@ -1356,6 +1388,18 @@ void SectionedListPanel::SetSectionDividerColor( int sectionID, Color color)
 
 	m_Sections[sectionID].m_pHeader->SetDividerColor(color);
 }
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void SectionedListPanel::SetSectionDrawDividerBar( int sectionID, bool bDraw )
+{
+	if ( !m_Sections.IsValidIndex( sectionID ) )
+		return;
+
+	m_Sections[sectionID].m_pHeader->DrawDividerBar( bDraw );
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: forces a section to always be visible
 //-----------------------------------------------------------------------------
@@ -1373,6 +1417,15 @@ void SectionedListPanel::SetFontSection(int sectionID, HFont font)
 
 	m_Sections[sectionID].m_pHeader->SetFont(font);
 }
+void SectionedListPanel::SetSectionMinimumHeight(int sectionID, int iMinimumHeight)
+{
+	if (!m_Sections.IsValidIndex(sectionID))
+		return;
+
+	m_Sections[sectionID].m_iMinimumHeight = iMinimumHeight;
+	InvalidateLayout();
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: removes an item from the list; returns false if the item does not exist or is already removed
 //-----------------------------------------------------------------------------
@@ -1457,6 +1510,33 @@ int SectionedListPanel::GetColumnWidthBySection(int sectionID, int columnIndex)
 		return 0;
 
 	return m_Sections[index].m_Columns[columnIndex].m_iWidth;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void SectionedListPanel::SetColumnWidthBySection(int sectionID, const char *columnName, int iWidth)
+{
+	int index = FindSectionIndexByID(sectionID);
+	if (index < 0)
+		return;
+	section_t &section = m_Sections[index];
+
+	// find the specified column
+	int columnIndex;
+	for (columnIndex = 0; columnIndex < section.m_Columns.Count(); columnIndex++)
+	{
+		if (!stricmp(section.m_Columns[columnIndex].m_szColumnName, columnName))
+			break;
+	}
+	if (!section.m_Columns.IsValidIndex(columnIndex))
+		return;
+
+	column_t &column = section.m_Columns[columnIndex];
+	column.m_iWidth = iWidth;
+
+	// make sure the header for this section reloads with the new width
+	section.m_pHeader->InvalidateLayout();
 }
 
 //=============================================================================
@@ -1615,30 +1695,64 @@ void SectionedListPanel::MoveSelectionUp( void )
 	ScrollToItem(newItemID);
 }
 
+void SectionedListPanel::NavigateTo( void )
+{
+	BaseClass::NavigateTo();
+
+	if ( m_SortedItems.Count() )
+	{
+		int nItemID = m_SortedItems[ 0 ]->GetID();
+		SetSelectedItem( m_Items[ nItemID ] );
+		ScrollToItem( nItemID );
+	}
+	
+	RequestFocus();
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: arrow key movement handler
 //-----------------------------------------------------------------------------
-void SectionedListPanel::OnKeyCodeTyped(KeyCode code)
+void SectionedListPanel::OnKeyCodePressed( KeyCode code )
 {
 	if (m_hEditModePanel.Get())
 	{
 		// ignore arrow keys in edit mode
 		// forward right up to parent so that tab focus change doesn't occur
-		CallParentFunction(new KeyValues("KeyCodeTyped", "code", code));
+		CallParentFunction(new KeyValues("KeyCodePressed", "code", code));
 		return;
 	}
 
 	int buttonTall = GetSectionTall();
+
+	ButtonCode_t nButtonCode = GetBaseButtonCode( code );
 		
-	if (code == KEY_DOWN)
+	if ( nButtonCode == KEY_XBUTTON_DOWN || 
+		 nButtonCode == KEY_XSTICK1_DOWN ||
+		 nButtonCode == KEY_XSTICK2_DOWN ||
+		 nButtonCode == STEAMCONTROLLER_DPAD_DOWN ||
+		 code == KEY_DOWN )
 	{
+		int itemID = GetSelectedItem();
 		MoveSelectionDown();
-        return;
+		if ( itemID != GetSelectedItem() )
+		{
+			// Only eat the input if it did something
+			return;
+		}
 	}
-	else if (code == KEY_UP)
+	else if ( nButtonCode == KEY_XBUTTON_UP || 
+			  nButtonCode == KEY_XSTICK1_UP ||
+			  nButtonCode == KEY_XSTICK2_UP ||
+			  nButtonCode == STEAMCONTROLLER_DPAD_UP ||
+			  code == KEY_UP)
 	{
+		int itemID = GetSelectedItem();
 		MoveSelectionUp();
-        return;
+		if ( itemID != GetSelectedItem() )
+		{
+			// Only eat the input if it did something
+			return;
+		}
 	}
     else if (code == KEY_PAGEDOWN)
     {
@@ -1677,6 +1791,7 @@ void SectionedListPanel::OnKeyCodeTyped(KeyCode code)
         }
         SetSelectedItem(m_Items[itemID]);
         ScrollToItem(itemID);
+		return;
     }
     else if (code == KEY_PAGEUP)
     {
@@ -1714,14 +1829,19 @@ void SectionedListPanel::OnKeyCodeTyped(KeyCode code)
         }
         SetSelectedItem(m_Items[itemID]);
         ScrollToItem(itemID);
+		return;
     }
-	else if (code == KEY_LEFT || code == KEY_RIGHT)
+	else if ( code == KEY_ENTER || nButtonCode == KEY_XBUTTON_A || nButtonCode == STEAMCONTROLLER_A )
 	{
+		Panel *pSelectedItem = m_hSelectedItem;
+		if ( pSelectedItem )
+		{
+			pSelectedItem->OnMousePressed( MOUSE_LEFT );
+		}
+		return;
 	}
-	else
-	{
-		BaseClass::OnKeyCodeTyped(code);
-	}
+
+	BaseClass::OnKeyCodePressed( code );
 }
 
 
@@ -1887,6 +2007,20 @@ bool SectionedListPanel::GetCellBounds(int itemID, int column, int &x, int &y, i
 	//!! ignores column for now
 	item->GetBounds(x, y, wide, tall);
 	item->GetCellBounds(column, x, wide);
+	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: gets the local coordinates of a section header
+//-----------------------------------------------------------------------------
+bool SectionedListPanel::GetSectionHeaderBounds(int sectionID, int &x, int &y, int &wide, int &tall)
+{
+	x = y = wide = tall = 0;
+	int index = FindSectionIndexByID(sectionID);
+	if (index < 0 || !m_Sections[index].m_pHeader )
+		return false;
+
+	m_Sections[index].m_pHeader->GetBounds( x, y, wide, tall );
 	return true;
 }
 
@@ -2068,6 +2202,11 @@ int SectionedListPanel::GetNewItemButton()
 		m_Items[itemID] = SETUP_PANEL(new CItemButton(this, itemID));
 		m_Items[itemID]->SetShowColumns( m_bShowColumns );
 	}
+
+	// Gross.  Le's hope this isn't the only property that doesn't get defaulted
+	// properly when an item is recycled.....
+	m_Items[itemID]->SetEnabled( true );
+
 	return itemID;
 }
 
@@ -2087,4 +2226,46 @@ HFont SectionedListPanel::GetColumnFallbackFontBySection( int sectionID, int col
 		return INVALID_FONT;
 
 	return m_Sections[index].m_Columns[columnIndex].m_hFallbackFont;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+Color *SectionedListPanel::GetColorOverrideForCell( int sectionID, int itemID, int columnID )
+{
+	FOR_EACH_VEC( m_ColorOverrides, i )
+	{
+		if ( ( m_ColorOverrides[i].m_SectionID == sectionID ) && 
+			 ( m_ColorOverrides[i].m_ItemID == itemID ) && 
+			 ( m_ColorOverrides[i].m_ColumnID == columnID ) )
+		{
+			return &(m_ColorOverrides[i].m_clrOverride);
+		}
+	}
+
+	return NULL;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void SectionedListPanel::SetColorOverrideForCell( int sectionID, int itemID, int columnID, Color clrOverride )
+{
+	// is this value already in the override list?
+	FOR_EACH_VEC( m_ColorOverrides, i )
+	{
+		if ( ( m_ColorOverrides[i].m_SectionID == sectionID ) &&
+			( m_ColorOverrides[i].m_ItemID == itemID ) &&
+			( m_ColorOverrides[i].m_ColumnID == columnID ) )
+		{
+			m_ColorOverrides[i].m_clrOverride = clrOverride;
+			return;
+		}
+	}
+
+	int iIndex = m_ColorOverrides.AddToTail();
+	m_ColorOverrides[iIndex].m_SectionID = sectionID;
+	m_ColorOverrides[iIndex].m_ItemID = itemID;
+	m_ColorOverrides[iIndex].m_ColumnID = columnID;
+	m_ColorOverrides[iIndex].m_clrOverride = clrOverride;
 }

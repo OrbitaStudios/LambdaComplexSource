@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2006, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -8,7 +8,7 @@
 #include "vgui_controls/ControllerMap.h"
 #include "vgui/ISurface.h"
 #include "vgui/KeyCode.h"
-#include "keyvalues.h"
+#include "KeyValues.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -18,10 +18,10 @@ using namespace vgui;
 struct keystring_t
 {
 	int code;
-	char *name;
+	const char *name;
 };
 
-static keystring_t s_ControllerButtons[] = {	{ KEY_XBUTTON_UP,				"KEY_XBUTTON_UP" },
+static const keystring_t s_ControllerButtons[] = {	{ KEY_XBUTTON_UP,				"KEY_XBUTTON_UP" },
 												{ KEY_XBUTTON_DOWN,				"KEY_XBUTTON_DOWN" },
 												{ KEY_XBUTTON_LEFT,				"KEY_XBUTTON_LEFT" },
 												{ KEY_XBUTTON_RIGHT,			"KEY_XBUTTON_RIGHT" },

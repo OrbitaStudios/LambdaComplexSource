@@ -823,10 +823,6 @@ public:
 	virtual void AudioLanguageChanged() = 0;
 
 	virtual bool IsAutoSaveInProgress() = 0;
-	
-	virtual void StartLoadingScreenForCommand( const char* command ) = 0;
-
-	virtual void StartLoadingScreenForKeyValues( KeyValues* keyValues ) = 0;
 
 	// Sos opvars
 	virtual bool SOSSetOpvarFloat( const char *pOpVarName, float flValue ) = 0;
@@ -1076,8 +1072,6 @@ public:
 
 	virtual IMaterialProxy *InstantiateMaterialProxy( const char *proxyName ) = 0;
 
-	virtual vgui::VPANEL	GetFullscreenClientDLLVPanel( void ) = 0;
-
 	// The engine wants to mark two entities as touching
 	virtual void			MarkEntitiesAsTouching( IClientEntity *e1, IClientEntity *e2 ) = 0;
 
@@ -1094,12 +1088,7 @@ public:
 	// check if the client needs to alter non-entity associated sound locations (portal2, multiple sources, etc.)
 	virtual bool			GetSoundSpatialization( SpatializationInfo_t& info ) = 0;
 
-	// sending a hint to the hud
-	virtual void			Hud_SaveStarted() = 0;
-
 	virtual void			ShutdownMovies() = 0;
-
-	virtual void			GetStatus( char *buffer, int bufsize ) = 0;
 
 	// find out if the chat display is up
 #if defined ( CSTRIKE15 )
@@ -1150,10 +1139,8 @@ public:
 	virtual void PrepareSignedEvidenceData( void *pvData, int numBytes, CDemoPlaybackParameters_t const *pPlaybackParameters ) = 0;
 	virtual bool ShouldSkipEvidencePlayback( CDemoPlaybackParameters_t const *pPlaybackParameters ) = 0;
 
-#ifdef INCLUDE_SCALEFORM
 	// Scaleform slot controller
 	virtual IScaleformSlotInitController * GetScaleformSlotInitController() = 0;
-#endif
 
 	virtual bool IsConnectedUserInfoChangeAllowed( IConVar *pCvar ) = 0;
 

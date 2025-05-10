@@ -1797,9 +1797,6 @@ void CClientState::CheckUpdatingSteamResources()
 				EngineVGui()->ActivateGameUI();
 				m_bShownSteamResourceUpdateProgress = true;
 			}
-
-			// change it to be updating steam resources
-			EngineVGui()->UpdateSecondaryProgressBar( flProgress, (flProgress < 1.0f) ? g_pVGuiLocalize->FindSafe("#Valve_UpdatingSteamResources") : L"" );
 		}
 	}
 
@@ -1820,18 +1817,12 @@ void CClientState::CheckUpdatingSteamResources()
 			V_snwprintf( wszPercent, ARRAYSIZE( wszPercent ), L"%d%%",  (int)(100*progress) );
 			wchar_t wszWideBuff[ 128 ];
 			g_pVGuiLocalize->ConstructString( wszWideBuff, sizeof( wszWideBuff ), g_pVGuiLocalize->Find( "#SFUI_Loading_UGCMap_Progress" ), 1, wszPercent );
-
-			// change it to be updating steam resources
-			EngineVGui()->UpdateSecondaryProgressBar( progress, ( (progress > 0.0f) && (progress < 1.0f) ) ? wszWideBuff : L"" );
 		}
 
 		if ( !stillDownloading && !g_bASW_Waiting_For_Map_Build && !m_bDownloadingUGCMap )
 		{
 			m_bDownloadResources = false;
 			FinishSignonState_New();
-
-			// Setting to blank will clear it
-			EngineVGui()->UpdateSecondaryProgressBar( 1, L"" );
 		}
 	}
 }

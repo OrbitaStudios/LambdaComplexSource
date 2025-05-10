@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2001, Valve LLC, All rights reserved. ============
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -24,7 +24,7 @@ public:
 	};
 
 	// Buffers must be named
-					CMsgBuffer( const char *buffername = "unnamed", void (*ef)( const char *fmt, ... ) = 0 );
+					CMsgBuffer( const char *buffername = "unnamed", void (*ef)( PRINTF_FORMAT_STRING const char *fmt, ... ) = 0 );
 	virtual			~CMsgBuffer( void );
 
 	// Reset the buffer for writing
@@ -80,7 +80,7 @@ private:
 	// Name of buffer in case of debugging/errors
 	const char		*m_pszBufferName;
 	// Optional error callback
-	void			( *m_pfnErrorFunc )( const char *fmt, ... );
+	void			( *m_pfnErrorFunc )( PRINTF_FORMAT_STRING const char *fmt, ... );
 
 	// Current read pointer
 	int				m_nReadCount;

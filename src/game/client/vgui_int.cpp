@@ -43,7 +43,6 @@ void MP3Player_Destroy();
 vgui::IInputInternal *g_InputInternal = NULL;
 
 #include <vgui_controls/Controls.h>
-#include "cstrike15/gameui/cstrike15/steamoverlay/isteamoverlaymgr.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -70,13 +69,6 @@ void ss_verticalsplit_changed( IConVar *pConVar, const char *pOldString, float f
 	if ( var.GetBool() != !!(int)flOldValue )
 	{
 		VGui_OnSplitScreenStateChanged();
-
-		if ( GetFullscreenClientMode() )
-		{
-			// we have to force re-layout, because the screen dimensions haven't changed,
-			// but our layout is going to be different.
-			GetFullscreenClientMode()->Layout( true );
-		}
 
 		FOR_EACH_VALID_SPLITSCREEN_PLAYER( i )
 		{
@@ -426,16 +418,6 @@ bool VGui_Startup( CreateInterfaceFn appSystemFactory )
 		}
 	}
 
-	CUtlVector< Panel * > list;
-	VGui_GetPanelList( list );
-
-	for ( int i = 0; i < list.Count(); ++i )
-	{
-		list[ i ]->SetMessageContextId_R( (uint32)i );
-	}
-
-	VGui_GetFullscreenRootPanel()->SetMessageContextId_R( (uint32)0 );
-
 	VGui_OnSplitScreenStateChanged();
 
 	return true;
@@ -474,9 +456,6 @@ void VGui_CreateGlobalPanels( void )
 	MP3Player_Create( toolParent );
 #endif
 
-	// Create Steam overlay
-	if ( IsPS3() && g_pISteamOverlayMgr )
-		g_pISteamOverlayMgr->Create( enginevgui->GetPanel( PANEL_STEAMOVERLAY ) );
 #ifdef SIXENSE
 	g_pSixenseInput->CreateGUI( gameToolParent );
 #endif
@@ -484,10 +463,6 @@ void VGui_CreateGlobalPanels( void )
 
 void VGui_Shutdown()
 {
-	// Destroy Steam overlay
-	if ( IsPS3() && g_pISteamOverlayMgr )
-		g_pISteamOverlayMgr->Destroy();
-
 #ifndef _GAMECONSOLE
 	MP3Player_Destroy();
 #endif
@@ -513,11 +488,6 @@ void VGui_Shutdown()
 		if ( GetClientMode() )
 		{
 			GetClientMode()->VGui_Shutdown();
-
-			if ( hh == 0 )
-			{
-				GetFullscreenClientMode()->VGui_Shutdown();
-			}
 		}
 	}
 
@@ -555,8 +525,6 @@ void VGui_PreRender()
 	{
 		list[ i ]->SetVisible( i == nSlot );
 	}
-
-	VGui_GetFullscreenRootPanel()->SetVisible( true );
 }
 
 void VGui_PostRender()
@@ -573,10 +541,6 @@ void VGui_PostRender()
 
 		surface()->SetAbsPosForContext( i, x, y );
 	}
-
-	VGui_GetTrueScreenSize( w, h );
-	VGui_GetFullscreenRootPanel()->SetVisible( true );
-	VGui_GetFullscreenRootPanel()->SetBounds( 0, 0, w, h );
 }
 
 //-----------------------------------------------------------------------------

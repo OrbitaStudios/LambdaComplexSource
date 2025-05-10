@@ -15,7 +15,6 @@ $Configuration
 	$Compiler 
 	{
 		$PreprocessorDefinitions		"$BASE;NO_STRING_T;VERSION_SAFE_STEAM_API_INTERFACES;PROTECTED_THINGS_ENABLE" 
-		$PreprocessorDefinitions		"$BASE;INCLUDE_SCALEFORM" [$WIN32]
 	}
 	$Linker [!$PS3]
 	{

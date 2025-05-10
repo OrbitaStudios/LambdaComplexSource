@@ -31,8 +31,6 @@
 #include <windows.h> 
 #include <direct.h>
 #include "keyvalues.h"
-// filesystem_steam.cpp implements this useful function - mount all the caches for a given app ID.
-extern void MountDependencies( int iAppId, CUtlVector<unsigned int> &depList );
 #else
 #define _chdir chdir
 #include <unistd.h>
@@ -400,38 +398,6 @@ int CDedicatedAppSystemGroup::Main( )
 	if ( g_bVGui )
 	{
 		RunVGUIFrame();
-	}
-	else
-	{
-		// mount the caches
-		if (CommandLine()->CheckParm("-steam"))
-		{
-			// Add a search path for the base dir
-			char fullLocationPath[MAX_PATH];
-			if ( _getcwd( fullLocationPath, MAX_PATH ) )
-			{
-				g_pFullFileSystem->AddSearchPath( fullLocationPath, "MAIN" );
-			}
-
-			// Find the gameinfo.txt for our mod and mount it's caches
-			char gameInfoFilename[MAX_PATH];
-			Q_snprintf( gameInfoFilename, sizeof(gameInfoFilename) - 1, "%s\\gameinfo.txt", CommandLine()->ParmValue( "-game", g_gameName ) );
-			KeyValues *gameData = new KeyValues( "GameInfo" );
-			if ( gameData->LoadFromFile( g_pFullFileSystem, gameInfoFilename ) )
-			{
-				KeyValues *pFileSystem = gameData->FindKey( "FileSystem" );
-				int iAppId = pFileSystem->GetInt( "SteamAppId" );
-				if ( iAppId )
-				{
-					CUtlVector<unsigned int> depList;
-					MountDependencies( iAppId, depList );
-				}
-			}
-			gameData->deleteThis();
-
-			// remove our base search path
-			g_pFullFileSystem->RemoveSearchPaths( "MAIN" );
-		}
 	}
 #endif
 

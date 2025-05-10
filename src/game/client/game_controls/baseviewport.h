@@ -130,9 +130,6 @@ protected:
 	virtual void OnScreenSizeChanged(int iOldWide, int iOldTall);
 	void PostMessageToPanel( IViewPortPanel* pPanel, KeyValues *pKeyValues );
 
-	void SetAsFullscreenViewportInterface( void );
-	bool IsFullscreenViewport() const;
-
 protected:
 	IGameUIFuncs*		m_GameuiFuncs; // for key binding details
 	IGameEventManager2*	m_GameEventManager;
@@ -144,12 +141,9 @@ protected:
 
 	bool				m_bHasParent; // Used to track if child windows have parents or not.
 	bool				m_bInitialized;
-	bool				m_bFullscreenViewport;
 	IViewPortPanel		*m_pActivePanel;
 
-#if !defined( CSTRIKE15 )
 	IViewPortPanel		*m_pLastActivePanel;
-#endif
 
 	vgui::HCursor		m_hCursorNone;
 	vgui::AnimationController *m_pAnimController;

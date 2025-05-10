@@ -862,7 +862,7 @@ public:
 
 	// ID Target handling
 	virtual bool					IsValidIDTarget( void ) { return false; }
-	virtual const char      		*GetIDString( void ) { return ""; };
+	virtual char					*GetIDString( void ) { return ""; };
 
 	// See CSoundEmitterSystem
 	// Will return the sound guid. If negative, the guid is unknown (call may be successful or not). 0 if the sound was not emitted. Positive if the guid is valid.
@@ -1152,7 +1152,7 @@ public:
 
 	virtual char const *			DamageDecal( int bitsDamageType, int gameMaterial );
 	virtual void					DecalTrace( trace_t *pTrace, char const *decalName );
-	virtual void					ImpactTrace( trace_t *pTrace, int iDamageType, const char *pCustomImpactName );
+	virtual void					ImpactTrace( trace_t *pTrace, int iDamageType, char *pCustomImpactName );
 
 	virtual bool					ShouldPredict( void ) { return false; };
 	

@@ -17,7 +17,7 @@ $Configuration
 	}
 	$Compiler
 	{
-		$PreprocessorDefinitions	"$BASE;LAUNCHERONLY;INCLUDE_SCALEFORM"
+		$PreprocessorDefinitions	"$BASE;LAUNCHERONLY"
 		$PreprocessorDefinitions    "$BASE;ALLOW_TEXT_MODE=1" [$CSTRIKE_TRUNK_BUILD||$CSTRIKE_STAGING_BUILD]
 	}
 

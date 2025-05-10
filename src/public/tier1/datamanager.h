@@ -137,9 +137,10 @@ class CDataManager : public CDataManagerBase
 	typedef CDataManagerBase BaseClass;
 public:
 
-	CDataManager( unsigned int size = (unsigned)-1 ) : BaseClass(size) {}
+	CDataManager<STORAGE_TYPE, CREATE_PARAMS, LOCK_TYPE, MUTEX_TYPE>( unsigned int size = (unsigned)-1 ) : BaseClass(size) {}
+	
 
-	~CDataManager()
+	~CDataManager<STORAGE_TYPE, CREATE_PARAMS, LOCK_TYPE, MUTEX_TYPE>()
 	{
 		// NOTE: This must be called in all implementations of CDataManager
 		if ( m_freeOnDestruct )

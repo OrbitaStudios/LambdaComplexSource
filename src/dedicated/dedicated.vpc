@@ -60,10 +60,10 @@ $Project "Dedicated"
 		{
 			$File	"$SRCDIR\filesystem\filetracker.cpp"
 			$File	"$SRCDIR\filesystem\basefilesystem.cpp"
-			$File	"$SRCDIR\filesystem\basefilesystemasync.cpp"
+			$File	"$SRCDIR\filesystem\packfile.cpp"
+			$File	"$SRCDIR\filesystem\filesystem_async.cpp"
 			$File	"$SRCDIR\filesystem\filesystem_stdio.cpp"
-			$File	"$SRCDIR\filesystem\filesystem_steam.cpp" [!$POSIX]
-			$File	"$SRCDIR\filesystem\filesystemasync.cpp"
+			$File	"$SRCDIR\filesystem\QueuedLoader.cpp"
 			$File	"$SRCDIR\public\zip_utils.cpp"
 			$File	"$SRCDIR\filesystem\linux_support.cpp" [$POSIX]
 		}
@@ -93,8 +93,11 @@ $Project "Dedicated"
 		$File	"$SRCDIR\common\SteamAppStartup.h"
 		$File	"$SRCDIR\public\string_t.h"
 		$File	"$SRCDIR\public\tier1\strtools.h"
+		$File	"$SRCDIR\public\tier0\vcr_shared.h"
+		$File	"$SRCDIR\public\tier0\vcrmode.h"
 		$File	"$SRCDIR\public\mathlib\vector.h"
 		$File	"$SRCDIR\public\mathlib\vector2d.h"
+		$File	"$SRCDIR\public\vstdlib\vstdlib.h"
 
 		$Folder	"Console Headers"
 		{

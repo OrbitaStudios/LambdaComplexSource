@@ -864,7 +864,7 @@ CHudCloseCaption::CHudCloseCaption( const char *pElementName )
 	m_bPaintDebugInfo( false ),
 	m_ColorMap( k_eDictCompareTypeCaseInsensitive )
 {
-	vgui::Panel *pParent = GetFullscreenClientMode()->GetViewport();
+	vgui::Panel *pParent = GetClientMode()->GetViewport();
 	SetParent( pParent );
 
 	SetProportional( true );
@@ -2114,7 +2114,7 @@ static bool CaptionTrace( const char *token )
 	static CUtlSymbolTable s_MissingCloseCaptions;
 
 	// Make sure we only show the message once
-	if ( !s_MissingCloseCaptions.Find( token ).IsValid() )
+	if ( UTL_INVAL_SYMBOL == s_MissingCloseCaptions.Find( token ) )
 	{
 		s_MissingCloseCaptions.AddString( token );
 		return true;

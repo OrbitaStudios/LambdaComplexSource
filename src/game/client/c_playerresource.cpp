@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: Entity that propagates general data needed by clients for every player.
 //
@@ -95,7 +95,8 @@ C_PlayerResource::C_PlayerResource()
 	}
 
 	g_PR = this;
-#if defined ( INCLUDE_SCALEFORM )
+
+#if defined( INCLUDE_SCALEFORM )
 	g_pScaleformUI->AddDeviceDependentObject( this );
 #endif
 }
@@ -105,6 +106,8 @@ C_PlayerResource::C_PlayerResource()
 //-----------------------------------------------------------------------------
 C_PlayerResource::~C_PlayerResource()
 {
+	g_PR = NULL;
+
 #if defined( INCLUDE_SCALEFORM )
 	for ( int i = 1; i <= MAX_PLAYERS; i++ )
 	{
@@ -116,7 +119,6 @@ C_PlayerResource::~C_PlayerResource()
 
 	g_pScaleformUI->RemoveDeviceDependentObject( this );
 #endif
-    g_PR = NULL;
 }
 
 void C_PlayerResource::OnDataChanged(DataUpdateType_t updateType)
@@ -158,8 +160,9 @@ void C_PlayerResource::UpdateXuids( void )
 
 		if ( newXuid != m_Xuids[i] )
 		{
-#if defined ( INCLUDE_SCALEFORM )
-            bool bAddRefSuccess = false;
+#if defined( INCLUDE_SCALEFORM )
+			bool bAddRefSuccess = false;
+
 			if ( m_Xuids[i] != INVALID_XUID )
 			{
 				g_pScaleformUI->AvatarImageRelease( m_Xuids[i] );
@@ -169,10 +172,9 @@ void C_PlayerResource::UpdateXuids( void )
 			{
 				bAddRefSuccess = g_pScaleformUI->AvatarImageAddRef( newXuid );
 			}
-#else
-            bool bAddRefSuccess = true;
+
+			if ( bAddRefSuccess || ( newXuid == INVALID_XUID ) )
 #endif
-            if ( bAddRefSuccess || ( newXuid == INVALID_XUID ) )
 			{
 				m_Xuids[i] = newXuid;
 			}
@@ -691,10 +693,10 @@ void C_PlayerResource::FillXuidText( int iIndex, char *buf, int bufSize )
 	}
 }
 
+#if defined( INCLUDE_SCALEFORM )
 void C_PlayerResource::DeviceLost( void )
 {
-#if defined ( INCLUDE_SCALEFORM )
-    for ( int i = 1; i <= MAX_PLAYERS; i++ )
+	for ( int i = 1; i <= MAX_PLAYERS; i++ )
 	{
 		if ( m_Xuids[i] != INVALID_XUID )
 		{
@@ -702,10 +704,10 @@ void C_PlayerResource::DeviceLost( void )
 			m_Xuids[i] = INVALID_XUID;
 		}
 	}
-#endif
 }
 
 void C_PlayerResource::DeviceReset( void *pDevice, void *pPresentParameters, void *pHWnd )
 {
 	UpdateXuids();
 }
+#endif

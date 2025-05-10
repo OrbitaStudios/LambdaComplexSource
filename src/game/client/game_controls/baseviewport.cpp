@@ -58,18 +58,12 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-static IViewPort *s_pFullscreenViewportInterface;
 static IViewPort *s_pViewportInterfaces[ MAX_SPLITSCREEN_PLAYERS ];
 
 IViewPort *GetViewPortInterface()
 {
 	ASSERT_LOCAL_PLAYER_RESOLVABLE();
 	return s_pViewportInterfaces[ GET_ACTIVE_SPLITSCREEN_SLOT() ];
-}
-
-IViewPort *GetFullscreenViewPortInterface()
-{
-	return s_pFullscreenViewportInterface;
 }
 
 vgui::Panel *g_lastPanel = NULL; // used for mouseover buttons, keeps track of the last active panel
@@ -162,21 +156,36 @@ CBaseViewport::CBaseViewport() : vgui::EditablePanel( NULL, "CBaseViewport" )
 {	
 	SetSize( 10, 10 ); // Quiet "parent not sized yet" spew
 	m_bInitialized = false;
-	m_bFullscreenViewport = false;
 
 	m_GameuiFuncs = NULL;
 	m_GameEventManager = NULL;
 	SetKeyBoardInputEnabled( false );
 	SetMouseInputEnabled( false );
 
+	SetScheme( "ClientScheme" );
+	SetProportional( true );
+
+	m_pAnimController = new vgui::AnimationController(this);
+	// create our animation controller
+	m_pAnimController->SetScheme( GetScheme() );
+	m_pAnimController->SetProportional(true);
+
+	// Attempt to load all hud animations
+	if ( LoadHudAnimations() == false )
+	{
+		// Fall back to just the main
+		if ( m_pAnimController->SetScriptFile( GetVPanel(), "scripts/HudAnimations.txt", true ) == false )
+		{
+			Assert(0);
+		}
+	}
+
 	m_pBackGround = NULL;
 
 	m_bHasParent = false;
 	m_pActivePanel = NULL;
 
-#if !defined( CSTRIKE15 )
 	m_pLastActivePanel = NULL;
-#endif
 
 	g_lastPanel = NULL;
 
@@ -188,7 +197,7 @@ CBaseViewport::CBaseViewport() : vgui::EditablePanel( NULL, "CBaseViewport" )
 //-----------------------------------------------------------------------------
 vgui::VPANEL CBaseViewport::GetSchemeSizingVPanel( void )
 {
-	return VGui_GetFullscreenRootVPANEL();
+	return VGui_GetClientDLLRootPanel();
 }
 
 //-----------------------------------------------------------------------------
@@ -211,10 +220,7 @@ void CBaseViewport::OnScreenSizeChanged(int iOldWide, int iOldTall)
 	m_pBackGround->SetZPos( -20 ); // send it to the back 
 	m_pBackGround->SetVisible( false );
 
-	if ( !IsFullscreenViewport() )
-	{
-		CreateDefaultPanels();
-	}
+	CreateDefaultPanels();
 
 	vgui::ipanel()->MoveToBack( m_pBackGround->GetVPanel() ); // really send it to the back
 
@@ -371,12 +377,6 @@ void CBaseViewport::ShowPanel( const char *pName, bool state, KeyValues *data, b
 		return;
 	}
 
-	// Also try to show the panel in the full screen viewport
-	if ( this != s_pFullscreenViewportInterface )
-	{
-		GetFullscreenViewPortInterface()->ShowPanel( pName, state, data, false );
-	}
-
 	IViewPortPanel *panel = FindPanelByName( pName );
 	if ( panel )
 	{
@@ -393,12 +393,6 @@ void CBaseViewport::ShowPanel( const char *pName, bool state, KeyValues *data, b
 
 void CBaseViewport::ShowPanel( const char *pName, bool state )
 {
-	// Also try to show the panel in the full screen viewport
-	if ( this != s_pFullscreenViewportInterface )
-	{
-		GetFullscreenViewPortInterface()->ShowPanel( pName, state );
-	}
-
 	ASSERT_LOCAL_PLAYER_RESOLVABLE();
 
 	if ( Q_strcmp( pName, PANEL_ALL ) == 0 )
@@ -453,28 +447,14 @@ void CBaseViewport::ShowPanel( IViewPortPanel* pPanel, bool state )
 				// so we can restore it later
 				if ( pPanel->CanReplace( m_pActivePanel->GetName() ) )
 				{
-#if !defined( CSTRIKE15 )
 					m_pLastActivePanel = m_pActivePanel;
-#endif
 
-#ifdef CSTRIKE15 
-					// in cs, if the scoreboard tries to hide the spectator via this method, just skip it
-					IViewPortPanel* pSpecGuiPanel = FindPanelByName(PANEL_SPECGUI);
-					if ( pSpecGuiPanel != m_pActivePanel )
-					{
-						Msg("CBaseViewport::ShowPanel(0) %s\n", m_pActivePanel->GetName());
-						m_pActivePanel->ShowPanel( false );
-					}
-#else
-					Msg("CBaseViewport::ShowPanel(0) %s\n", m_pActivePanel->GetName());
+					DevMsg("CBaseViewport::ShowPanel(0) %s\n", m_pActivePanel->GetName());
 					m_pActivePanel->ShowPanel( false );
-#endif
 				}
 				else
 				{
-#if !defined( CSTRIKE15 )
 					m_pLastActivePanel = pPanel;
-#endif
 					return;
 				}
 			}
@@ -491,21 +471,23 @@ void CBaseViewport::ShowPanel( IViewPortPanel* pPanel, bool state )
 			m_pActivePanel = NULL;
 		}
 
-#if !defined( CSTRIKE15 )
 		// restore the previous active panel if it exists
 		if( m_pLastActivePanel )
 		{
 			m_pActivePanel = m_pLastActivePanel;
 			m_pLastActivePanel = NULL;
 
-			Msg("CBaseViewport::ShowPanel(1) %s\n", m_pActivePanel->GetName());
+			DevMsg("CBaseViewport::ShowPanel(1) %s\n", m_pActivePanel->GetName());
 			m_pActivePanel->ShowPanel( true );
 		}
-#endif
 	}
 
 	// just show/hide panel
-	Msg("CBaseViewport::ShowPanel(%d) %s\n", (int)state, pPanel->GetName());
+#if defined( INCLUDE_SCALEFORM )
+	SFDevMsg("CBaseViewport::ShowPanel(%d) %s\n", (int)state, pPanel->GetName());
+#else
+	DevMsg("CBaseViewport::ShowPanel(%d) %s\n", (int)state, pPanel->GetName());
+#endif
 	pPanel->ShowPanel( state );
 
 	UpdateAllPanels(); // let other panels rearrange
@@ -546,12 +528,10 @@ void CBaseViewport::RecreatePanel( const char *szPanelName )
 			m_pActivePanel = NULL;
 		}
 
-#if !defined( CSTRIKE15 )
 		if ( m_pLastActivePanel == panel )
 		{
 			m_pLastActivePanel = NULL;
 		}
-#endif
 
 		AddNewPanel( CreatePanelByName( szPanelName ), szPanelName );
 	}
@@ -585,9 +565,7 @@ void CBaseViewport::RemoveAllPanels( void)
 	m_Panels.RemoveAll();
 	m_UnorderedPanels.RemoveAll();
 	m_pActivePanel = NULL;
-#if !defined( CSTRIKE15 )
 	m_pLastActivePanel = NULL;
-#endif
 
 }
 
@@ -627,28 +605,7 @@ void CBaseViewport::Start( IGameUIFuncs *pGameUIFuncs, IGameEventManager2 * pGam
 
 	ListenForGameEvent( "game_newmap" );
 
-	SetScheme( "ClientScheme" );
-	SetProportional( true );
-
-	if ( !IsFullscreenViewport() )
-	{
-		CreateDefaultPanels();
-	}
-
-	m_pAnimController = new vgui::AnimationController(this);
-	// create our animation controller
-	m_pAnimController->SetScheme( GetScheme() );
-	m_pAnimController->SetProportional(true);
-
-	// Attempt to load all hud animations
-	if ( LoadHudAnimations() == false )
-	{
-		// Fall back to just the main
-		if ( m_pAnimController->SetScriptFile( GetVPanel(), "scripts/HudAnimations.txt", true ) == false )
-		{
-			Assert(0);
-		}
-	}
+	CreateDefaultPanels();
 
 	m_bInitialized = true;
 }
@@ -711,8 +668,6 @@ void CBaseViewport::OnThink()
 	// if they are stored as the last active panel
 	if( m_pActivePanel && !m_pActivePanel->IsVisible() )
 	{
-
-#if !defined( CSTRIKE15 )
 		if( m_pLastActivePanel )
 		{
 			if ( m_pLastActivePanel->CanBeReopened() )
@@ -727,7 +682,6 @@ void CBaseViewport::OnThink()
 			m_pLastActivePanel = NULL;
 		}
 		else
-#endif
 			m_pActivePanel = NULL;
 	}
 
@@ -954,17 +908,6 @@ void CBaseViewport::Paint()
 		vgui::surface()->DrawLine( size, 0, size, size );
 		vgui::surface()->DrawLine( 0, size, size, size );
 	}
-}
-
-void CBaseViewport::SetAsFullscreenViewportInterface( void )
-{
-	s_pFullscreenViewportInterface = this;
-	m_bFullscreenViewport = true;
-}
-
-bool CBaseViewport::IsFullscreenViewport() const
-{
-	return m_bFullscreenViewport;
 }
 
 void CBaseViewport::LevelInit( void )

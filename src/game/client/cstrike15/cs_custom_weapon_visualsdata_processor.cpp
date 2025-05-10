@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2012, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2012, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -43,7 +43,7 @@ CCSWeaponVisualsDataProcessor::~CCSWeaponVisualsDataProcessor()
 	}
 }
 
-const char *g_pPatternNames[ VISUALS_DATA_PAINTSTYLE_COUNT ] =
+char *g_pPatternNames[ VISUALS_DATA_PAINTSTYLE_COUNT ] =
 {
 	"original",
 	"solid",

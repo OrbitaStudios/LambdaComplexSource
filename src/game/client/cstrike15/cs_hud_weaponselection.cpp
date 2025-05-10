@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -12,7 +12,6 @@
 #endif
 #include "iinput.h"
 #include "cs_gamerules.h"
-#include "cs_weapon_parse.h"
 #include "c_cs_player.h"
 
 #include <keyvalues.h>
@@ -48,6 +47,7 @@ CHudWeaponSelection::CHudWeaponSelection( const char *pElementName ) : CBaseHudW
 //-----------------------------------------------------------------------------
 void CHudWeaponSelection::OnWeaponPickup( C_BaseCombatWeapon *pWeapon )
 {
+#if defined( INCLUDE_SCALEFORM )
 	CWeaponCSBase* pCSWeapon = dynamic_cast<CWeaponCSBase*>( pWeapon );
 	C_CSPlayer *pPlayer = GetHudPlayer();
 
@@ -55,16 +55,15 @@ void CHudWeaponSelection::OnWeaponPickup( C_BaseCombatWeapon *pWeapon )
 	{		
 		//const CCSWeaponInfo *pCSWeaponInfo = GetWeaponInfo( pCSWeapon->GetCSWeaponID() );
 		if ( pPlayer->State_Get() == STATE_ACTIVE )
-		{
-#if defined( INCLUDE_SCALEFORM )
-            SFWeaponSelection *pHudWS = GET_HUDELEMENT( SFWeaponSelection );
+		{			
+			SFWeaponSelection *pHudWS = GET_HUDELEMENT( SFWeaponSelection );
 			if ( pHudWS )
 			{
 				pHudWS->ShowAndUpdateSelection( WEPSELECT_PICKUP, pWeapon );
 			}
-#endif
 		}
 	}
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -72,6 +71,7 @@ void CHudWeaponSelection::OnWeaponPickup( C_BaseCombatWeapon *pWeapon )
 //-----------------------------------------------------------------------------
 void CHudWeaponSelection::OnWeaponDrop( C_BaseCombatWeapon *pWeapon )
 {
+#if defined( INCLUDE_SCALEFORM )
 	CWeaponCSBase* pCSWeapon = dynamic_cast<CWeaponCSBase*>( pWeapon );
 	C_CSPlayer *pPlayer = GetHudPlayer();
 
@@ -79,15 +79,14 @@ void CHudWeaponSelection::OnWeaponDrop( C_BaseCombatWeapon *pWeapon )
 	{		
 		if ( pPlayer->State_Get() == STATE_ACTIVE )
 		{
-#if defined( INCLUDE_SCALEFORM )
-            SFWeaponSelection *pHudWS = GET_HUDELEMENT( SFWeaponSelection );
+			SFWeaponSelection *pHudWS = GET_HUDELEMENT( SFWeaponSelection );
 			if ( pHudWS )
 			{
 				pHudWS->ShowAndUpdateSelection( WEPSELECT_DROP, pWeapon );
-			}
-#endif
+			}			
 		}
 	}
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -95,22 +94,22 @@ void CHudWeaponSelection::OnWeaponDrop( C_BaseCombatWeapon *pWeapon )
 //-----------------------------------------------------------------------------
 void CHudWeaponSelection::OnWeaponSwitch( C_BaseCombatWeapon *pWeapon )
 {
+#if defined( INCLUDE_SCALEFORM )
 	CWeaponCSBase* pCSWeapon = dynamic_cast<CWeaponCSBase*>( pWeapon );
 	C_CSPlayer *pPlayer = C_CSPlayer::GetLocalCSPlayer();
 
 	if ( pCSWeapon && pPlayer )
 	{		
 		if ( pPlayer->State_Get() == STATE_ACTIVE )
-		{
-#if defined( INCLUDE_SCALEFORM )
+		{			
 			SFWeaponSelection *pHudWS = GET_HUDELEMENT( SFWeaponSelection );
 			if ( pHudWS )
 			{
 				pHudWS->ShowAndUpdateSelection( WEPSELECT_SWITCH, pWeapon );
 			}
-#endif
 		}
 	}
+#endif
 }
 
 //-----------------------------------------------------------------------------

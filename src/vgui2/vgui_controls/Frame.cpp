@@ -1,4 +1,4 @@
-//===== Copyright (c) 1996-2005, Valve Corporation, All rights reserved. ======//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -28,7 +28,7 @@
 #include "vgui_controls/MenuButton.h"
 #include "vgui_controls/TextImage.h"
 
-#include "keyvalues.h"
+#include "KeyValues.h"
 
 #include <stdio.h>
 
@@ -68,7 +68,6 @@ namespace
 			}
 
 			SetBlockDragChaining( true );
-			SetKeyBoardInputEnabled( false );
 		}
 		
 		// Purpose- handle window resizing
@@ -136,8 +135,11 @@ namespace
 				}
 			}
 
-			_frame->OnGripPanelMoved( newX, newY, newWide, newTall );
-
+			// set new position
+			_frame->SetPos(newX, newY);
+			// set the new size			
+			// if window is below min size it will automatically pop to min size
+			_frame->SetSize(newWide, newTall);
 			_frame->InvalidateLayout();
 			_frame->Repaint();
 		}
@@ -156,13 +158,6 @@ namespace
 			}
 
 			input()->GetCursorPos(x, y);
-
-			int wx, wy, ww, wt;
-			surface()->GetWorkspaceBounds(wx, wy, ww, wt);
-			// Keep from dragging caption out of window
-			x = clamp( x, wx, wx + ww - 1 );
-			y = clamp( y, wy, wy + wt - 1 );
-
 			moved((x - _dragStart[0]), ( y - _dragStart[1]));
 			_frame->Repaint();
 		}
@@ -225,14 +220,12 @@ namespace
 		{
 			_dragging = false;
 			input()->SetMouseCapture(NULL);
-			_frame->OnGripPanelMoveFinished();
 		}
 
 		void OnMouseCaptureLost()
 		{
 			Panel::OnMouseCaptureLost();
 			_dragging = false;
-			_frame->OnGripPanelMoveFinished();
 		}
 
 		void ApplySchemeSettings(IScheme *pScheme)
@@ -768,7 +761,7 @@ Frame::Frame(Panel *parent, const char *panelName, bool showTaskbarIcon /*=true*
 
 	m_hPreviousModal = 0;
 
-	_title=0;
+	_title=NULL;
 	_moveable=true;
 	_sizeable=true;
 	m_bHasFocus=false;
@@ -789,7 +782,6 @@ Frame::Frame(Panel *parent, const char *panelName, bool showTaskbarIcon /*=true*
 	m_bChainKeysToParent = false;
 	m_bPrimed = false;
 	m_hCustomTitleFont = INVALID_FONT;
-	m_iTitleTextInsetXOverride = m_iTitleTextInsetYOverride = 0;
 
 	SetTitle("#Frame_Untitled", parent ? false : true);
 	
@@ -800,7 +792,7 @@ Frame::Frame(Panel *parent, const char *panelName, bool showTaskbarIcon /*=true*
 	
 	GetFocusNavGroup().SetFocusTopLevel(true);
 	
-#if !defined( _GAMECONSOLE )
+#if !defined( _X360 )
 	_sysMenu = NULL;
 
 	// add dragging grips
@@ -874,7 +866,22 @@ Frame::~Frame()
 		}
 	}
 
-	// This is a textimage, so needs explicit deletion
+#if !defined( _X360 )
+	delete _topGrip;
+	delete _bottomGrip;
+	delete _leftGrip;
+	delete _rightGrip;
+	delete _topLeftGrip;
+	delete _topRightGrip;
+	delete _bottomLeftGrip;
+	delete _bottomRightGrip;
+	delete _captionGrip;
+	delete _minimizeButton;
+	delete _maximizeButton;
+	delete _closeButton;
+	delete _menuButton;
+	delete _minimizeToSysTrayButton;
+#endif
 	delete _title;
 }
 
@@ -883,7 +890,7 @@ Frame::~Frame()
 //-----------------------------------------------------------------------------
 void Frame::SetupResizeCursors()
 {
-#if !defined( _GAMECONSOLE )
+#if !defined( _X360 )
 	if (IsSizeable())
 	{
 		_topGrip->SetCursor(dc_sizens);
@@ -974,7 +981,7 @@ void Frame::CloseModal()
 //-----------------------------------------------------------------------------
 void Frame::ActivateMinimized()
 {
-	if ( IsVisible() && !IsMinimized() || !surface()->SupportsFeature( ISurface::FRAME_MINIMIZE_MAXIMIZE ) )
+	if ( ( IsVisible() && !IsMinimized() ) || !surface()->SupportsFeature( ISurface::FRAME_MINIMIZE_MAXIMIZE ) )
 	{
 		Activate();
 	}
@@ -1046,7 +1053,7 @@ void Frame::OnThink()
 		if (m_bFadingOut)
 		{
 			// we're fading out, see if we're done so we can fully hide the window
-			if (GetAlpha() < ( IsGameConsole() ? 64 : 1 ))
+			if (GetAlpha() < ( IsX360() ? 64 : 1 ))
 			{
 				FinishClose();
 			}
@@ -1057,7 +1064,7 @@ void Frame::OnThink()
 			m_bPreviouslyVisible = true;
 			
 			// fade in
-			if (IsGameConsole())
+			if (IsX360())
 			{
 				SetAlpha(64);
 			}
@@ -1109,7 +1116,7 @@ void Frame::OnThink()
 //-----------------------------------------------------------------------------
 void Frame::OnFrameFocusChanged(bool bHasFocus)
 {
-#if !defined( _GAMECONSOLE )
+#if !defined( _X360 )
 	// enable/disable the frame buttons
 	_minimizeButton->SetDisabledLook(!bHasFocus);
 	_maximizeButton->SetDisabledLook(!bHasFocus);
@@ -1218,7 +1225,7 @@ void Frame::PerformLayout()
 	int wide, tall;
 	GetSize(wide, tall);
 		
-#if !defined( _GAMECONSOLE )
+#if !defined( _X360 )
 	int DRAGGER_SIZE = GetDraggerSize();
 	int CORNER_SIZE = GetCornerSize();
 	int CORNER_SIZE2 = CORNER_SIZE * 2;
@@ -1237,8 +1244,6 @@ void Frame::PerformLayout()
 	_bottomRightGrip->SetBounds(wide - BOTTOMRIGHTSIZE, tall - BOTTOMRIGHTSIZE, BOTTOMRIGHTSIZE, BOTTOMRIGHTSIZE);
 	
 	_captionGrip->SetSize(wide-10,GetCaptionHeight());
-	// Put the caption behind all of the grips, other buttons
-	_captionGrip->SetZPos( -1 );
 	
 	_topGrip->MoveToFront();
 	_bottomGrip->MoveToFront();
@@ -1268,7 +1273,7 @@ void Frame::PerformLayout()
 		scale =	( (float)( screenH ) / (float)( proH ) );
 	}
 	
-#if !defined( _GAMECONSOLE )
+#if !defined( _X360 )
 	int offset_start = (int)( 20 * scale );
 	int offset = offset_start;
 
@@ -1285,7 +1290,7 @@ void Frame::PerformLayout()
 		_closeButton->SetPos((wide-side_border_offset)-offset,top_border_offset);
 		offset += offset_start;
 		LayoutProportional( _closeButton );
-		_closeButton->SetZPos( 1 );
+
 	}
 	if (_minimizeToSysTrayButton->IsVisible())
 	{
@@ -1420,19 +1425,12 @@ bool Frame::IsSizeable()
 	return _sizeable;
 }
 
-
-void Frame::GetSizerClientArea(int &x, int &y, int &wide, int &tall)
-{
-	GetClientArea(x,y,wide,tall);
-}
-
 //-----------------------------------------------------------------------------
 // Purpose: Get the size of the panel inside the frame edges.
 //-----------------------------------------------------------------------------
 void Frame::GetClientArea(int &x, int &y, int &wide, int &tall)
 {
 	x = m_iClientInsetX;
-	y = 0;
 
 	GetSize(wide, tall);
 
@@ -1618,7 +1616,7 @@ void Frame::PaintBackground()
 		{
 			int nTitleX = m_iTitleTextInsetXOverride ? m_iTitleTextInsetXOverride : m_iTitleTextInsetX;
 			int nTitleWidth = wide - 72;
-#if !defined( _GAMECONSOLE )
+#if !defined( _X360 )
 			if ( _menuButton && _menuButton->IsVisible() )
 			{
 				int mw, mh;
@@ -1679,7 +1677,7 @@ void Frame::ApplySchemeSettings(IScheme *pScheme)
 	_title->SetFont( titlefont );
 	_title->ResizeImageToContent();
 
-#if !defined( _GAMECONSOLE )
+#if !defined( _X360 )
 	HFont marfont = (HFont)0;
 	if ( m_bSmallCaption )
 	{
@@ -1744,6 +1742,9 @@ void Frame::ApplySettings(KeyValues *inResourceData)
 	// Don't change the frame's visibility, remove that setting from the config data
 	inResourceData->SetInt("visible", -1);
 	BaseClass::ApplySettings(inResourceData);
+
+	SetCloseButtonVisible( inResourceData->GetBool( "setclosebuttonvisible", true ) );
+
 	if( !inResourceData->GetInt("settitlebarvisible", 1 ) ) // if "title" is "0" then don't draw the title bar
 	{
 		SetTitleBarVisible( false );
@@ -1882,7 +1883,7 @@ void Frame::OnCommand(const char *command)
 //-----------------------------------------------------------------------------
 Menu *Frame::GetSysMenu()
 {
-#if !defined( _GAMECONSOLE )
+#if !defined( _X360 )
 	if (!_sysMenu)
 	{
 		_sysMenu = new Menu(this, NULL);
@@ -1923,7 +1924,7 @@ Menu *Frame::GetSysMenu()
 //-----------------------------------------------------------------------------
 void Frame::SetSysMenu(Menu *menu)
 {
-#if !defined( _GAMECONSOLE )
+#if !defined( _X360 )
 	if (menu == _sysMenu)
 		return;
 	
@@ -1940,7 +1941,7 @@ void Frame::SetSysMenu(Menu *menu)
 //-----------------------------------------------------------------------------
 void Frame::SetImages( const char *pEnabledImage, const char *pDisabledImage )
 {
-#if !defined( _GAMECONSOLE )
+#if !defined( _X360 )
 	_menuButton->SetImages( pEnabledImage, pDisabledImage );
 #endif
 }
@@ -1962,9 +1963,9 @@ void Frame::FinishClose()
 	SetVisible(false);
 	m_bPreviouslyVisible = false;
 	m_bFadingOut = false;
-	
-	OnFinishedClose();
 
+	OnFinishedClose();
+	
 	if (m_bDeleteSelfOnClose)
 	{
 		// Must be last because if vgui is not running then this will call delete this!!!
@@ -2017,7 +2018,7 @@ void Frame::OnMousePressed(MouseCode code)
 //-----------------------------------------------------------------------------
 void Frame::SetMenuButtonVisible(bool state)
 {
-#if !defined( _GAMECONSOLE )
+#if !defined( _X360 )
 	_menuButton->SetVisible(state);
 #endif
 }
@@ -2029,7 +2030,7 @@ void Frame::SetMenuButtonVisible(bool state)
 //-----------------------------------------------------------------------------
 void Frame::SetMenuButtonResponsive(bool state)
 {
-#if !defined( _GAMECONSOLE )
+#if !defined( _X360 )
 	_menuButton->SetResponsive(state);
 #endif
 }
@@ -2039,7 +2040,7 @@ void Frame::SetMenuButtonResponsive(bool state)
 //-----------------------------------------------------------------------------
 void Frame::SetMinimizeButtonVisible(bool state)
 {
-#if !defined( _GAMECONSOLE )
+#if !defined( _X360 )
 	_minimizeButton->SetVisible(state);
 #endif
 }
@@ -2049,7 +2050,7 @@ void Frame::SetMinimizeButtonVisible(bool state)
 //-----------------------------------------------------------------------------
 void Frame::SetMaximizeButtonVisible(bool state)
 {
-#if !defined( _GAMECONSOLE )
+#if !defined( _X360 )
 	_maximizeButton->SetVisible(state);
 #endif
 }
@@ -2059,7 +2060,7 @@ void Frame::SetMaximizeButtonVisible(bool state)
 //-----------------------------------------------------------------------------
 void Frame::SetMinimizeToSysTrayButtonVisible(bool state)
 {
-#if !defined( _GAMECONSOLE )
+#if !defined( _X360 )
 	_minimizeToSysTrayButton->SetVisible(state);
 #endif
 }
@@ -2069,7 +2070,7 @@ void Frame::SetMinimizeToSysTrayButtonVisible(bool state)
 //-----------------------------------------------------------------------------
 void Frame::SetCloseButtonVisible(bool state)
 {
-#if !defined( _GAMECONSOLE )
+#if !defined( _X360 )
 	_closeButton->SetVisible(state);
 #endif
 }
@@ -2159,7 +2160,7 @@ void Frame::OnKeyCodeTyped(KeyCode code)
 	bool ctrl = (input()->IsKeyDown(KEY_LCONTROL) || input()->IsKeyDown(KEY_RCONTROL));
 	bool alt = (input()->IsKeyDown(KEY_LALT) || input()->IsKeyDown(KEY_RALT));
 	
-	if ( IsGameConsole() )
+	if ( IsX360() )
 	{
 		vgui::Panel *pMap = FindChildByName( "ControllerMap" );
 		if ( pMap && pMap->IsKeyBoardInputEnabled() )
@@ -2392,10 +2393,4 @@ void Frame::PlaceUnderCursor( )
 	}
 
 	SetPos( x, y );
-}
-
-void Frame::OnGripPanelMoved( int nNewX, int nNewY, int nNewW, int nNewH )
-{
-	// set new position
-	SetBounds( nNewX, nNewY, nNewW, nNewH );
 }

@@ -4262,7 +4262,7 @@ model_t	*CModelLoader::LoadModel( model_t *mod, REFERENCETYPE *pReferencetype )
 				{
 					DevMsg( "Loading map: BeginMapLoading...\n" );
 				}
-				bQueuedLoader = g_pQueuedLoader && g_pQueuedLoader->BeginMapLoading( mod->szPathName, g_pMaterialSystemHardwareConfig->GetHDREnabled(), bOptimizeMapReload, QueuedLoaderBeginMapLoadingCallback );
+				bQueuedLoader = g_pQueuedLoader && g_pQueuedLoader->BeginMapLoading( mod->szPathName, g_pMaterialSystemHardwareConfig->GetHDREnabled(), bOptimizeMapReload );
 			}
 
 			if ( !bQueuedLoader )

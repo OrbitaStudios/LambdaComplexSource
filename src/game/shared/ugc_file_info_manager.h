@@ -12,6 +12,7 @@
 #endif
 
 #include "ugc_utils.h"
+#include "tier1/utlqueue.h"
 
 #if !defined( NO_STEAM ) && !defined( _PS3 )
 

@@ -7,7 +7,6 @@
 //===========================================================================//
 #include "cbase.h"
 #include "c_baseplayer.h"
-#include "c_cs_player.h"
 #include "c_user_message_register.h"
 #include "flashlighteffect.h"
 #include "weapon_selection.h"
@@ -59,7 +58,11 @@
 #if defined( INCLUDE_SCALEFORM ) && defined( CSTRIKE_DLL )
 #include "HUD/sfweaponselection.h"
 #include "Scaleform/HUD/sfhudfreezepanel.h"
+#endif
+
+#if defined( CSTRIKE_DLL )
 #include "cs_weapon_parse.h"
+#include "c_cs_player.h"
 #endif
 
 #ifdef DEMOPOLISH_ENABLED
@@ -634,8 +637,6 @@ void C_BasePlayer::Spawn( void )
 	Precache();
 
 	SetThink(NULL);
-
-	RANDOM_CEG_TEST_SECRET_LINE_PERIOD( 17, 0, 41, 0 );
 
 	SharedSpawn();
 
@@ -1212,17 +1213,17 @@ void C_BasePlayer::PostDataUpdate( DataUpdateType_t updateType )
 			bHideFreezePanel = true;
 			m_bWasFreezePanelExtended = false;
 		}
+#if defined( INCLUDE_SCALEFORM )
 		else if ( IsAlive() )
 		{
-#if defined( INCLUDE_SCALEFORM )
 			SFHudFreezePanel *pPanel = GET_HUDELEMENT( SFHudFreezePanel );
 			if ( pPanel && pPanel->IsVisible() )
 			{
 				//pPanel->ShowPanel( false );
 				bHideFreezePanel = true;
-			}
-#endif
+			}	
 		}
+#endif
 		
 		if ( bHideFreezePanel && !g_HltvReplaySystem.GetHltvReplayDelay() && !g_HltvReplaySystem.IsDelayedReplayRequestPending() )
 		{
@@ -1389,7 +1390,7 @@ void C_BasePlayer::OnDataChanged( DataUpdateType_t updateType )
 			render->SetAreaState( m_Local.m_chAreaBits, m_Local.m_chAreaPortalBits );
 		}
 
-#if !defined( INCLUDE_SCALEFORM ) || !defined( CSTRIKE_DLL )
+#if !defined( INCLUDE_SCALEFORM ) && !defined( CSTRIKE_DLL )
 		// Check for Ammo pickups.
 		int ammoTypes = GetAmmoDef()->NumAmmoTypes();
 		for ( int i = 0; i <= ammoTypes; i++ )
@@ -2842,7 +2843,7 @@ Vector C_BasePlayer::GetAutoaimVector( float flScale )
 }
 
 // Stuff for prediction
-void C_BasePlayer::SetSuitUpdate(const char *name, int fgroup, int iNoRepeat)
+void C_BasePlayer::SetSuitUpdate(char *name, int fgroup, int iNoRepeat)
 {
 	// FIXME:  Do something here?
 }

@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: Headers and defines for Autobuy and Rebuy 
 //
@@ -31,8 +31,8 @@ struct AutoBuyInfoStruct
 {
 	AutoBuyClassType m_class;
 	loadout_positions_t m_LoadoutPosition;
-	const char *m_command;
-	const char *m_classname;
+	char *m_command;
+	char *m_classname;
 };
 
 class RebuyStruct

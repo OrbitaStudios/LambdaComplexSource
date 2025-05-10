@@ -56,10 +56,9 @@ PMaterialHandle g_Material_AR2Glow = NULL;
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-CEG_NOINLINE C_EntityDissolve::C_EntityDissolve( void )
+C_EntityDissolve::C_EntityDissolve( void )
 {
 	m_bLinkedToServerEnt = true;
-	CEG_PROTECT_MEMBER_FUNCTION( C_EntityDissolve_C_EntityDissolve );
 	m_pController = NULL;
 	m_bCoreExplode = false;
 }
@@ -472,8 +471,6 @@ float C_EntityDissolve::GetFadeOutPercentage( void )
 	if ( dt > m_flFadeOutStart )
 	{
 		dt -= m_flFadeOutStart;
-		
-		RANDOM_CEG_TEST_SECRET();
 
 		if ( dt > m_flFadeOutLength )
 			return 0.0f;

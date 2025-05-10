@@ -54,7 +54,6 @@ public:
 	virtual bool NeedsUpdate( void ) { return false; }
 	virtual bool HasInputElements( void ) { return true; }
 	virtual void ShowPanel( bool bShow );
-	void		 ShowPanel2( bool bShow );
 	bool		 HasMotd();
 	virtual void PaintBackground();
 

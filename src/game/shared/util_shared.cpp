@@ -1,4 +1,4 @@
-//===== Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ======//
+//===== Copyright © 1996-2005, Valve Corporation, All rights reserved. ======//
 //
 // Purpose: 
 //
@@ -1471,7 +1471,7 @@ unsigned short UTIL_GetAchievementEventMask( void )
 	return ( mapCRC & 0xFFFF );
 }
 
-const char* ReadAndAllocStringValue( KeyValues *pSub, const char *pName, const char *pFilename )
+char* ReadAndAllocStringValue( KeyValues *pSub, const char *pName, const char *pFilename )
 {
 	const char *pValue = pSub->GetString( pName, NULL );
 	if ( !pValue )

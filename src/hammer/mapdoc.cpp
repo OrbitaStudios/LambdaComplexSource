@@ -13812,54 +13812,6 @@ void CMapDoc::OnInstancesCollapseSelectionRecursive()
 	CollapseInstancesRecursive( true );
 }
 
-//--------------------------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------------------------
-static BOOL CountUsedModels( CMapClass *pobj, unsigned int dwParam )
-{
-	CUtlVector<AssetUsageInfo_t> *pUsedModels = ( CUtlVector<AssetUsageInfo_t> * )dwParam;
-	if ( pobj->IsMapClass( MAPCLASS_TYPE( CMapEntity ) ) )
-	{
-		CMapEntity *pEntity = ( CMapEntity * )pobj;
-
-		if (pEntity->IsPlaceholder())
-		{
-			if ( pEntity->ClassNameMatches( "prop_*" ) )
-			{
-				const char *name = pEntity->GetKeyValue( "model" );
-				if ( name )
-				{
-					CUtlString modelName;
-					modelName.Set( name );
-					Q_FixSlashes( modelName.Get() );
-
-					for ( int i = 0; i < pUsedModels->Count(); i++ )
-					{
-						if ( !Q_stricmp( modelName.Get(), pUsedModels->Element( i ).m_assetName.Get() ) )
-						{
-							pUsedModels->Element( i ).m_nTimesUsed++;
-							return TRUE;
-						}
-					}
-
-					pUsedModels->AddToTail();
-					pUsedModels->Tail().m_assetName.Set( modelName );
-					pUsedModels->Tail().m_nTimesUsed = 1;
-				}
-			}
-		}
-	}
-
-	return TRUE;
-}
-
-
-//--------------------------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------------------------
-void CMapDoc::GetUsedModels( CUtlVector<AssetUsageInfo_t> &usedModels )
-{
-	m_pWorld->EnumChildrenAndInstances( ( ENUMMAPCHILDRENPROC )CountUsedModels, ( unsigned int )&usedModels );
-}
-
 
 //-----------------------------------------------------------------------------
 // Purpose: 

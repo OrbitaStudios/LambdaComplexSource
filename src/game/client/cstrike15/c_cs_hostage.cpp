@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: Client side C_CHostage class 
 //
@@ -625,8 +625,6 @@ void C_CHostage::LookAround( void )
 		angles[ PITCH ] += RandomFloat( m_headPitchMin, m_headPitchMax );
 		AngleVectors( angles, &forward );
 		m_lookAt = EyePosition() + 100.0f * forward;
-
-		STEAMWORKS_TESTSECRET_AMORTIZE(79);
 	}
 }
 
@@ -641,7 +639,7 @@ void C_CHostage::UpdateClientSideAnimation()
 	m_PlayerAnimState->Update( GetAbsAngles()[YAW], GetAbsAngles()[PITCH] );
 
 	// initialize pose parameters
-	const char *setToZero[] =
+	char *setToZero[] =
 	{
 		"spine_yaw",
 		"head_roll"
@@ -802,7 +800,7 @@ void C_CHostage::OnDataChanged( DataUpdateType_t updateType )
 }
 
 //-----------------------------------------------------------------------------
-void C_CHostage::ImpactTrace( trace_t *pTrace, int iDamageType, const char *pCustomImpactName )
+void C_CHostage::ImpactTrace( trace_t *pTrace, int iDamageType, char *pCustomImpactName )
 {
 	static ConVar *violence_hblood = cvar->FindVar( "violence_hblood" );
 	if ( violence_hblood && !violence_hblood->GetBool() )

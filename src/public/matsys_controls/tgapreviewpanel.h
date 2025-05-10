@@ -1,4 +1,4 @@
-//====== Copyright © 1996-2003, Valve Corporation, All rights reserved. =======
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -30,8 +30,6 @@ public:
 	CTGAPreviewPanel( vgui::Panel *pParent, const char *pName );
 	void SetTGA( const char *pFullPath );
 	const char *GetTGA() const;
-
-	virtual void PerformLayout();
 
 private:
 	CUtlString m_TGAName;

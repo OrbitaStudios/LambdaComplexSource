@@ -945,7 +945,7 @@ void CMapReslistGenerator::TrackDeletions( const char *fullPathFileName )
 	Q_strlower( test );
 
 	CUtlSymbol sym = m_DeletionList.Find( test );
-	if ( sym.IsValid() )
+	if ( UTL_INVAL_SYMBOL != sym )
 	{
 		CUtlSymbol warningSymbol = m_DeletionListWarningsSymbols.AddString( test );
 

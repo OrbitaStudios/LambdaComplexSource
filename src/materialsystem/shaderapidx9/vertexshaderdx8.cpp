@@ -182,9 +182,7 @@ ConVar mat_autosave_glshaders( "mat_autosave_glshaders", "1" );
 //-----------------------------------------------------------------------------
 // Explicit instantiation of shader buffer implementation
 //-----------------------------------------------------------------------------
-#if defined( DYNAMIC_SHADER_COMPILE )
 template class CShaderBuffer< ID3DXBuffer >;
-#endif
 
 
 //-----------------------------------------------------------------------------
@@ -1004,7 +1002,7 @@ void CShaderManager::Shutdown()
 //-----------------------------------------------------------------------------
 IShaderBuffer *CShaderManager::CompileShader( const char *pProgram, size_t nBufLen, const char *pShaderVersion )
 {
-#if defined( DYNAMIC_SHADER_COMPILE )
+#if defined( DYNAMIC_SHADER_COMPILE ) || !defined( _X360 )
 
 	int nCompileFlags = D3DXSHADER_AVOID_FLOW_CONTROL;
 

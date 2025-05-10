@@ -1,4 +1,4 @@
-//========= Copyright � 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -9,7 +9,7 @@
 #include <vgui_controls/Button.h>
 #include <vgui_controls/CheckButton.h>
 #include <vgui_controls/TextEntry.h>
-#include "tier1/keyvalues.h"
+#include "tier1/KeyValues.h"
 #include "tier1/fmtstr.h"
 #include "vgui/IInput.h"
 
@@ -22,7 +22,7 @@ using namespace vgui;
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
-BaseInputDialog::BaseInputDialog( Panel *parent, const char *title, bool bShowCancelButton /*= true*/ ) :
+BaseInputDialog::BaseInputDialog( vgui::Panel *parent, const char *title ) :
 	BaseClass( parent, NULL )
 {
 	m_pContextKeyValues = NULL;
@@ -32,19 +32,11 @@ BaseInputDialog::BaseInputDialog( Panel *parent, const char *title, bool bShowCa
 	SetSize(320, 180);
 	SetSizeable( false );
 
-	m_pOKButton = new Button( this, "OKButton", "#VGui_OK" );
-	m_pOKButton->SetCommand( "OK" );
+	m_pCancelButton = new Button(this, "CancelButton", "#VGui_Cancel");
+	m_pOKButton = new Button(this, "OKButton", "#VGui_OK");
+	m_pCancelButton->SetCommand("Cancel");
+	m_pOKButton->SetCommand("OK");
 	m_pOKButton->SetAsDefaultButton( true );
-
-	if ( bShowCancelButton )
-	{
-		m_pCancelButton = new Button( this, "CancelButton", "#VGui_Cancel" );
-		m_pCancelButton->SetCommand( "Cancel" );
-	}
-	else
-	{
-		m_pCancelButton = NULL;
-	}
 
 	if ( parent )
 	{
@@ -95,15 +87,8 @@ void BaseInputDialog::PerformLayout()
 
 	PerformLayout( 12, topy, w - 24, h - 100 );
 
-	if ( m_pCancelButton )
-	{
-		m_pOKButton->SetBounds( halfw - 84, h - 30, 72, 24 );
-		m_pCancelButton->SetBounds( halfw + 12, h - 30, 72, 24 );
-	}
-	else
-	{
-		m_pOKButton->SetBounds( halfw - 36, h - 30, 72, 24 );
-	}
+	m_pOKButton->SetBounds( halfw - 84, h - 30, 72, 24 );
+	m_pCancelButton->SetBounds( halfw + 12, h - 30, 72, 24 );
 }
 
 
@@ -116,12 +101,11 @@ void BaseInputDialog::OnCommand(const char *command)
 	if ( !stricmp( command, "OK" ) )
 	{
 		kv = new KeyValues( "InputCompleted" );
-		WriteDataToKeyValues( kv, true );
+		kv->SetPtr( "dialog", this );
 	}
 	else if ( !stricmp( command, "Cancel" ) )
 	{
 		kv = new KeyValues( "InputCanceled" );
-		WriteDataToKeyValues( kv, false );
 	}
 	else
 	{
@@ -142,7 +126,7 @@ void BaseInputDialog::OnCommand(const char *command)
 //-----------------------------------------------------------------------------
 // Purpose: Utility dialog, used to ask yes/no questions of the user
 //-----------------------------------------------------------------------------
-InputMessageBox::InputMessageBox( Panel *parent, const char *title, char const *prompt )
+InputMessageBox::InputMessageBox( vgui::Panel *parent, const char *title, char const *prompt )
 : BaseClass( parent, title )
 {
 	SetSize( 320, 120 );
@@ -163,7 +147,7 @@ void InputMessageBox::PerformLayout( int x, int y, int w, int h )
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
-InputDialog::InputDialog( Panel *parent, const char *title, char const *prompt, char const *defaultValue /*=""*/ ) : 
+InputDialog::InputDialog(vgui::Panel *parent, const char *title, char const *prompt, char const *defaultValue /*=""*/ ) : 
 	BaseClass(parent, title)
 {
 	SetSize( 320, 120 );
@@ -217,15 +201,40 @@ void InputDialog::PerformLayout( int x, int y, int w, int h )
 //-----------------------------------------------------------------------------
 // Purpose: handles button commands
 //-----------------------------------------------------------------------------
-void InputDialog::WriteDataToKeyValues( KeyValues *pKV, bool bOk )
+void InputDialog::OnCommand(const char *command)
 {
-	if ( !bOk )
-		return; // don't write any data on cancel
+	// overriding OnCommand for backwards compatability
+	// it'd be nice at some point to find all uses of InputDialog and just use BaseInputDialog's OnCommand
 
-	int nTextLength = m_pInput->GetTextLength() + 1;
-	char* txt = (char*)stackalloc( nTextLength * sizeof(char) );
-	m_pInput->GetText( txt, nTextLength );
-	pKV->SetString( "text", txt );
+	if (!stricmp(command, "OK"))
+	{
+		int nTextLength = m_pInput->GetTextLength() + 1;
+		char* txt = (char*)_alloca( nTextLength * sizeof(char) );
+		m_pInput->GetText( txt, nTextLength );
+		KeyValues *kv = new KeyValues( "InputCompleted", "text", txt );
+		if ( m_pContextKeyValues )
+		{
+			kv->AddSubKey( m_pContextKeyValues );
+			m_pContextKeyValues = NULL;
+		}
+		PostActionSignal( kv );
+		CloseModal();
+	}
+	else if (!stricmp(command, "Cancel"))
+	{
+		KeyValues *kv = new KeyValues( "InputCanceled" );
+		if ( m_pContextKeyValues )
+		{
+			kv->AddSubKey( m_pContextKeyValues );
+			m_pContextKeyValues = NULL;
+		}
+		PostActionSignal( kv );
+		CloseModal();
+	}
+	else
+	{
+		BaseClass::OnCommand(command);
+	}
 }
 
 

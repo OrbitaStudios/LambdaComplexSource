@@ -493,6 +493,11 @@ public:
 	bool CanExecute() const							{ return ( m_status == JOB_STATUS_PENDING || m_status == JOB_STATUS_UNSERVICED ); }
 	bool IsFinished() const							{ return ( m_status != JOB_STATUS_PENDING && m_status != JOB_STATUS_INPROGRESS && m_status != JOB_STATUS_UNSERVICED ); }
 	JobStatus_t GetStatus() const					{ return m_status; }
+
+	/// Slam the status to a particular value.  This is named "slam" instead of "set,"
+	/// to warn you that it should only be used in unusual situations.  Otherwise, the
+	/// job manager really should manage the status for you, and you should not manhandle it.
+	void SlamStatus(JobStatus_t s) { m_status = s; }
 	
 	//-----------------------------------------------------
 	// Try to acquire ownership (to satisfy). If you take the lock, you must either execute or abort.

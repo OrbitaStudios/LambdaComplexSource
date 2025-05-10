@@ -54,6 +54,7 @@ void FreeDuplicatedSamplePairs( portable_samplepair_t * pInputBuffer, int nSampl
 
 ConVar snd_mix_optimization( "snd_mix_optimization", "0", FCVAR_NONE, "Turns optimization on for mixing if set to 1 (default). 0 to turn the optimization off." );
 ConVar snd_mix_soundchar_enabled( "snd_mix_soundchar_enabled", "1", FCVAR_NONE, "Turns sound char on for mixing if set to 1 (default). 0 to turn the sound char off and use default behavior (spatial instead of doppler, directional, etc...)." );
+ConVar snd_hrtf_volume("snd_hrtf_volume", "0.8", FCVAR_CHEAT, "Controls volume of HRTF sounds");
 
 #define SKIP_MIXING_IF_TOTAL_VOLUME_LESS_OR_EQUAL_THAN	0
 
@@ -4961,6 +4962,17 @@ void Mix16StereoWavtype(channel_t *pChannel, portable_samplepair_t *pOutput, flo
 
 	switch ( nWavType )
 	{
+	case CHAR_HRTF:
+
+		float volumes_averaged[2];
+		volumes_averaged[0] = float((volume[0] + volume[1]) * 4 * pChannel->hrtf.lerp + volume[0] * 8 * (1.0f - pChannel->hrtf.lerp));
+		volumes_averaged[1] = float((volume[0] + volume[1]) * 4 * pChannel->hrtf.lerp + volume[1] * 8 * (1.0f - pChannel->hrtf.lerp));
+
+		if (bUseHighQualityPitch)
+			SW_Mix16Stereo_Interp(pOutput, volumes_averaged, pData, inputOffset, rateScaleFix, outCount);
+		else
+			SW_Mix16Stereo(pOutput, volumes_averaged, pData, inputOffset, rateScaleFix, outCount);
+		break;
 	case CHAR_DIRSTEREO:
 	case CHAR_DOPPLER:
 		if ( bUseHighQualityPitch )

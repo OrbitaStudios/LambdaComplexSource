@@ -1,11 +1,11 @@
-//====== Copyright 1996-2005, Valve Corporation, All rights reserved. =======
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
 //=============================================================================
 
 #include "matsys_controls/mdlpicker.h"
-#include "tier1/keyvalues.h"
+#include "tier1/KeyValues.h"
 #include "tier1/utldict.h"
 #include "filesystem.h"
 #include "studio.h"
@@ -26,11 +26,14 @@
 #include "matsys_controls/assetpicker.h"
 #include "matsys_controls/colorpickerpanel.h"
 #include "dmxloader/dmxloader.h"
-#include "utlbuffer.h"
+#include "tier1/utlbuffer.h"
 #include "bitmap/tgawriter.h"
 #include "tier3/tier3.h"
 #include "istudiorender.h"
 #include "../vgui2/src/VPanel.h"
+#include "tier2/p4helpers.h"
+#include "ivtex.h"
+#include "bitmap/tgaloader.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -38,6 +41,31 @@
 
 using namespace vgui;
 
+static bool SaveTgaAndAddToP4( unsigned char *pImage, ImageFormat imageFormat, int Width, int Height, const char *szDestFilename )
+{
+
+	// allocate a buffer to write the tga into
+	int iMaxTGASize = 1024 + (Width * Height * 4);
+	void *pTGA = malloc( iMaxTGASize );
+	CUtlBuffer buffer( pTGA, iMaxTGASize );
+
+	if( !TGAWriter::WriteToBuffer( pImage, buffer, Width, Height, imageFormat, IMAGE_FORMAT_BGRA8888 ) )
+	{
+		Error( "Couldn't write bitmap data snapshot.\n" );
+		return false;
+	}
+
+	CP4AutoEditAddFile autop4( szDestFilename );
+
+	// async write to disk (this will take ownership of the memory)
+	char szDirName[ _MAX_PATH ];
+	strcpy( szDirName, szDestFilename );
+	V_StripFilename( szDirName );
+	g_pFullFileSystem->CreateDirHierarchy( szDirName, "" );
+	g_pFullFileSystem->AsyncWrite( szDestFilename, buffer.Base(), buffer.TellPut(), true );
+
+	return true;
+}
 
 //-----------------------------------------------------------------------------
 //
@@ -63,7 +91,10 @@ static int __cdecl MDLBrowserSortFunc( vgui::ListPanel *pPanel, const ListPanelI
 CMDLPicker::CMDLPicker( vgui::Panel *pParent, int nFlags ) : 
 	BaseClass( pParent, "MDL Files", "mdl", "models", "mdlName" )
 {
-	m_hSelectedMDL = MDLHANDLE_INVALID;
+	for( int i = 0; i < MAX_SELECTED_MODELS; i++ )
+	{
+		m_hSelectedMDL[ i ] = MDLHANDLE_INVALID;
+	}
 
 	m_nFlags = nFlags;	// remember what we show and what not
 
@@ -72,9 +103,12 @@ CMDLPicker::CMDLPicker( vgui::Panel *pParent, int nFlags ) :
 	m_pActivitiesPage = NULL;
 	m_pSkinsPage = NULL;
 	m_pInfoPage = NULL;
+	m_pScreenCapsPage = NULL;
 
 	m_pSequencesList = NULL;
 	m_pActivitiesList = NULL;
+
+	m_hDirectorySelectDialog = NULL;
 
 	// Horizontal splitter for mdls
 	m_pFileBrowserSplitter = new Splitter( this, "FileBrowserSplitter", SPLITTER_MODE_VERTICAL, 1 );
@@ -188,6 +222,42 @@ CMDLPicker::CMDLPicker( vgui::Panel *pParent, int nFlags ) :
 		RefreshRenderSettings();
 	}
 
+	if ( nFlags & PAGE_SCREEN_CAPS )
+	{
+		m_pScreenCapsPage = new vgui::PropertyPage( m_pViewsSheet, "ScreenCapsPage" );
+
+//		not sure why we have to do this for the color picker
+		CColorPickerButton *m_pBackgroundColor;
+		m_pBackgroundColor = new CColorPickerButton( m_pScreenCapsPage, "BackgroundColor", this );
+
+		m_pScreenCapsPage->LoadControlSettingsAndUserConfig( "resource/mdlpickerscreencaps.res" );
+
+		TextEntry	*pTempValue;
+		pTempValue = ( TextEntry * )m_pScreenCapsPage->FindChildByName( "WidthText" );
+		pTempValue->SetText( "256" );
+		pTempValue = ( TextEntry * )m_pScreenCapsPage->FindChildByName( "HeightText" );
+		pTempValue->SetText( "256" );
+
+//		not sure why this doesn't work
+//		m_pBackgroundColor = ( CColorPickerButton * )m_pScreenCapsPage->FindChildByName( "BackgroundColor" );
+		m_pBackgroundColor->SetColor( 255, 0, 0, 255 );
+
+		Label *m_pOutputDirectory;
+		m_pOutputDirectory = ( Label * )m_pScreenCapsPage->FindChildByName( "OutputDirectory" );
+		m_pOutputDirectory->SetText( "c:\\" );
+
+		Button *pSelectProbe = ( Button * )m_pScreenCapsPage->FindChildByName( "Capture" );
+		pSelectProbe->AddActionSignalTarget( this );
+		pSelectProbe = ( Button * )m_pScreenCapsPage->FindChildByName( "OutputDirectorySelect" );
+		pSelectProbe->AddActionSignalTarget( this );
+		pSelectProbe = ( Button * )m_pScreenCapsPage->FindChildByName( "SaveCaps" );
+		pSelectProbe->AddActionSignalTarget( this );
+		pSelectProbe = ( Button * )m_pScreenCapsPage->FindChildByName( "RestoreCaps" );
+		pSelectProbe->AddActionSignalTarget( this );
+		pSelectProbe = ( Button * )m_pScreenCapsPage->FindChildByName( "GenerateBackpackIcons" );
+		pSelectProbe->AddActionSignalTarget( this );
+	}
+
 	// Load layout settings; has to happen before pinning occurs in code
 	LoadControlSettingsAndUserConfig( "resource/mdlpicker.res" );
 
@@ -212,6 +282,10 @@ CMDLPicker::CMDLPicker( vgui::Panel *pParent, int nFlags ) :
 	{
 		m_pViewsSheet->AddPage( m_pInfoPage, "Info" );
 	}
+	if ( m_pScreenCapsPage )
+	{
+		m_pViewsSheet->AddPage( m_pScreenCapsPage, "Screen Caps" );
+	}
 }
 
 void CMDLPicker::RefreshRenderSettings()
@@ -225,7 +299,7 @@ void CMDLPicker::RefreshRenderSettings()
 	pToggle = (vgui::CheckButton*)m_pRenderPage->FindChildByName("NoGround");
 	pToggle->AddActionSignalTarget( this );
 	m_pMDLPreview->SetGroundGrid( !pToggle->IsSelected() );
-
+	
 	// collision
 	pToggle = (vgui::CheckButton*)m_pRenderPage->FindChildByName("Collision");
 	pToggle->AddActionSignalTarget( this );
@@ -320,6 +394,420 @@ void CMDLPicker::OnCommand( const char *pCommand )
 
 
 //-----------------------------------------------------------------------------
+// Handles the directory selection for screen caps
+//-----------------------------------------------------------------------------
+void CMDLPicker::OnDirectorySelected( char const *dir )
+{
+	if ( m_hDirectorySelectDialog != 0 )
+	{
+		m_hDirectorySelectDialog->MarkForDeletion();
+	}
+
+	Label *m_pOutputDirectory;
+	m_pOutputDirectory = ( Label * )m_pScreenCapsPage->FindChildByName( "OutputDirectory" );
+	m_pOutputDirectory->SetText( dir );
+}
+
+
+//-----------------------------------------------------------------------------
+// Screen captures the specific model and writes out a .tga.  Assumes the MDLPreview 
+// panel has been properly adjusted to 0,0 in screen space and that width / height
+// have been set.
+//-----------------------------------------------------------------------------
+const char *CMDLPicker::CaptureModel( int nModIndex, const char *AssetName, const char *OutputPath, int Width, int Height, Color BackgroundColor, bool bSelectedOnly )
+{
+	char pBuf[ MAX_PATH ];
+	Q_snprintf( pBuf, sizeof( pBuf ), "%s\\%s\\%s", GetModPath( nModIndex ), m_pAssetSubDir, AssetName );
+	Q_FixSlashes( pBuf );
+
+	if ( !bSelectedOnly )
+	{
+		SelectMDL( pBuf, false, -1 );
+	}
+
+	CMatRenderContextPtr pRenderContext( materials );
+
+	g_pMaterialSystem->BeginFrame( 0 );
+	g_pStudioRender->BeginFrame();
+
+//	pRenderContext->ClearColor4ub( 0, 0, 0, 0 ); 
+//	pRenderContext->ClearBuffers( true, true );
+
+	Color NewPanelColor;
+	
+	NewPanelColor.SetColor( 0, 0, 0, 0 );
+	m_pMDLPreview->SetBackgroundColor( NewPanelColor );
+
+	g_pVGuiSurface->PaintTraverseEx( m_pMDLPreview->GetVPanel(), false );
+
+	g_pStudioRender->EndFrame();
+	g_pMaterialSystem->EndFrame( );
+
+	// get the data from the backbuffer and save to disk
+	// bitmap bits
+	unsigned char *pImageBlack = ( unsigned char * )malloc( Width * 4 * Height );
+
+	// Get Bits from the material system
+	pRenderContext->ReadPixels( 0, 0, Width, Height, pImageBlack, IMAGE_FORMAT_BGRA8888 );
+
+
+	g_pMaterialSystem->BeginFrame( 0 );
+	g_pStudioRender->BeginFrame();
+
+//	pRenderContext->ClearColor4ub( 255, 255, 255, 0 ); 
+//	pRenderContext->ClearBuffers( true, true );
+
+	NewPanelColor.SetColor( 255, 255, 255, 0 );
+	m_pMDLPreview->SetBackgroundColor( NewPanelColor );
+
+	g_pVGuiSurface->PaintTraverseEx( m_pMDLPreview->GetVPanel(), false );
+
+	g_pStudioRender->EndFrame();
+	g_pMaterialSystem->EndFrame( );
+
+	// get the data from the backbuffer and save to disk
+	// bitmap bits
+	unsigned char *pImageWhite = ( unsigned char * )malloc( Width * 4 * Height );
+
+	// Get Bits from the material system
+	pRenderContext->ReadPixels( 0, 0, Width, Height, pImageWhite, IMAGE_FORMAT_BGRA8888 );
+
+	unsigned char *pBlackPos = pImageBlack;
+	unsigned char *pWhitePos = pImageWhite;
+	for( int y = 0; y < Height; y++ )
+	{
+		for( int x = 0; x < Width; x++, pBlackPos += 4, pWhitePos += 4 )
+		{
+			if ( ( *( pBlackPos + 0 ) ) != ( *( pWhitePos + 0 ) ) ||		// blue
+				 ( *( pBlackPos + 1 ) ) != ( *( pWhitePos + 1 ) ) ||		// green
+				 ( *( pBlackPos + 2 ) ) != ( *( pWhitePos + 2 ) ) )			// red
+			{
+				unsigned char	nBlueDiff = ( *( pBlackPos + 0 ) );
+				unsigned char	nGreenDiff = ( *( pBlackPos + 1 ) );
+				unsigned char	nRedDiff = ( *( pBlackPos + 2 ) );
+
+				unsigned char	nMax = nBlueDiff;
+				if ( nGreenDiff > nMax )
+				{
+					nMax = nGreenDiff;
+				}
+				if ( nRedDiff > nMax )
+				{
+					nMax = nRedDiff;
+				}
+
+				*( pBlackPos + 3 ) = nMax;
+			}
+			else
+			{
+				*( pBlackPos + 3 ) = 0xff;
+			}
+		}
+	}
+
+	static char szPathedFileName[ _MAX_PATH ];
+	sprintf( szPathedFileName, "%s%s", OutputPath, AssetName );
+	V_SetExtension( szPathedFileName, ".tga", sizeof( szPathedFileName ) );
+
+	bool bResult = SaveTgaAndAddToP4( pImageBlack, IMAGE_FORMAT_BGRA8888, Width, Height, szPathedFileName );
+
+	free( pImageBlack );
+	free( pImageWhite );
+
+	if ( !bResult) return NULL;
+
+	if ( bSelectedOnly )
+	{
+		SaveCaps( szPathedFileName );
+	}
+
+	return szPathedFileName;
+}
+
+
+//-----------------------------------------------------------------------------
+// Will go through the asset browser and capture each visible item.
+//-----------------------------------------------------------------------------
+void CMDLPicker::CaptureScreenCaps( void )
+{
+	char		temp[ 256 ];
+	TextEntry	*pTempValue;
+	int			width;
+	int			height;
+	char		szBathPath[ _MAX_PATH ];
+	Label		*m_pOutputDirectory;
+
+	m_pOutputDirectory = ( Label * )m_pScreenCapsPage->FindChildByName( "OutputDirectory" );
+	m_pOutputDirectory->GetText( szBathPath, sizeof( szBathPath ) );
+
+	pTempValue = ( TextEntry * )m_pScreenCapsPage->FindChildByName( "WidthText" );
+	pTempValue->GetText( temp, sizeof( temp ) );
+	width = atoi( temp );
+	pTempValue = ( TextEntry * )m_pScreenCapsPage->FindChildByName( "HeightText" );
+	pTempValue->GetText( temp, sizeof( temp ) );
+	height = atoi( temp );
+
+	int		PanelX, PanelY, PanelWidth, PanelHeight;
+	Color	PanelColor;
+
+	Panel *pParent = m_pMDLPreview->GetParent();
+	m_pMDLPreview->GetPos( PanelX, PanelY );
+	m_pMDLPreview->GetSize( PanelWidth, PanelHeight );
+	PanelColor = m_pMDLPreview->GetBackgroundColor();
+
+	m_pMDLPreview->SetParent( ( vgui::Panel * )NULL );
+	m_pMDLPreview->SetPos( 0, 0 );
+	m_pMDLPreview->SetSize( width, height );
+
+	CColorPickerButton *m_pBackgroundColor;
+	m_pBackgroundColor = ( CColorPickerButton * )m_pScreenCapsPage->FindChildByName( "BackgroundColor" );
+	
+	Color NewPanelColor = m_pBackgroundColor->GetColor();
+	NewPanelColor[3] = 0;
+	m_pMDLPreview->SetBackgroundColor( NewPanelColor );
+	((VPanel *)m_pMDLPreview->GetVPanel())->Solve();
+
+	bool	bSelectedOnly = false;
+	if ( input()->IsKeyDown( KEY_RCONTROL ) || input()->IsKeyDown( KEY_LCONTROL ) )
+	{
+		bSelectedOnly = true;
+	}
+
+	int nCount = m_AssetList.Count();
+	int nNumItems = 0;
+	for ( int i = 0; i < nCount; ++i )
+	{
+		if ( m_pAssetBrowser->IsItemVisible( m_AssetList[ i ].m_nItemId ) &&
+			( !bSelectedOnly || m_pAssetBrowser->IsItemSelected( m_AssetList[ i ].m_nItemId ) ) )
+		{
+			KeyValues *pItemKeyValues = m_pAssetBrowser->GetItem( m_AssetList[ i ].m_nItemId );
+			const char *pSelectedAsset = pItemKeyValues->GetString( "asset" );
+			int			nModIndex = pItemKeyValues->GetInt( "modIndex" );
+
+			CaptureModel( nModIndex, pSelectedAsset, szBathPath, width, height, NewPanelColor, bSelectedOnly );
+			nNumItems++;
+		}
+	}
+
+	m_pMDLPreview->SetParent( pParent );
+	m_pMDLPreview->SetPos( PanelX, PanelY );
+	m_pMDLPreview->SetSize( PanelWidth, PanelHeight );
+	m_pMDLPreview->SetBackgroundColor( PanelColor );
+	((VPanel *)m_pMDLPreview->GetVPanel())->Solve();
+
+	Label		*m_pResults;
+
+	sprintf( temp, "Captured %d items", nNumItems );
+	m_pResults = ( Label * )m_pScreenCapsPage->FindChildByName( "CaptureResults" );
+	m_pResults->SetText( temp );
+}
+
+
+//-----------------------------------------------------------------------------
+// Stub for XBox360 compiles
+//-----------------------------------------------------------------------------
+#if defined( _X360 )
+const char *getenv( const char *varname )
+{
+	return NULL;
+}
+#endif
+
+
+//-----------------------------------------------------------------------------
+void *VTexFilesystemFactory( const char *pName, int *pReturnCode )
+{
+	return g_pFullFileSystem;
+}
+
+
+void* MdlPickerFSFactory( const char *pName, int *pReturnCode )
+{
+	if ( IsX360() )
+		return NULL;
+
+	if ( Q_stricmp( pName, FILESYSTEM_INTERFACE_VERSION ) == 0 )
+		return g_pFullFileSystem;
+
+	return NULL;
+}
+
+
+CUtlString CMDLPicker::GetOutputFileSuffix()
+{
+	char temp[256];
+	TextEntry *pTempValue = ( TextEntry * )m_pScreenCapsPage->FindChildByName( "SuffixText" );
+	if ( pTempValue )
+	{
+		pTempValue->GetText( temp, sizeof( temp ) );
+	}
+	return temp;
+}
+
+
+//-----------------------------------------------------------------------------
+// Saves the screen cap information and camera position
+//-----------------------------------------------------------------------------
+void CMDLPicker::SaveCaps( const char *szFileName )
+{
+	char	temp[ _MAX_PATH ];
+
+	KeyValues *CaptureData = new KeyValues( "ScreenCaps" );
+
+	Vector	vecPos;
+	QAngle	angDir;
+	m_pMDLPreview->GetCameraPositionAndAngles( vecPos, angDir );
+	sprintf( temp, "%g %g %g", vecPos.x, vecPos.y, vecPos.z );
+	CaptureData->SetString( "CameraPosition", temp );
+	sprintf( temp, "%g %g %g", angDir.x, angDir.y, angDir.z );
+	CaptureData->SetString( "CameraAngles", temp );
+
+	Vector	vecOffset;
+	m_pMDLPreview->GetCameraOffset( vecOffset );
+	sprintf( temp, "%g %g %g", vecOffset.x, vecOffset.y, vecOffset.z );
+	CaptureData->SetString( "CameraOffset", temp );
+
+	CColorPickerButton *m_pBackgroundColor;
+	m_pBackgroundColor = ( CColorPickerButton * )m_pScreenCapsPage->FindChildByName( "BackgroundColor" );
+	Color	color = m_pBackgroundColor->GetColor();
+
+	sprintf( temp, "%d %d %d %d", color.r(), color.g(), color.b(), color.a() );
+	CaptureData->SetString( "BackgroundColor", temp );
+
+	TextEntry	*pTempValue;
+	pTempValue = ( TextEntry * )m_pScreenCapsPage->FindChildByName( "WidthText" );
+	pTempValue->GetText( temp, sizeof( temp ) );
+	CaptureData->SetString( "Width", temp );
+
+	pTempValue = ( TextEntry * )m_pScreenCapsPage->FindChildByName( "HeightText" );
+	pTempValue->GetText( temp, sizeof( temp ) );
+	CaptureData->SetString( "Height", temp );
+
+	vgui::CheckButton *pToggle;
+	pToggle = (vgui::CheckButton*)m_pRenderPage->FindChildByName( "NoGround" );
+	CaptureData->SetInt( "NoGround", pToggle->IsSelected() ? 1 : 0 );
+
+	pToggle = (vgui::CheckButton*)m_pRenderPage->FindChildByName( "Collision" );
+	CaptureData->SetInt( "Collision", pToggle->IsSelected() ? 1 : 0 );
+
+	pToggle = (vgui::CheckButton*)m_pRenderPage->FindChildByName( "Wireframe" );
+	CaptureData->SetInt( "Wifeframe", pToggle->IsSelected() ? 1 : 0 );
+
+	pToggle = (vgui::CheckButton*)m_pRenderPage->FindChildByName( "LockView" );
+	CaptureData->SetInt( "LockView", pToggle->IsSelected() ? 1 : 0 );
+
+	pToggle = (vgui::CheckButton*)m_pRenderPage->FindChildByName( "LookAtCamera" );
+	CaptureData->SetInt( "LookAtCamera", pToggle->IsSelected() ? 1 : 0 );
+
+	for( int i = 1; i < MAX_SELECTED_MODELS; i++ )
+	{
+		if ( m_hSelectedMDL[ i ] != MDLHANDLE_INVALID )
+		{
+			const char *MergedModelName = vgui::MDLCache()->GetModelName( m_hSelectedMDL[ i ] );
+			sprintf( temp, "Merged_%d", i );
+			CaptureData->SetString( temp, MergedModelName );
+		}
+	}
+
+	if ( szFileName != NULL )
+	{
+		strcpy( temp, szFileName );
+		V_SetExtension( temp, ".cfg", sizeof( temp ) );
+	}
+	else
+	{
+		Label	*m_pOutputDirectory = ( Label * )m_pScreenCapsPage->FindChildByName( "OutputDirectory" );
+		m_pOutputDirectory->GetText( temp, sizeof( temp ) );
+
+		strcat( temp, "ScreenCaps.cfg" );
+	}
+
+	CaptureData->SaveToFile( g_pFullFileSystem, temp );
+	CP4AutoAddFile autop4( temp );
+}
+
+
+//-----------------------------------------------------------------------------
+// Restores the screen cap information and camera position
+//-----------------------------------------------------------------------------
+bool CMDLPicker::RestoreCaps( const char *szFileName )
+{
+	char	temp[ _MAX_PATH ];
+
+	if ( szFileName != NULL )
+	{
+		strcpy( temp, szFileName );
+		V_SetExtension( temp, ".cfg", sizeof( temp ) );
+	}
+	else
+	{
+		Label	*m_pOutputDirectory = ( Label * )m_pScreenCapsPage->FindChildByName( "OutputDirectory" );
+		m_pOutputDirectory->GetText( temp, sizeof( temp ) );
+		strcat( temp, "ScreenCaps.cfg" );
+	}
+
+	KeyValues *CaptureData = new KeyValues( "ScreenCaps" );
+
+	if ( !CaptureData->LoadFromFile( g_pFullFileSystem, temp ) )
+	{
+		return false;
+	}
+
+	Vector	vecPos;
+	QAngle	angDir;
+	Vector	vecOffset;
+	sscanf( CaptureData->GetString( "CameraPosition" ), "%g %g %g", &vecPos.x, &vecPos.y, &vecPos.z );
+	sscanf( CaptureData->GetString( "CameraAngles" ), "%g %g %g", &angDir.x, &angDir.y, &angDir.z );
+	sscanf( CaptureData->GetString( "CameraOffset" ), "%g %g %g", &vecOffset.x, &vecOffset.y, &vecOffset.z );
+
+	m_pMDLPreview->SetCameraOffset( vecOffset );
+	m_pMDLPreview->SetCameraPositionAndAngles( vecPos, angDir );
+
+	CColorPickerButton *m_pBackgroundColor;
+	int		r, g, b, a;
+	m_pBackgroundColor = ( CColorPickerButton * )m_pScreenCapsPage->FindChildByName( "BackgroundColor" );
+	sscanf( CaptureData->GetString( "BackgroundColor" ), "%d %d %d %d", &r, &g, &b, &a );
+	m_pBackgroundColor->SetColor( r, g, b, a );
+
+	TextEntry	*pTempValue;
+	pTempValue = ( TextEntry * )m_pScreenCapsPage->FindChildByName( "WidthText" );
+	pTempValue->SetText( CaptureData->GetString( "Width" ) );
+
+	pTempValue = ( TextEntry * )m_pScreenCapsPage->FindChildByName( "HeightText" );
+	pTempValue->SetText( CaptureData->GetString( "Height" ) );
+
+
+	vgui::CheckButton *pToggle;
+	pToggle = (vgui::CheckButton*)m_pRenderPage->FindChildByName( "NoGround" );
+	pToggle->SetSelected( ( CaptureData->GetInt( "NoGround" ) == 1 ) );
+
+	pToggle = (vgui::CheckButton*)m_pRenderPage->FindChildByName( "Collision" );
+	pToggle->SetSelected( ( CaptureData->GetInt( "Collision" ) == 1 ) );
+
+	pToggle = (vgui::CheckButton*)m_pRenderPage->FindChildByName( "Wireframe" );
+	pToggle->SetSelected( ( CaptureData->GetInt( "Wireframe" ) == 1 ) );
+
+	pToggle = (vgui::CheckButton*)m_pRenderPage->FindChildByName( "LockView" );
+	pToggle->SetSelected( ( CaptureData->GetInt( "LockView" ) == 1 ) );
+
+	pToggle = (vgui::CheckButton*)m_pRenderPage->FindChildByName( "LookAtCamera" );
+	pToggle->SetSelected( ( CaptureData->GetInt( "LookAtCamera" ) == 1 ) );
+
+	for( int i = 1; i < MAX_SELECTED_MODELS; i++ )
+	{
+		sprintf( temp, "Merged_%d", i );
+		const char *MergedModelName = CaptureData->GetString( temp, NULL );
+		if ( MergedModelName )
+		{
+			SelectMDL( MergedModelName, false, i );
+		}
+	}
+
+	return true;
+}
+
+
+//-----------------------------------------------------------------------------
 // Purpose: rebuilds the list of activities
 //-----------------------------------------------------------------------------
 void CMDLPicker::RefreshActivitiesAndSequencesList()
@@ -328,7 +816,7 @@ void CMDLPicker::RefreshActivitiesAndSequencesList()
 	m_pSequencesList->RemoveAll();
 	m_pMDLPreview->SetSequence( 0, false );
 
-	if ( m_hSelectedMDL == MDLHANDLE_INVALID )
+	if ( m_hSelectedMDL[ 0 ] == MDLHANDLE_INVALID )
 	{
 		m_pActivitiesList->SetEmptyListText("No .MDL file currently selected");
 		m_pSequencesList->SetEmptyListText("No .MDL file currently selected");
@@ -338,7 +826,7 @@ void CMDLPicker::RefreshActivitiesAndSequencesList()
 	m_pActivitiesList->SetEmptyListText(".MDL file contains no activities");
 	m_pSequencesList->SetEmptyListText(".MDL file contains no sequences");
 
-	studiohdr_t *hdr = vgui::MDLCache()->GetStudioHdr( m_hSelectedMDL );
+	studiohdr_t *hdr = vgui::MDLCache()->GetStudioHdr( m_hSelectedMDL[ 0 ] );
 	
 	CUtlDict<int, unsigned short> activityNames( true, 0, hdr->GetNumSeq() );
 
@@ -357,7 +845,7 @@ void CMDLPicker::RefreshActivitiesAndSequencesList()
 
 					KeyValues *pDrag = new KeyValues( "drag", "text", pActivityName );
 					pDrag->SetString( "texttype", "activityName" );
-					pDrag->SetString( "mdl", vgui::MDLCache()->GetModelName( m_hSelectedMDL ) );
+					pDrag->SetString( "mdl", vgui::MDLCache()->GetModelName( m_hSelectedMDL[ 0 ] ) );
 					m_pActivitiesList->SetItemDragData( nItemID, pDrag );
 
 					activityNames.Insert( pActivityName, j );
@@ -372,7 +860,7 @@ void CMDLPicker::RefreshActivitiesAndSequencesList()
 
 				KeyValues *pDrag = new KeyValues( "drag", "text", pSequenceName );
 				pDrag->SetString( "texttype", "sequenceName" );
-				pDrag->SetString( "mdl", vgui::MDLCache()->GetModelName( m_hSelectedMDL ) );
+				pDrag->SetString( "mdl", vgui::MDLCache()->GetModelName( m_hSelectedMDL[ 0 ] ) );
 				m_pSequencesList->SetItemDragData( nItemID, pDrag );
 			}
 		}
@@ -385,14 +873,25 @@ void CMDLPicker::RefreshActivitiesAndSequencesList()
 void CMDLPicker::OnSelectedAssetPicked( const char *pMDLName )
 {
 	char pRelativePath[MAX_PATH];
+
+	int nSelectSecondary = -1;
+	if ( input()->IsKeyDown( KEY_RCONTROL ) || input()->IsKeyDown( KEY_LCONTROL ) )
+	{
+		nSelectSecondary = 0;
+	}
+	else if ( input()->IsMouseDown(MOUSE_RIGHT) )
+	{
+		nSelectSecondary = 1;
+	}
+
 	if ( pMDLName )
 	{
 		Q_snprintf( pRelativePath, sizeof(pRelativePath), "models\\%s", pMDLName );
-		SelectMDL( pRelativePath );
+		SelectMDL( pRelativePath, true, nSelectSecondary );
 	}
 	else
 	{
-		SelectMDL( NULL );
+		SelectMDL( NULL, true, nSelectSecondary );
 	}
 }
 
@@ -400,12 +899,13 @@ void CMDLPicker::OnSelectedAssetPicked( const char *pMDLName )
 //-----------------------------------------------------------------------------
 // Allows external apps to select a MDL
 //-----------------------------------------------------------------------------
-void CMDLPicker::SelectMDL( const char *pRelativePath )
+void CMDLPicker::SelectMDL( const char *pRelativePath, bool bDoLookAt, int nSelectSecondary )
 {
 	MDLHandle_t hSelectedMDL = pRelativePath ? vgui::MDLCache()->FindMDL( pRelativePath ) : MDLHANDLE_INVALID;
-	 
+	int			index = ( nSelectSecondary > 0 ? nSelectSecondary : 0 );
+
 	// We didn't change models after all...
-	if ( hSelectedMDL == m_hSelectedMDL )
+	if ( hSelectedMDL == m_hSelectedMDL[ index ] )
 	{
 		// vgui::MDLCache()->FindMDL adds a reference by default we don't use, release it again
 		if ( hSelectedMDL != MDLHANDLE_INVALID )
@@ -415,30 +915,51 @@ void CMDLPicker::SelectMDL( const char *pRelativePath )
 		return;
 	}
 
-	m_hSelectedMDL = hSelectedMDL;
+	m_hSelectedMDL[ index ] = hSelectedMDL;
 
-	if ( vgui::MDLCache()->IsErrorModel( m_hSelectedMDL ) )
+	if ( vgui::MDLCache()->IsErrorModel( m_hSelectedMDL[ index ] ) )
 	{
-		m_hSelectedMDL = MDLHANDLE_INVALID;
+		m_hSelectedMDL[ index ] = MDLHANDLE_INVALID;
 	}
-	m_pMDLPreview->SetMDL( m_hSelectedMDL );
-
-	m_pMDLPreview->LookAtMDL();
-
-
-	if ( m_nFlags & ( PAGE_SKINS ) )
+	if ( nSelectSecondary != -1 )
 	{
-		UpdateSkinsList();
-	}
-
-	if ( m_nFlags & ( PAGE_INFO ) )
-	{
-		UpdateInfoTab();
+		m_pMDLPreview->ClearMergeMDLs();
+		for( int i = 1; i < MAX_SELECTED_MODELS; i++ )
+		{
+			if ( i != index )
+			{
+				m_hSelectedMDL[ i ] = MDLHANDLE_INVALID;
+			}
+		}
 	}
 
-	if ( m_nFlags & (PAGE_ACTIVITIES|PAGE_SEQUENCES) )
+	if ( index > 0 )
 	{
-		RefreshActivitiesAndSequencesList();
+		m_pMDLPreview->SetMergeMDL( m_hSelectedMDL[ index ] );
+	}
+	else
+	{
+		m_pMDLPreview->SetMDL( m_hSelectedMDL[ index ] );
+
+		if ( bDoLookAt )
+		{
+			m_pMDLPreview->LookAtMDL();
+		}
+
+		if ( m_nFlags & ( PAGE_SKINS ) )
+		{
+			UpdateSkinsList();
+		}
+
+		if ( m_nFlags & ( PAGE_INFO ) )
+		{
+			UpdateInfoTab();
+		}
+
+		if ( m_nFlags & (PAGE_ACTIVITIES|PAGE_SEQUENCES) )
+		{
+			RefreshActivitiesAndSequencesList();
+		}
 	}
 
 	// vgui::MDLCache()->FindMDL adds a reference by default we don't use, release it again
@@ -521,14 +1042,14 @@ const char *CMDLPicker::GetSelectedActivityName()
 int	CMDLPicker::GetSelectedSkin()
 {
 	if ( !m_pSkinsPage )
-		return NULL;
+		return 0;
 
 	int nIndex = m_pSkinsList->GetSelectedItem( 0 );
 	if ( nIndex >= 0 )
 	{
 		return nIndex;
 	}
-	return NULL;
+	return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -536,7 +1057,7 @@ int	CMDLPicker::GetSelectedSkin()
 //-----------------------------------------------------------------------------
 void CMDLPicker::SelectActivity( const char *pActivityName )
 {
-	studiohdr_t *pstudiohdr = vgui::MDLCache()->GetStudioHdr( m_hSelectedMDL );
+	studiohdr_t *pstudiohdr = vgui::MDLCache()->GetStudioHdr( m_hSelectedMDL[ 0 ] );
 	for ( int i = 0; i < pstudiohdr->GetNumSeq(); i++ )
 	{
 		mstudioseqdesc_t &seqdesc = pstudiohdr->pSeqdesc( i );
@@ -557,7 +1078,7 @@ void CMDLPicker::SelectActivity( const char *pActivityName )
 //-----------------------------------------------------------------------------
 void CMDLPicker::SelectSequence( const char *pSequenceName )
 {
-	studiohdr_t *pstudiohdr = vgui::MDLCache()->GetStudioHdr( m_hSelectedMDL );
+	studiohdr_t *pstudiohdr = vgui::MDLCache()->GetStudioHdr( m_hSelectedMDL[ 0 ] );
 	for (int i = 0; i < pstudiohdr->GetNumSeq(); i++)
 	{
 		mstudioseqdesc_t &seqdesc = pstudiohdr->pSeqdesc( i );
@@ -683,7 +1204,7 @@ int CMDLPicker::UpdateSkinsList()
 	{
 		m_pSkinsList->RemoveAll();
 
-		studiohdr_t *hdr = vgui::MDLCache()->GetStudioHdr( m_hSelectedMDL );
+		studiohdr_t *hdr = vgui::MDLCache()->GetStudioHdr( m_hSelectedMDL[ 0 ] );
 		if ( hdr )
 		{
 			nNumSkins = hdr->numskinfamilies;
@@ -702,7 +1223,7 @@ int CMDLPicker::UpdateSkinsList()
 
 void CMDLPicker::UpdateInfoTab()
 {
-	studiohdr_t *hdr = vgui::MDLCache()->GetStudioHdr( m_hSelectedMDL );
+	studiohdr_t *hdr = vgui::MDLCache()->GetStudioHdr( m_hSelectedMDL[ 0 ] );
 	if ( !hdr )
 		return;
 	
@@ -711,30 +1232,31 @@ void CMDLPicker::UpdateInfoTab()
 	char massBuff[10];
 	Q_snprintf( massBuff, 10, "%d", nMass );
 	((vgui::Label *)pTempPanel)->SetText( massBuff );
-	bool bIsStatic = ( hdr->flags & STUDIOHDR_FLAGS_STATIC_PROP ) ? true : false;
+	bool bIsStatic = hdr->flags & STUDIOHDR_FLAGS_STATIC_PROP;
 	bool bIsPhysics = false;
-
-	Label *pTempLabel = (Label *)m_pInfoPage->FindChildByName("StaticText");
+	const char* buf = hdr->KeyValueText();
+	Label * pTempLabel = (Label *)m_pInfoPage->FindChildByName("StaticText");
 	pTempLabel->SetVisible( false );
-
-	KeyValues *pkvModelKeys = new KeyValues( "modelkeys" );
-	pkvModelKeys->LoadFromBuffer( "modelkeys", hdr->KeyValueText() );
-
-	KeyValues *kvPropData = pkvModelKeys->FindKey( "prop_data" );
-	if ( kvPropData )
+	if( buf )
 	{
-		int iPropDataCount = UpdatePropDataList( kvPropData, bIsStatic );
-		if( iPropDataCount )
+		buf = Q_strstr( buf, "prop_data" );
+		if ( buf )
 		{
-			bIsPhysics = true;
+			int iPropDataCount = UpdatePropDataList( buf, bIsStatic );
+			if( iPropDataCount )
+			{
+				bIsPhysics = true;
+			}
+		}
+		else
+		{
+			m_pPropDataList->RemoveAll();
 		}
 	}
 	else
 	{
 		m_pPropDataList->RemoveAll();
 	}
-
-	pkvModelKeys->deleteThis();
 	
 	CheckButton * pTempCheck = (CheckButton *)m_pInfoPage->FindChildByName("StaticObject");
 	pTempCheck->SetCheckButtonCheckable( true );
@@ -748,10 +1270,11 @@ void CMDLPicker::UpdateInfoTab()
 	pTempCheck->SetCheckButtonCheckable( true );
 	pTempCheck->SetSelected( !bIsPhysics );
 	pTempCheck->SetCheckButtonCheckable( false );
+
+
 }
 
-
-int CMDLPicker::UpdatePropDataList( KeyValues *pkvPropData, bool &bIsStatic )
+int CMDLPicker::UpdatePropDataList( const char* pszPropData, bool &bIsStatic )
 {
 	int iCount = 0;  
 
@@ -759,30 +1282,46 @@ int CMDLPicker::UpdatePropDataList( KeyValues *pkvPropData, bool &bIsStatic )
 	{
 		m_pPropDataList->RemoveAll();
 
-		KeyValues *kvItem = pkvPropData->GetFirstSubKey();
-		while ( kvItem )
+		const char * endPropData = strchr( pszPropData, '}' );
+		char keyText[255] = "";
+		char valueText[255] = "";
+		const char *beginChunk = strchr( pszPropData, '\"' );
+		if ( !beginChunk )
 		{
-			if ( kvItem->GetDataType() != KeyValues::TYPE_NONE )
+			return 0;
+		}
+		beginChunk++;
+		const char *endChunk = strchr( beginChunk, '\"' );
+		while( endChunk )
+		{
+			Q_memcpy( keyText, beginChunk, endChunk - beginChunk );
+			beginChunk = endChunk + 1;
+			beginChunk = strchr( beginChunk, '\"' ) + 1;
+			endChunk = strchr( beginChunk, '\"' );
+			Q_memcpy( valueText, beginChunk, endChunk - beginChunk );		
+			if( !Q_strcmp( keyText, "allowstatic" ) && !Q_strcmp( valueText , "1" ) )
 			{
-				// Special handling for some keys
-				if ( !Q_strcmp( kvItem->GetName(), "allowstatic" ) && !Q_strcmp( kvItem->GetString() , "1" ) )
-				{
-					if ( !bIsStatic )
-					{					
-						Label *pTempLabel = (Label *)m_pInfoPage->FindChildByName( "StaticText" );
-						pTempLabel->SetVisible( true );
-					}
-					bIsStatic &= true;
+				if ( !bIsStatic )
+				{					
+					Label * pTempLabel = (Label *)m_pInfoPage->FindChildByName("StaticText");
+					pTempLabel->SetVisible( true );
 				}
-
-				KeyValues *pkv = new KeyValues("node", "key", kvItem->GetName(), "value", kvItem->GetString() );
-				m_pPropDataList->AddItem( pkv, 0, false, false );
-				iCount++;
+				bIsStatic &= true;
 			}
-			
-			kvItem = kvItem->GetNextKey();
+			KeyValues *pkv = new KeyValues("node", "key", keyText, "value", valueText );
+			m_pPropDataList->AddItem( pkv, 0, false, false );
+			Q_memset( keyText, 0, 255 );
+			Q_memset( valueText, 0, 255 );
+			iCount++;
+			beginChunk = endChunk + 1;
+			beginChunk = strchr( beginChunk, '\"' );
+			if ( !beginChunk || beginChunk > endPropData )
+			{
+				return iCount;
+			}
+			beginChunk++;
+			endChunk = strchr( beginChunk, '\"' );		
 		}
 	}
-	
 	return iCount;
 }

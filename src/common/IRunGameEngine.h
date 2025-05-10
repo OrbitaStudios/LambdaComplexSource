@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -53,10 +53,10 @@ public:
 	virtual unsigned int GetPlayerFriendsID(int playerIndex) = 0;
 
 	// gets the in-game name of another user, returns NULL if that user doesn't exists
-	virtual const char *GetPlayerName(int friendsID) = 0;
+	virtual const char *GetPlayerName(int friendsID, char *name, int namelen) = 0;
 
 	// gets the friends name of a player
-	virtual const char *GetPlayerFriendsName(int friendsID) = 0;
+	virtual const char *GetPlayerFriendsName(int friendsID, char *name, int namelen) = 0;
 
 	// returns the engine build number and mod version string for server versioning
 	virtual unsigned int GetEngineBuildNumber() = 0;

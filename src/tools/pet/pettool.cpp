@@ -702,7 +702,7 @@ void CPetTool::SetCurrentParticleSystem( CDmeParticleSystemDefinition *pParticle
 	m_hCurrentParticleSystem = pParticleSystem;
 	if ( bForceBrowserSelection && m_hParticleSystemDefinitionBrowser.Get() )
 	{
-		m_hParticleSystemDefinitionBrowser->UpdateParticleSystemList( false );
+		m_hParticleSystemDefinitionBrowser->UpdateParticleSystemList();
 		m_hParticleSystemDefinitionBrowser->SelectParticleSystem( pParticleSystem );
 	}
 	if ( m_hParticlePreview.Get() )
@@ -1365,10 +1365,7 @@ void CPetTool::OnDocChanged( const char *pReason, int nNotifySource, int nNotify
 	{
 		if ( GetParticleSystemDefinitionBrowser() )
 		{
-			// only retain selection if we didn't create/delete a system
-			bool bRetainSelection = !(nNotifyFlags & NOTIFY_FLAG_PARTICLESYS_ADDED_OR_REMOVED);
-
-			GetParticleSystemDefinitionBrowser()->UpdateParticleSystemList( bRetainSelection );
+			GetParticleSystemDefinitionBrowser()->UpdateParticleSystemList();
 		}
 	}
 

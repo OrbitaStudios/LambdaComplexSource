@@ -659,7 +659,7 @@ CMaterialVar::CMaterialVar( IMaterial* pMaterial, const char *pKey, VMatrix cons
 
 	m_pMaterial = static_cast<IMaterialInternal*>(pMaterial);
 	m_Name = GetSymbol( pKey );
-	Assert( m_Name.IsValid() );
+	Assert( m_Name != UTL_INVAL_SYMBOL );
 	m_Type = MATERIAL_VAR_TYPE_MATRIX;
 	m_pMatrix = new MaterialVarMatrix_t;
 	Assert( m_pMatrix );
@@ -677,7 +677,7 @@ CMaterialVar::CMaterialVar( IMaterial* pMaterial, const char *pKey, const char *
 
 	m_pMaterial = static_cast<IMaterialInternal*>(pMaterial);
 	m_Name = GetSymbol( pKey );
-	Assert( m_Name.IsValid() );
+	Assert( m_Name != UTL_INVAL_SYMBOL );
 	int len = Q_strlen( pVal ) + 1;
 	m_pStringVal = new char[ len ];
 	Q_strncpy( m_pStringVal, pVal, len );
@@ -693,7 +693,7 @@ CMaterialVar::CMaterialVar( IMaterial* pMaterial, const char *pKey, float* pVal,
 
 	m_pMaterial = static_cast<IMaterialInternal*>(pMaterial);;
 	m_Name = GetSymbol( pKey );
-	Assert( m_Name.IsValid() );
+	Assert( m_Name != UTL_INVAL_SYMBOL );
 	m_Type = MATERIAL_VAR_TYPE_VECTOR;
 	memcpy( m_VecVal.Base(), pVal, numComps * sizeof(float) );
 	for (int i = numComps; i < 4; ++i)
@@ -708,7 +708,7 @@ CMaterialVar::CMaterialVar( IMaterial* pMaterial, const char *pKey, float val )
 	Init();
 	m_pMaterial = static_cast<IMaterialInternal*>(pMaterial);
 	m_Name = GetSymbol( pKey );
-	Assert( m_Name.IsValid() );
+	Assert( m_Name != UTL_INVAL_SYMBOL );
 	m_Type = MATERIAL_VAR_TYPE_FLOAT;
 	m_VecVal[0] = m_VecVal[1] = m_VecVal[2] = m_VecVal[3] = val;
 	m_intVal = (int) val;
@@ -720,7 +720,7 @@ CMaterialVar::CMaterialVar( IMaterial* pMaterial, const char *pKey, int val )
 	Init();
 	m_pMaterial = static_cast<IMaterialInternal*>(pMaterial);
 	m_Name = GetSymbol( pKey );
-	Assert( m_Name.IsValid() );
+	Assert( m_Name != UTL_INVAL_SYMBOL );
 	m_Type = MATERIAL_VAR_TYPE_INT;
 	m_VecVal[0] = m_VecVal[1] = m_VecVal[2] = m_VecVal[3] = (float) val;
 	m_intVal = val;
@@ -731,7 +731,7 @@ CMaterialVar::CMaterialVar( IMaterial* pMaterial, const char *pKey )
 	Init();
 	m_pMaterial = static_cast<IMaterialInternal*>(pMaterial);
 	m_Name = GetSymbol( pKey );
-	Assert( m_Name.IsValid() );
+	Assert( m_Name != UTL_INVAL_SYMBOL );
 	m_Type = MATERIAL_VAR_TYPE_UNDEFINED;
 }
 

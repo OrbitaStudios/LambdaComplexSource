@@ -1,4 +1,4 @@
-//====== Copyright © 1996-2003, Valve Corporation, All rights reserved. =======
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -35,10 +35,10 @@ class CVTFPreviewPanel : public vgui::Panel
 public:
 	// constructor
 	CVTFPreviewPanel( vgui::Panel *pParent, const char *pName );
+	virtual ~CVTFPreviewPanel();
+
 	void SetVTF( const char *pFullPath, bool bLoadImmediately = true );
-	void SetTwoVTFs( const char *pFullPath, const char *pSecondFullPath );
 	const char *GetVTF() const;
-	const char *GetSecondVTF() const;
 
 	// Paints the texture
 	virtual void Paint( void );
@@ -59,9 +59,7 @@ private:
 	void RenderSphere( const Vector &vCenter, float flRadius, int nTheta, int nPhi );
 
 	CUtlString m_VTFName;
-	CUtlString m_SecondVTFName;
 	CTextureReference m_PreviewTexture;
-	CTextureReference m_SecondPreviewTexture;
 	CMaterialReference m_PreviewMaterial;
 	int m_nTextureID;
 	Vector m_vecCameraDirection;

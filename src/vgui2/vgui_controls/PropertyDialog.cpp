@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -6,7 +6,7 @@
 //=============================================================================//
 
 #include <vgui/KeyCode.h>
-#include <keyvalues.h>
+#include <KeyValues.h>
 
 #include <vgui_controls/Button.h>
 #include <vgui_controls/PropertyDialog.h>
@@ -115,37 +115,24 @@ void PropertyDialog::PerformLayout()
 	GetClientArea(x, y, wide, tall);
 	_propertySheet->SetBounds(x, y, wide, tall - iBottom);
 
-	int nRightOffset = 80;
-	int nBottomOffset = 28;
-	int nButtonWidth = 72;
-	int nButtonHeight = 24;
-	int nButtonGap = 80;
-	if ( IsProportional() )
-	{
-		nRightOffset = scheme()->GetProportionalScaledValueEx( GetScheme(), nRightOffset );
-		nBottomOffset = scheme()->GetProportionalScaledValueEx( GetScheme(), nBottomOffset );
-		nButtonWidth = scheme()->GetProportionalScaledValueEx( GetScheme(), nButtonWidth );
-		nButtonHeight = scheme()->GetProportionalScaledValueEx( GetScheme(), nButtonHeight );
-		nButtonGap = scheme()->GetProportionalScaledValueEx( GetScheme(), nButtonGap );
-	}
 
 	// move the buttons to the bottom-right corner
-	int xpos = x + wide - nRightOffset;
-	int ypos = tall + y - nBottomOffset;
+	int xpos = x + wide - 80;
+	int ypos = tall + y - 28;
 
 	if (_applyButton->IsVisible())
 	{
-		_applyButton->SetBounds(xpos, ypos, nButtonWidth, nButtonHeight );
-		xpos -= nButtonGap;
+		_applyButton->SetBounds(xpos, ypos, 72, 24);
+		xpos -= 80;
 	}
 
 	if (_cancelButton->IsVisible())
 	{
-		_cancelButton->SetBounds(xpos, ypos, nButtonWidth, nButtonHeight );
-		xpos -= nButtonGap;
+		_cancelButton->SetBounds(xpos, ypos, 72, 24);
+		xpos -= 80;
 	}
 
-	_okButton->SetBounds(xpos, ypos, nButtonWidth, nButtonHeight );
+	_okButton->SetBounds(xpos, ypos, 72, 24);
 
 	_propertySheet->InvalidateLayout(); // tell the propertysheet to redraw!
 	Repaint();

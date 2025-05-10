@@ -1,4 +1,4 @@
-//========= Copyright 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -13,7 +13,7 @@
 #include <vgui_controls/ImageList.h>
 #include <vgui_controls/MessageBox.h>
 #include <vgui/Cursor.h>
-#include <keyvalues.h>
+#include <KeyValues.h>
 #include <vgui/IInput.h>
 #include <vgui/ISurface.h>
 #include <vgui/ISystem.h>
@@ -503,7 +503,6 @@ void DirectorySelectDialog::OnCreateDirectory(const char *dir)
 
 		// create the new directory underneath
 		strcat(fullPath, dir);
-#ifndef _GAMECONSOLE
 		if (_mkdir(fullPath) == 0)
 		{
 			// add new path to tree view
@@ -518,7 +517,6 @@ void DirectorySelectDialog::OnCreateDirectory(const char *dir)
 			m_pDirTree->AddSelectedItem( itemID, true );
 		}
 		else
-#endif
 		{
 			// print error message
 			MessageBox *box = new MessageBox("#vgui_CreateDirectoryFail_Title", "#vgui_CreateDirectoryFail_Info");

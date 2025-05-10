@@ -7,38 +7,22 @@
 $MacroRequired "PLATFORM"
 $MacroRequired GENERATED_PROTO_DIR
 
-$include "$SRCDIR\vpc_scripts\protobuf_builder.vpc"
 $include "$SRCDIR\gcsdk\steammessages_include.vpc"
+
+$MacroRequired	PROTOBUF_BUILDER_INCLUDED
 
 $Configuration
 {
-	$General
+	$Compiler
 	{
-		$AdditionalProjectDependencies			"gcsdk"
+		$AdditionalIncludeDirectories	"$BASE;$SRCDIR\gcsdk\steamextra"
 	}
 }
 
 $Project
 {
-	$File "$SRCDIR/gcsdk/gcsystemmsgs.proto"
-	$Folder "Generated Files" [!$OSXALL]
-	{
-		$DynamicFile "$GENERATED_PROTO_DIR/gcsystemmsgs.pb.h"
-		$DynamicFile "$GENERATED_PROTO_DIR/gcsystemmsgs.pb.cc"
-		{
-			$Configuration
-			{
-				$Compiler 
-				{
-					$Create/UsePrecompiledHeader	"Not Using Precompiled Headers"
-				}
-			}
-		}
-	}
-
-	$Folder "Link Libraries"
+	$Folder	"Link Libraries"
 	{
 		$Lib	gcsdk
 	}
-
 }

@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -12,12 +12,12 @@
 #pragma once
 #endif
 
-#include <vgui/vgui.h>
+#include <vgui/VGUI.h>
 #include <vgui/ILocalize.h>
 #include <vgui_controls/Image.h>
 
 #include <utlvector.h>
-#include <utlsortvector.h>
+#include <UtlSortVector.h>
 
 class KeyValues;
 
@@ -99,16 +99,14 @@ public:
 	void SetCenterWrap( bool bWrap );
 	void RecalculateCenterWrapIndents();
 
-	void SetNoShortcutSyntax( bool bNoShortcutSyntax );
-
 	const wchar_t *GetUText( void ) { return _utext; }
 
 	void AddColorChange( Color col, int iTextStreamIndex );
 	void SetColorChangeStream( CUtlSortVector<label_colorchange_t,CColorChangeListLess> *pUtlVecStream );
 	void ClearColorChangeStream( void ) { m_ColorChangeStream.Purge(); }
 
-
-	void SetBounds( int x, int y, int w, int h );
+	const wchar_t *GetEllipsesPosition( void ) const { return m_pwszEllipsesPosition; }
+	bool IsWrapping() const { return m_LineBreaks.Count() != 0; }
 
 protected:
 	// truncate the _text string to fit into the draw width
@@ -118,7 +116,6 @@ protected:
 
 private:
 	void RecalculateEllipsesPosition();
-	void SetUseAsianWordWrapping();
 
 	wchar_t *_utext;	// unicode version of the text
 	short _textBufferLen;	// size of the text buffer
@@ -133,15 +130,12 @@ private:
 
 	bool m_bRecalculateTruncation : 1;
 	bool m_bWrap : 1;
-	bool m_bWrapCenter : 1;							// Separate from m_bWrap to ensure it doesn't break legacy code.
 	bool m_bUseFallbackFont : 1;
 	bool m_bRenderUsingFallbackFont : 1;
 	bool m_bAllCaps : 1;
-	bool m_bNoShortcutSyntax : 1;
-	bool m_bUseAsianWordWrapping : 1;
-
 	CUtlVector<wchar_t *>		m_LineBreaks;		// an array that holds the index in the buffer to wrap lines at
 
+	bool m_bWrapCenter;								// Separate from m_bWrap to ensure it doesn't break legacy code.
 	CUtlVector<int>				m_LineXIndent;		// For centered word wrap. The X indent for each line.
 
 	CUtlSortVector<label_colorchange_t,CColorChangeListLess>		m_ColorChangeStream;

@@ -1,4 +1,4 @@
-//===== Copyright © 1996-2005, Valve Corporation, All rights reserved. ======//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -12,9 +12,9 @@
 #pragma once
 #endif
 
-#include <vgui/vgui.h>
+#include <vgui/VGUI.h>
 #include <vgui/IPanel.h>
-#include <vstdlib/ikeyvaluessystem.h>
+#include <vstdlib/IKeyValuesSystem.h>
 
 #include "tier1/interface.h"
 #include "vgui/MouseCode.h"
@@ -148,7 +148,7 @@ class TextImage;
 
 // hotkeys disabled until we work out exactly how we want to do them
 #define VGUI_HOTKEYS_ENABLED
-#define VGUI_DRAW_HOTKEYS_ENABLED
+//#define VGUI_DRAW_HOTKEYS_ENABLED
 
 #define USING_BUILD_FACTORY( className )				\
 	extern className *g_##className##LinkerHack;		\

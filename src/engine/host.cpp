@@ -131,7 +131,6 @@
 #include "cvar.h"
 #include "saverestoretypes.h"
 #include "filesystem/IQueuedLoader.h"
-#include "filesystem/IXboxInstaller.h"
 #include "soundservice.h"
 #include "steam/isteamremotestorage.h"
 #include "ConfigManager.h"
@@ -3737,8 +3736,11 @@ CON_COMMAND( host_runofftime, "Run off some time without rendering/updating soun
 	SCR_UpdateScreen ();
 }
 
+#if !defined( _GAMECONSOLE )
+S_API int SteamGameServer_GetIPCCallCount();
+#else
 S_API int SteamGameServer_GetIPCCallCount() { return 0; }
-
+#endif
 void Host_ShowIPCCallCount()
 {
 	// If set to 0 then get out.
@@ -3842,137 +3844,6 @@ static void PrintHostFrameTimes( int nNumTicks, float flHostRemainder, float flM
 	Con_NXPrintf( &printinfo, "Running min frametime: %f, running avg frametime: %f\n", flMinFrameTime, flAvgFrameTime );
 }
 #endif // DEDICATED
-
-#if !( defined( _CERT ) || defined( DEDICATED ) )
-ConVar fs_enable_stats( "fs_enable_stats", "0" );
-static void PrintFsStats() 
-{
-	const int nFrameHistorySize = 100;
-	const int nStatsSize = 6;
-	static int nStats[nStatsSize][nFrameHistorySize] = { 0 };
-	static const char * pStatsTitle[] =
-	{
-		"# of seeks",
-		"Time seeking",
-		"# of reads",
-		"Time reading",
-		"Bytes read",
-		"# of fopen",
-	};
-	enum Mode
-	{
-		NORMAL,
-		IN_MS,
-		IN_BYTES,
-		SKIPPED,
-	};
-
-	static const Mode nModes[] =
-	{
-		NORMAL,
-		IN_MS,
-		NORMAL,
-		IN_MS,
-		IN_BYTES,
-		SKIPPED,			// In the Source1 engine, there is a very strong correlation between fopen, seeks and reads. Don't display this one.
-	};
-
-	static int nFrameIndex = 0;
-
-	IIoStats *pIoStats = g_pFileSystem->GetIoStats();
-	if ( pIoStats == NULL )
-	{
-		con_nprint_t printinfo;
-		printinfo.index = 1;
-		printinfo.time_to_live = -1;
-		printinfo.color[0] = printinfo.color[1] = printinfo.color[2] = 1.0f;
-		printinfo.fixed_width_font = true;
-		Con_NXPrintf( &printinfo, "IO stats is disabled.\n" );
-		return;
-	}
-	nStats[0][nFrameIndex] = pIoStats->GetNumberOfFileSeeks();
-	nStats[1][nFrameIndex] = pIoStats->GetTimeInFileSeek();
-	nStats[2][nFrameIndex] = pIoStats->GetNumberOfFileReads();
-	nStats[3][nFrameIndex] = pIoStats->GetTimeInFileReads();
-	nStats[4][nFrameIndex] = pIoStats->GetFileReadTotalSize();
-	nStats[5][nFrameIndex] = pIoStats->GetNumberOfFileOpens();
-	pIoStats->Reset();
-	nFrameIndex = ( nFrameIndex + 1 ) % nFrameHistorySize;
-
-	int nMinStats[nStatsSize], nMaxStats[nStatsSize], nAvgStats[nStatsSize];
-
-	for (int i = 0 ; i < nStatsSize ; ++i )
-	{
-		if ( nModes[i] == SKIPPED )
-		{
-			continue;		// Skip this one
-		}
-		nMinStats[i] = INT_MAX;
-		nMaxStats[i] = INT_MIN;
-		nAvgStats[i] = 0;
-
-		for ( int j = 0; j < nFrameHistorySize; ++j )
-		{
-			if ( nStats[i][j] < nMinStats[i] )
-			{
-				nMinStats[i] = nStats[i][j];
-			}
-			else if ( nStats[i][j] > nMaxStats[i] )
-			{
-				nMaxStats[i] = nStats[i][j];
-			}
-			nAvgStats[i] += nStats[i][j];
-		}
-	}
-
-	con_nprint_t printinfo;
-	printinfo.index = 1;
-	printinfo.time_to_live = -1;
-	printinfo.color[0] = printinfo.color[1] = printinfo.color[2] = 1.0f;
-	printinfo.fixed_width_font = true;
-	Con_NXPrintf( &printinfo, "IO stats from the last %d frames.\n", nFrameHistorySize );
-	int nPos = 3;
-	for ( int i = 0 ; i < nStatsSize ; ++i )
-	{
-		if ( nModes[i] == SKIPPED )
-		{
-			continue;	// Skip this stat, not interesting...
-		}
-		printinfo.index = nPos++;
-		float flAverage = ( float )( nAvgStats[i] ) / ( float )( nFrameHistorySize );
-		const float flFrameRate = 30.0f;			// Hardcoded at this moment
-		float flAveragePerSec = flAverage * flFrameRate;
-
-		// It seems that %3.1f format is not respected (at least on PS3, switch everything to %d).
-		// Also there is no point displaying min, it is pretty much always 0.
-		switch ( nModes[i] )
-		{
-		case NORMAL:
-			Con_NXPrintf( &printinfo, "%s - Avg:%5d    - Max:%5d    -%5d   /s\n", pStatsTitle[i], ( int )flAverage, nMaxStats[i], ( int )flAveragePerSec );
-			//Con_NXPrintf( &printinfo, "%s - Min:%2d    - Avg:% 3.1f    - Max:%5d    -% 3.1f   /s\n", pStatsTitle[i], nMinStats[i], flAverage, nMaxStats[i], flAveragePerSec );
-			break;
-		case IN_MS:
-			Con_NXPrintf( &printinfo, "%s - Avg:%5d ms - Max:%5d ms -%5d ms/s\n", pStatsTitle[i], ( int )flAverage, nMaxStats[i], ( int )flAveragePerSec );
-			//Con_NXPrintf( &printinfo, "%s - Min:%2d ms - Avg:% 3.1f ms - Max:%5d ms -% 3.1f ms/s\n", pStatsTitle[i], nMinStats[i], flAverage, nMaxStats[i], flAveragePerSec );
-			break;
-		case IN_BYTES:
-			{
-				//int nMin = nMinStats[i] / 1024;
-				flAverage /= 1024.f;
-				int nMax = nMaxStats[i] / 1024;
-				flAveragePerSec /= 1024.f;
-				Con_NXPrintf( &printinfo, "%s - Avg:%5d Kb - Max:%5d Kb -%5d Kb/s\n", pStatsTitle[i], ( int )flAverage, nMax, ( int )flAveragePerSec );
-			}
-			break;
-
-		}
-	}
-
-	extern float	g_fDelayForChoreo;
-	printinfo.index = nPos++;
-	Con_NXPrintf( &printinfo, "Delay for choreo: %5d ms\n", ( int )( g_fDelayForChoreo * 1000 ) );
-}
-#endif
 
 #define LOG_FRAME_OUTPUT 0
 
@@ -4098,10 +3969,6 @@ void _Host_RunFrame (float time)
 		if ( host_print_frame_times.GetBool() )
 		{
 			PrintHostFrameTimes( numticks, host_remainder, flMinimumTickInterval );
-		}
-		if ( fs_enable_stats.GetBool() )
-		{
-			PrintFsStats();
 		}
 #endif // !_CERT || !DEDICATED
 	}

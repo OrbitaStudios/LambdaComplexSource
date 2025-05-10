@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -31,7 +31,6 @@ enum CSWeaponType
 	WEAPONTYPE_SHOTGUN,
 	WEAPONTYPE_SNIPER_RIFLE,
 	WEAPONTYPE_MACHINEGUN,
-	WEAPONTYPE_WRENCH,
 	WEAPONTYPE_C4,
 	WEAPONTYPE_GRENADE,
 	WEAPONTYPE_EQUIPMENT,
@@ -100,7 +99,6 @@ enum CSWeaponID
 	ITEM_FIRST,
 	WEAPON_KNIFE_GG = ITEM_FIRST,
 	WEAPON_KNIFE,
-//WEAPON_WRENCH,
 
 	WEAPON_FLASHBANG,
 	WEAPON_HEGRENADE,
@@ -264,11 +262,6 @@ public:
 
 	int		GetKillAward					( const CEconItemView* pWepView = NULL, int nAlt = 0, float flScale = 1.0f ) const;
 	bool	HasBurstMode					( const CEconItemView* pWepView = NULL, int nAlt = 0, float flScale = 1.0f ) const;
-    //lwss - add some more of these that are missing
-    float 	GetBurstModeTimeBetweenShots	( const CEconItemView* pWepView = NULL, int nAlt = 0, float flScale = 1.0f ) const;
-	float 	GetBurstModeCycleTime	        ( const CEconItemView* pWepView = NULL, int nAlt = 0, float flScale = 1.0f ) const;
-    float 	GetZoomedCycleTime	            ( const CEconItemView* pWepView = NULL, int nAlt = 0, float flScale = 1.0f ) const;
-    //lwss end
 	bool	IsRevolver						( const CEconItemView* pWepView = NULL, int nAlt = 0, float flScale = 1.0f ) const;
 	bool	HasAlternateFastSlowReload		( const CEconItemView* pWepView = NULL, int nAlt = 0, float flScale = 1.0f ) const;
 	float	GetArmorRatio					( const CEconItemView* pWepView = NULL, int nAlt = 0, float flScale = 1.0f ) const;

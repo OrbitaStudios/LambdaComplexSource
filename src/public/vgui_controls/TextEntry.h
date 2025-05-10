@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: A Class to create a window that you can type and edit text in.
 //          Window can hold single line or multiline text. 
@@ -15,8 +15,8 @@
 #pragma once
 #endif
 
-#include <vgui/vgui.h>
-#include <color.h>
+#include <vgui/VGUI.h>
+#include <Color.h>
 #include <vgui_controls/Panel.h>
 #include <vgui_controls/Label.h>
 #include <vgui_controls/ListPanel.h>
@@ -85,14 +85,15 @@ namespace vgui
 class TextEntry : public Panel
 {
 	DECLARE_CLASS_SIMPLE( TextEntry, Panel );
+
 public:
 	TextEntry(Panel *parent, const char *panelName);
 	virtual ~TextEntry();
 
 	virtual void SetText(const wchar_t *wszText);
 	virtual void SetText(const char *text);
-	virtual void GetText(char *buf, int bufLen);
-	virtual void GetText(wchar_t *buf, int bufLen);
+	virtual void GetText(OUT_Z_BYTECAP(bufLenInBytes) char *buf, int bufLenInBytes);
+	virtual void GetText(OUT_Z_BYTECAP(bufLenInBytes) wchar_t *buf, int bufLenInBytes);
 	virtual int GetTextLength() const;
 	virtual bool IsTextFullySelected() const;
 
@@ -107,11 +108,10 @@ public:
 	virtual void GotoEndOfLine();	// go to end of the current line 
 	virtual void GotoTextStart();	// go to Start of text buffer
 	virtual void GotoTextEnd();		// go to end of text buffer
-	virtual int	 GetTextCursorPos() { return _cursorPos; }
 
 	virtual void InsertChar(wchar_t ch);
 	virtual void InsertString(const char *text);
-	virtual void InsertString(wchar_t *wszText);
+	virtual void InsertString(const wchar_t *wszText);
 	virtual void Backspace();								   
 	virtual void Delete();
 	virtual void SelectNone();
@@ -238,9 +238,6 @@ public:
 	void SetSelectionUnfocusedBgColor( const Color& clr );
 
 	void SetUseFallbackFont( bool bState, HFont hFallback );
-	virtual void SetAutoLocalize( bool bState ) { m_bAutoLocalize = bState; }
-
-	virtual void GetSizerMinimumSize(int &wide, int &tall);
 
 protected:
 	virtual void ResetCursorBlink();
@@ -266,6 +263,7 @@ protected:
 	MESSAGE_FUNC( OnSliderMoved, "ScrollBarSliderMoved" ); // respond to scroll bar events
 	virtual void OnKillFocus();
 	virtual void OnMouseWheeled(int delta);	// respond to mouse wheel events
+	virtual void OnKeyCodePressed(KeyCode code); //respond to keyboard events
 	virtual void OnKeyCodeTyped(KeyCode code);	//respond to keyboard events
 	virtual	void OnKeyTyped(wchar_t unichar);	//respond to keyboard events
 
@@ -396,8 +394,6 @@ private:
 
 	bool				m_bUseFallbackFont : 1;
 	HFont				m_hFallbackFont;
-
-	bool				m_bAutoLocalize;
 };
 
 }

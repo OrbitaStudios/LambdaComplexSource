@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -63,7 +63,6 @@ static int g_whichMenu = 0;
 //
 void OpenRadioMenu( int index )
 {
-#if defined( INCLUDE_SCALEFORM )
 	if ( CSGameRules() && CSGameRules()->IsPlayingTraining() )
 		return;
 
@@ -71,6 +70,7 @@ void OpenRadioMenu( int index )
 	if ( pLocalPlayer && pLocalPlayer->GetObserverMode() > OBS_MODE_NONE )
 		return;
 
+#if defined( INCLUDE_SCALEFORM )
 	SFHudRadio* pRadio = GET_HUDELEMENT( SFHudRadio );
 	if ( pRadio )
 	{

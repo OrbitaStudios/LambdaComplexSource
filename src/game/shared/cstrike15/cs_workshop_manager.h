@@ -63,7 +63,7 @@ public:
 
 	virtual bool Init( void ) OVERRIDE;
 	virtual void Shutdown( void ) OVERRIDE;
-	virtual void Update( float frametime );
+	virtual void Update( float frametime ) OVERRIDE;
 	virtual const char* Name( void ) OVERRIDE { return "CSGOWorkshop"; }
 
 	bool CreateThumbnailFileRequest( const PublishedFileInfo_t &info );

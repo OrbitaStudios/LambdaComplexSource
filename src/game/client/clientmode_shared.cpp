@@ -45,7 +45,6 @@
 #include "fmtstr.h"
 #include "c_playerresource.h"
 #include <localize/ilocalize.h>
-#include "gameui_interface.h"
 #include "menu.h" // CHudMenu
 #if defined( _X360 )
 #include "xbox/xbox_console.h"
@@ -86,8 +85,6 @@ extern bool IsInCommentaryMode( void );
 
 CON_COMMAND( hud_reloadscheme, "Reloads hud layout and animation scripts." )
 {
-	g_pFullFileSystem->SyncDvdDevCache();
-
 	for ( int hh = 0; hh < MAX_SPLITSCREEN_PLAYERS; ++hh )
 	{
 		ACTIVE_SPLITSCREEN_PLAYER_GUARD_VGUI( hh );
@@ -96,11 +93,6 @@ CON_COMMAND( hud_reloadscheme, "Reloads hud layout and animation scripts." )
 		{
 			mode->ReloadScheme();
 		}
-	}
-	ClientModeShared *mode = ( ClientModeShared * )GetFullscreenClientMode();
-	if ( mode )
-	{
-		mode->ReloadSchemeWithRoot( VGui_GetFullscreenRootVPANEL() );
 	}
 }
 
@@ -156,6 +148,7 @@ static bool __MsgFunc_Rumble( const CCSUsrMsg_Rumble &msg )
 
 static bool __MsgFunc_VGUIMenu( const CCSUsrMsg_VGUIMenu &msg )
 {
+	const char* pszPanelName = msg.name().c_str();
 	bool bShow = msg.show();
 
 	ASSERT_LOCAL_PLAYER_RESOLVABLE();
@@ -172,6 +165,19 @@ static bool __MsgFunc_VGUIMenu( const CCSUsrMsg_VGUIMenu &msg )
 						
 			keys->SetString( subkey.name().c_str(), subkey.str().c_str() );
 		}
+
+		// !KLUDGE! Whitelist of URL protocols formats for MOTD
+		if ( !V_stricmp( pszPanelName, PANEL_INFO ) // MOTD
+			&& keys->GetInt( "type", 0 ) == 2 // URL message type
+		) {
+			const char *pszURL = keys->GetString( "msg", "" );
+			if ( Q_strncmp( pszURL, "http://", 7 ) != 0 && Q_strncmp( pszURL, "https://", 8 ) != 0 && Q_stricmp( pszURL, "about:blank" ) != 0 )
+			{
+				Warning( "Blocking MOTD URL '%s'; must begin with 'http://' or 'https://' or be about:blank\n", pszURL );
+				keys->deleteThis();
+				return true;
+			}
+		}
 	}
 
 	GetViewPortInterface()->ShowPanel( msg.name().c_str(), bShow, keys, true );
@@ -180,7 +186,7 @@ static bool __MsgFunc_VGUIMenu( const CCSUsrMsg_VGUIMenu &msg )
 	// keys->deleteThis();
 
 	// is the server telling us to show the scoreboard (at the end of a map)?
-	if ( Q_stricmp( msg.name().c_str(), "scores" ) == 0 )
+	if ( Q_stricmp( pszPanelName, "scores" ) == 0 )
 	{
 		if ( hud_takesshots.GetBool() == true )
 		{
@@ -594,13 +600,9 @@ bool ContainsBinding( const char *pszBindingString, const char *pszBinding, bool
 	}
 	else
 	{
-		//lwss: change this to a regular CUtlVector.
-		// This is the only use of this weird Vector class that calls the wrong delete operator instead of delete[] on destruction.
-		//CUtlVectorAutoPurge< char *> cmdStrings;
-		CUtlVector< char *> cmdStrings;
-		//lwss end
-        // Tokenize the binding name
-        V_SplitString( pszBindingString, ";", cmdStrings );
+		// Tokenize the binding name
+		CUtlVectorAutoPurge< char *> cmdStrings;
+		V_SplitString( pszBindingString, ";", cmdStrings );
 		FOR_EACH_VEC( cmdStrings, i )
 		{
 			char* szCmd = cmdStrings[ i ];
@@ -660,7 +662,30 @@ void ClientModeShared::GraphPageChanged()
 //-----------------------------------------------------------------------------
 int ClientModeShared::HandleSpectatorKeyInput( int down, ButtonCode_t keynum, const char *pszCurrentBinding )
 {
-	/* Removed for partner depot */
+	if ( down && pszCurrentBinding && Q_strcmp( pszCurrentBinding, "+attack" ) == 0 )
+	{
+		engine->ClientCmd( "spec_next" );
+		return 0; // we handled it, don't handle twice or send to server
+	}
+	else if ( down && pszCurrentBinding && Q_strcmp( pszCurrentBinding, "+attack2" ) == 0 )
+	{
+		engine->ClientCmd( "spec_prev" );
+		return 0;
+	}
+	else if ( down && pszCurrentBinding && Q_strcmp( pszCurrentBinding, "+jump" ) == 0 )
+	{
+		engine->ClientCmd( "spec_mode" );
+		return 0;
+	}
+	else if ( down && pszCurrentBinding && Q_strcmp( pszCurrentBinding, "+strafe" ) == 0 )
+	{
+		HLTVCamera()->SetAutoDirector( C_HLTVCamera::AUTODIRECTOR_ON );
+#if defined( REPLAY_ENABLED )
+		ReplayCamera()->SetAutoDirector( true );
+#endif
+		return 0;
+	}
+
 	return 1;
 }
 
@@ -669,10 +694,6 @@ int ClientModeShared::HandleSpectatorKeyInput( int down, ButtonCode_t keynum, co
 //-----------------------------------------------------------------------------
 int ClientModeShared::HudElementKeyInput( int down, ButtonCode_t keynum, const char *pszCurrentBinding )
 {
-	if ( GetFullscreenClientMode() && GetFullscreenClientMode() != this &&
-		!GetFullscreenClientMode()->HudElementKeyInput( down, keynum, pszCurrentBinding ) )
-		return 0;
-
 	if ( CSGameRules() && CSGameRules()->IsEndMatchVotingForNextMap() )
 	{
 		// this looks messy, but essentially, if the convar is set to true, use the bindings, if not use the raw keys
@@ -761,6 +782,7 @@ void ClientModeShared::StartMessageMode( int iMessageModeType )
 	{
 		return;
 	}
+
 #if defined( INCLUDE_SCALEFORM )
 	SFHudChat* pChat = GET_HUDELEMENT( SFHudChat );
 	if ( pChat )
@@ -1064,9 +1086,6 @@ void ClientModeShared::FireGameEvent( IGameEvent *event )
 		if ( IsGameConsole() )
 			return;
 #endif
-
-		if ( this == GetFullscreenClientMode() )
-			return;
 		if ( !hudChat )
 			return;
 		if ( PlayerNameNotSetYet(event->GetString("name")) )
@@ -1089,7 +1108,6 @@ void ClientModeShared::FireGameEvent( IGameEvent *event )
 	{
 		CLocalPlayerFilter filter;
 		C_BaseEntity::EmitSound( filter, SOUND_FROM_LOCAL_PLAYER, "Music.StopMenuMusic" );
-		GameUI().SetBackgroundMusicDesired( false );
 	}
 	else if ( Q_strcmp( "player_disconnect", eventname ) == 0 )
 	{
@@ -1098,9 +1116,6 @@ void ClientModeShared::FireGameEvent( IGameEvent *event )
 		if ( IsGameConsole() )
 			return;
 #endif
-
-		if ( this == GetFullscreenClientMode() )
-			return;
 		int userID = event->GetInt("userid");
 		C_BasePlayer *pPlayer = USERID2PLAYER( userID );
 
@@ -1175,9 +1190,6 @@ void ClientModeShared::FireGameEvent( IGameEvent *event )
 	}
 	else if ( Q_strcmp( "player_team", eventname ) == 0 )
 	{
-		if ( this == GetFullscreenClientMode() )
-			return;
-
 		C_BasePlayer *pPlayer = USERID2PLAYER( event->GetInt("userid") );
 		if ( !hudChat )
 			return;
@@ -1242,9 +1254,6 @@ void ClientModeShared::FireGameEvent( IGameEvent *event )
 	}
 	else if ( Q_strcmp( "player_changename", eventname ) == 0 )
 	{
-		if ( this == GetFullscreenClientMode() )
-			return;
-
 		if ( !hudChat )
 			return;
 
@@ -1268,9 +1277,6 @@ void ClientModeShared::FireGameEvent( IGameEvent *event )
 	}
 	else if ( Q_strcmp( "teamplay_broadcast_audio", eventname ) == 0 )
 	{
-		if ( this == GetFullscreenClientMode() )
-			return;
-
 		int team = event->GetInt( "team" );
 
 		bool bValidTeam = false;
@@ -1294,9 +1300,7 @@ void ClientModeShared::FireGameEvent( IGameEvent *event )
 			}
 		}
 
-		//lwss fix
-		//if ( team == 0 && GetLocalTeam() > 0 )
-		if ( team == 0 && GetLocalPlayerTeam() > 0 )
+		if ( team == 0 && GetLocalTeam() > 0 )
 		{
 			bValidTeam = false;
 		}
@@ -1315,9 +1319,6 @@ void ClientModeShared::FireGameEvent( IGameEvent *event )
 	}
 	else if ( Q_strcmp( "teamplay_broadcast_audio", eventname ) == 0 )
 	{
-		if ( this == GetFullscreenClientMode() )
-			return;
-
 		int team = event->GetInt( "team" );
 		if ( !team || (GetLocalTeam() && GetLocalTeam()->GetTeamNumber() == team) )
 		{
@@ -1329,9 +1330,6 @@ void ClientModeShared::FireGameEvent( IGameEvent *event )
 	else if ( Q_strcmp( "server_cvar", eventname ) == 0 )
 	{
 		if ( (IsGameConsole() && IsCert()) || (IsGameConsole() && developer.GetInt() < 2) )
-			return;
-
-		if ( this == GetFullscreenClientMode() )
 			return;
 
 		static bool s_bPerfectWorld = !!CommandLine()->FindParm( "-perfectworld" );
@@ -1369,9 +1367,6 @@ void ClientModeShared::FireGameEvent( IGameEvent *event )
 	}
 	else if ( Q_strcmp( "achievement_earned", eventname ) == 0 )
 	{
-		if ( this == GetFullscreenClientMode() )
-			return;
-
 		int iPlayerIndex = event->GetInt( "player" );
 		C_BasePlayer *pPlayer = UTIL_PlayerByIndex( iPlayerIndex );
 		int iAchievement = event->GetInt( "achievement" );

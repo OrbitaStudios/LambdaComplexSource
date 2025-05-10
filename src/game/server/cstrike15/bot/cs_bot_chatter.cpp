@@ -528,7 +528,7 @@ bool BotPhraseManager::Initialize( const char *filename, int bankIndex )
 	FileHandle_t file = filesystem->Open( filename, "r" );
 	if (!file)
 	{
-		Msg( "WARNING: Cannot access bot phrase database '%s'\n", filename );
+		CONSOLE_ECHO( "WARNING: Cannot access bot phrase database '%s'\n", filename );
 		return false;
 	}
 
@@ -571,7 +571,7 @@ bool BotPhraseManager::Initialize( const char *filename, int bankIndex )
 			phraseData = SharedParse( phraseData );
 			if (!phraseData)
 			{
-                Msg( "Error parsing '%s' - expected identifier\n", filename );
+				CONSOLE_ECHO( "Error parsing '%s' - expected identifier\n", filename );
 				delete [] phraseDataFile;
 				return false;
 			}
@@ -593,7 +593,7 @@ bool BotPhraseManager::Initialize( const char *filename, int bankIndex )
 			phraseData = SharedParse( phraseData );
 			if (!phraseData)
 			{
-                Msg( "Error parsing '%s' - expected identifier\n", filename );
+				CONSOLE_ECHO( "Error parsing '%s' - expected identifier\n", filename );
 				delete [] phraseDataFile;
 				return false;
 			}
@@ -617,7 +617,7 @@ bool BotPhraseManager::Initialize( const char *filename, int bankIndex )
 			phraseData = SharedParse( phraseData );
 			if (!phraseData)
 			{
-                Msg( "Error parsing '%s' - expected identifier\n", filename );
+				CONSOLE_ECHO( "Error parsing '%s' - expected identifier\n", filename );
 				delete [] phraseDataFile;
 				return false;
 			}
@@ -640,7 +640,7 @@ bool BotPhraseManager::Initialize( const char *filename, int bankIndex )
 
 				if ( !phrase )
 				{
-                    Msg( "Error parsing '%s' - phrase '%s' is invalid\n", filename, SharedGetToken() );
+					CONSOLE_ECHO( "Error parsing '%s' - phrase '%s' is invalid\n", filename, SharedGetToken() );
 					delete [] phraseDataFile;
 					return false;
 				}
@@ -659,7 +659,7 @@ bool BotPhraseManager::Initialize( const char *filename, int bankIndex )
 				phraseData = SharedParse( phraseData );
 				if (!phraseData)
 				{
-                    Msg( "Error parsing %s - expected 'End'\n", filename );
+					CONSOLE_ECHO( "Error parsing %s - expected 'End'\n", filename );
 					delete [] phraseDataFile;
 					return false;
 				}
@@ -671,7 +671,7 @@ bool BotPhraseManager::Initialize( const char *filename, int bankIndex )
 					phraseData = SharedParse( phraseData );
 					if (!phraseData)
 					{
-                        Msg( "Error parsing %s - expected Place name\n", filename );
+						CONSOLE_ECHO( "Error parsing %s - expected Place name\n", filename );
 						delete [] phraseDataFile;
 						return false;
 					}
@@ -697,7 +697,7 @@ bool BotPhraseManager::Initialize( const char *filename, int bankIndex )
 					phraseData = SharedParse( phraseData );
 					if (!phraseData)
 					{
-                        Msg( "Error parsing %s - expected Count value\n", filename );
+						CONSOLE_ECHO( "Error parsing %s - expected Count value\n", filename );
 						delete [] phraseDataFile;
 						return false;
 					}
@@ -718,7 +718,7 @@ bool BotPhraseManager::Initialize( const char *filename, int bankIndex )
 					phraseData = SharedParse( phraseData );
 					if (!phraseData)
 					{
-                        Msg( "Error parsing %s - expected radio event\n", filename );
+						CONSOLE_ECHO( "Error parsing %s - expected radio event\n", filename );
 						delete [] phraseDataFile;
 						return false;
 					}
@@ -727,7 +727,7 @@ bool BotPhraseManager::Initialize( const char *filename, int bankIndex )
 					RadioType event = NameToRadioEvent( token );
 					if (event <= RADIO_START_1 || event >= RADIO_END)
 					{
-                        Msg( "Error parsing %s - invalid radio event '%s'\n", filename, token );
+						CONSOLE_ECHO( "Error parsing %s - invalid radio event '%s'\n", filename, token );
 						delete [] phraseDataFile;
 						return false;
 					}
@@ -824,7 +824,7 @@ const BotPhrase *BotPhraseManager::GetPhrase( const char *name ) const
 			return m_list[i]; 
 	}
 
-	//Msg( "GetPhrase: ERROR - Invalid phrase '%s'\n", name );
+	//CONSOLE_ECHO( "GetPhrase: ERROR - Invalid phrase '%s'\n", name );
 
 	return NULL;
 }
@@ -843,7 +843,7 @@ const BotPhrase *BotPhraseManager::GetPhrase( unsigned int place ) const
 			return phrase; 
 	}
 
-	Msg( "GetPhrase: ERROR - Invalid phrase id #%d\n", id );
+	CONSOLE_ECHO( "GetPhrase: ERROR - Invalid phrase id #%d\n", id );
 	return NULL;
 }
 */
@@ -913,7 +913,8 @@ BotStatement::BotStatement( BotChatterInterface *chatter, BotStatementType type,
 
 BotStatement::~BotStatement() 
 {
-    delete m_meme;
+	if (m_meme)
+		delete m_meme; 
 }
 
 
@@ -1327,7 +1328,7 @@ bool BotStatement::Update( void )
 					else
 					{
 						const char *filename = phrase->GetSpeakable( me->GetProfile()->GetVoiceBank(), &duration );
-						// Msg( "%s: Radio( '%s' )\n", STRING( me->pev->netname ), filename );
+						// CONSOLE_ECHO( "%s: Radio( '%s' )\n", STRING( me->pev->netname ), filename );
 						if ( filename )
 						{
 							me->SpeakAudio( filename, duration + 1.0f, me->GetProfile()->GetVoicePitch() );

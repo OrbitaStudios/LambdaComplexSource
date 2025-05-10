@@ -1,3 +1,4 @@
+//========= Copyright Valve Corporation, All rights reserved. ============//
 #ifndef HUD_ACHIEVEMENT_TRACKER_H
 #define HUD_ACHIEVEMENT_TRACKER_H
 #ifdef _WIN32
@@ -94,7 +95,7 @@ class CHudBaseAchievementTracker : public CHudElement, public vgui::EditablePane
 {
 	DECLARE_CLASS_SIMPLE( CHudBaseAchievementTracker, vgui::EditablePanel );
 public:
-	explicit CHudBaseAchievementTracker( const char *pElementName );
+	CHudBaseAchievementTracker( const char *pElementName );
 
 	virtual void Reset();
 	virtual void LevelInit();

@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -11,7 +11,7 @@
 #include <vgui/ISurface.h>
 #include <vgui/IScheme.h>
 #include <vgui/IBorder.h>
-#include <keyvalues.h>
+#include <KeyValues.h>
 
 #include <vgui_controls/ScalableImagePanel.h>
 
@@ -34,9 +34,12 @@ ScalableImagePanel::ScalableImagePanel(Panel *parent, const char *name) : Panel(
 	m_iCornerWidth = 0;
 
 	m_pszImageName = NULL;
-
 	m_pszDrawColorName = NULL;
+
 	m_DrawColor = Color(255,255,255,255);
+
+	m_flCornerWidthPercent = 0;
+	m_flCornerHeightPercent = 0;
 
 	m_iTextureID = surface()->CreateNewTextureID();
 }
@@ -48,6 +51,12 @@ ScalableImagePanel::~ScalableImagePanel()
 {
 	delete [] m_pszImageName;
 	delete [] m_pszDrawColorName;
+
+	if ( vgui::surface() && m_iTextureID != -1 )
+	{
+		vgui::surface()->DestroyTextureID( m_iTextureID );
+		m_iTextureID = -1;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -55,17 +64,29 @@ ScalableImagePanel::~ScalableImagePanel()
 //-----------------------------------------------------------------------------
 void ScalableImagePanel::SetImage(const char *imageName)
 {
-	delete [] m_pszImageName;
-	m_pszImageName = NULL;
-
-	if (*imageName)
+	if ( *imageName )
 	{
-		int len = Q_strlen(imageName) + 1 + 5;	// 5 for "vgui/"
+		char szImage[MAX_PATH];
+
+		const char *pszDir = "vgui/";
+		int len = Q_strlen(imageName) + 1;
+		len += strlen(pszDir);
+		Q_snprintf( szImage, len, "%s%s", pszDir, imageName );
+
+		if ( m_pszImageName && V_stricmp( szImage, m_pszImageName ) == 0 )
+			return;
+
 		delete [] m_pszImageName;
 		m_pszImageName = new char[ len ];
-		Q_snprintf( m_pszImageName, len, "vgui/%s", imageName );
-		InvalidateLayout();
-	}	
+		Q_strncpy(m_pszImageName, szImage, len );
+	}
+	else
+	{
+		delete [] m_pszImageName;
+		m_pszImageName = NULL;
+	}
+
+	InvalidateLayout();
 }
 
 //-----------------------------------------------------------------------------
@@ -84,7 +105,7 @@ void ScalableImagePanel::PaintBackground()
 
 	float uvx = 0;
 	float uvy = 0;
-	float uvw, uvh;
+	float uvw = 0, uvh = 0;
 
 	float drawW, drawH;
 
@@ -103,7 +124,7 @@ void ScalableImagePanel::PaintBackground()
 		else
 		{
 			//uvh - row 1, is tall - ( 2 * src_corner_height ) ( min 0 )
-			uvh = MAX( 1.0 - 2 * m_flCornerHeightPercent, 0.0f );
+			uvh = MAX( 1.f - 2.f * m_flCornerHeightPercent, 0.0f );
 			drawH = MAX( 0, ( tall - 2 * m_iCornerHeight ) );
 		}
 
@@ -118,7 +139,7 @@ void ScalableImagePanel::PaintBackground()
 			else
 			{
 				//uvw - col 1, is wide - ( 2 * src_corner_width ) ( min 0 )
-				uvw = MAX( 1.0 - 2 * m_flCornerWidthPercent, 0.0f );
+				uvw = MAX( 1.f - 2.f * m_flCornerWidthPercent, 0.0f );
 				drawW = MAX( 0, ( wide - 2 * m_iCornerWidth ) );
 			}
 

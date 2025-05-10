@@ -31,7 +31,6 @@
 #include "tier1/netadr.h"
 
 #include "gametypes/igametypes.h"
-#include "gameui_interface.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -415,7 +414,7 @@ void CTextWindow::ShowFile( const char *filename )
 
 		char buffer[2048];
 			
-		int size = MIN( g_pFullFileSystem->Size( f ), sizeof(buffer)-1 ); // just allow 2KB
+		int size = min( g_pFullFileSystem->Size( f ), sizeof(buffer)-1 ); // just allow 2KB
 
 		g_pFullFileSystem->Read( buffer, size, f );
 		g_pFullFileSystem->Close( f );
@@ -633,37 +632,6 @@ void CTextWindow::ShowPanel( bool bShow )
 {
 	g_pInputSystem->SetSteamControllerMode( bShow ? "MenuControls" : NULL, this );
 
-	if (bShow) 
-		return;
-
-	if ( BaseClass::IsVisible() == bShow )
-		return;
-
-	m_pViewPort->ShowBackGround( bShow );
-
-	ShowHtmlString( sBrowserClose );
-	SetVisible( false );
-	SetMouseInputEnabled( false );
-	GetHud(0).EnableHud();
-
-	if ( !bShow && ( Plat_FloatTime() - m_dblTimeExecutedExitCommand > 1.0 ) )
-	{	// If something is trying to hide us and it's not because user clicked
-		// the OKAY button, then trigger the commands associated with OKAY button
-		m_bForcingWindowCloseRegardlessOfTime = true;
-		OnCommand( "okay" );
-	}
-
-	// reset motd
-	m_bHasMotd = false;
-}
-
-void CTextWindow::ShowPanel2( bool bShow )
-{
-	if ( (CSGameRules() && CSGameRules()->IsQueuedMatchmaking()) || sv_disable_motd.GetBool() )
-		bShow = false;
-
-	g_pInputSystem->SetSteamControllerMode( bShow ? "MenuControls" : NULL, this );
-
 	if ( BaseClass::IsVisible() == bShow )
 		return;
 
@@ -690,7 +658,20 @@ void CTextWindow::ShowPanel2( bool bShow )
 	}
 	else
 	{
-		ShowPanel( false );
+		ShowHtmlString( sBrowserClose );
+		SetVisible( false );
+		SetMouseInputEnabled( false );
+		GetHud(0).EnableHud();
+
+		if ( Plat_FloatTime() - m_dblTimeExecutedExitCommand > 1.0 )
+		{	// If something is trying to hide us and it's not because user clicked
+			// the OKAY button, then trigger the commands associated with OKAY button
+			m_bForcingWindowCloseRegardlessOfTime = true;
+			OnCommand( "okay" );
+		}
+
+		// reset motd
+		m_bHasMotd = false;
 	}
 }
 

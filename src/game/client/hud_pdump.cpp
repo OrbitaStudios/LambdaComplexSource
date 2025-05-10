@@ -28,7 +28,7 @@ DECLARE_HUDELEMENT_FLAGS( CPDumpPanel, HUDELEMENT_SS_FULLSCREEN_ONLY );
 CPDumpPanel::CPDumpPanel( const char *pElementName ) :
 	CHudElement( pElementName ), BaseClass( NULL, "HudPredictionDump" ), m_nCurrentIndex( 0 )
 {
-	vgui::Panel *pParent = GetFullscreenClientMode()->GetViewport();
+	vgui::Panel *pParent = GetClientMode()->GetViewport();
 	SetParent( pParent );
 
 	SetProportional( false );

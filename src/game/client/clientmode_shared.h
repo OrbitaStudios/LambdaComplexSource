@@ -32,7 +32,6 @@ class Panel;
 #define USERID2PLAYER(i) ToBasePlayer( ClientEntityList().GetEnt( engine->GetPlayerForUserID( i ) ) )	
 
 extern IClientMode *GetClientModeNormal(); // must be implemented
-extern IClientMode *GetFullscreenClientMode();
 
 // This class implements client mode functionality common to HL2 and TF2.
 class ClientModeShared : public IClientMode, public CGameEventListener

@@ -26,6 +26,5 @@ END_RECV_TABLE()
 
 bool C_FuncMonitor::ShouldDraw()
 {
-	RANDOM_CEG_TEST_SECRET();
 	return true;
 }

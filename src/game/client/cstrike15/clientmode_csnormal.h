@@ -86,9 +86,6 @@ public:
 
 	virtual void	Init();
 	virtual void	InitViewport();
-	// dgoodenough - fix GCC shortcoming
-	// PS3_BUILDFIX
-	virtual void	InitViewport( bool bOnlyBaseClass = false );
 	virtual void	Update();
 
 	virtual void	LevelShutdown( void );

@@ -273,9 +273,9 @@ int PS3_WindowProc_Proxy( xevent_t const &ev )
 #endif
 
 #if !defined( _X360 )
-const wchar_t CGame::CLASSNAME[] = L"LambdaComplexInstance";
+const wchar_t CGame::CLASSNAME[] = L"Valve001";
 #else
-const char CGame::CLASSNAME[] = "LambdaComplexInstance";
+const char CGame::CLASSNAME[] = "Valve001";
 #endif
 
 // In VCR playback mode, it sleeps this amount each frame.
@@ -415,6 +415,11 @@ void CGame::DispatchInputEvent( const InputEvent_t &event )
 
 			if ( event.m_nData >= JOYSTICK_FIRST_AXIS )
 			{
+#if defined( INCLUDE_SCALEFORM )
+				if ( g_pScaleformUI && g_pScaleformUI->HandleInputEvent( event ) )
+					break;
+#endif
+
 				if ( g_pMatSystemSurface && g_pMatSystemSurface->HandleInputEvent( event ) )
 					break;
 			}
@@ -1253,10 +1258,6 @@ bool CGame::CreateGameWindow( void )
 	{
 		V_strcat( windowName, " - OpenGL", sizeof( windowName ) );
 	}
-
-	#if defined( DX_TO_VK_ABSTRACTION )
-		V_strcat( windowName, " - Vulkan", sizeof( windowName ) );
-	#endif
 
 #if PIX_ENABLE || defined( PIX_INSTRUMENTATION )
 	// PIX_ENABLE/PIX_INSTRUMENTATION is a big slowdown (that should never be checked in, but sometimes is by accident), so add this to the Window title too.
@@ -2523,7 +2524,11 @@ bool CGame::Shutdown( void )
 
 void *CGame::GetMainWindow( void )
 {
+#if defined( LINUX )
+	return 0;
+#else
 	return (void*)m_hWindow;
+#endif
 }
 
 #if defined(USE_SDL)

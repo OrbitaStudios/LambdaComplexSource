@@ -434,7 +434,6 @@ void C_GameInstructor::Update( float frametime )
 		{
 			// This opportunity has closed
 			CloseOpportunity( pLesson );
-			RANDOM_CEG_TEST_SECRET_PERIOD( 11, 23 );
 			continue;
 		}
 
@@ -549,8 +548,6 @@ void C_GameInstructor::FireGameEvent( IGameEvent *event )
 	}
 	else if ( Q_strcmp( name, "player_death" ) == 0 )
 	{
-		STEAMWORKS_TESTSECRET_AMORTIZE( 37 ); 
-
 		C_BasePlayer *pLocalPlayer = GetLocalPlayer();
 		if ( pLocalPlayer && pLocalPlayer == UTIL_PlayerByUserId( event->GetInt( "userid" ) ) )
 		{
@@ -598,8 +595,6 @@ void C_GameInstructor::FireGameEvent( IGameEvent *event )
 				ConColorMsg( CBaseLesson::m_rgbaVerboseHeader, "GAME INSTRUCTOR: " );
 				ConColorMsg( CBaseLesson::m_rgbaVerbosePlain, "Local player disconnected...\n" );
 			}
-
-			STEAMWORKS_SELFCHECK();
 
 			CloseAllOpenOpportunities();
 		}
@@ -1332,8 +1327,6 @@ bool C_GameInstructor::UpdateActiveLesson( CBaseLesson *pLesson, const CBaseLess
 	VPROF_BUDGET( "C_GameInstructor::UpdateActiveLesson", "GameInstructor" );
 
 	bool bIsOpen = pLesson->IsInstructing();
-
-	RANDOM_CEG_TEST_SECRET()
 
 	if ( !bIsOpen && !pRootLesson->IsLearned() )
 	{

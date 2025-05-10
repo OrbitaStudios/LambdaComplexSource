@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -28,8 +28,8 @@ class CHudTextMessage : public IHudTextMessage
 {
 public:
 	virtual char *LocaliseTextString( const char *msg, char *dst_buffer, int buffer_size );
-	virtual const char * const BufferedLocaliseTextString( const char *msg );
-	virtual const char *LookupString( const char *msg_name, int *msg_dest = NULL );
+	virtual char *BufferedLocaliseTextString( const char *msg );
+	virtual char *LookupString( const char *msg_name, int *msg_dest = NULL );
 };
 
 // Singleton
@@ -48,28 +48,18 @@ IHudTextMessage *hudtextmessage = &g_HudTextMessage;
 char *CHudTextMessage::LocaliseTextString( const char *msg, char *dst_buffer, int buffer_size )
 {
 	char *dst = dst_buffer;
-	for ( const char *src = msg; *src != 0 && buffer_size > 0; buffer_size-- )
+	for ( char *src = (char*)msg; *src != 0 && buffer_size > 0; buffer_size-- )
 	{
 		if ( *src == '#' )
 		{
 			// cut msg name out of string
-            static const int max_word_len = 255;
-            static char word_buf[max_word_len];
-			const char *word_start = src;
-            char *word = word_buf;
-            int word_len = 0;
-            for ( ++src ; *src >= 'A' && *src <= 'z'; word++, src++ )
+			static char word_buf[255];
+			char *wdst = word_buf, *word_start = src;
+			for ( ++src ; *src >= 'A' && *src <= 'z'; wdst++, src++ )
 			{
-				*word = *src;
-				if( word_len++ >= ( max_word_len - 1 ) )
-                {
-				    // word is too long, return empty string.
-				    Warning( "#Token too long in LocaliseTextString!\n" );
-				    dst_buffer[0] = 0;
-				    return dst_buffer;
-                }
+				*wdst = *src;
 			}
-			*word = 0;
+			*wdst = 0;
 
 			// lookup msg name in titles.txt
 			client_textmessage_t *clmsg = TextMessageGet( word_buf );
@@ -105,7 +95,8 @@ char *CHudTextMessage::LocaliseTextString( const char *msg, char *dst_buffer, in
 		}
 	}
 
-    // ensure null termination
+	//
+// ensure null termination
 	dst_buffer[buffer_size-1] = 0; 
 	return dst_buffer;
 }
@@ -113,9 +104,9 @@ char *CHudTextMessage::LocaliseTextString( const char *msg, char *dst_buffer, in
 //-----------------------------------------------------------------------------
 // Purpose: As above, but with a local static buffer
 // Input  : *msg - 
-// Output : char pointer to local static buffer that shouldn't be changed.
+// Output : char
 //-----------------------------------------------------------------------------
-const char * const CHudTextMessage::BufferedLocaliseTextString( const char *msg )
+char *CHudTextMessage::BufferedLocaliseTextString( const char *msg )
 {
 	static char dst_buffer[1024];
 	return LocaliseTextString( msg, dst_buffer, 1024 );
@@ -127,7 +118,7 @@ const char * const CHudTextMessage::BufferedLocaliseTextString( const char *msg 
 //			*msg_dest - 
 // Output : char
 //-----------------------------------------------------------------------------
-const char *CHudTextMessage::LookupString( const char *msg, int *msg_dest )
+char *CHudTextMessage::LookupString( const char *msg, int *msg_dest )
 {
 	if ( !msg )
 		return "";
@@ -139,7 +130,7 @@ const char *CHudTextMessage::LookupString( const char *msg, int *msg_dest )
 		client_textmessage_t *clmsg = TextMessageGet( msg+1 );
 
 		if ( !clmsg || !(clmsg->pMessage) )
-			return msg; // lookup failed, so return the original string
+			return (char*)msg; // lookup failed, so return the original string
 		
 		if ( msg_dest )
 		{
@@ -149,10 +140,10 @@ const char *CHudTextMessage::LookupString( const char *msg, int *msg_dest )
 				*msg_dest = -clmsg->effect;
 		}
 
-		return clmsg->pMessage;
+		return (char*)clmsg->pMessage;
 	}
 	else
 	{  // nothing special about this message, so just return the same string
-		return msg;
+		return (char*)msg;
 	}
 }

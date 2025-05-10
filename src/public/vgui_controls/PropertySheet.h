@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -12,7 +12,7 @@
 #pragma once
 #endif
 
-#include "vgui/vgui.h"
+#include "vgui/VGUI.h"
 #include "vgui_controls/EditablePanel.h"
 #include "vgui_controls/PHandle.h"
 #include "utlvector.h"
@@ -39,7 +39,7 @@ public:
 	void		SetDraggableTabs( bool state );
 
 	// Adds a page to the sheet.  The first page added becomes the active sheet.
-	virtual void AddPage(Panel *page, const char *title, char const *imageName = NULL, bool showContextMenu = false, int nInsertBefore = -1 );
+	virtual void AddPage(Panel *page, const char *title, char const *imageName = NULL, bool showContextMenu = false );
 
 	virtual void SetPageTitle( Panel *page, const char *title );
 
@@ -81,13 +81,13 @@ public:
 	virtual Panel *GetActiveTab();
 
 	// returns the title text of the tab
-	virtual void GetActiveTabTitle(char *textOut, int bufferLen);
-
-	// return tab "i"
-	virtual Panel *GetTab(int i);
+	virtual void GetActiveTabTitle( char *textOut, int bufferLen );
 
 	// returns the title of tab "i"
-	virtual bool GetTabTitle(int i,char *textOut, int bufferLen);
+	virtual bool GetTabTitle( int i, char *textOut, int bufferLen );
+
+	// sets the title of tab "i"
+	virtual bool SetTabTitle( int i, char *pchTitle );
 
 	// returns the index of the active page
 	virtual int GetActivePageNum();
@@ -103,7 +103,6 @@ public:
 
 	virtual void SetSmallTabs( bool state );
 	virtual bool IsSmallTabs() const;
-	virtual void SetShowTabs( bool state );
 
 	/* MESSAGES SENT TO PAGES
 		"PageShow"	- sent when a page is shown
@@ -128,14 +127,13 @@ public:
 	bool		IsKBNavigationEnabled() const;
 
 	virtual bool HasUserConfigSettings() { return true; }
-	virtual void OnThink();
 
 protected:
 	virtual void PaintBorder();
 	virtual void PerformLayout();
 	virtual Panel *HasHotkey(wchar_t key);
 	virtual void ChangeActiveTab(int index);
-	virtual void OnKeyCodeTyped(KeyCode code);
+	virtual void OnKeyCodePressed(KeyCode code);
 	virtual void OnCommand(const char *command);
 	virtual void ApplySchemeSettings(IScheme *pScheme);
 	virtual void ApplySettings(KeyValues *inResourceData);
@@ -151,18 +149,10 @@ protected:
 	MESSAGE_FUNC_HANDLE( OnCurrentDefaultButtonSet, "CurrentDefaultButtonSet", button);
     MESSAGE_FUNC( OnFindDefaultButton, "FindDefaultButton" );
 
-	virtual void LayoutTabs();
-
 private:
 	
 	// enable/disable the page with title "title" 
 	virtual void SetPageEnabled(const char *title,bool state);
-
-	// Grabs mouse coords and figures out best tab to insert "before" or -1 if insert should be at end of tab section row
-	PageTab *FindInsertBeforeTab();
-
-	void AddPageDropTab( char const *pTabName, Panel *pPage );
-	void ClearPageDropTab();
 
 	struct Page_t
 	{
@@ -214,10 +204,6 @@ private:
 	//=============================================================================
 
 	KeyValues	*m_pTabKV;
-
-	int			m_nPageDropTabVisibleTime;
-	PageTab		*m_pDragDropTab;
-	PageTab		*m_pTemporarilyRemoved;
 };
 
 }; // namespace vgui

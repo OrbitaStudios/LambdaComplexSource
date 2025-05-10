@@ -37,11 +37,7 @@
 	#define DEG2RAD( x  )  ( (float)(x) * (float)(M_PI_F / 180.f) )
 #endif
 
-#include "../../thirdparty/DirectXMath-dec2023/Inc/DirectXMath.h"
-
-// Math routines done in optimized assembly math package routines
-FORCEINLINE void SinCos( float radians, float * RESTRICT sine, float * RESTRICT cosine ) { DirectX::XMScalarSinCos( sine, cosine, radians ); }
-
+extern void inline SinCos( float radians, float * RESTRICT sine, float * RESTRICT cosine );
 
 //=========================================================
 // 2D Vector2D

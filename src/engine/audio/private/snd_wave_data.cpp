@@ -1146,7 +1146,7 @@ void CAsyncWaveData::StartAsyncLoading( const asyncwaveparams_t& params )
 		// resolve to absolute name now, where path can be filtered to just the zips (fast find, no real i/o)
 		// otherwise the dvd will do a costly seek for each zip miss due to search path fall through
 		PathTypeQuery_t pathType;
-		if ( !g_pFileSystem->RelativePathToFullPath( m_async.pszFilename, m_async.pszPathID, szFullName, sizeof( szFullName ), GetAudioPathFilter(), &pathType ) )
+		if ( !g_pFileSystem->RelativePathToFullPath( m_async.pszFilename, m_async.pszPathID, szFullName, sizeof( szFullName ), FILTER_CULLNONPACK, &pathType ) )
 		{
 			// not found, do callback now to handle error
 			m_async.pfnCallback( m_async, 0, FSASYNC_ERR_FILEOPEN );
@@ -1374,14 +1374,7 @@ bool CAsyncWavDataCache::Init( unsigned int memSize )
 		}
 		else if ( StringHasPrefix( Q_UnqualifiedFileName( pGame ), "left4dead2") )
 		{
-			if ( g_pFullFileSystem->IsDVDHosted() )
-			{
-				memSize = CONSOLE_STREAMING_AUDIO_LEFT4DEAD_DVD;
-			}
-			else
-			{
-				memSize = CONSOLE_STREAMING_AUDIO_LEFT4DEAD;
-			}
+			memSize = CONSOLE_STREAMING_AUDIO_LEFT4DEAD;
 		}
 		else if ( StringHasPrefix( Q_UnqualifiedFileName( pGame ), "portal2") )
 		{
@@ -3493,3 +3486,663 @@ IWaveData *CreateWaveDataMemory( CAudioSource &source )
 	return mem;
 }
 
+// set this to zero to revert to the previous scalar code
+#define PHONON_USE_SIMD 0
+
+
+namespace
+{
+	const int PHONON_FRAME_SIZE = 1024 * 2;
+
+	ThreadHandle_t g_hPhononThread;
+	bool g_bPhononThreadExit;
+	CThreadFastMutex g_phononMutex;
+
+	IPLAudioFormat g_phononInputFormat, g_phononOutputFormat;
+	IPLhandle g_phononContext = 0;
+
+	static const int PHONON_SAMPLE_SIZE = 4;
+	struct PhononJob
+	{
+		~PhononJob()
+		{
+			if (phononEffect)
+			{
+				iplDestroyBinauralEffect(&phononEffect);
+			}
+		}
+		IPLHrtfInterpolation interpolation;
+		int nChannels;
+		int nDataWidth;
+
+		Vector vec;
+		float lerp;
+		IPLhandle phononEffect;
+
+		bool bComplete;
+
+		CThreadFastMutex mutex;
+
+		char inputBuf[PHONON_FRAME_SIZE * PHONON_SAMPLE_SIZE];
+		short outputBuf[PHONON_FRAME_SIZE * 2];
+
+		float fSubmitTime, fCompleteTime;
+	};
+
+	void ProcessPhononJob(PhononJob& job)
+	{
+		TM_ZONE( TELEMETRY_LEVEL0, TMZF_NONE, "ProcessPhononJob %d", PHONON_FRAME_SIZE );
+		if (!job.phononEffect)
+		{
+			TM_ZONE( TELEMETRY_LEVEL0, TMZF_NONE, "iplCreateBinauralEffect" );
+			IPLerror error = iplCreateBinauralEffect(g_phononContext, g_phononInputFormat, g_phononOutputFormat, &job.phononEffect);
+			if (error)
+			{
+				ConVarRef snd_use_hrtf("snd_use_hrtf");
+				snd_use_hrtf.SetValue(false);
+				DevMsg("Failed to create binaural effect: %d. Turning off binaural rendering\n", (int)error);
+				memset( job.outputBuf, 0, sizeof( job.outputBuf ) );
+				return;
+			}
+		}
+		float ALIGN16 phononInputBuf[PHONON_FRAME_SIZE];
+
+		// stereo inputs are scaled by 0.5 to avoid distortion
+		float flStereoScale = 0.5f;
+
+		const short *in = (const short*)job.inputBuf;
+		// base scalar code for clarity
+#if !PHONON_USE_SIMD
+//		if ( !PHONON_USE_SIMD )
+		{
+			TM_ZONE( TELEMETRY_LEVEL0, TMZF_NONE, "ConvertMultiToFloat" );
+			for ( int n = 0; n != PHONON_FRAME_SIZE; ++n )
+			{
+				int value = 0;
+
+				for ( int i = 0; i != job.nChannels; ++i )
+				{
+					value += *in / job.nChannels;
+					++in;
+				}
+
+				phononInputBuf[ n ] = value / ( 65536.0 * 0.5 );
+			}
+		}
+#else  //!PHONON_USE_SIMD
+//		else
+		{
+			const float flSigned16ToUnitScale = 1.0f / 32768.0f;
+
+			if ( job.nChannels == 1 )
+			{
+				TM_ZONE( TELEMETRY_LEVEL0, TMZF_NONE, "ConvertShortToFloat" );
+				ConvertShortToFloat( phononInputBuf, in, PHONON_FRAME_SIZE, flSigned16ToUnitScale );
+			}
+			else
+			{
+				TM_ZONE( TELEMETRY_LEVEL0, TMZF_NONE, "SumStereoShortToFloat" );
+				SumStereoShortToFloat( phononInputBuf, in, PHONON_FRAME_SIZE, flSigned16ToUnitScale * flStereoScale );
+			}
+		}
+#endif //!PHONON_USE_SIMD
+		float ALIGN16 phononOutputBuf[PHONON_FRAME_SIZE * 2];
+		memset( phononOutputBuf, 0, sizeof( phononOutputBuf ) );
+
+		IPLAudioBuffer input_buffer;
+		input_buffer.format = g_phononInputFormat;
+		input_buffer.numSamples = PHONON_FRAME_SIZE;
+		input_buffer.interleavedBuffer = phononInputBuf;
+		input_buffer.deinterleavedBuffer = nullptr;
+
+		IPLAudioBuffer output_buffer;
+		output_buffer.format = g_phononOutputFormat;
+		output_buffer.numSamples = PHONON_FRAME_SIZE;
+		output_buffer.interleavedBuffer = phononOutputBuf;
+		output_buffer.deinterleavedBuffer = nullptr;
+
+		IPLVector3 iplvec;
+		iplvec.x = job.vec.x;
+		iplvec.y = job.vec.y;
+		iplvec.z = job.vec.z;
+
+		{
+			TM_ZONE( TELEMETRY_LEVEL0, TMZF_NONE, "iplApplyBinauralEffect" );
+			iplApplyBinauralEffect( job.phononEffect, input_buffer, iplvec, job.interpolation, output_buffer );
+		}
+
+#if !PHONON_USE_SIMD
+		//if ( !PHONON_USE_SIMD )
+		{
+			TM_ZONE( TELEMETRY_LEVEL0, TMZF_NONE, "Convert" );
+			for ( int n = 0; n < PHONON_FRAME_SIZE * 2; ++n )
+			{
+				Assert( phononOutputBuf[ n ] > -8.0 && phononOutputBuf[ n ] < 8.0 );
+				int out = static_cast<int>( phononOutputBuf[ n ] * 65536.0 / 16.0 );
+				job.outputBuf[ n ] = static_cast<short>( out );
+			}
+		}
+#else  //!PHONON_USE_SIMD
+		//else
+		{
+			TM_ZONE( TELEMETRY_LEVEL0, TMZF_NONE, "ConvertSIMD" );
+			// convert from float [-1,1] to short [-32767, 32768], but phonon may have amplified so reduce to 0.125f
+			float flScaleFactorFloat = ( 32768.0f ) * ( 0.125f );
+			ConvertFloatToShort( job.outputBuf, &phononOutputBuf[ 0 ], PHONON_FRAME_SIZE * 2, flScaleFactorFloat );
+		}
+#endif //!PHONON_USE_SIMD
+	}
+
+	void SetupPhononContext()
+	{
+		if (g_phononContext)
+		{
+			return;
+		}
+
+		ConVarRef snd_use_hrtf("snd_use_hrtf");
+
+		IPLGlobalContext iplContext;
+		memset(&iplContext, 0, sizeof(iplContext));
+		iplContext.logCallback = nullptr;
+
+		IPLDspParams dspParams;
+		dspParams.samplingRate = 44100;
+		dspParams.frameSize = PHONON_FRAME_SIZE;
+
+		IPLerror phononError = iplCreate3DContext(iplContext, dspParams, nullptr, &g_phononContext);
+		if (phononError != IPL_STATUS_SUCCESS)
+		{
+			DevMsg( "Failed to init phonon: %d\n", (int)phononError );
+			snd_use_hrtf.SetValue(false);
+			return;
+		}
+
+		g_phononInputFormat.channelLayoutType = IPL_CHANNELLAYOUTTYPE_SPEAKERS;
+		g_phononInputFormat.channelLayout = IPL_CHANNELLAYOUT_MONO;
+		g_phononInputFormat.numSpeakers = 1;
+		g_phononInputFormat.speakerDirections = nullptr;
+		g_phononInputFormat.channelOrder = IPL_CHANNELORDER_INTERLEAVED;
+
+		g_phononOutputFormat = g_phononInputFormat;
+		g_phononOutputFormat.channelLayout = IPL_CHANNELLAYOUT_STEREO;
+		g_phononOutputFormat.numSpeakers = 2;
+	}
+
+	CTSQueue<PhononJob*> g_phononJobQueue, g_phononDeleteQueue;
+
+	CThreadEvent g_eventPhononThread;
+
+	int g_benchSecond = 0;
+	float g_sleepTime = 0.0;
+	float g_fMaxJobTime = 0.0;
+	float g_fBenchRunway = -1.0f;
+	int g_nBenchSkips = 0;
+	int g_nBenchNumSounds = 0;
+	int g_nBenchMaxNumSounds = 0;
+	CThreadFastMutex g_mutexBenchSkips;
+
+	ConVar snd_hrtf_benchmark("snd_hrtf_benchmark", "0", FCVAR_NONE, "");
+
+	void PhononThread()
+	{
+		SetupPhononContext();
+
+		while (!g_bPhononThreadExit)
+		{
+			PhononJob *job = nullptr;
+			while (g_phononJobQueue.PopItem(&job))
+			{
+				//				float t = Plat_FloatTime();
+				ProcessPhononJob(*job);
+				//				DevMsg("HRTF: Processed HRTF job %p in %f\n", job, Plat_FloatTime() - t);
+
+				if (snd_hrtf_benchmark.GetBool())
+				{
+					float fTime = Plat_FloatTime();
+					float fElapsed = fTime - job->fSubmitTime;
+					job->fCompleteTime = fTime;
+					if (fElapsed > g_fMaxJobTime)
+					{
+						g_fMaxJobTime = fElapsed;
+					}
+				}
+
+				job->mutex.Lock();
+				job->bComplete = true;
+				job->mutex.Unlock();
+			}
+
+			while (g_phononDeleteQueue.Count() > 0 && g_phononJobQueue.Count() == 0)
+			{
+				if (g_phononDeleteQueue.PopItem(&job))
+				{
+					delete job;
+				}
+			}
+
+			if (snd_hrtf_benchmark.GetBool())
+			{
+				float start_sleep = Plat_FloatTime();
+				g_eventPhononThread.Wait(10);
+				float end_sleep = Plat_FloatTime();
+				int sec = (int)end_sleep;
+				if (sec != g_benchSecond)
+				{
+					g_sleepTime += float(sec) - start_sleep;
+
+					g_mutexBenchSkips.Lock();
+					const int nSkips = g_nBenchSkips;
+					const float fRunway = g_fBenchRunway;
+					g_nBenchSkips = 0;
+					g_fBenchRunway = -1.0f;
+					const int nSounds = g_nBenchMaxNumSounds;
+					g_nBenchMaxNumSounds = g_nBenchNumSounds;
+					g_mutexBenchSkips.Unlock();
+
+
+					float busy = (1.0 - g_sleepTime)*100.0f;
+					DevMsg("HRTF: sounds: %d busy: %0.2f%% Max latency: %0.3fms runway: %0.3fms skips: %d\n", nSounds, busy, g_fMaxJobTime*1000.0f, fRunway*1000.0f, nSkips);
+					g_sleepTime = end_sleep - float(sec);
+
+					g_fMaxJobTime = 0.0f;
+
+					g_benchSecond = sec;
+				}
+				else
+				{
+					g_sleepTime += end_sleep - start_sleep;
+				}
+			}
+			else
+			{
+				//Wait for a signal that there is more work or at
+				//most 10ms.
+				g_eventPhononThread.Wait(10);
+			}
+		}
+	}
+
+}
+
+ConVar snd_hrtf_passthrough("snd_hrtf_passthrough", "0", FCVAR_NONE, "");
+ConVar snd_hrtf_async("snd_hrtf_async", "1", FCVAR_NONE, "");
+ConVar snd_hrtf_lerp_method("snd_hrtf_lerp_method", "0", FCVAR_NONE, "");
+
+void StartPhononThread()
+{
+	if (!snd_hrtf_async.GetBool())
+	{
+		SetupPhononContext();
+		return;
+	}
+
+	if (!g_hPhononThread )
+	{
+		g_bPhononThreadExit = false;
+		g_hPhononThread = ThreadExecuteSolo("SndMixPhonon", PhononThread);
+		if (!g_hPhononThread)
+		{
+			DevMsg("Failed to start phonon thread\n");
+		}
+	}
+}
+
+void ShutdownPhononThread()
+{
+	if (g_hPhononThread)
+	{
+		g_bPhononThreadExit = true;
+		g_eventPhononThread.Set();
+		ThreadJoin(g_hPhononThread);
+		ReleaseThreadHandle(g_hPhononThread);
+		g_hPhononThread = NULL;
+	}
+}
+
+class CWaveDataHRTF : public IWaveData
+{
+public:
+	CWaveDataHRTF(IWaveData* pData, hrtf_info_t* dir);
+	~CWaveDataHRTF();
+	
+	CAudioSource &Source() { return m_pData->Source(); }
+
+	virtual int ReadSourceData(void **pData, int64 sampleIndex, int sampleCount, char copyBuf[AUDIOSOURCE_COPYBUF_SIZE]);
+	virtual bool IsReadyToMix()
+	{
+		if (snd_hrtf_passthrough.GetBool())
+		{
+			return m_pData->IsReadyToMix();
+		}
+
+		if (m_bAsync == false)
+		{
+			return m_pData->IsReadyToMix() || SamplesAvailableToRead() >= 512;
+		}
+
+		TryCompleteJob();
+
+		bool bResult = m_bEOF || SamplesAvailableToRead() > 0;
+		if (snd_hrtf_benchmark.GetBool())
+		{
+			if (bResult && m_bHasStartedMixing == false)
+			{
+				m_bHasStartedMixing = true;
+			}
+			else if (bResult == false && m_bHasStartedMixing && !m_bEOF)
+			{
+				g_mutexBenchSkips.Lock();
+				++g_nBenchSkips;
+				g_mutexBenchSkips.Unlock();
+			}
+			else if (bResult && m_bHasStartedMixing && SamplesAvailableToRead() < 512 + PHONON_FRAME_SIZE)
+			{
+				float fRunway = Plat_FloatTime() - m_pJob->fCompleteTime;
+				g_mutexBenchSkips.Lock();
+				if (fRunway < g_fBenchRunway || g_fBenchRunway == -1.0f)
+				{
+					g_fBenchRunway = fRunway;
+				}
+				g_mutexBenchSkips.Unlock();
+			}
+		}
+
+		TrySubmitJob();
+		TryCompleteJob();
+
+		return bResult;
+	}
+	virtual void UpdateLoopPosition(int nLoopPosition)
+	{
+		m_pData->UpdateLoopPosition(nLoopPosition);
+	}
+
+private:
+	IWaveData* m_pData;
+	hrtf_info_t* m_pDir;
+
+	void TryCompleteJob();
+	void TrySubmitJob();
+
+	PhononJob *m_pJob;
+	bool m_bJobPending;
+
+	int m_nChannels;
+	int m_nDataWidth;
+
+	int64 m_nDataStreamReadPos;
+	bool m_bEOF;
+	bool m_bAsync;
+
+	int64 m_readIndex;
+
+	char m_outputBuf[PHONON_FRAME_SIZE * PHONON_SAMPLE_SIZE * 2];
+	char* m_readPos;
+	char* m_writePos;
+
+	bool m_bHasStartedMixing;
+
+	bool m_bBenchmarking;
+
+	int SamplesAvailableToRead() const
+	{
+		if (m_readPos <= m_writePos)
+		{
+			return (m_writePos - m_readPos)/PHONON_SAMPLE_SIZE;
+		}
+		else
+		{
+			const char *end = m_outputBuf + sizeof(m_outputBuf);
+			return ((end - m_readPos) + (m_writePos - m_outputBuf)) / PHONON_SAMPLE_SIZE;
+		}
+	}
+
+	int SamplesAvailableToWrite() const
+	{
+		return sizeof(m_outputBuf) / PHONON_SAMPLE_SIZE - SamplesAvailableToRead();
+	}
+
+	CWaveDataHRTF(const CWaveDataHRTF&);
+	void operator=(const CWaveDataHRTF&);
+};
+
+CWaveDataHRTF::CWaveDataHRTF(IWaveData* pData, hrtf_info_t* dir) : m_pData(pData), m_pDir(dir), m_bJobPending(false), m_nDataStreamReadPos(0), m_bEOF(false), m_bAsync(snd_hrtf_async.GetBool()), m_bHasStartedMixing(false), m_bBenchmarking(snd_hrtf_benchmark.GetBool())
+{
+	if ( m_bBenchmarking )
+	{
+		g_mutexBenchSkips.Lock();
+		g_nBenchNumSounds++;
+		if ( g_nBenchNumSounds > g_nBenchMaxNumSounds )
+		{
+			g_nBenchMaxNumSounds = g_nBenchNumSounds;
+		}
+
+		g_mutexBenchSkips.Unlock();
+	}
+
+	m_pJob = new PhononJob;
+	memset(m_pJob, 0, sizeof(*m_pJob));
+
+	m_readIndex = 0;
+	m_readPos = m_writePos = m_outputBuf;
+
+	if (pData->Source().IsStereoWav())
+	{
+		m_nChannels = 2;
+	}
+	else
+	{
+		m_nChannels = 1;
+	}
+
+	m_nDataWidth = 2;
+}
+
+CWaveDataHRTF::~CWaveDataHRTF()
+{
+	if ( m_bBenchmarking )
+	{
+		g_mutexBenchSkips.Lock();
+		g_nBenchNumSounds--;
+		g_mutexBenchSkips.Unlock();
+	}
+
+	if (m_bAsync)
+	{
+		g_phononDeleteQueue.PushItem(m_pJob);
+		g_eventPhononThread.Set();
+	}
+	else
+		delete m_pJob;
+
+	delete m_pData;
+}
+
+int CWaveDataHRTF::ReadSourceData(void **pData, int64 sampleIndex, int sampleCount, char copyBuf[AUDIOSOURCE_COPYBUF_SIZE])
+{
+	if (snd_hrtf_passthrough.GetBool())
+	{
+		return m_pData->ReadSourceData(pData, sampleIndex, sampleCount, copyBuf);
+	}
+
+	if (m_bAsync)
+	{
+		TryCompleteJob();
+	}
+	else
+	{
+		int nLastAvail = -1;
+		while (SamplesAvailableToRead() < sampleCount && SamplesAvailableToRead() > nLastAvail && SamplesAvailableToWrite() > PHONON_FRAME_SIZE && m_pData->IsReadyToMix())
+		{
+			nLastAvail = SamplesAvailableToRead();
+			TrySubmitJob();
+			TryCompleteJob();
+		}
+	}
+
+	const int nAvail = SamplesAvailableToRead();
+	if (nAvail == 0 && m_bEOF)
+	{
+		*pData = nullptr;
+		return 0;
+	}
+
+	int nRead = sampleCount < nAvail ? sampleCount : nAvail;
+	if (nAvail < sampleCount && !m_bEOF)
+	{
+		DevMsg("HRTF: Not enough data, wanted %d, got %d\n", sampleCount, nAvail);
+		g_mutexBenchSkips.Lock();
+		++g_nBenchSkips;
+		g_mutexBenchSkips.Unlock();
+	}
+
+	if (nRead > AUDIOSOURCE_COPYBUF_SIZE / PHONON_SAMPLE_SIZE)
+	{
+		nRead = AUDIOSOURCE_COPYBUF_SIZE / PHONON_SAMPLE_SIZE;
+	}
+
+	if (m_readIndex != sampleIndex)
+	{
+		Warning("Read index mismatch sampleIndex: %d vs %d\n", (int)m_readIndex, (int)sampleIndex);
+	}
+
+	m_readIndex += nRead;
+
+	if ((m_outputBuf + sizeof(m_outputBuf)) - m_readPos >= nRead * PHONON_SAMPLE_SIZE)
+	{
+		memcpy(copyBuf, m_readPos, nRead*PHONON_SAMPLE_SIZE);
+		m_readPos += nRead * PHONON_SAMPLE_SIZE;
+	}
+	else
+	{
+		char* out = copyBuf;
+		const int at_end = (m_outputBuf + sizeof(m_outputBuf)) - m_readPos;
+		const int at_begin = nRead*PHONON_SAMPLE_SIZE - at_end;
+		memcpy(out, m_readPos, at_end);
+		out += at_end;
+		m_readPos = m_outputBuf;
+
+		memcpy(out, m_readPos, at_begin);
+		m_readPos += at_begin;
+	}
+
+	*pData = (void*)copyBuf;
+
+	TrySubmitJob();
+
+	return nRead;
+}
+
+void CWaveDataHRTF::TryCompleteJob()
+{
+	if (!m_bAsync && m_bJobPending)
+	{
+		ProcessPhononJob(*m_pJob);
+		m_pJob->bComplete = true;
+	}
+
+	if (!m_bJobPending )
+	{
+		return;
+	}
+
+	m_pJob->mutex.Lock();
+	const bool bComplete = m_pJob->bComplete;
+	m_pJob->mutex.Unlock();
+
+	if (!bComplete)
+	{
+		return;
+	}
+
+	m_pJob->bComplete = false;
+	m_bJobPending = false;
+	memcpy(m_writePos, m_pJob->outputBuf, sizeof( m_pJob->outputBuf ) );
+	m_writePos += sizeof( m_pJob->outputBuf );
+	if (m_writePos == m_outputBuf + sizeof(m_outputBuf))
+	{
+		m_writePos = m_outputBuf;
+	}
+}
+
+void CWaveDataHRTF::TrySubmitJob()
+{
+	TryCompleteJob();
+
+	if (m_bJobPending || SamplesAvailableToWrite() <= PHONON_FRAME_SIZE || m_bEOF)
+	{
+		return;
+	}
+
+	if (!m_pData->IsReadyToMix())
+	{
+		return;
+	}
+
+	char copyBuf[AUDIOSOURCE_COPYBUF_SIZE];
+
+	char* buf = nullptr;
+
+	int nLoaded = m_pData->ReadSourceData((void**)&buf, m_nDataStreamReadPos, PHONON_FRAME_SIZE, copyBuf);
+
+	m_nDataStreamReadPos += nLoaded;
+
+	if (nLoaded <= 0)
+	{
+		m_bEOF = true;
+		return;
+	}
+
+	const int nBytesLoaded = nLoaded * sizeof(short) * m_nChannels;
+	if (nLoaded < PHONON_FRAME_SIZE)
+	{
+		
+		memcpy(m_pJob->inputBuf, buf, nBytesLoaded);
+		memset(m_pJob->inputBuf + nBytesLoaded, 0, sizeof(m_pJob->inputBuf) - nBytesLoaded);
+		m_bEOF = true;
+	}
+	else if (nLoaded == PHONON_FRAME_SIZE)
+	{
+		memcpy(m_pJob->inputBuf, buf, nBytesLoaded);
+	}
+	else
+	{
+		DevMsg("HRTF: Unexpected too many bytes from ReadSourceData: %d vs %d\n", PHONON_FRAME_SIZE, nLoaded);
+		return;
+	}
+
+	m_pJob->nChannels = m_nChannels;
+	m_pJob->nDataWidth = m_nDataWidth;
+	m_pJob->interpolation = snd_hrtf_lerp_method.GetInt() == 0 && m_pDir->bilinear_filtering == false ? IPL_HRTFINTERPOLATION_NEAREST : IPL_HRTFINTERPOLATION_BILINEAR;
+	m_pJob->vec = m_pDir->vec;	
+	m_pJob->lerp = m_pDir->lerp;
+	m_pJob->bComplete = false;
+
+	if (snd_hrtf_benchmark.GetBool())
+	{
+		m_pJob->fSubmitTime = Plat_FloatTime();
+	}
+
+	m_bJobPending = true;
+	
+
+	if (m_bAsync)
+	{
+		g_phononJobQueue.PushItem(m_pJob);
+		g_eventPhononThread.Set();
+	}
+	else
+	{
+		TryCompleteJob();
+	}
+}
+
+IWaveData *CreateWaveDataHRTF(IWaveData* pData, hrtf_info_t* dir)
+{
+	if (dir == nullptr)
+		return pData;
+
+	CWaveDataHRTF* res = new CWaveDataHRTF(pData, dir);
+	return res;
+}

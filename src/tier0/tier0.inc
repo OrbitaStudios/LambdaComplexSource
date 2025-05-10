@@ -57,6 +57,7 @@ $Project
 		$File	"systeminformation.cpp"
 		$File	"threadtools.cpp"
 		$File	"tslist.cpp"
+		$File	"vcrmode.cpp"		[$WINDOWS]
 		$File	"vatoms.cpp"
 		$File	"vprof.cpp"
 		$File	"vtuneinterface.cpp"
@@ -128,6 +129,8 @@ $Project
 		$File	"$SRCDIR\public\tier0\valve_off.h"
 		$File	"$SRCDIR\public\tier0\valve_on.h"
 		$File	"$SRCDIR\public\tier0\vatoms.h"
+		$File	"$SRCDIR\public\tier0\vcr_shared.h"
+		$File	"$SRCDIR\public\tier0\vcrmode.h"
 		$File	"$SRCDIR\public\tier0\vprof.h"
 		$File	"$SRCDIR\public\tier0\vtuneinterface.h"
 		$File	"$SRCDIR\public\tier0\vprof_sn.h"

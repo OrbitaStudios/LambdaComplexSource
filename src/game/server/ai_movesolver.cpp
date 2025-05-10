@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose:
 //
@@ -15,11 +15,13 @@
 
 //-----------------------------------------------------------------------------
 
-inline float V_round( float f )
+#if !defined(PS3) && (!defined(_MSC_VER) || _MSC_VER < 1800)
+// This C99 function exists in VS 2013's math.h and for PS3 but are not currently available elsewhere.
+inline float round( float f )
 {
 	return (float)( (int)( f + 0.5 ) );
 }
-#define round( f ) V_round( f )
+#endif
 
 //-----------------------------------------------------------------------------
 // CAI_MoveSolver

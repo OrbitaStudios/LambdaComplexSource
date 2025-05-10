@@ -1,37 +1,27 @@
-//========= Copyright (c) 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose:
 //
 // $NoKeywords: $  
 //=============================================================================//
 
-#include <dirent.h>
-
-#include "tier1/strtools.h"
-#include "tier0/memdbgoff.h"
 #include "linux_support.h"
-
-#ifdef OSX
-#include <AvailabilityMacros.h>
-#endif
+#include "tier0/threadtools.h" // For ThreadInMainThread()
+#include "tier1/strtools.h"
 
 char selectBuf[PATH_MAX];
 
-#if defined(OSX) && !defined(MAC_OS_X_VERSION_10_9)
-int FileSelect(struct dirent *ent)
-#else
 int FileSelect(const struct dirent *ent)
-#endif
 {
 	const char *mask=selectBuf;
 	const char *name=ent->d_name;
-	
+
 	//printf("Test:%s %s\n",mask,name);
-	
+
 	if(!strcmp(name,".") || !strcmp(name,"..") ) return 0;
-	
+
 	if(!strcmp(selectBuf,"*.*")) return 1;
-	
+
 	while( *mask && *name )
 	{
 		if(*mask=='*')
@@ -66,7 +56,7 @@ int FileSelect(const struct dirent *ent)
 				}
 				
 			}
-			
+
 		}
 		else /* mask is "?", we don't care*/
 		{
@@ -74,20 +64,20 @@ int FileSelect(const struct dirent *ent)
 			name++;
 		}
 	}	
-	
+		
 	return( !*mask && !*name ); // both of the strings are at the end
 }
 
 int FillDataStruct(FIND_DATA *dat)
 {
 	struct stat fileStat;
-	
-	if(dat->numMatches<0)
+
+	if(dat->curMatch >= dat->numMatches)
 		return -1;
-	
+
 	char szFullPath[MAX_PATH];
-	Q_snprintf( szFullPath, sizeof(szFullPath), "%s/%s", dat->cBaseDir, dat->namelist[dat->numMatches]->d_name );  
-	
+	Q_snprintf( szFullPath, sizeof(szFullPath), "%s/%s", dat->cBaseDir, dat->namelist[dat->curMatch]->d_name );  
+
 	if(!stat(szFullPath,&fileStat))
 	{
 		dat->dwFileAttributes=fileStat.st_mode;           
@@ -96,14 +86,14 @@ int FillDataStruct(FIND_DATA *dat)
 	{
 		dat->dwFileAttributes=0;
 	}	
-	
+
 	// now just put the filename in the output data
-	Q_snprintf( dat->cFileName, sizeof(dat->cFileName), "%s", dat->namelist[dat->numMatches]->d_name );  
-	
-	//printf("%s\n", dat->namelist[dat->numMatches]->d_name);
-	free(dat->namelist[dat->numMatches]);
-	
-  	dat->numMatches--;
+	Q_snprintf( dat->cFileName, sizeof(dat->cFileName), "%s", dat->namelist[dat->curMatch]->d_name );  
+
+	//printf("%s\n", dat->namelist[dat->curMatch]->d_name);
+	free(dat->namelist[dat->curMatch]);
+
+	dat->curMatch++;
 	return 1;
 }
 
@@ -115,21 +105,32 @@ HANDLE FindFirstFile( const char *fileName, FIND_DATA *dat)
 	int n,iret=-1;
 	
 	Q_strncpy(nameStore,fileName, sizeof( nameStore ) );
-	
+
 	if(strrchr(nameStore,'/') )
 	{
 		dir=nameStore;
 		while(strrchr(dir,'/') )
 		{
 			struct stat dirChk;
-			
+
 			// zero this with the dir name
 			dir=strrchr(nameStore,'/');
-			*dir='\0';
+			if ( dir == nameStore ) // special case for root dir, '/'
+			{
+				dir[1] = '\0';
+			}
+			else
+			{
+				*dir='\0';
+				dir=nameStore;
+			}
+
 			
-			dir=nameStore;
-			stat(dir,&dirChk);
-			
+			if (stat(dir,&dirChk) < 0)
+			{
+				continue;
+			}
+
 			if( S_ISDIR( dirChk.st_mode ) )
 			{
 				break;	
@@ -141,47 +142,52 @@ HANDLE FindFirstFile( const char *fileName, FIND_DATA *dat)
 		// couldn't find a dir seperator...
 		return (HANDLE)-1;
 	}
-	
+
 	if( strlen(dir)>0 )
 	{
-		Q_strncpy(selectBuf,fileName+strlen(dir)+1, sizeof( selectBuf ) );
+		if ( strlen(dir) == 1 ) // if it was the root dir
+			Q_strncpy(selectBuf,fileName+1, sizeof( selectBuf ) );
+		else
+			Q_strncpy(selectBuf,fileName+strlen(dir)+1, sizeof( selectBuf ) );
+
 		Q_strncpy(dat->cBaseDir,dir, sizeof( dat->cBaseDir ) );
 		dat->namelist = NULL;
 		n = scandir(dir, &dat->namelist, FileSelect, alphasort);
 		if (n < 0)
 		{
+			if ( dat->namelist )
+				free(dat->namelist);
 			// silently return, nothing interesting
-			dat->namelist = NULL;
 		}
 		else 
 		{
-			dat->numMatches=n-1; // n is the number of matches
+			dat->numMatches = n;
+			dat->curMatch = 0;
 			iret=FillDataStruct(dat);
-			if ( ( iret<0 ) && dat->namelist )
+			if(iret<0)
 			{
-				free(dat->namelist);
+				if ( dat->namelist )
+					free(dat->namelist);
 				dat->namelist = NULL;
 			}
-			
+
 		}
 	}
-	
-	//	printf("Returning: %i \n",iret);
-	return (HANDLE)(intp)iret;
+
+//	printf("Returning: %i \n",iret);
+	return (HANDLE)iret;
 }
 
 bool FindNextFile(HANDLE handle, FIND_DATA *dat)
 {
-	if(dat->numMatches<0)
+	if(dat->curMatch >= dat->numMatches)
 	{	
 		if ( dat->namelist != NULL )
-		{
-			free( dat->namelist );
-			dat->namelist = NULL;
-		}
+			free(dat->namelist);
+		dat->namelist = NULL;
 		return false; // no matches left
 	}	
-	
+
 	FillDataStruct(dat);
 	return true;
 }
@@ -193,69 +199,68 @@ bool FindClose(HANDLE handle)
 
 
 
-static char fileName[MAX_PATH];
-
-#if defined(OSX) && !defined(MAC_OS_X_VERSION_10_9)
-int CheckName(struct dirent *dir)
-#else
-int CheckName(const struct dirent *dir)
-#endif
+// Pass this function a full path and it will look for files in the specified
+// directory that match the file name but potentially with different case.
+// The directory name itself is not treated specially.
+// If multiple names that match are found then lowercase letters take precedence.
+bool findFileInDirCaseInsensitive( const char *file, char* output, size_t bufSize)
 {
-	return !strcasecmp( dir->d_name, fileName );
-}
+	// Make sure the output buffer is always null-terminated.
+	output[0] = 0;
 
-
-const char *findFileInDirCaseInsensitive(const char *file, char *pFileNameOut)
-{
-
+	// Find where the file part starts.
 	const char *dirSep = strrchr(file,'/');
 	if( !dirSep )
 	{
 		dirSep=strrchr(file,'\\');
 		if( !dirSep ) 
 		{
-			return NULL;
+			return false;
 		}
 	}
 
-	char *dirName = static_cast<char *>( alloca( ( dirSep - file ) +1 ) ); 
-	if( !dirName )
-		return NULL;
+	// Allocate space for the directory portion.
+	size_t dirSize = ( dirSep - file ) + 1;
+	char *dirName = static_cast<char *>( alloca( dirSize ) ); 
 
-	strncpy( dirName , file, dirSep - file );
-	dirName[ dirSep - file ] = '\0';
+	V_strncpy( dirName , file, dirSize );
 
-	struct dirent **namelist = NULL;
+	DIR* pDir = opendir( dirName );
+	if ( !pDir )
+		return false;
 
-	strncpy( fileName, dirSep + 1, MAX_PATH );
+	const char* filePart = dirSep + 1;
+	// The best matching file name will be placed in this array.
+	char outputFileName[ MAX_PATH ];
+	bool foundMatch = false;
 
-
-	int n = scandir( dirName , &namelist, CheckName, alphasort );
-
-	// Free all entries beyond the first one, we don't care about them
-	while ( n > 1 )
+	// Scan through the directory.
+	for ( dirent* pEntry = NULL; ( pEntry = readdir( pDir ) ); /**/ )
 	{
-		-- n;
-		free( namelist[n] );
-	}
-	
-	if ( n > 0 )
-	{
-		Q_snprintf( pFileNameOut, sizeof( fileName ), "%s/%s", dirName, namelist[0]->d_name );
-		free( namelist[0] );
-		n = 0;
-	}
-	else
-	{
-		Q_strncpy( pFileNameOut, file, MAX_PATH );
-		Q_strlower( pFileNameOut );
-	}
-
-	if ( ( n >= 0 ) && namelist )
-	{
-		free( namelist );
+		if ( strcasecmp( pEntry->d_name, filePart ) == 0 )
+		{
+			// If we don't have an existing candidate or if this name is
+			// a better candidate then copy it in. A 'better' candidate
+			// means that test beats tesT which beats tEst -- more lowercase
+			// letters earlier equals victory.
+			if ( !foundMatch || strcmp( outputFileName, pEntry->d_name ) < 0 )
+			{
+				foundMatch = true;
+				V_strcpy_safe( outputFileName, pEntry->d_name );
+			}
+		}
 	}
 
-	return pFileNameOut;
+	closedir( pDir );
+
+	// If we didn't find any matching names then lowercase the passed in
+	// file name and use that.
+	if ( !foundMatch )
+	{
+		V_strcpy_safe( outputFileName, filePart );
+		V_strlower( outputFileName );
+	}
+
+	Q_snprintf( output, bufSize, "%s/%s", dirName, outputFileName );
+	return foundMatch;
 }
-

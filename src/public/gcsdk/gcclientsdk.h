@@ -1,4 +1,4 @@
-//========= Copyright Valve Corporation, All rights reserved. ============//
+//====== Copyright (c), Valve Corporation, All rights reserved. =======
 //
 // Purpose: includes all the headers required for the cliend side of the GC 
 //			SDK GC SDK. Include this in your stdafx.h
@@ -11,7 +11,6 @@
 #pragma once
 #endif
 
-#include "gcsteamdefines.h"
 #include "tier0/platform.h"
 #include "steam/steamtypes.h"
 
@@ -35,7 +34,6 @@
 
 // public stuff
 #include "steam/steamclientpublic.h"
-#include "misc.h"
 #include "steam/isteamclient.h"
 #include "steam/isteamgamecoordinator.h"
 #include "steam/steam_api.h"
@@ -53,14 +51,20 @@
 #include "job.h"
 #include "jobmgr.h"
 #include "netpacketpool.h"
+#include "soid.h"
 #include "sharedobject.h"
 #include "protobufsharedobject.h"
 #include "sharedobjectcache.h"
 #include "gcclient_sharedobjectcache.h"
 #include "gcclient.h"
 #include "gcclientjob.h"
-#include "gcsystemmsgs.h"
 
-#include "webapi_response.h"
+// this is a hack to make sure that the funny Valve override of 
+// offsetof survives the STL includes that happened because of the
+// protobuf includes above.
+#ifdef LINUX
+#undef offsetof
+#define offsetof(s,m)	(size_t)&(((s *)0)->m)
+#endif
 
 #endif // GCCLIENTSDK_H

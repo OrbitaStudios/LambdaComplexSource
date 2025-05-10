@@ -119,7 +119,7 @@ mat_fullbright 1 doesn't work properly on alpha materials in testroom_standards
 
 #include "winutils.h"
 
-#ifdef USE_ACTUAL_DX
+#ifdef _WIN32
 #include "nvapi.h"
 #include "NvApiDriverSettings.h"
 #endif
@@ -3648,13 +3648,13 @@ inline void CShaderAPIDx8::SetRenderStateForce( D3DRENDERSTATETYPE state, DWORD 
 		if ( IsDeactivated() )   // e.g. if the window minimized, don't set any render states
 			return;
 	}
-#else
+#	else
 	{
 		Assert( state != D3DRS_NOTSUPPORTED ); //Use SetSupportedRenderStateForce() macro to avoid this at compile time
 		//if ( state == D3DRS_NOTSUPPORTED )
 		//	return;
 	}
-#endif
+#	endif
 
 	Dx9Device()->SetRenderState( state, val );
 	m_DynamicState.m_RenderState[state] = val;
@@ -4384,6 +4384,9 @@ void CShaderAPIDx8::ResetRenderState( bool bFullReset )
 		SetSamplerState( i, D3DSAMP_MINFILTER, SamplerState(i).m_MinFilter );
 		SetSamplerState( i, D3DSAMP_MAGFILTER, SamplerState(i).m_MagFilter );
 		SetSamplerState( i, D3DSAMP_MIPFILTER, SamplerState(i).m_MipFilter );
+#if defined ( POSIX )
+		SetSamplerState( i, D3DSAMP_SHADOWFILTER, SamplerState(i).m_bShadowFilterEnable );
+#endif
 
 		SetSamplerState( i, D3DSAMP_BORDERCOLOR, RGB( 0,0,0 ) );
 	}
@@ -4502,7 +4505,11 @@ void CShaderAPIDx8::ResetRenderState( bool bFullReset )
 
 	// Viewport defaults to the window size
 	RECT windowRect;
+#if defined(_WIN32) && !defined( DX_TO_GL_ABSTRACTION )
 	GetClientRect( (HWND)m_hWnd, &windowRect );
+#else
+	toglGetClientRect( (VD3DHWND)m_hWnd, &windowRect );
+#endif
 
 	ShaderViewport_t viewport;
 	viewport.Init( windowRect.left, windowRect.top, 
@@ -14371,8 +14378,11 @@ void CShaderAPIDx8::SetViewports( int nCount, const ShaderViewport_t* pViewports
 		if ( IsPC() && m_IsResizing )
 		{
 			RECT viewRect;
+#if defined(_WIN32) && !defined( DX_TO_GL_ABSTRACTION )
 			GetClientRect( ( HWND )m_ViewHWnd, &viewRect );
-
+#else
+			toglGetClientRect( (VD3DHWND)m_ViewHWnd, &viewRect );
+#endif
 			m_nWindowWidth = viewRect.right - viewRect.left;
 			m_nWindowHeight = viewRect.bottom - viewRect.top;
 			nMaxWidth = MIN( m_nWindowWidth, nMaxWidth );

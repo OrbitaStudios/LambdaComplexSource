@@ -1,4 +1,4 @@
-//====== Copyright © 1996-2003, Valve Corporation, All rights reserved. =======
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -53,11 +53,10 @@ protected:
 	virtual int ControlPointCount() = 0;
 	virtual void GetControlPoint( int nPoint, float *pIn, float *pOut ) = 0;
 
+private:
 	// Converts screen location to normalized values and back
 	void ScreenToValue( int x, int y, float *pIn, float *pOut );
 	void ValueToScreen( float flIn, float flOut, int *x, int *y );
-
-private:
 
 	int m_nSelectedPoint;
 	int m_nHighlightedPoint;	// Used when not selecting

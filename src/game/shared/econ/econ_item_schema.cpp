@@ -74,6 +74,8 @@ public:
 };
 // lwss end
 
+
+
 /** Removed for partner depot **/
 //lwss - I got these from the era-appropriate debug bins, and then got more from the retail bins.
 // I think for now I just want the ones from the appropriate era.
@@ -1062,7 +1064,6 @@ void CEconQuestDefinition::PopulateQuestStringTokens( CEconQuestDefinition &ques
 				// insert the weapon into the 'items' true subkey
 				for ( int i = 1; i < 20; i++ )
 				{
-
                     //lwss fix: this CFmtStr() is a stack-use-after-scope.
 					//const char * szItemKeyName = CFmtStr( "item%d", i );
                     char szItemKeyName[16];

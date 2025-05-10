@@ -376,7 +376,7 @@ public:
 
 	virtual void			AddViewKick( void );	// Add in the view kick for the weapon
 
-	virtual const char		*GetDeathNoticeName( void );	// Get the string to print death notices with
+	virtual char			*GetDeathNoticeName( void );	// Get the string to print death notices with
 
 	CBaseCombatCharacter	*GetOwner() const;
 	void					SetOwner( CBaseCombatCharacter *owner );
@@ -526,10 +526,7 @@ public:
 	virtual void			UpdateVisibility( void );
 
 	virtual void			BoneMergeFastCullBloat( Vector &localMins, Vector &localMaxs, const Vector &thisEntityMins, const Vector &thisEntityMaxs  ) const;
-	virtual bool			OnFireEvent( C_BaseViewModel *pViewModel, const Vector& origin, const QAngle& angles, int event, const char *options )
-	{
-        return BaseClass::OnFireEvent( pViewModel, origin, angles, event, options );
-    }
+	virtual bool			OnFireEvent( C_BaseViewModel *pViewModel, const Vector& origin, const QAngle& angles, int event, const char *options ) { return BaseClass::OnFireEvent( pViewModel, origin, angles, event, options ); }
 
 	// Should this object cast shadows?
 	virtual ShadowType_t	ShadowCastType();

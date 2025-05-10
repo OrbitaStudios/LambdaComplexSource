@@ -1,4 +1,4 @@
-//========= Copyright (c) 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -9,16 +9,13 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <ctype.h>
-#ifdef _PS3
-#include <wctype.h>
-#endif
 
 #include <vgui/IInput.h>
 #include <vgui/ILocalize.h>
 #include <vgui/IPanel.h>
 #include <vgui/ISurface.h>
 #include <vgui/IScheme.h>
-#include <keyvalues.h>
+#include <KeyValues.h>
 
 #include <vgui_controls/Label.h>
 #include <vgui_controls/Image.h>
@@ -34,11 +31,6 @@ using namespace vgui;
 #define max(a,b)            (((a) > (b)) ? (a) : (b))
 #endif
 
-// DMX serializer fields.
-BEGIN_DMXELEMENT_UNPACK_NAMESPACE_SIMPLE( vgui, Label )
-END_DMXELEMENT_UNPACK_NAMESPACE( vgui, Label, s_pUnpackParams )
-
-
 DECLARE_BUILD_FACTORY_DEFAULT_TEXT( Label, Label );
 
 //-----------------------------------------------------------------------------
@@ -52,6 +44,8 @@ Label::Label(Panel *parent, const char *panelName, const char *text) : BaseClass
 	_textImage->SetColor(Color(0, 0, 0, 0));
 	SetText(text);
 	_textImageIndex = AddImage(_textImage, 0);
+
+	REGISTER_COLOR_AS_OVERRIDABLE( _disabledFgColor2, "disabledfgcolor2_override" );
 }
 
 //-----------------------------------------------------------------------------
@@ -65,6 +59,8 @@ Label::Label(Panel *parent, const char *panelName, const wchar_t *wszText) : Bas
 	_textImage->SetColor(Color(0, 0, 0, 0));
 	SetText(wszText);
 	_textImageIndex = AddImage(_textImage, 0);
+
+	REGISTER_COLOR_AS_OVERRIDABLE( _disabledFgColor2, "disabledfgcolor2_override" );
 }
 
 //-----------------------------------------------------------------------------
@@ -90,18 +86,13 @@ void Label::Init()
 	_associate = NULL;
 	_associateName = NULL;
 	_fontOverrideName = NULL;
-	m_bNoShortcutSyntax = false;
 	m_bWrap = false;
 	m_bCenterWrap = false;
 	m_bAutoWideToContents = false;
 	m_bUseProportionalInsets = false;
 	m_bAutoWideDirty = false;
-	m_bAutoTallToContents = false;
-	m_bAutoTallDirty = false;
-//	SetPaintBackgroundEnabled(false);
 
-	REGISTER_COLOR_AS_OVERRIDABLE( _disabledFgColor1, "disabledFgColor1_override" );
-	REGISTER_COLOR_AS_OVERRIDABLE( _disabledFgColor2, "disabledFgColor2_override" );
+//	SetPaintBackgroundEnabled(false);
 }
 
 //-----------------------------------------------------------------------------
@@ -114,11 +105,6 @@ void Label::SetTextColorState(EColorState state)
 		_textColorState = state;
 		InvalidateLayout();
 	}
-}
-
-void Label::GetSizerMinimumSize(int &wide, int &tall)
-{
-	GetContentSize(wide,tall);
 }
 
 //-----------------------------------------------------------------------------
@@ -318,9 +304,6 @@ void Label::SetText(const char *text)
 	}
 
 	m_bAutoWideDirty = m_bAutoWideToContents;
-	m_bAutoTallDirty = m_bAutoTallToContents;
-
-	HandleAutoSizing();
 
 	InvalidateLayout();
 	Repaint();
@@ -332,7 +315,6 @@ void Label::SetText(const char *text)
 void Label::SetText(const wchar_t *unicodeString, bool bClearUnlocalizedSymbol)
 {
 	m_bAutoWideDirty = m_bAutoWideToContents;
-	m_bAutoTallDirty = m_bAutoTallToContents;
 
 	if ( unicodeString && _textImage->GetUText() && !Q_wcscmp(unicodeString,_textImage->GetUText()) )
 		return;
@@ -355,7 +337,7 @@ void Label::OnDialogVariablesChanged(KeyValues *dialogVariables )
 	if (index != INVALID_STRING_INDEX)
 	{
 		// reconstruct the string from the variables
-		wchar_t buf[2048];
+		wchar_t buf[1024];
 		g_pVGuiLocalize->ConstructString(buf, sizeof(buf), index, dialogVariables);
 		SetText(buf);
 	}
@@ -379,8 +361,14 @@ void Label::SetTextInset(int xInset, int yInset)
 //-----------------------------------------------------------------------------
 void Label::GetTextInset(int *xInset, int *yInset )
 {
-	*xInset = _textInset[0];
-	*yInset = _textInset[1];
+	if ( xInset )
+	{
+		*xInset = _textInset[0];
+	}
+	if ( yInset )
+	{
+		*yInset = _textInset[1];
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -593,15 +581,8 @@ void Label::Paint()
 		// if it's the basic text image then draw specially
 		if (image == _textImage)
 		{
-			int savex = x;
-			int saveYPos = imageYPos;
-
-			// Allow override of x position of text
-			RepositionTextImage( x, imageYPos, _textImage );
-
 			if (IsEnabled())
 			{
-				_textImage->SetPos( x, imageYPos );
 				if (_associate.Get() && ipanel()->HasParent(input()->GetFocus(), _associate->GetVPanel()))
 				{
 					_textImage->SetColor(_associateColor);
@@ -616,6 +597,7 @@ void Label::Paint()
 			else
 			{
 				// draw disabled version, with embossed look
+				// offset image
 				_textImage->SetPos(x + 1, imageYPos + 1);
 				_textImage->SetColor(_disabledFgColor1);
 				_textImage->Paint();
@@ -627,8 +609,6 @@ void Label::Paint()
 				_textImage->SetColor(_disabledFgColor2);
 				_textImage->Paint();
 			}
-			x = savex;
-			imageYPos = saveYPos;
 		}
 		else
 		{
@@ -1042,11 +1022,11 @@ void Label::ApplySchemeSettings(IScheme *pScheme)
 		_textImage->SetSize(wide, tall);
 	}
 
-
-	m_bAutoWideDirty = m_bAutoWideToContents;
-	m_bAutoTallDirty = m_bAutoTallToContents;
-
-	HandleAutoSizing();
+	if ( m_bAutoWideToContents )
+	{
+		m_bAutoWideDirty = true;
+		HandleAutoSizing();
+	}
 
 	// clear out any the images, since they will have been invalidated
 	for (int i = 0; i < _imageDar.Count(); i++)
@@ -1133,9 +1113,9 @@ void Label::GetSettings( KeyValues *outResourceData )
 		outResourceData->SetString("font", _fontOverrideName);
 	}
 	
-	outResourceData->SetBool("wrap", m_bWrap );
-	outResourceData->SetBool("centerwrap", m_bCenterWrap );
-	
+	outResourceData->SetInt("wrap", ( m_bWrap ? 1 : 0 ));
+	outResourceData->SetInt("centerwrap", ( m_bCenterWrap ? 1 : 0 ));
+
 	if ( m_bUseProportionalInsets )
 	{
 		outResourceData->SetInt("textinsetx", scheme()->GetProportionalNormalizedValueEx( GetScheme(), _textInset[0] ) );
@@ -1146,11 +1126,8 @@ void Label::GetSettings( KeyValues *outResourceData )
 		outResourceData->SetInt("textinsetx", _textInset[0]);
 		outResourceData->SetInt("textinsety", _textInset[1]);
 	}
-
-	outResourceData->SetBool("noshortcutsyntax", m_bNoShortcutSyntax );
-	outResourceData->SetBool("auto_tall_tocontents", m_bAutoTallToContents );
-	outResourceData->SetBool("auto_wide_tocontents", m_bAutoWideToContents );
-	outResourceData->SetBool("use_proportional_insets", m_bUseProportionalInsets );
+	outResourceData->SetInt("auto_wide_tocontents", ( m_bAutoWideToContents ? 1 : 0 ));
+	outResourceData->SetInt("use_proportional_insets", ( m_bUseProportionalInsets ? 1 : 0 ));
 }
 
 //-----------------------------------------------------------------------------
@@ -1273,17 +1250,12 @@ void Label::ApplySettings( KeyValues *inResourceData )
 	SetCenterWrap( bWrapText );
 
 	m_bAutoWideToContents = inResourceData->GetInt("auto_wide_tocontents", 0) > 0;
-	m_bAutoTallToContents = inResourceData->GetInt("auto_tall_tocontents", 0) > 0;
 
 	bWrapText = inResourceData->GetInt("wrap", 0) > 0;
 	SetWrap( bWrapText );
-	
-	bool bNoShortcutSyntax = inResourceData->GetInt("noshortcutsyntax", 0) > 0;
-	SetNoShortcutSyntax( bNoShortcutSyntax );
 
 	int inset_x = inResourceData->GetInt("textinsetx", _textInset[0]);
 	int inset_y = inResourceData->GetInt("textinsety", _textInset[1]);
-	
 	// Had to play it safe and add a new key for backwards compatibility
 	m_bUseProportionalInsets = inResourceData->GetInt("use_proportional_insets", 0) > 0;
 	if ( m_bUseProportionalInsets )
@@ -1342,6 +1314,9 @@ void Label::PerformLayout()
 		}
 
 		HandleAutoSizing();
+
+		HandleAutoSizing();
+
 		return;
 	}
 
@@ -1399,14 +1374,6 @@ void Label::SetCenterWrap( bool bWrap )
 	InvalidateLayout();
 }
 
-void Label::SetNoShortcutSyntax( bool bNoShortcutSyntax )
-{
-	m_bNoShortcutSyntax = bNoShortcutSyntax;
-	_textImage->SetNoShortcutSyntax( bNoShortcutSyntax );
-
-	InvalidateLayout();
-}
-
 void Label::SetAllCaps( bool bAllCaps )
 {
 	m_bAllCaps = bAllCaps;
@@ -1426,15 +1393,7 @@ void Label::HandleAutoSizing( void )
 		GetContentSize(wide, tall);
 		SetSize(wide, GetTall());
 	}
-
-	if ( m_bAutoTallDirty )
-	{
-		m_bAutoTallDirty = false;
-
-		// Only change our width to match our content
-		int wide, tall;
-		GetContentSize( wide, tall );
-		SetSize( GetWide(), tall );
-	}
 }
+
+
 

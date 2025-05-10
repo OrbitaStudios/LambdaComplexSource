@@ -39,7 +39,7 @@ public:
 	}
 
 
-	virtual CAudioMixer			*CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError );
+	virtual CAudioMixer			*CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError, struct hrtf_info_t* pHRTFVec );
 	virtual int					GetOutputData( void **pData, int64 samplePosition, int sampleCount, char copyBuf[AUDIOSOURCE_COPYBUF_SIZE] );
 	virtual int					SampleRate( void );
 	
@@ -183,7 +183,7 @@ CAudioSourceVoice::~CAudioSourceVoice()
 	Voice_OnAudioSourceShutdown( m_iChannel );
 }
 
-CAudioMixer *CAudioSourceVoice::CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError )
+CAudioMixer *CAudioSourceVoice::CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError, struct hrtf_info_t* pHRTFVec )
 {
 	soundError = SE_OK;
 	CWaveDataVoice *pVoice = new CWaveDataVoice(*this);

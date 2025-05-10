@@ -1,4 +1,4 @@
-//===== Copyright © 1996-2005, Valve Corporation, All rights reserved. ======//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: Contains a list of files, determines their perforce status
 //
@@ -10,7 +10,7 @@
 #include <vgui_controls/ComboBox.h>
 #include <vgui_controls/Button.h>
 #include <vgui_controls/Tooltip.h>
-#include "tier1/keyvalues.h"
+#include "tier1/KeyValues.h"
 #include "vgui/ISystem.h"
 #include "filesystem.h"
 #include <ctype.h>
@@ -102,7 +102,7 @@ void PerforceFileExplorer::SetCurrentDirectory( const char *pFullPath )
 
 	m_CurrentDirectory = pFullPath;
 	m_CurrentDirectory.StripTrailingSlash();
-	Q_FixSlashes( m_CurrentDirectory.Get() );
+    m_CurrentDirectory.FixSlashes();
 
 	PopulateFileList();
 	PopulateDriveList();
@@ -203,7 +203,7 @@ void PerforceFileExplorer::PopulateFileList()
 	int nCount = fileList.Count();
 	for ( int i = 0; i < nCount; ++i )
 	{
-		const char *pFileName = p4->String( fileList[i].m_sLocalFile );
+		pFileName = p4->String( fileList[i].m_sLocalFile );
 		if ( !pFileName[0] )
 			continue;
 

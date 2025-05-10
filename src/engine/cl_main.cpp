@@ -164,57 +164,46 @@ static ConVar cl_retire_low_priority_lights( "cl_retire_low_priority_lights", "0
 //
 void CL_HandlePureServerWhitelist( CPureServerWhitelist *pWhitelist )
 {
-	// Free the old whitelist and get the new one.
-	if ( GetBaseLocalClient().m_pPureServerWhitelist )
-		GetBaseLocalClient().m_pPureServerWhitelist->Release();
-		
-	GetBaseLocalClient().m_pPureServerWhitelist = pWhitelist;
-	
-	IFileList *pForceMatchList = NULL;
-	IFileList *pAllowFromDiskList = NULL;
+	GetBaseLocalClient().m_bCheckCRCsWithServer = true;
+}
 
-	if ( pWhitelist )
+void PrintSvPureWhitelistClassification( const CPureServerWhitelist *pWhiteList )
+{
+	if ( pWhiteList == NULL )
 	{
-		pForceMatchList = pWhitelist->GetForceMatchList();
-		pAllowFromDiskList = pWhitelist->GetAllowFromDiskList();
-	}
-	
-	if ( !IsPC() )
-	{
-		if ( pForceMatchList )
-			pForceMatchList->Release();
-		
-		if ( pAllowFromDiskList )
-			pAllowFromDiskList->Release();
-		
+		Msg( "The server is using sv_pure -1 (no file checking).\n" );
 		return;
 	}
 
-	// we wont reload any files.
-	IFileList *pFilesToReload;
-	g_pFileSystem->RegisterFileWhitelist( pForceMatchList, pAllowFromDiskList, &pFilesToReload );
-
-	GetBaseLocalClient().m_bCheckCRCsWithServer = true;
+	// Load up the default whitelist
+	CPureServerWhitelist *pStandardList = CPureServerWhitelist::Create( g_pFullFileSystem );
+	pStandardList->Load( 0 );
+	if ( *pStandardList == *pWhiteList )
+	{
+		Msg( "The server is using sv_pure 0.  (Enforcing consistency for select files only)\n" );
+	}
+	else
+	{
+		pStandardList->Load( 2 );
+		if ( *pStandardList == *pWhiteList )
+		{
+			Msg( "The server is using sv_pure 2.  (Fully pure)\n" );
+		}
+		else
+		{
+			Msg( "The server is using sv_pure 1.  (Custom pure server rules.)\n" );
+		}
+	}
+	pStandardList->Release();
 }
 
 void CL_PrintWhitelistInfo()
 {
+	PrintSvPureWhitelistClassification( GetBaseLocalClient().m_pPureServerWhitelist );
 	if ( GetBaseLocalClient().m_pPureServerWhitelist )
 	{
-		if ( GetBaseLocalClient().m_pPureServerWhitelist->IsInFullyPureMode() )
-		{
-			Msg( "The server is using sv_pure = 2.\n" );
-		}
-		else
-		{
-			Msg( "The server is using sv_pure = 1.\n" );
-			GetBaseLocalClient().m_pPureServerWhitelist->PrintWhitelistContents();
-		}
+		GetBaseLocalClient().m_pPureServerWhitelist->PrintWhitelistContents();
 	}
-	else
-	{		
-		Msg( "The server is using sv_pure = 0 (no whitelist).\n" );
-	}	
 }
 
 // Console command to force a whitelist on the system.
@@ -1514,9 +1503,9 @@ void CL_CheckForPureServerWhitelist()
 #endif
 
 	// Don't do sv_pure stuff in SP games or HLTV/replay
-	if ( GetBaseLocalClient().m_nMaxClients <= 1 || GetBaseLocalClient().ishltv
+	if ( GetBaseLocalClient().m_nMaxClients <= 1 || GetBaseLocalClient().ishltv || demoplayer->IsPlayingBack()
 #ifdef REPLAY_ENABLED
-		|| GetBaseLocalClient().isreplay
+		|| cl.isreplay
 #endif // ifdef REPLAY_ENABLED
 		)
 		return;
@@ -1525,19 +1514,11 @@ void CL_CheckForPureServerWhitelist()
 	if ( GetBaseLocalClient().m_pServerStartupTable )
 		pWhitelist = CL_LoadWhitelist( GetBaseLocalClient().m_pServerStartupTable, "PureServerWhitelist" );
 		
+	PrintSvPureWhitelistClassification( pWhitelist );
+	CL_HandlePureServerWhitelist( pWhitelist );
 	if ( pWhitelist )
 	{
-		if ( pWhitelist->IsInFullyPureMode() )
-			Msg( "Got pure server whitelist: sv_pure = 2.\n" );
-		else
-			Msg( "Got pure server whitelist: sv_pure = 1.\n" );
-		
-		CL_HandlePureServerWhitelist( pWhitelist );
-	}
-	else
-	{		
-		Msg( "No pure server whitelist. sv_pure = 0\n" );
-		CL_HandlePureServerWhitelist( NULL );
+		pWhitelist->Release();
 	}
 }
 
@@ -1581,7 +1562,7 @@ void CL_RegisterResources( void )
 	videomode->InvalidateWindow();
 }
 
-#if !defined( DEDICATED ) && !defined( NO_STEAM )
+#ifndef DEDICATED
 class CEngineReliableAvatarCallback_t
 {
 public:
@@ -1844,7 +1825,7 @@ void CL_FullyConnected( void )
 		engineClient->ClientCmd( "cameraman_request" );
 	}
 
-#if !defined( DEDICATED ) && !defined( NO_STEAM )
+#ifndef DEDICATED
 	// Register a listener that will be uploading our own avatar data to the game server
 	static CEngineReliableAvatarCallback_t s_EngineReliableAvatarCallback;
 	s_EngineReliableAvatarCallback.UploadMyOwnAvatarToGameServer();
@@ -2834,7 +2815,6 @@ void CL_Move(float accumulated_extra_samples, bool bFinalTick )
 	// show warning message/UI
 	if ( hasProblem )
 	{
-#if !defined( CSTRIKE15 )
 		con_nprint_t np;
 		np.time_to_live = 1.0;
 		np.index = 2;
@@ -2844,7 +2824,6 @@ void CL_Move(float accumulated_extra_samples, bool bFinalTick )
 		np.color[ 2 ] = 0.2;
 		
 		Con_NXPrintf( &np, "WARNING:  Connection Problem" );
-#endif
 
 		if ( bAllowTimeout )
 		{
@@ -2855,12 +2834,8 @@ void CL_Move(float accumulated_extra_samples, bool bFinalTick )
 			// write time until connection is dropped to a convar
 			cl_connection_trouble_info.SetValue( CFmtStr( "disconnect(%0.3f)", flRemainingTime ) );
 
-#if !defined( CSTRIKE15 )
 			np.index = 3;
 			Con_NXPrintf( &np, "Auto-disconnect in %.1f seconds", flRemainingTime );
-#endif
-
-			EngineVGui()->NeedConnectionProblemWaitScreen();
 		}
 
 		// sets m_nDeltaTick to -1
@@ -3166,18 +3141,11 @@ unsigned int CL_GetStartupIndex()
 //-----------------------------------------------------------------------------
 void CL_GetStartupImage( char *pOutBuffer, int nOutBufferSize )
 {
-#if defined( CSTRIKE15)
-	// CStrike15 uses a specific startup image instead of the random image.
-	// CSGO always uses a widescreen format image, regardless of the screen resolution,
-	// to match how the Scaleform background is drawn.  CVideoMode_Common::DrawStartupGraphic
-	// takes care of repositioning and scaling this image to match the method
-	// used in Scaleform.
-	V_strncpy( pOutBuffer, "console/background01_widescreen", nOutBufferSize );
-#else
 	const AspectRatioInfo_t &aspectRatioInfo = materials->GetAspectRatioInfo();
-	int nWhich = CL_GetStartupIndex();
-	V_snprintf( pOutBuffer, nOutBufferSize, "console/portal2_product_%d%s", nWhich, ( aspectRatioInfo.m_bIsWidescreen ? "_widescreen" : "" ) );
-#endif // CSTRIKE15
+	if ( aspectRatioInfo.m_bIsWidescreen )
+		V_strncpy( pOutBuffer, "console/background01_widescreen", nOutBufferSize );
+	else
+		V_strncpy( pOutBuffer, "console/background01", nOutBufferSize );
 }
 
 //-----------------------------------------------------------------------------

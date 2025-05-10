@@ -946,10 +946,6 @@ void CAchievementMgr::AwardAchievement( int iAchievementID, int nUserSlot )
 		event->SetInt( "splitscreenplayer", nUserSlot );
 		gameeventmanager->FireEventClientSide( event );
 	}
-
-#if defined ( CLIENT_DLL )
-	STEAMWORKS_TESTSECRET();
-#endif
 #endif
 
 	if ( cc_achievement_debug.GetInt() > 0 )

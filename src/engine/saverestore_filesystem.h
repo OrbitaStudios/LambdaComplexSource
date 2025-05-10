@@ -13,6 +13,7 @@
 #include "utlmap.h"
 #include "utlsymbol.h"
 #include "filesystem.h"
+#include "tier1/convar.h"
 
 abstract_class ISaveRestoreFileSystem
 {

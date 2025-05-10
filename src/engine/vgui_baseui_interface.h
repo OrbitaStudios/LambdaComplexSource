@@ -112,16 +112,12 @@ public:
 	virtual void NotifyOfServerConnect(const char *game, int IP, int connectionPort, int queryPort) = 0;
 	virtual void NotifyOfServerDisconnect() = 0;
 	virtual void EnabledProgressBarForNextLoad() = 0;
-	virtual void UpdateProgressBar(LevelLoadingProgress_e progress, bool showDialog = true ) = 0;
+	virtual void UpdateProgressBar(LevelLoadingProgress_e progress) = 0;
 	virtual void UpdateCustomProgressBar( float progress, const wchar_t *desc ) = 0;
 	virtual void StartCustomProgress() = 0;
 	virtual void FinishCustomProgress() = 0;
-	virtual void UpdateSecondaryProgressBarWithFile( float progress, const char *pDesc, int nBytesTotal ) = 0;
-	virtual void UpdateSecondaryProgressBar( float progress, const wchar_t *desc ) = 0;
 	virtual void ShowErrorMessage() = 0;
 	virtual void HideLoadingPlaque() = 0;
-	virtual void StartLoadingScreenForCommand( const char* command ) = 0;
-	virtual void StartLoadingScreenForKeyValues( KeyValues* keyValues ) = 0;
 
 	// Should pause?
 	virtual bool ShouldPause() = 0;
@@ -134,13 +130,10 @@ public:
 	virtual void SetNotAllowedToHideGameUI( bool bNotAllowedToHide ) = 0;
 	virtual void SetNotAllowedToShowGameUI( bool bNotAllowedToShow ) = 0;
 
-	virtual void NeedConnectionProblemWaitScreen() = 0;
 	virtual void ShowPasswordUI( char const *pchCurrentPW ) = 0;
 	virtual void OnToolModeChanged( bool bGameMode ) = 0;
 
 	virtual InputContextHandle_t GetGameUIInputContext() = 0;
-
-	virtual bool IsPlayingFullScreenVideo() = 0;
 };
 
 // Purpose: singleton accessor

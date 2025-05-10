@@ -1,4 +1,4 @@
-//========= Copyright (c) 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -13,9 +13,8 @@
 #include "vgui/IScheme.h"
 #include "vgui/ISurface.h"
 #include "vgui/IPanel.h"
-#include "keyvalues.h"
+#include "KeyValues.h"
 
-#include "vgui_controls/Button.h"
 #include "vgui_controls/ComboBox.h"
 #include "vgui_controls/Menu.h"
 #include "vgui_controls/MenuItem.h"
@@ -30,7 +29,6 @@ using namespace vgui;
 
 namespace vgui
 {
-
 ComboBoxButton::ComboBoxButton(ComboBox *parent, const char *panelName, const char *text) : Button(parent, panelName, text)
 {
 	SetButtonActivationType(ACTIVATE_ONPRESSED);
@@ -42,7 +40,7 @@ void ComboBoxButton::ApplySchemeSettings(IScheme *pScheme)
 	
 	SetFont(pScheme->GetFont("Marlett", IsProportional()));
 	SetContentAlignment(Label::a_west);
-#ifdef PLATFORM_OSX
+#ifdef OSX
 	SetTextInset(-3, 0);
 #else
 	SetTextInset(3, 0);
@@ -98,7 +96,7 @@ ComboBox::ComboBox(Panel *parent, const char *panelName, int numLines, bool allo
 	m_pDropDown->SetTypeAheadMode( Menu::TYPE_AHEAD_MODE );
 
 	// button to Activate menu
-	m_pButton = new ComboBoxButton(this, NULL, "u");
+	m_pButton = new ComboBoxButton(this, "Button", "u");
 	m_pButton->SetCommand("ButtonClicked");
 	m_pButton->AddActionSignalTarget(this);
 
@@ -107,6 +105,8 @@ ComboBox::ComboBox(Panel *parent, const char *panelName, int numLines, bool allo
 	m_bHighlight = false;
 	m_iDirection = Menu::DOWN;
 	m_iOpenOffsetY = 0;
+	m_bPreventTextChangeMessage = false;
+	m_szBorderOverride[0] = '\0';
 }
 
 //-----------------------------------------------------------------------------
@@ -234,7 +234,7 @@ void ComboBox::RemoveAll()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-int ComboBox::GetItemCount()
+int ComboBox::GetItemCount() const
 {
 	return m_pDropDown->GetItemCount();
 }
@@ -261,6 +261,36 @@ void ComboBox::ActivateItem(int itemID)
 void ComboBox::ActivateItemByRow(int row)
 {
 	m_pDropDown->ActivateItemByRow(row);
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Activate the item in the menu list, without sending a TextChanged message
+// Input  : row - row to activate
+//-----------------------------------------------------------------------------
+void ComboBox::SilentActivateItemByRow(int row)
+{
+	int itemID = GetItemIDFromRow( row );
+	if ( itemID >= 0 )
+	{
+		SilentActivateItem( itemID );
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Activate the item in the menu list, without sending a TextChanged message
+// Input  : itemID - itemID from AddItem in list of dropdown items
+//-----------------------------------------------------------------------------
+void ComboBox::SilentActivateItem(int itemID)
+{
+	m_pDropDown->SilentActivateItem(itemID);
+
+	// Now manually call our set text, with a wrapper to ensure we don't send the Text Changed message
+	wchar_t name[ 256 ];
+	GetItemText( itemID, name, sizeof( name ) );
+
+	m_bPreventTextChangeMessage = true;
+	OnSetText( name );
+	m_bPreventTextChangeMessage = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -294,7 +324,7 @@ void ComboBox::PerformLayout()
 	int fontTall = surface()->GetFontTall( buttonFont );
 
 	int buttonSize = MIN( tall, fontTall );
-
+	
 	int buttonY = ( ( tall - 1 ) - buttonSize ) / 2;
 
 	// Some dropdown button icons in our games are wider than they are taller. We need to factor that in.
@@ -394,7 +424,24 @@ void ComboBox::ApplySchemeSettings(IScheme *pScheme)
 {
 	BaseClass::ApplySchemeSettings(pScheme);
 
-	SetBorder(pScheme->GetBorder("ComboBoxBorder"));
+	SetBorder( pScheme->GetBorder( m_szBorderOverride[0] ? m_szBorderOverride : "ComboBoxBorder" ) );
+}
+
+void ComboBox::ApplySettings( KeyValues *pInResourceData )
+{
+	BaseClass::ApplySettings( pInResourceData );
+
+	const char *pBorderOverride = pInResourceData->GetString( "border_override", NULL );
+	if ( pBorderOverride )
+	{
+		V_strncpy( m_szBorderOverride, pBorderOverride, sizeof( m_szBorderOverride ) );
+	}
+
+	KeyValues *pKVButton = pInResourceData->FindKey( "Button" );
+	if ( pKVButton && m_pButton )
+	{
+		m_pButton->ApplySettings( pKVButton );
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -500,9 +547,13 @@ void ComboBox::OnSetText(const wchar_t *newtext)
 		SetText(text);
 
 		// fire off that things have changed
-		PostActionSignal(new KeyValues("TextChanged", "text", text));
+		if ( !m_bPreventTextChangeMessage )
+		{
+			PostActionSignal(new KeyValues("TextChanged", "text", text));
+		}
 		Repaint();
 	}
+
 	// close the box
 	HideMenu();
 }
@@ -628,6 +679,13 @@ void ComboBox::DoClick()
 	// this important to make sure the menu will be drawn in the foreground
 	MoveToFront();
 
+	// !KLUDGE! Force alpha to solid.  Otherwise,
+	// we run into weird VGUI problems with pops
+	// and the stencil test
+	Color c = m_pDropDown->GetBgColor();
+	c[3] = 255;
+	m_pDropDown->SetBgColor( c );
+
 	// notify
 	OnShowMenu(m_pDropDown);
 
@@ -673,18 +731,33 @@ void ComboBox::OnCursorExited()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-#ifdef _GAMECONSOLE
+#ifdef _X360
 void ComboBox::OnMenuItemSelected()
 {
 	m_bHighlight = true;
 	// For editable cbs, fill in the text field from whatever is chosen from the dropdown...
-	int idx = GetActiveItem();
-	if ( idx >= 0 )
-	{
-		wchar_t name[ 256 ];
-		GetItemText( idx, name, sizeof( name ) );
 
-		OnSetText( name );
+	//=============================================================================
+	// HPE_BEGIN:
+	// [pfreese] The text for the combo box should be updated regardless of its
+	// editable state, and in any case, the member variable below was never 
+	// correctly initialized.
+	//=============================================================================
+	
+	// if ( m_bAllowEdit )
+	
+	//=============================================================================
+	// HPE_END
+	//=============================================================================
+	{
+		int idx = GetActiveItem();
+		if ( idx >= 0 )
+		{
+			wchar_t name[ 256 ];
+			GetItemText( idx, name, sizeof( name ) );
+
+			OnSetText( name );
+		}
 	}
 
 	Repaint();
@@ -699,15 +772,17 @@ void ComboBox::OnMenuItemSelected()
 void ComboBox::OnMenuItemSelected()
 {
 	m_bHighlight = true;
-	
-	// Fill in the text field from whatever is chosen from the dropdown...
-	int idx = GetActiveItem();
-	if ( idx >= 0 )
+	// For editable cbs, fill in the text field from whatever is chosen from the dropdown...
+	//if ( m_bAllowEdit )
 	{
-		wchar_t name[ 256 ];
-		GetItemText( idx, name, sizeof( name ) );
-		
-		OnSetText( name );
+		int idx = GetActiveItem();
+		if ( idx >= 0 )
+		{
+			wchar_t name[ 256 ];
+			GetItemText( idx, name, sizeof( name ) );
+
+			OnSetText( name );
+		}
 	}
 
 	Repaint();
@@ -731,7 +806,7 @@ void ComboBox::OnSizeChanged(int wide, int tall)
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-#ifdef _GAMECONSOLE
+#ifdef _X360
 void ComboBox::OnSetFocus()
 {
     BaseClass::OnSetFocus();
@@ -752,7 +827,7 @@ void ComboBox::OnSetFocus()
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-#ifdef _GAMECONSOLE
+#ifdef _X360
 void ComboBox::OnKeyCodePressed(KeyCode code)
 {
 	switch ( GetBaseButtonCode( code ) )
@@ -840,14 +915,7 @@ void ComboBox::OnKeyCodeTyped(KeyCode code)
 		case KEY_ENTER:
 			{
 				int itemToSelect = m_pDropDown->GetCurrentlyHighlightedItem();
-				if ( m_pDropDown->IsValidMenuID( itemToSelect ) )
-				{
-					m_pDropDown->ActivateItem(itemToSelect);
-				}
-				else
-				{
-					BaseClass::OnKeyCodeTyped( code );
-				}
+				m_pDropDown->ActivateItem(itemToSelect);
 				break;
 			}
 

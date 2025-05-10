@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include "tier0/dbg.h"
 #include "tier0/valve_off.h"
-#include "tier1/keyvalues.h"
+#include "tier1/KeyValues.h"
 
 #include "tier0/valve_on.h"
 #include "tier0/memdbgon.h"
@@ -50,6 +50,7 @@
 #include "vgui_controls/CheckButton.h"
 #include "vgui_controls/CheckButtonList.h"
 #include "vgui_controls/ComboBox.h"
+#include "vgui_controls/Controls.h"
 #include "vgui_controls/DialogManager.h"
 #include "vgui_controls/DirectorySelectDialog.h"
 #include "vgui_controls/Divider.h"

@@ -1146,7 +1146,7 @@ CPointCommentaryNode::CPointCommentaryNode()
 void CPointCommentaryNode::Spawn( void )
 {
 	// No model specified?
-	const char *szModel = STRING( GetModelName() );
+	char *szModel = (char *)STRING( GetModelName() );
 	if (!szModel || !*szModel)
 	{
 		szModel = "models/extras/info_speech.mdl";

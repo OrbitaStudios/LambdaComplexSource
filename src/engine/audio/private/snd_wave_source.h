@@ -162,6 +162,4 @@ private:
 #endif
 };
 
-PathTypeFilter_t GetAudioPathFilter();
-
 #endif // SND_WAVE_SOURCE_H

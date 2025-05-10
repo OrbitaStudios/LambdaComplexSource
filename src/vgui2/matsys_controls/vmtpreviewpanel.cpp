@@ -1,4 +1,4 @@
-//===== Copyright © 1996-2005, Valve Corporation, All rights reserved. ======//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -6,20 +6,13 @@
 
 #include "matsys_controls/vmtpreviewpanel.h"
 #include "matsys_controls/matsyscontrols.h"
-#include "matsys_controls/sheetsequencepanel.h"
 #include "VGuiMatSurface/IMatSystemSurface.h"
 #include "materialsystem/MaterialSystemUtil.h"
 #include "materialsystem/imaterialsystem.h"
 #include "materialsystem/imaterial.h"
 #include "materialsystem/itexture.h"
 #include "materialsystem/imesh.h"
-#include "tier1/keyvalues.h"
-#include "bitmap/psheet.h"
-#include "materialsystem/imaterialvar.h"
-#include "tier1/utlbuffer.h"
-
-// NOTE: This has to be the last file included!
-#include "tier0/memdbgon.h"
+#include "tier1/KeyValues.h"
 
 
 using namespace vgui;
@@ -37,11 +30,13 @@ using namespace vgui;
 //
 //-----------------------------------------------------------------------------
 
+
+//-----------------------------------------------------------------------------
+// constructor
+//-----------------------------------------------------------------------------
 CVMTPreviewPanel::CVMTPreviewPanel( vgui::Panel *pParent, const char *pName ) :
 	BaseClass( pParent, pName )
 {
-	m_pMaterialSheet = NULL;
-
 	SetVMT( "//platform/materials/vgui/vtfnotloaded" );
 
 	m_pLightmapTexture.Init( "//platform/materials/debug/defaultlightmap", "editor" );
@@ -51,14 +46,9 @@ CVMTPreviewPanel::CVMTPreviewPanel( vgui::Panel *pParent, const char *pName ) :
 	m_flLightIntensity = 2.0f;
 	m_bDrawIn3DMode = false;
 
-	m_flSheetPreviewSpeed = 750.0f;
-	m_nCurrentSheetSequence = 0;
-	m_nCurrentSecondarySheetSequence = 0;
-
 	// Reset the camera direction
 	m_vecCameraDirection.Init( 1.0f, 0.0f, 0.0f );
 	m_flLastRotationTime = Plat_FloatTime();
-	m_flLastSwitchTime = Plat_FloatTime();
 }
 
 
@@ -69,31 +59,8 @@ void CVMTPreviewPanel::SetVMT( const char *pMaterialName )
 {
 	m_Material.Init( pMaterialName, "editor material" );
 	m_VMTName = pMaterialName;
-
-	m_flLastSwitchTime = Plat_FloatTime();
-
-	if ( m_pMaterialSheet )
-	{
-		delete m_pMaterialSheet;
-	}
-
-	if ( m_bDrawIn3DMode )
-	{
-		m_pMaterialSheet = new CSheetExtended( m_Material );
-	}
-	else
-	{
-		m_pMaterialSheet = NULL;
-	}
-
-	m_nCurrentSheetSequence = 0;
-	m_nCurrentSecondarySheetSequence = 0;
 }
 
-void CVMTPreviewPanel::SetSheetPreviewSpeed( float flPreviewSpeed )
-{
-	m_flSheetPreviewSpeed = flPreviewSpeed;
-}
 
 //-----------------------------------------------------------------------------
 // Gets the current VMT
@@ -103,15 +70,6 @@ const char *CVMTPreviewPanel::GetVMT() const
 	return m_VMTName;
 }
 
-CSheetExtended* CVMTPreviewPanel::GetSheet()
-{
-	return m_pMaterialSheet;
-}
-
-IMaterial* CVMTPreviewPanel::GetMaterial()
-{
-	return m_Material;
-}
 
 //-----------------------------------------------------------------------------
 // View it in 3D or 2D mode
@@ -234,11 +192,9 @@ void CVMTPreviewPanel::RenderSphere( const Vector &vCenter, float flRadius, int 
 			meshBuilder.Position3fv( vecPos.Base() );
 			meshBuilder.Normal3fv( vecNormal.Base() );
 			meshBuilder.Color4ub( red, green, blue, alpha );
-			meshBuilder.TexCoord4f( 0, 2.0f * u, v, 0, 0 );
-			meshBuilder.TexCoord4f( 1, u1, v1, 0, 0 );
-			meshBuilder.TexCoord4f( 2, u2, v2, 0, 0 );
-			meshBuilder.TexCoord4f( 3, u1, v1, 0, 0 );
-			meshBuilder.TexCoord4f( 4, u2, v2, 0, 0 );
+			meshBuilder.TexCoord2f( 0, 2.0f * u, v );
+			meshBuilder.TexCoord2f( 1, u1, v1 );
+			meshBuilder.TexCoord2f( 2, u2, v2 );
 			meshBuilder.TangentS3fv( vecTangentS.Base() );
 			meshBuilder.TangentT3fv( vecTangentT.Base() );
 			meshBuilder.BoneWeight( 0, 1.0f );
@@ -277,20 +233,55 @@ void CVMTPreviewPanel::RenderSphere( const Vector &vCenter, float flRadius, int 
 	pMesh->Draw();
 }
 
+
 //-----------------------------------------------------------------------------
 // Draw sprite-card based materials
 //-----------------------------------------------------------------------------
-void CVMTPreviewPanel::RenderSheet( const Vector &vCenter, float flRadius )
-{
+void CVMTPreviewPanel::RenderSpriteCard( const Vector &vCenter, float flRadius )
+{		 	 
 	CMatRenderContextPtr pRenderContext( MaterialSystem() );
 	IMesh *pMesh = pRenderContext->GetDynamicMesh();
 
-	if ( !m_pMaterialSheet->ValidSheetData() )
-		return;
+	CMeshBuilder meshBuilder;
+	meshBuilder.Begin( pMesh, MATERIAL_QUADS, 1 );
 
-	float flAge = fmodf( Plat_FloatTime() - m_flLastSwitchTime, m_pMaterialSheet->GetSequenceTimeSpan( m_nCurrentSheetSequence ) );
-	m_pMaterialSheet->DrawSheet( pMesh, vCenter, flRadius, m_nCurrentSheetSequence, flAge, m_flSheetPreviewSpeed, true, m_nCurrentSecondarySheetSequence );
+	// Draw a polygon the size of the panel
+	meshBuilder.Position3fv( vCenter.Base() );
+	meshBuilder.Color4ub( 255, 255, 255, 255 );
+	meshBuilder.TexCoord4f( 0, 0.0f, 0.0f, 1.0f, 1.0f );
+	meshBuilder.TexCoord4f( 1, 0.0f, 0.0f, 1.0f, 1.0f );
+	meshBuilder.TexCoord4f( 2, 0.0f, 0.0f, flRadius, 0.0f );
+	meshBuilder.TexCoord2f( 3, 0, 0 );
+	meshBuilder.AdvanceVertex();
+
+	meshBuilder.Position3fv( vCenter.Base() );
+	meshBuilder.Color4ub( 255, 255, 255, 255 );
+	meshBuilder.TexCoord4f( 0, 0.0f, 0.0f, 1.0f, 1.0f );
+	meshBuilder.TexCoord4f( 1, 0.0f, 0.0f, 1.0f, 1.0f );
+	meshBuilder.TexCoord4f( 2, 0.0f, 0.0f, flRadius, 0.0f );
+	meshBuilder.TexCoord2f( 3, 0, 1 );
+	meshBuilder.AdvanceVertex();
+
+	meshBuilder.Position3fv( vCenter.Base() );
+	meshBuilder.Color4ub( 255, 255, 255, 255 );
+	meshBuilder.TexCoord4f( 0, 0.0f, 0.0f, 1.0f, 1.0f );
+	meshBuilder.TexCoord4f( 1, 0.0f, 0.0f, 1.0f, 1.0f );
+	meshBuilder.TexCoord4f( 2, 0.0f, 0.0f, flRadius, 0.0f );
+	meshBuilder.TexCoord2f( 3, 1, 1 );
+	meshBuilder.AdvanceVertex();
+
+	meshBuilder.Position3fv( vCenter.Base() );
+	meshBuilder.Color4ub( 255, 255, 255, 255 );
+	meshBuilder.TexCoord4f( 0, 0.0f, 0.0f, 1.0f, 1.0f );
+	meshBuilder.TexCoord4f( 1, 0.0f, 0.0f, 1.0f, 1.0f );
+	meshBuilder.TexCoord4f( 2, 0.0f, 0.0f, flRadius, 0.0f );
+	meshBuilder.TexCoord2f( 3, 1, 0 );
+	meshBuilder.AdvanceVertex();
+
+	meshBuilder.End();
+	pMesh->Draw();
 }
+
 
 //-----------------------------------------------------------------------------
 // Paints a regular texture
@@ -389,27 +380,13 @@ void CVMTPreviewPanel::DrawRectangle( void )
 			v2_t = v2_b = 0.0f;
 		}
 	}
-
-	bool m_bPreviewVertexColors = false;
 	  
 	meshBuilder.Position3f( x, y2, 0.0f );
 	meshBuilder.Normal3fv( vecNormal.Base() );
-	if ( m_bPreviewVertexColors )
-	{
-		meshBuilder.Color4ub( 255, 0, 0, 255 );
-	}
-	else
-	{
-		meshBuilder.Color4ub( 255, 255, 255, 255 );
-	}
-	meshBuilder.TexCoord4f( 0, u, v, 0, 0 );
-	meshBuilder.TexCoord4f( 1, u1_l, v1_t, 0, 0 );
-	meshBuilder.TexCoord4f( 2, u2_l, v2_t, 0, 0 );
-	meshBuilder.TexCoord4f( 3, u1_l, v1_t, 0, 0 );
-	meshBuilder.TexCoord4f( 4, u2_l, v2_t, 0, 0 );
-	meshBuilder.TexCoord4f( 5, u1_l, v1_t, 0, 0 );
-	meshBuilder.TexCoord4f( 6, u2_l, v2_t, 0, 0 );
-	meshBuilder.TexCoord4f( 7, u1_l, v1_t, 0, 0 );
+	meshBuilder.Color4ub( 255, 0, 0, 255 );
+	meshBuilder.TexCoord2f( 0, u, v );
+	meshBuilder.TexCoord2f( 1, u1_l, v1_t );
+	meshBuilder.TexCoord2f( 2, u2_l, v2_t );
 	meshBuilder.TangentS3fv( vecTangentS.Base() );
 	meshBuilder.TangentT3fv( vecTangentT.Base() );
 	meshBuilder.BoneWeight( 0, 1.0f );
@@ -419,22 +396,10 @@ void CVMTPreviewPanel::DrawRectangle( void )
 				    
 	meshBuilder.Position3f( x, y, 0.0f );
 	meshBuilder.Normal3fv( vecNormal.Base() );
-	if ( m_bPreviewVertexColors )
-	{
-		meshBuilder.Color4ub( 255, 255, 255, 64 );
-	}
-	else
-	{
-		meshBuilder.Color4ub( 255, 255, 255, 255 );
-	}
-	meshBuilder.TexCoord4f( 0, u, 1.0f - v, 0, 0 );
-	meshBuilder.TexCoord4f( 1, u1_l, v1_b, 0, 0 );
-	meshBuilder.TexCoord4f( 2, u2_l, v2_b, 0, 0 );
-	meshBuilder.TexCoord4f( 3, u1_l, v1_b, 0, 0 );
-	meshBuilder.TexCoord4f( 4, u2_l, v2_b, 0, 0 );
-	meshBuilder.TexCoord4f( 5, u1_l, v1_b, 0, 0 );
-	meshBuilder.TexCoord4f( 6, u2_l, v2_b, 0, 0 );
-	meshBuilder.TexCoord4f( 7, u1_l, v1_b, 0, 0 );
+	meshBuilder.Color4ub( 255, 255, 255, 64 );
+	meshBuilder.TexCoord2f( 0, u, 1.0f - v );
+	meshBuilder.TexCoord2f( 1, u1_l, v1_b );
+	meshBuilder.TexCoord2f( 2, u2_l, v2_b );
 	meshBuilder.TangentS3fv( vecTangentS.Base() );
 	meshBuilder.TangentT3fv( vecTangentT.Base() );
 	meshBuilder.BoneWeight( 0, 1.0f );
@@ -444,22 +409,10 @@ void CVMTPreviewPanel::DrawRectangle( void )
 			    
 	meshBuilder.Position3f( x2, y2, 0.0f );
 	meshBuilder.Normal3fv( vecNormal.Base() );
-	if ( m_bPreviewVertexColors )
-	{
-		meshBuilder.Color4ub( 0, 0, 255, 255 );
-	}
-	else
-	{
-		meshBuilder.Color4ub( 255, 255, 255, 255 );
-	}
-	meshBuilder.TexCoord4f( 0, 1.0f - u, v, 0, 0 );
-	meshBuilder.TexCoord4f( 1, u1_r, v1_t, 0, 0 );
-	meshBuilder.TexCoord4f( 2, u2_r, v2_t, 0, 0 );
-	meshBuilder.TexCoord4f( 3, u1_r, v1_t, 0, 0 );
-	meshBuilder.TexCoord4f( 4, u2_r, v2_t, 0, 0 );
-	meshBuilder.TexCoord4f( 5, u1_r, v1_t, 0, 0 );
-	meshBuilder.TexCoord4f( 6, u2_r, v2_t, 0, 0 );
-	meshBuilder.TexCoord4f( 7, u1_r, v1_t, 0, 0 );
+	meshBuilder.Color4ub( 0, 0, 255, 255 );
+	meshBuilder.TexCoord2f( 0, 1.0f - u, v );
+	meshBuilder.TexCoord2f( 1, u1_r, v1_t );
+	meshBuilder.TexCoord2f( 2, u2_r, v2_t );
 	meshBuilder.TangentS3fv( vecTangentS.Base() );
 	meshBuilder.TangentT3fv( vecTangentT.Base() );
 	meshBuilder.BoneWeight( 0, 1.0f );
@@ -469,22 +422,10 @@ void CVMTPreviewPanel::DrawRectangle( void )
 
 	meshBuilder.Position3f( x2, y, 0.0f );
 	meshBuilder.Normal3fv( vecNormal.Base() );
-	if ( m_bPreviewVertexColors )
-	{
-		meshBuilder.Color4ub( 0, 255, 0, 64 );
-	}
-	else
-	{
-		meshBuilder.Color4ub( 255, 255, 255, 255 );
-	}
-	meshBuilder.TexCoord4f( 0, 1.0f - u, 1.0f - v, 0, 0 );
-	meshBuilder.TexCoord4f( 1, u1_r, v1_b, 0, 0 );
-	meshBuilder.TexCoord4f( 2, u2_r, v2_b, 0, 0 );
-	meshBuilder.TexCoord4f( 3, u1_r, v1_b, 0, 0 );
-	meshBuilder.TexCoord4f( 4, u2_r, v2_b, 0, 0 );
-	meshBuilder.TexCoord4f( 5, u1_r, v1_b, 0, 0 );
-	meshBuilder.TexCoord4f( 6, u2_r, v2_b, 0, 0 );
-	meshBuilder.TexCoord4f( 7, u1_r, v1_b, 0, 0 );
+	meshBuilder.Color4ub( 0, 255, 0, 64 );
+	meshBuilder.TexCoord2f( 0, 1.0f - u, 1.0f - v );
+	meshBuilder.TexCoord2f( 1, u1_r, v1_b );
+	meshBuilder.TexCoord2f( 2, u2_r, v2_b );
 	meshBuilder.TangentS3fv( vecTangentS.Base() );
 	meshBuilder.TangentT3fv( vecTangentT.Base() );
 	meshBuilder.BoneWeight( 0, 1.0f );
@@ -525,16 +466,16 @@ void CVMTPreviewPanel::DrawSphere( void )
 	LookAt( vec3_origin, VIEW_DISTANCE );
 
 	// Draw a sphere at the origin
-//	RenderSphere( vec3_origin, 10.0f, 20, 20 );
-	if ( m_pMaterialSheet && m_pMaterialSheet->ValidSheetData() )
-	{
-		RenderSheet( vec3_origin, 10.0f );
-	}
-	else
+	if ( !m_Material->IsSpriteCard() )
 	{
 		RenderSphere( vec3_origin, 10.0f, 20, 20 );
 	}
+	else
+	{
+		RenderSpriteCard( vec3_origin, 10.0f );
+	}
 }
+
 
 //-----------------------------------------------------------------------------
 // Sets the camera to look at the the thing we're spinning around
@@ -634,7 +575,7 @@ static CTextureReference s_pPowerOfTwoFrameBufferTexture;
 
 static ITexture *GetPowerOfTwoFrameBufferTexture( void )
 {
-	if ( !s_pPowerOfTwoFrameBufferTexture )
+	if( !s_pPowerOfTwoFrameBufferTexture )
 	{
 		s_pPowerOfTwoFrameBufferTexture.Init( vgui::MaterialSystem()->FindTexture( "_rt_PowerOfTwoFB", TEXTURE_GROUP_RENDER_TARGET ) );
 	}
@@ -673,7 +614,7 @@ void CVMTPreviewPanel::Paint( void )
  	pRenderContext->BindLightmapTexture( m_pLightmapTexture );
 	pRenderContext->BindLocalCubemap( m_DefaultEnvCubemap );
 
-	if ( m_bDrawIn3DMode )
+	if ( m_bDrawIn3DMode || m_Material->IsSpriteCard() )
 	{
 		DrawSphere();
 	}
@@ -683,56 +624,4 @@ void CVMTPreviewPanel::Paint( void )
 	}
 
 	vgui::MatSystemSurface()->End3DPaint( );
-}
-
-bool CVMTPreviewPanel::VMTUsesSheets()
-{
-	return m_pMaterialSheet != NULL;
-}
-
-int CVMTPreviewPanel::GetSheetSequenceCount()
-{
-	if ( m_pMaterialSheet == NULL )
-	{
-		return 0;
-	}
-
-	return m_pMaterialSheet->GetSheetSequenceCount();
-}
-
-// TODO: sort this out - sequence #n != nth sequence
-int CVMTPreviewPanel::GetCurrentSequence()
-{
-	return m_nCurrentSheetSequence;
-}
-
-int CVMTPreviewPanel::GetCurrentSecondarySequence()
-{
-	return m_nCurrentSecondarySheetSequence;
-}
-
-
-int CVMTPreviewPanel::GetRealSequenceNumber()
-{
-	return m_nCurrentSheetSequence;
-}
-
-void CVMTPreviewPanel::SetSheetSequence( int nSequence )
-{
-	if ( m_pMaterialSheet == NULL )
-	{
-		return;
-	}
-
-	m_nCurrentSheetSequence = m_pMaterialSheet->GetNthSequenceIndex(nSequence);
-}
-
-void CVMTPreviewPanel::SetSecondarySheetSequence( int nSequence )
-{
-	if ( m_pMaterialSheet == NULL )
-	{
-		return;
-	}
-
-	m_nCurrentSecondarySheetSequence = m_pMaterialSheet->GetNthSequenceIndex(nSequence);
 }

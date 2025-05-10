@@ -127,7 +127,9 @@
 #endif
 #define INVALID_HANDLE_VALUE (void*)-1
 #define CloseHandle( arg ) close( size_cast< int >( (intp) arg ) )
+#if !defined(_PS3) && !defined(POSIX)
 #define ZeroMemory( ptr, size ) memset( ptr, 0, size )
+#endif
 #ifdef _PS3
 #define CreateDirectory( dir, ign ) (-1)
 #else
@@ -691,8 +693,8 @@ const char * const z_errmsg[10] = { // indexed by 2-zlib_error
 #undef Tracecv
 
 #ifdef DEBUG
-#  define z_verbose 0
-   void z_error (char *m) {fprintf(stderr, "%s\n", m); exit(1);}
+  int z_verbose = 0;
+  void z_error (char *m) {fprintf(stderr, "%s\n", m); exit(1);}
 #  define Assert(cond,msg) {if(!(cond)) z_error(msg);}
 #  define Trace(x) {if (z_verbose>=0) fprintf x ;}
 #  define Tracev(x) {if (z_verbose>0) fprintf x ;}

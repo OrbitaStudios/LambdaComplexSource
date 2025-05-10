@@ -24,7 +24,7 @@ using namespace vgui;
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
 CTGAPicker::CTGAPicker( vgui::Panel *pParent ) : 
-	BaseClass( pParent, "TGA Files", "tga", "materialsrc", "tgaName", "CONTENT" )
+	BaseClass( pParent, "TGA Files", "tga", "materialsrc", "tgaName" )
 {
 	// Horizontal splitter for preview
 	m_pPreviewSplitter = new Splitter( this, "PreviewSplitter", SPLITTER_MODE_VERTICAL, 1 );

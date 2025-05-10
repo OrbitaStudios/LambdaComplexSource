@@ -37,7 +37,7 @@ $Configuration
 		$AdditionalIncludeDirectories	"$BASE;$SRCDIR\materialsystem"
 		$AdditionalIncludeDirectories	"$BASE;$SRCDIR\dx9sdk\Include"			[$WINDOWS && !$GL]
 		$AdditionalIncludeDirectories	"$BASE;$(XEDK)\include\xbox"			[$X360]
-		$PreprocessorDefinitions		"$BASE;DEFINE_MATERIALSYSTEM_INTERFACE;MATERIALSYSTEM_EXPORTS;PROTECTED_THINGS_ENABLE;INCLUDE_SCALEFORM"
+		$PreprocessorDefinitions		"$BASE;DEFINE_MATERIALSYSTEM_INTERFACE;MATERIALSYSTEM_EXPORTS;PROTECTED_THINGS_ENABLE"
 		$PreprocessorDefinitions		"$BASE;VERSION_SAFE_STEAM_API_INTERFACES"
 		$PreprocessorDefinitions		"$BASE;USE_ACTUAL_DX" [ ( $WINDOWS || $X360 ) && !$GL ]
 		$PreprocessorDefinitions		"$BASE;GL_GLEXT_PROTOTYPES;DX_TO_GL_ABSTRACTION" [$GL]

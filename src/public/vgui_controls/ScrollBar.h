@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -12,7 +12,7 @@
 #pragma once
 #endif
 
-#include <vgui/vgui.h>
+#include <vgui/VGUI.h>
 #include <vgui_controls/Panel.h>
 
 namespace vgui
@@ -86,32 +86,31 @@ public:
 	virtual void    SetScrollbarButtonsVisible(bool visible);
 
 	void			SetAutohideButtons( bool bAutohide ) { m_bAutoHideButtons = bAutohide; }
-	void			SetAutohideSelf( bool bAutohide ) { m_bAutoHideSelf = bAutohide; }
 
 	void			UseImages( const char *pszUpArrow, const char *pszDownArrow, const char *pszLine, const char *pszBox );
 
 	/* MESSAGES SENT:
 		"ScrollBarSliderMoved"
 			"position" - new value of the slider
-		"ScrollBarSliderReleased"
-			"position" - final position of slider
 	*/
+
+	void			SetOverriddenButtons( Button *pB1, Button *pB2 ) { m_pOverriddenButtons[0] = pB1; m_pOverriddenButtons[1] = pB2; }
+
+	virtual void	ApplySettings( KeyValues *pInResourceData );
 
 protected:
 
 	virtual void PerformLayout();
 	virtual void SendSliderMoveMessage(int value);
-	virtual void SendScrollBarSliderReleasedMessage(int value);
 	virtual void ApplySchemeSettings(IScheme *pScheme);
 	virtual void OnSizeChanged(int wide, int tall);
 
 	MESSAGE_FUNC_INT( OnSliderMoved, "ScrollBarSliderMoved", position );
-	MESSAGE_FUNC_INT( OnSliderReleased, "ScrollBarSliderReleased", position );
-
 	virtual void RespondToScrollArrow(int const direction);
 
 	virtual void UpdateButtonsForImages( void );
 	virtual void UpdateSliderImages( void );
+	Button		 *GetDepressedButton( int iIndex );
 
 private:
 	Button* _button[2];
@@ -119,13 +118,14 @@ private:
 	int     _buttonPressedScrollValue;
 	int		_scrollDelay; // used to control delays in scrolling
 	bool	_respond;
+	bool	m_bNoButtons;
 	CPanelAnimationVar( bool, m_bAutoHideButtons, "autohide_buttons", "0" );
-	CPanelAnimationVar( bool, m_bAutoHideSelf, "autohide_self", "0" );
 
 	vgui::ImagePanel	*m_pUpArrow;
 	vgui::ImagePanel	*m_pLine;
 	vgui::ImagePanel	*m_pDownArrow;
 	vgui::ImagePanel	*m_pBox;
+	Button	*m_pOverriddenButtons[2];
 };
 
 }

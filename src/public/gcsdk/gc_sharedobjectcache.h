@@ -1,4 +1,4 @@
-//========= Copyright Valve Corporation, All rights reserved. ============//
+//====== Copyright ©, Valve Corporation, All rights reserved. =======
 //
 // Purpose: Additional shared object cache functionality for the GC
 //
@@ -11,9 +11,6 @@
 #endif
 
 #include "sharedobjectcache.h"
-#include "tier1/utlhashtable.h"
-#include "gcdirtyfield.h"
-#include "gcsdk/gcsystemaccess.h"
 
 class CMsgSOCacheSubscribed_SubscribedType;
 
@@ -31,43 +28,30 @@ class CCachedSubscriptionMessage;
 class CSharedObjectContext
 {
 public:
-
-	//holds information about a subscriber to the context
-	struct Subscriber_t
-	{
-		CSteamID	m_steamID;		//the steam ID of the subscriber
-		int			m_nRefCount;	//the number of references to this subscription
-	};
-
 	CSharedObjectContext( const CSteamID & steamIDOwner );
 
 	bool BAddSubscriber( const CSteamID & steamID );
 	bool BRemoveSubscriber( const CSteamID & steamID );
 	void RemoveAllSubscribers();
-	bool BIsSubscribed( const CSteamID & steamID ) const			{ return FindSubscriber( steamID ) != m_vecSubscribers.InvalidIndex(); }
-	
-	const CUtlVector< Subscriber_t > &	GetSubscribers() const		{ return m_vecSubscribers; }
-	const CSteamID &					GetOwner() const			{ return m_steamIDOwner; }
+	bool BIsSubscribed( const CSteamID & steamID ) { return m_vecSubscribers.Find( steamID ) != m_vecSubscribers.InvalidIndex(); }
 
+	const CUtlVector< CSteamID > & GetSubscribers() const { return m_vecSubscribers; }
+	const CSteamID & GetOwner() const { return m_steamIDOwner; }
 private:
-
-	//finds a steam ID within the subscriber list, returns the index, invalid if it can't be found
-	int FindSubscriber( const CSteamID& steamID ) const;
-
-	CUtlVector<Subscriber_t>	m_vecSubscribers;
-	CSteamID					m_steamIDOwner;
+	CUtlVector<CSteamID>  m_vecSubscribers;
+	CUtlVector<int>		  m_vecSubRefCount;
+	CSteamID m_steamIDOwner;
 };
 
 class CGCSharedObjectTypeCache;
 
 enum ESOTypeFlags
 {
-	k_ESOFlag_SendToNobody					= 0,
-	k_ESOFlag_SendToOwner					= 1 << 0,  // will go to the owner of the cache (user or gameserver), if he is subscribed
-	k_ESOFlag_SendToOtherUsers				= 1 << 1,  // will go to subscribed users who are not the owner of the cache
-	k_ESOFlag_SendToOtherGameservers		= 1 << 2,  // will go to subscribed gameservers who are not the owner of the cache
-	k_ESOFlag_SendToQuestObjectiveTrackers	= 1 << 3,
-	k_ESOFlag_LastFlag						= k_ESOFlag_SendToQuestObjectiveTrackers,
+	k_SOFlag_SendToNobody		= 0,
+	k_ESOFlag_SendToOwningUser		= 1 << 0,  // will go only to the owner of the cache (if that owner is a user)
+	k_ESOFlag_SendToOtherUsers		= 1 << 1,  // will go only to users who are not the owner of the cache
+	k_SOFlag_SendToGameservers		= 1 << 2,  // will go only to gameservers, regardless of whether they're the owner
+	k_SOFlag_LastFlag			= k_SOFlag_SendToGameservers,
 };
 
 //----------------------------------------------------------------------------
@@ -98,20 +82,22 @@ public:
 	virtual bool AddObject( CSharedObject *pObject );
 	virtual CSharedObject *RemoveObject( const CSharedObject & soIndex );
 
-	inline CSteamID GetOwner() const { return m_context.GetOwner(); }
-
 	void BuildCacheSubscribedMsg( CMsgSOCacheSubscribed_SubscribedType *pMsgType, uint32 unFlags, const CISubscriberMessageFilter &filter );
 	virtual void EnsureCapacity( uint32 nItems );
+
+	static int GetCachedObjectCount( int nTypeID );
 
 #ifdef DBGFLAG_VALIDATE
 	virtual void Validate( CValidator &validator, const char *pchName );
 #endif
 
 private:
+	static int UpdateCachedObjectCount( int nTypeID, int nDelta );
 
 	const CSharedObjectContext & m_context;
-};
 
+	static CUtlMap<int, int> sm_mapCachedObjectCounts;
+};
 
 
 //----------------------------------------------------------------------------
@@ -128,16 +114,27 @@ public:
 	virtual ~CGCSharedObjectCache();
 
 	const CSteamID & GetOwner() const { return m_context.GetOwner(); }
-	const CUtlVector< CSharedObjectContext::Subscriber_t > & GetSubscribers() const { return m_context.GetSubscribers(); }
+	const CUtlVector< CSteamID > & GetSubscribers() const { return m_context.GetSubscribers(); }
 
-	CGCSharedObjectTypeCache *FindTypeCache( int nClassID ) const { return (CGCSharedObjectTypeCache *)FindBaseTypeCache( nClassID ); }
-	CGCSharedObjectTypeCache *CreateTypeCache( int nClassID ) { return (CGCSharedObjectTypeCache *)CreateBaseTypeCache( nClassID ); }
+	CGCSharedObjectTypeCache *GetTypeCache( int nClassID, bool bCreateIfMissing = false ) { return (CGCSharedObjectTypeCache *)GetBaseTypeCache( nClassID, bCreateIfMissing ); }
+	CGCSharedObjectTypeCache *GetTypeCache( int nClassID ) const { return (CGCSharedObjectTypeCache *)const_cast<CGCSharedObjectCache*>(this)->GetBaseTypeCache( nClassID, false ); }
+	virtual CSharedObjectTypeCache *CreateTypeCache( int nClassID ) const { return new CGCSharedObjectTypeCache( nClassID, m_context ); }
+
+	// returns various singleton objects
+	template< typename SOClass_t >
+	SOClass_t *GetSingleton() const
+	{
+		GCSDK::CGCSharedObjectTypeCache *pTypeCache = GetTypeCache( SOClass_t::k_nTypeID );
+		if ( pTypeCache && pTypeCache->GetCount() == 1 )
+		{
+			return (SOClass_t *)pTypeCache->GetObject( 0 );
+		}
+		return NULL;
+	}
 
 	virtual uint32 CalcSendFlags( const CSteamID &steamID ) const;
 	virtual const CISubscriberMessageFilter &GetSubscriberMessageFilter();
-	virtual bool AddObject( CSharedObject *pSharedObject );
-	virtual bool AddObjectClean( CSharedObject *pSharedObject );
-
+	virtual void AddObject( CSharedObject *pSharedObject );
 	bool BDestroyObject( const CSharedObject & soIndex, bool bRemoveFromDatabase );
 	virtual CSharedObject *RemoveObject( const CSharedObject & soIndex );
 
@@ -157,7 +154,7 @@ public:
 	virtual void SetTradingPartner( const CSteamID &steamID );
 	const CSteamID &GetTradingPartner() const { return m_steamIDTradingPartner; }
 
-	void AddSubscriber( const CSteamID & steamID, bool bForceSendSubscriptionMsg = false );
+	void AddSubscriber( const CSteamID & steamID );
 	void RemoveSubscriber( const CSteamID & steamID );
 	void RemoveAllSubscribers();
 	void SendSubscriberMessage( const CSteamID & steamID );
@@ -170,28 +167,17 @@ public:
 	void DirtyObjectField( CSharedObject *pObj, int nFieldIndex );
 
 	// Marks only dirty for network
-	void DirtyNetworkObject( CSharedObject *pObj );
-	void DirtyNetworkObjectCreate( CSharedObject *pObj );
+	void DirtyNetworkObjectField( CSharedObject *pObj, int nFieldIndex );
 
 	// Mark dirty for database
 	void DirtyDatabaseObjectField( CSharedObject *pObj, int nFieldIndex );
 
 	void SendNetworkUpdates( CSharedObject *pObj );
-
-	// Add a specific object write to a transaction. The cache is expected to remain locked until this transaction is
-	// closed.  If the transaction is rolled back, the object will be returned to the dirty list.
 	bool BYieldingAddWriteToTransaction( CSharedObject *pObj, CSQLAccess & sqlAccess );
-
-	// Add all pending object writes to a transaction.  The cache is expected to remain locked until this transaction is
-	// closed.  If the transaction successfully commits, the dirty list will be flushed.
-	//
-	// This is intended for use in writeback -- no changes to the dirty objects list may occur until this transaction
-	// closes.
-	uint32 YieldingStageAllWrites( CSQLAccess & sqlAccess );
-
 	void SendAllNetworkUpdates();
-	void FlushInventoryCache();
 	void YieldingWriteToDatabase( CSharedObject *pObj );
+	uint32 AddAllWritesToTransaction( CSQLAccess & sqlAccess );
+	void CleanAllWrites( );
 
 	void SetInWriteback( bool bInWriteback );
 	bool GetInWriteback() const { return m_bInWriteback; }
@@ -206,18 +192,12 @@ public:
 	virtual void Validate( CValidator &validator, const char *pchName );
 #endif
 
-	bool IsObjectCached( const CSharedObject *pObj ) const						{ return IsObjectCached( pObj, pObj->GetTypeID() ); }
-	//the same as the above, but takes in the type since if called from a destructor, you can't use virtual functions
-	bool IsObjectCached( const CSharedObject *pObj, uint32 nTypeID ) const;
-	bool IsObjectDirty( const CSharedObject *pObj ) const;
-
-	//called to mark that we are no longer loading
-	void SetDetectVersionChanges( bool bState )		{ m_bDetectVersionChanges = bState; }
+#ifdef DEBUG
+	bool IsObjectCached( CSharedObject *pObj, int nTypeID );
+	bool IsObjectDirty( CSharedObject *pObj );
+#endif
 
 protected:
-
-	virtual CSharedObjectTypeCache *AllocateTypeCache( int nClassID ) const OVERRIDE { return new CGCSharedObjectTypeCache( nClassID, m_context ); }
-
 	virtual void MarkDirty();
 	virtual bool BShouldSendToAnyClients( uint32 unFlags ) const;
 	CCachedSubscriptionMessage *BuildSubscriberMessage( uint32 unFlags );
@@ -225,21 +205,16 @@ protected:
 	CSteamID m_steamIDTradingPartner;
 
 protected:
-	void SendNetworkCreateInternal( CSharedObject * pObj );
-	void SendNetworkUpdateInternal( CSharedObject * pObj );
+	void SendNetworkUpdateInternal( CSharedObject * pObj, const CUtlVector< int > &dirtyFields );
 	void SendUnsubscribeMessage( const CSteamID & steamID );
 
-	//this is a flag that when set will cause any version changes to trigger an assert. This can be used during times like loading to ensure we don't have inappropriate version changes which
-	//can cause inefficiencies
-	bool	m_bDetectVersionChanges;
-
 	CSharedObjectContext m_context;
-	CUtlHashtable< CSharedObject * > m_networkDirtyObjs;
-	CUtlHashtable< CSharedObject * > m_networkDirtyObjsCreate;
+	CSharedObjectDirtyList m_networkDirtyList;
 	CSharedObjectDirtyList m_databaseDirtyList;
 	bool m_bInWriteback;
 	RTime32 m_unWritebackTime;
 	uint32 m_unLRUHandle;
+	const IProtoBufMsg *m_pCacheToUsersSubscriptionMsg;
 	uint32 m_unCachedSubscriptionMsgFlags;
 	CCachedSubscriptionMessage *m_pCachedSubscriptionMsg;
 };
@@ -263,18 +238,14 @@ bool CGCSharedObjectCache::BYieldingLoadSchObjects( IGCSQLResultSet *pResultSet,
 	if ( NULL == pResultSet )
 		return false;
 
-	//don't bother creating a cache if we don't have objects to add into it
-	if( pResultSet->GetRowCount() > 0 )
+	CGCSharedObjectTypeCache *pTypeCache = GetTypeCache( SOClass_t::k_nTypeID, true );
+	pTypeCache->EnsureCapacity( pResultSet->GetRowCount() );
+	for( CSQLRecord record( 0, pResultSet ); record.IsValid(); record.NextRow() )
 	{
-		CGCSharedObjectTypeCache *pTypeCache = CreateTypeCache( SOClass_t::k_nTypeID );
-		pTypeCache->EnsureCapacity( pResultSet->GetRowCount() );
-		for( CSQLRecord record( 0, pResultSet ); record.IsValid(); record.NextRow() )
-		{
-			SOClass_t *pObj = new SOClass_t();
-			pObj->Obj() = objDefaults.Obj();
-			record.BWriteToRecord( &pObj->Obj(), csRead );
-			pTypeCache->AddObjectClean( pObj );
-		}
+		SOClass_t *pObj = new SOClass_t();
+		pObj->Obj() = objDefaults.Obj();
+		record.BWriteToRecord( &pObj->Obj(), csRead );
+		pTypeCache->AddObject( pObj );
 	}
 
 	return true;
@@ -315,7 +286,7 @@ bool CGCSharedObjectCache::BYieldingLoadSchSingleton( IGCSQLResultSet *pResultSe
 			EmitError( SPEW_SHAREDOBJ, "Unable to add singleton type %d for %s\n", pSchObj->GetTypeID(), GetOwner().Render() );
 			return false;
 		}
-		AddObjectClean( pSchObj );
+		AddObject( pSchObj );
 		return true;
 	}
 }
@@ -337,20 +308,16 @@ bool CGCSharedObjectCache::BYieldingLoadProtoBufObjects( IGCSQLResultSet *pResul
 	if ( NULL == pResultSet )
 		return false;
 
-	//don't bother creating a cache if we don't have objects to add into it
-	if( pResultSet->GetRowCount() > 0 )
+	CGCSharedObjectTypeCache *pTypeCache = GetTypeCache( SOClass_t::k_nTypeID, true );
+	pTypeCache->EnsureCapacity( pResultSet->GetRowCount() );
+	for( CSQLRecord record( 0, pResultSet ); record.IsValid(); record.NextRow() )
 	{
-		CGCSharedObjectTypeCache *pTypeCache = CreateTypeCache( SOClass_t::k_nTypeID );
-		pTypeCache->EnsureCapacity( pResultSet->GetRowCount() );
-		for( CSQLRecord record( 0, pResultSet ); record.IsValid(); record.NextRow() )
-		{
-			SchClass_t schRecord;
-			record.BWriteToRecord( &schRecord, csRead );
+		SchClass_t schRecord;
+		record.BWriteToRecord( &schRecord, csRead );
 
-			SOClass_t *pObj = new SOClass_t();
-			pObj->ReadFromRecord( schRecord );
-			pTypeCache->AddObjectClean( pObj );
-		}
+		SOClass_t *pObj = new SOClass_t();
+		pObj->ReadFromRecord( schRecord );
+		pTypeCache->AddObject( pObj );
 	}
 
 	return true;
@@ -396,7 +363,7 @@ bool CGCSharedObjectCache::BYieldingLoadProtoBufSingleton( IGCSQLResultSet *pRes
 
 	SOClass_t *pSharedObject = new SOClass_t();
 	pSharedObject->ReadFromRecord( schRead );
-	AddObjectClean( pSharedObject );
+	AddObject( pSharedObject );
 
 	return true;
 }

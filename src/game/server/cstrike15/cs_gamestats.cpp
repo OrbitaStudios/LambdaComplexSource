@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: CS game stats
 //
@@ -60,7 +60,7 @@ short	g_iAutoBuyVestPurchases = 0;
 
 struct
 {
-	const char* szPropModelName;
+	char* szPropModelName;
 	CSStatType_t statType;
 } PropModelStatsTableInit[] =
 {
@@ -88,7 +88,7 @@ struct
 	int statId;
 	int roundRequirement;
 	int matchRequirement;
-	const char* mapFilter;
+	char* mapFilter;
 	bool disallowGunGameProgressive;
 
 	bool IsMet(int roundStat, int matchStat)

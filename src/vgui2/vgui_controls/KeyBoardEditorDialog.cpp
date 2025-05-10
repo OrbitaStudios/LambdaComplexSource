@@ -1,4 +1,4 @@
-//====== Copyright © 1996-2005, Valve Corporation, All rights reserved. =======
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -12,7 +12,7 @@
 #include "vgui/IInput.h"
 #include "vgui/IVGui.h"
 #include "vgui/ILocalize.h"
-#include "keyvalues.h"
+#include "KeyValues.h"
 #include "vgui/Cursor.h"
 #include "tier1/utldict.h"
 
@@ -425,7 +425,7 @@ void CKeyBoardEditorPage::BindKey( KeyCode code )
 			if ( binding && Q_stricmp( kbMap->bindingname, binding->bindingname ) )
 			{
 				// Key is already rebound!!!
-				Warning( "Can't bind to '%ls', key is already bound to '%s'\n",
+				Warning( "Can't bind to '%S', key is already bound to '%s'\n",
 					Panel::KeyCodeToDisplayString( code ), binding->bindingname );
 				return;
 			}
@@ -443,7 +443,7 @@ void CKeyBoardEditorPage::BindKey( KeyCode code )
 			if ( binding && Q_stricmp( bindingMap->bindingname, binding->bindingname ) )
 			{
 				// Key is already rebound!!!
-				Warning( "Can't bind to '%ls', key is already bound to '%s'\n",
+				Warning( "Can't bind to '%S', key is already bound to '%s'\n",
 					Panel::KeyCodeToDisplayString( code ), binding->bindingname );
 				return;
 			}

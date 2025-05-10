@@ -1,4 +1,4 @@
-//========= Copyright 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -15,7 +15,7 @@
 #include <vgui/ILocalize.h>
 #include <vgui/IScheme.h>
 #include <vgui/ISurface.h>
-#include <keyvalues.h>
+#include <KeyValues.h>
 
 #include "mathlib/mathlib.h"
 
@@ -29,9 +29,11 @@ DECLARE_BUILD_FACTORY( CircularProgressBar );
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
-CircularProgressBar::CircularProgressBar(Panel *parent, const char *panelName) : ProgressBar(parent, panelName)
+CircularProgressBar::CircularProgressBar(Panel *parent, const char *panelName) 
+	: ProgressBar(parent, panelName)
+	, m_bReverseProgress( false )
 {
-	m_iProgressDirection = CircularProgressBar::PROGRESS_CCW;
+	m_iProgressDirection = CircularProgressBar::PROGRESS_CW;
 
 	for ( int i = 0; i < NUM_PROGRESS_TEXTURES; i++ )
 	{
@@ -39,6 +41,8 @@ CircularProgressBar::CircularProgressBar(Panel *parent, const char *panelName) :
 		m_pszImageName[i] = NULL;
 		m_lenImageName[i] = 0;
 	}
+
+	m_iStartSegment = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -48,6 +52,12 @@ CircularProgressBar::~CircularProgressBar()
 {
 	for ( int i = 0; i < NUM_PROGRESS_TEXTURES; i++ )
 	{
+		if ( vgui::surface() && m_nTextureId[i] )
+		{
+			vgui::surface()->DestroyTextureID( m_nTextureId[i] );
+			m_nTextureId[i] = -1;
+		}
+
 		delete [] m_pszImageName[i];
 		m_lenImageName[i] = 0;
 	}
@@ -155,14 +165,8 @@ void CircularProgressBar::Paint()
 	float flProgress = GetProgress();
 	float flEndAngle;
 
-	if ( m_iProgressDirection == PROGRESS_CW )
-	{
-		flEndAngle = flProgress;
-	}
-	else
-	{
-		flEndAngle = ( 1.0 - flProgress );
-	}
+	flEndAngle = m_bReverseProgress ? ( 1.0 - flProgress ) : flProgress;
+	flEndAngle = m_iProgressDirection == PROGRESS_CCW ? ( 1.0 - flEndAngle ) : flEndAngle;
 
 	DrawCircleSegment( GetFgColor(), flEndAngle, ( m_iProgressDirection == PROGRESS_CW ) );
 }
@@ -285,12 +289,13 @@ void CircularProgressBar::DrawCircleSegment( Color c, float flEndProgress, bool 
 		return;
 	}
 
+
 	float flEndProgressRadians = flEndProgress * M_PI * 2;
 
-	int i;
-	for ( i=0;i<8;i++ )
+	int cur_wedge = m_iStartSegment;
+	for ( int i=0;i<8;i++ )
 	{
-		if ( flEndProgressRadians > Segments[i].minProgressRadians )
+		if ( flEndProgressRadians > Segments[cur_wedge].minProgressRadians)
 		{
 			vgui::Vertex_t v[3];
 
@@ -298,7 +303,7 @@ void CircularProgressBar::DrawCircleSegment( Color c, float flEndProgress, bool 
 			v[0].m_Position.Init( flHalfWide, flHalfTall );
 			v[0].m_TexCoord.Init( 0.5f, 0.5f );
 
-			float flInternalProgress = flEndProgressRadians - Segments[i].minProgressRadians;
+			float flInternalProgress = flEndProgressRadians - Segments[cur_wedge].minProgressRadians;
 
 			if ( flInternalProgress < SEGMENT_ANGLE )
 			{
@@ -340,5 +345,9 @@ void CircularProgressBar::DrawCircleSegment( Color c, float flEndProgress, bool 
 
 			vgui::surface()->DrawTexturedPolygon( 3, v );
 		}
+
+		cur_wedge++;
+		if ( cur_wedge >= 8)
+			cur_wedge = 0;
 	}
 }

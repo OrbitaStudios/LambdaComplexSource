@@ -13,7 +13,7 @@
 #endif
 
 #ifdef POSIX
-#define random random_valve // stdlib.h defined random()..., and so does vstdlib/random.h
+#define random random_valve// stdlib.h defined random()..., and so does vstdlib/random.h
 #endif
 
 #include "tier3/tier3.h"

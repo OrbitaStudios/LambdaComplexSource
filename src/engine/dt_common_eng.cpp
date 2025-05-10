@@ -82,7 +82,7 @@ bool DataTable_SetupReceiveTableFromSendTable( SendTable *sendTable, bool bNeeds
 
 		if ( pProp->m_Type == DPT_DataTable )
 		{
-			const char *pDTName = pSendTableProp->m_pExcludeDTName; // HACK
+			char *pDTName = pSendTableProp->m_pExcludeDTName; // HACK
 
 			if ( pSendTableProp->GetDataTable() )
 				pDTName = pSendTableProp->GetDataTable()->m_pNetTableName;

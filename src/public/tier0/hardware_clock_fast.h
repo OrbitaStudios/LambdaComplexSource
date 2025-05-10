@@ -4,12 +4,7 @@
 
 #include "tier0/platform.h"
 
-#if defined( __aarch64__ )
-
-inline int GetHardwareClockFast( void ) { return ( int )_rdtsc(); }
-
-#elif defined( GNUC )
-
+#ifdef GNUC
 inline int GetHardwareClockFast( void )
 {
 	unsigned long long int nRet;

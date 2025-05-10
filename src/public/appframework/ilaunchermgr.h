@@ -16,11 +16,16 @@
 // Cocoa functions that we hook were never ported to 64-bit. Until that is fixed,
 // we basically have to work around this by making sure the cursor is visible 
 // and set to something that is reasonable for usage in the overlay. 
-#define WITH_OVERLAY_CURSOR_VISIBILITY_WORKAROUND 0
+#if ( defined( OSX ) && defined( PLATFORM_64BITS ) && !defined( NO_STEAM ) )
+#define WITH_OVERLAY_CURSOR_VISIBILITY_WORKAROUND 1 
+#endif
 
 #include "tier0/threadtools.h"
 #include "appframework/iappsystem.h"
 #include "inputsystem/iinputsystem.h"
+
+#include "togl/glmgrbasics.h"
+#include "togl/glmdisplay.h"
 
 // if you rev this version also update materialsystem/cmaterialsystem.cpp CMaterialSystem::Connect as it defines the string directly
 #if defined( USE_SDL )
@@ -32,6 +37,7 @@
 
 class GLMDisplayDB;
 class CCocoaEvent;
+class CShowPixelsParams;
 class CStackCrawlParams;
 
 #if defined( USE_SDL )
@@ -57,12 +63,19 @@ public:
 	virtual bool CreateGameWindow( const char *pTitle, bool bWindowed, int width, int height ) = 0;
 #endif
 	
+	virtual void GetDesiredPixelFormatAttribsAndRendererInfo( uint **ptrOut, uint *countOut, GLMRendererInfoFields *rendInfoOut ) = 0;
+
+	// Get the NSGLContext for a window's main view - note this is the carbon windowref as an argument
+	virtual PseudoGLContextPtr GetGLContextForWindow( void* windowref ) = 0;
+	
 	// Get the next N events. The function returns the number of events that were filled into your array.
 	virtual int GetEvents( CCocoaEvent *pEvents, int nMaxEventsToReturn, bool debugEvents = false ) = 0;
 
 	// Set the mouse cursor position.
 	virtual void SetCursorPosition( int x, int y ) = 0;
-
+	
+	virtual void ShowPixels( CShowPixelsParams *params ) = 0;
+	
 #ifdef USE_SDL
 	virtual void SetWindowFullScreen( bool bFullScreen, int nWidth, int nHeight, bool bDesktopFriendlyFullscreen ) = 0;
 #else
@@ -82,7 +95,14 @@ public:
 	virtual void RenderedSize( uint &width, uint &height, bool set ) = 0;	// either set or retrieve rendered size value (from dxabstract)
 	virtual void DisplayedSize( uint &width, uint &height ) = 0;			// query backbuffer size (window size whether FS or windowed)
 	
+	virtual GLMDisplayDB *GetDisplayDB( void ) = 0;
+	
 	virtual void WaitUntilUserInput( int msSleepTime ) = 0;
+
+	virtual PseudoGLContextPtr	GetMainContext() = 0;
+	virtual PseudoGLContextPtr CreateExtraContext() = 0;
+	virtual void DeleteContext( PseudoGLContextPtr hContext ) = 0;
+	virtual bool MakeContextCurrent( PseudoGLContextPtr hContext ) = 0;
 
 	virtual void GetStackCrawl( CStackCrawlParams *params ) = 0;	
 

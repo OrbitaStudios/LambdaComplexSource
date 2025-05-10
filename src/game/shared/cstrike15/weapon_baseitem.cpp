@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2009, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2009, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: base class for belt items, eg pills and adrenaline
 //
@@ -224,8 +224,7 @@ void CWeaponBaseItem::ItemPostFrame( void )
 			pPlayer->SwitchToNextBestWeapon( this );
 		}
 
-#if defined (CLIENT_DLL)
-#if defined( INCLUDE_SCALEFORM )
+#if defined (CLIENT_DLL) && defined( INCLUDE_SCALEFORM )
 		// when an item is removed, force the local player to update their inventory screen
 		C_CSPlayer *pLocalPlayer = C_CSPlayer::GetLocalCSPlayer();
 		if ( pLocalPlayer && pLocalPlayer == pPlayer )
@@ -245,7 +244,6 @@ void CWeaponBaseItem::ItemPostFrame( void )
 				}
 			}
 		}
-#endif
 #endif
 	}
 

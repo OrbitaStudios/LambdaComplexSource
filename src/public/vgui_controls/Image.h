@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -12,8 +12,8 @@
 #pragma once
 #endif
 
-#include <vgui/vgui.h>
-#include <color.h>
+#include <vgui/VGUI.h>
+#include <Color.h>
 #include <vgui/IImage.h>
 
 namespace vgui
@@ -48,10 +48,6 @@ public:
 	virtual void SetFrame( int nFrame );
 	virtual HTexture GetID();
 	virtual void SetRotation( int iRotation ) { return; };
-
-	// Get the size of the image
-	virtual int GetTall();
-	virtual int GetWide();
 
 protected:
 	virtual void SetSize(int wide, int tall);

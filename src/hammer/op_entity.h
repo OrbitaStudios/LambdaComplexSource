@@ -24,7 +24,6 @@
 #include "AnchorMgr.h"
 #include "ModelBrowser.h"
 #include "dlglistmanage.h"
-#include "particlebrowser.h"
 
 
 class CEditGameClass;
@@ -316,7 +315,6 @@ class COP_Entity : public CObjectPage, CFilteredComboBox::ICallbacks, public CCo
 
 		void BrowseTextures( const char *szFilter, bool bIsSprite = false ); 
 		bool BrowseModels( char *szModelName, int length, int &nSkin );
-		bool BrowseParticles( char *szParticleSysName, int length );
 		void MergeObjectKeyValues(CEditGameClass *pEdit);
 		void MergeKeyValue(char const *pszKey);
 		void SetCurKey(LPCTSTR pszKey);
@@ -418,7 +416,6 @@ class COP_Entity : public CObjectPage, CFilteredComboBox::ICallbacks, public CCo
 		// or not yet.
 		bool m_bClassSelectionEmpty;
 		CModelBrowser *m_pModelBrowser; 
-		CParticleBrowser *m_pParticleBrowser; 
 
 	friend class CPickAnglesTarget;
 	friend class CPickEntityTarget;

@@ -921,6 +921,10 @@ void CVideoMode_Common::DrawStartupGraphic()
 		g_pMaterialSystem->SwapBuffers();
 	}
 
+#if defined( DX_TO_GL_ABSTRACTION ) && !defined( _GAMECONSOLE )
+	g_pMaterialSystem->DoStartupShaderPreloading();
+#endif
+
     pMaterial->Release();
     pLoadingMaterial->Release();
 

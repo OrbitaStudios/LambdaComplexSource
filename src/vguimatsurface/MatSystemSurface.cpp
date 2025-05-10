@@ -17,6 +17,9 @@
 #ifdef OSX
 #include <Carbon/Carbon.h>
 #endif
+#ifdef LINUX
+#include <fontconfig/fontconfig.h>
+#endif
 
 #if defined( USE_SDL ) || defined(OSX) 
 #include <appframework/ilaunchermgr.h>

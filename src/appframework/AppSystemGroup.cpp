@@ -427,7 +427,7 @@ void CAppSystemGroup::ComputeDependencies( LibraryDependencies_t &depend )
 				{
 					// Don't bother if we already contain the secondary dependency
 					const char *pSecondaryDependency = depend[nIndex].String( k );
-					if ( depend[i].Find( pSecondaryDependency ).IsValid() )
+					if ( depend[i].Find( pSecondaryDependency ) != UTL_INVAL_SYMBOL )
 						continue;
 
 					// Check for circular dependency
@@ -455,7 +455,7 @@ bool CAppSystemGroup::SortLessFunc( const int &left, const int &right )
 {
 	const char *pLeftInterface = sm_pSortDependencies->String( left );
 	const char *pRightInterface = sm_pSortDependencies->String( right );
-	bool bRightDependsOnLeft = ( (*sm_pSortDependencies)[pRightInterface].Find( pLeftInterface ).IsValid() );
+	bool bRightDependsOnLeft = ( (*sm_pSortDependencies)[pRightInterface].Find( pLeftInterface ) != UTL_INVAL_SYMBOL );
 	return ( bRightDependsOnLeft );
 }
 
@@ -509,10 +509,10 @@ void CAppSystemGroup::SortDependentLibraries( LibraryDependencies_t &depend )
 
 			const char *pLeftInterface = depend.String( nLeft );
 			const char *pRightInterface = depend.String( nRight );
-			bool bRightDependsOnLeft = ( depend[pRightInterface].Find( pLeftInterface ).IsValid() );
+			bool bRightDependsOnLeft = ( depend[pRightInterface].Find( pLeftInterface ) != UTL_INVAL_SYMBOL );
 			if ( bRightDependsOnLeft )
 				continue;
-			Assert ( !depend[pRightInterface].Find( pLeftInterface ).IsValid() );
+			Assert ( UTL_INVAL_SYMBOL == depend[pRightInterface].Find( pLeftInterface ) );
 			V_swap( pIndices[i], pIndices[i-1] );
 			bDone = false;
 		}
@@ -640,16 +640,24 @@ InitReturnVal_t CAppSystemGroup::InitSystems()
 {
 	for (int nSystemsInitialized = 0; nSystemsInitialized < m_Systems.Count(); ++nSystemsInitialized )
 	{
-		InitReturnVal_t nRetVal = m_Systems[nSystemsInitialized]->Init();
-		if ( nRetVal != INIT_OK )
+		IAppSystem* appSystem = m_Systems[nSystemsInitialized];
+		if ( appSystem )
 		{
-			for( int nSystemsRewind = nSystemsInitialized; nSystemsRewind-->0; )
+			InitReturnVal_t nRetVal = appSystem->Init();
+			if ( nRetVal != INIT_OK )
 			{
-				m_Systems[nSystemsRewind]->Shutdown();
+				for ( int nSystemsRewind = nSystemsInitialized; nSystemsRewind-- > 0; )
+				{
+					m_Systems[nSystemsRewind]->Shutdown();
+				}
+
+				ReportStartupFailure( INITIALIZATION, nSystemsInitialized );
+				return nRetVal;
 			}
-		
-			ReportStartupFailure( INITIALIZATION, nSystemsInitialized );
-			return nRetVal;
+		}
+		else
+		{
+			return INIT_FAILED;
 		}
 	}
 	return INIT_OK;

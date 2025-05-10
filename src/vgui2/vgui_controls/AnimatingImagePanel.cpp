@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -13,7 +13,7 @@
 #include <vgui/ISystem.h>
 #include <vgui/IImage.h>
 #include <vgui/IVGui.h>
-#include <keyvalues.h>
+#include <KeyValues.h>
 
 #include <vgui_controls/AnimatingImagePanel.h>
 

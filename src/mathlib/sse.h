@@ -10,6 +10,8 @@
 float _SSE_Sqrt(float x);
 float _SSE_RSqrtAccurate(float a);
 float _SSE_RSqrtFast(float x);
+float FASTCALL _SSE_VectorNormalize(Vector& vec);
+void FASTCALL _SSE_VectorNormalizeFast(Vector& vec);
 float _SSE_InvRSquared(const float* v);
 void _SSE_SinCos(float x, float* s, float* c);
 float _SSE_cos( float x);

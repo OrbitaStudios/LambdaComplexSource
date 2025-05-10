@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -7,13 +7,10 @@
 
 #include <assert.h>
 #include <ctype.h>
-#ifdef _PS3
-#include <wctype.h>
-#endif
 
 #include <vgui/MouseCode.h>
 #include <vgui/KeyCode.h>
-#include <keyvalues.h>
+#include <KeyValues.h>
 #include <vgui/ISurface.h>
 #include <vgui/IVGui.h>
 #include <vgui/IInput.h>

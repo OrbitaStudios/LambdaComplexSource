@@ -15,10 +15,6 @@
 #include "mathlib/math_pfns.h"
 #include "mathlib/fltx4.h"
 
-#if defined(EMSCRIPTEN)
-typedef int qboolean;
-#endif
-
 #ifndef ALIGN8_POST
 #define ALIGN8_POST
 #endif
@@ -474,7 +470,7 @@ inline float CrossProductZ( const Vector & v1, const Vector& v2 )
 	return v1.x * v2.y - v1.y * v2.x;
 }
 
-int VectorsEqual( const float *v1, const float *v2 );
+qboolean VectorsEqual( const float *v1, const float *v2 );
 
 inline vec_t RoundInt (vec_t in)
 {
@@ -483,12 +479,81 @@ inline vec_t RoundInt (vec_t in)
 
 size_t Q_log2( unsigned int val );
 
+// Math routines done in optimized assembly math package routines
+void inline SinCos( float radians, float * RESTRICT sine, float * RESTRICT cosine )
+{
+#if defined( _X360 )
+	XMScalarSinCos( sine, cosine, radians );
+#elif defined( _PS3 )
+#if ( __GNUC__ == 4 ) && ( __GNUC_MINOR__ == 1 ) && ( __GNUC_PATCHLEVEL__ == 1 )
+	vector_float_union s;
+	vector_float_union c;
+
+	vec_float4 rad = vec_splats( radians );
+	vec_float4 sin;
+	vec_float4 cos;
+
+	sincosf4( rad, &sin, &cos );
+
+	vec_st( sin, 0, s.f );
+	vec_st( cos, 0, c.f );
+
+	*sine   = s.f[0];
+	*cosine = c.f[0];
+#else //__GNUC__ == 4 && __GNUC_MINOR__ == 1 && __GNUC_PATCHLEVEL__ == 1
+	vector_float_union r;
+	vector_float_union s;
+	vector_float_union c;
+
+	vec_float4 rad;
+	vec_float4 sin;
+	vec_float4 cos;
+
+	r.f[0] = radians;
+	rad = vec_ld( 0, r.f );
+
+	sincosf4( rad, &sin, &cos );
+
+	vec_st( sin, 0, s.f );
+	vec_st( cos, 0, c.f );
+
+	*sine   = s.f[0];
+	*cosine = c.f[0];
+#endif //__GNUC__ == 4 && __GNUC_MINOR__ == 1 && __GNUC_PATCHLEVEL__ == 1
+#elif defined( COMPILER_MSVC32 )
+	_asm
+	{
+		fld		DWORD PTR [radians]
+		fsincos
+
+		mov edx, DWORD PTR [cosine]
+		mov eax, DWORD PTR [sine]
+
+		fstp DWORD PTR [edx]
+		fstp DWORD PTR [eax]
+	}
+#elif defined( GNUC )
+	register double __cosr, __sinr;
+ 	__asm __volatile__ ("fsincos" : "=t" (__cosr), "=u" (__sinr) : "0" (radians));
+
+  	*sine = __sinr;
+  	*cosine = __cosr;
+#else
+	*sine = sinf(radians);
+	*cosine = cosf(radians);
+#endif
+}
+
 #define SIN_TABLE_SIZE	256
 #define FTOIBIAS		12582912.f
 extern float SinCosTable[SIN_TABLE_SIZE];
 
 inline float TableCos( float theta )
 {
+#if defined( LINUX )
+	return cos(theta); // under the GCC compiler the float-represented-as-an-int causes an internal compiler error
+#else
+
 	union
 	{
 		int i;
@@ -498,10 +563,14 @@ inline float TableCos( float theta )
 	// ideally, the following should compile down to: theta * constant + constant, changing any of these constants from defines sometimes fubars this.
 	ftmp.f = theta * ( float )( SIN_TABLE_SIZE / ( 2.0f * M_PI ) ) + ( FTOIBIAS + ( SIN_TABLE_SIZE / 4 ) );
 	return SinCosTable[ ftmp.i & ( SIN_TABLE_SIZE - 1 ) ];
+#endif
 }
 
 inline float TableSin( float theta )
 {
+#if defined( LINUX )
+	return sin(theta); // under the GCC compiler the float-represented-as-an-int causes an internal compiler error
+#else
 	union
 	{
 		int i;
@@ -511,6 +580,7 @@ inline float TableSin( float theta )
 	// ideally, the following should compile down to: theta * constant + constant
 	ftmp.f = theta * ( float )( SIN_TABLE_SIZE / ( 2.0f * M_PI ) ) + FTOIBIAS;
 	return SinCosTable[ ftmp.i & ( SIN_TABLE_SIZE - 1 ) ];
+#endif
 }
 
 template<class T>
@@ -1604,17 +1674,13 @@ FORCEINLINE int RoundFloatToInt(float f)
 #endif
 #else // !X360
 	int nResult;
-//#if defined(EMSCRIPTEN)
-//#undef GNUC
-//#endif
-
 #if defined( COMPILER_MSVC32 )
 	__asm
 	{
 		fld f
 		fistp nResult
 	}
-#elif GNUC && !defined( __EMSCRIPTEN__ )
+#elif GNUC
 	__asm __volatile__ (
 		"fistpl %0;": "=m" (nResult): "t" (f) : "st"
 	);
@@ -1623,10 +1689,6 @@ FORCEINLINE int RoundFloatToInt(float f)
 #endif
 	return nResult;
 #endif
-
-//#ifdef EMSCRIPTEN
-//#define GNUC 1
-//#endif
 }
 
 FORCEINLINE unsigned char RoundFloatToByte(float f)
@@ -1666,17 +1728,11 @@ FORCEINLINE unsigned char RoundFloatToByte(float f)
 		fistp nResult
 	}
 #elif GNUC
-// TODO: Convert to Emscripten
-//#if defined(__EMSCRIPTEN__)
-//	double f = 3.14159;
-//	nResult = static_cast<unsigned int> (f) & 0xff;
-//#endif	
-
-#if !defined(__EMSCRIPTEN__)
 	__asm __volatile__ (
 		"fistpl %0;": "=m" (nResult): "t" (f) : "st"
 	);
-#endif
+#else
+	nResult = static_cast<unsigned int> (f) & 0xff;
 #endif
 
 #ifdef Assert
@@ -1718,7 +1774,7 @@ FORCEINLINE unsigned long RoundFloatToUnsignedLong(float f)
 		fistp       qword ptr nResult
 	}
 	return *((unsigned long*)nResult);
-#elif defined( COMPILER_GCC ) && !defined( __EMSCRIPTEN__ )
+#elif defined( COMPILER_GCC )
 	unsigned char nResult[8];
 	__asm __volatile__ (
 		"fistpl %0;": "=m" (nResult): "t" (f) : "st"

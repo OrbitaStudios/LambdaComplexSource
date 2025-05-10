@@ -4,6 +4,7 @@
 //
 //==================================================================================================
 #include "tier1/bitbuf.h"
+#include "tier1/convar.h"
 #include "serializedentity.h"
 
 // NOTE: This has to be the last file included!

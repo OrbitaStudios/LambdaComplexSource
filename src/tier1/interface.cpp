@@ -443,11 +443,15 @@ CSysModule *Sys_LoadModule( const char *pModuleName )
 		}
 
 		size_t cCwd = strlen( szCwd );
-#ifdef POSIX
-		Q_snprintf( szAbsoluteModuleName, sizeof(szAbsoluteModuleName), "%s/bin/lib%s", szCwd, pModuleName );
-#else
-		Q_snprintf( szAbsoluteModuleName, sizeof(szAbsoluteModuleName), "%s/bin/%s", szCwd, pModuleName );
-#endif
+		if ( strstr( pModuleName, "bin/") == pModuleName || ( szCwd[ cCwd - 1 ] == 'n'  && szCwd[ cCwd - 2 ] == 'i' && szCwd[ cCwd - 3 ] == 'b' )  )
+		{
+			// don't make bin/bin path
+			Q_snprintf( szAbsoluteModuleName, sizeof(szAbsoluteModuleName), "%s/%s", szCwd, pModuleName );
+		}
+		else
+		{
+			Q_snprintf( szAbsoluteModuleName, sizeof(szAbsoluteModuleName), "%s/bin/%s", szCwd, pModuleName );
+		}
 		hDLL = Sys_LoadLibrary( szAbsoluteModuleName );
 #endif // _PS3
 	}

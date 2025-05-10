@@ -817,7 +817,6 @@ void CServerBrowserDialog::OnClose()
 	{
 		ConVarRef cv_vguipanel_active( "vgui_panel_active" );
 		cv_vguipanel_active.SetValue( cv_vguipanel_active.GetInt() - 1 );
-		pGameUI->RestoreTopLevelMenu();
 
 		ConVarRef cv_server_browser_dialog_open( "server_browser_dialog_open" );
 		cv_server_browser_dialog_open.SetValue( false );

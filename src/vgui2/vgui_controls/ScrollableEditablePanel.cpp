@@ -1,4 +1,4 @@
-//========= Copyright (c) 1996-2001, Valve LLC, All rights reserved. ============
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -9,6 +9,7 @@
 #include "vgui_controls/ScrollBar.h"
 #include "vgui_controls/ScrollBarSlider.h"
 #include "vgui_controls/Button.h"
+#include "KeyValues.h"
 
 // NOTE: This has to be the last file included!
 #include "tier0/memdbgon.h"
@@ -26,6 +27,17 @@ ScrollableEditablePanel::ScrollableEditablePanel( vgui::Panel *pParent, vgui::Ed
 	m_pScrollBar->SetWide( 16 );
 	m_pScrollBar->SetAutoResize( PIN_TOPRIGHT, AUTORESIZE_DOWN, 0, 0, -16, 0 );
 	m_pScrollBar->AddActionSignalTarget( this );
+}
+
+void ScrollableEditablePanel::ApplySettings( KeyValues *pInResourceData )
+{
+	BaseClass::ApplySettings( pInResourceData );
+
+	KeyValues *pScrollbarKV = pInResourceData->FindKey( "Scrollbar" );
+	if ( pScrollbarKV )
+	{
+		m_pScrollBar->ApplySettings( pScrollbarKV );
+	}
 }
 
 void ScrollableEditablePanel::PerformLayout()
@@ -50,13 +62,6 @@ void ScrollableEditablePanel::PerformLayout()
 	}
 }
 
-void ScrollableEditablePanel::OnMouseWheeled(int delta)
-{
-	int val = m_pScrollBar->GetValue();
-	val -= (delta * 30);
-	m_pScrollBar->SetValue(val);
-}
-
 
 //-----------------------------------------------------------------------------
 // Called when the scroll bar moves
@@ -69,5 +74,13 @@ void ScrollableEditablePanel::OnScrollBarSliderMoved()
 	m_pChild->SetPos( 0, -nScrollAmount ); 
 }
 
-
+//-----------------------------------------------------------------------------
+// respond to mouse wheel events
+//-----------------------------------------------------------------------------
+void ScrollableEditablePanel::OnMouseWheeled(int delta)
+{
+	int val = m_pScrollBar->GetValue();
+	val -= (delta * 50);
+	m_pScrollBar->SetValue( val );
+}
 

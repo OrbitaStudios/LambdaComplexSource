@@ -30,6 +30,7 @@
 #include "dme_controls/DmePanel.h"
 #include "dme_controls/dmecontrols_utils.h"
 #include "tier1/ConVar.h"
+#include "tier1/utlsortvector.h"
 #include "tier2/fileutils.h"
 
 // memdbgon must be the last include file in a .cpp file!!!

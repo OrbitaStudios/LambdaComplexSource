@@ -282,7 +282,7 @@ int CAudioSourceMP3Cache::GetOutputData( void **pData, int64 samplePosition, int
 	return sampleCount;
 }
 
-CAudioMixer	*CAudioSourceMP3Cache::CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError )
+CAudioMixer	*CAudioSourceMP3Cache::CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError, hrtf_info_t *pHRTFVector )
 {
 	CAudioMixer *pMixer = CreateMP3Mixer( CreateWaveDataMemory(*this), &m_sampleRate );
 	if ( pMixer )
@@ -318,7 +318,7 @@ void CAudioSourceStreamMP3::Prefetch()
 	PrefetchDataStream( m_pSfx->GetFileName(nameBuf, sizeof(nameBuf)), 0, m_dataSize );
 }
 
-CAudioMixer	*CAudioSourceStreamMP3::CreateMixer(int intialStreamPosition, int initialSkipSamples, bool bUpdateDelayForChoreo, SoundError &soundError )
+CAudioMixer	*CAudioSourceStreamMP3::CreateMixer(int intialStreamPosition, int initialSkipSamples, bool bUpdateDelayForChoreo, SoundError &soundError, hrtf_info_t *pHRTFVector )
 {
 	char nameBuf[MAX_PATH];
 	// BUGBUG: Source constructs the IWaveData, mixer frees it, fix this?

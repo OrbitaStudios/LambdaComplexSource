@@ -23,7 +23,6 @@
 #include "gametypes.h"
 
 #include "strtools.h"
-#include "dlchelper.h"
 #include "../engine/filesystem_engine.h"
 #include "filesystem.h"
 #include "tier2/fileutils.h"
@@ -284,9 +283,6 @@ bool GameTypes::Initialize( bool force /* = false*/ )
 	}
 
 //	pKV->SaveToFile( g_pFullFileSystem, "maps/gamemodes-pre.txt", "GAME" );
-
-	// Load key values from any DLC on disc.
-	DLCHelper::AppendDLCKeyValues( pKV, fileName );
 
 	// Merge map sidecar files ( map.kv )
 	// Map sidecar loading has been moved to CCSGameRules::InitializeGameTypeAndMode

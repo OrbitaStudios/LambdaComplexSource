@@ -375,8 +375,6 @@ private:
 	void FreeAllocatedValue();
 	void AllocateValueBlock(int size);
 
-	bool ReadAsBinaryPooledFormat( CUtlBuffer &buf, IBaseFileSystem *pFileSystem, unsigned int poolKey, GetSymbolProc_t pfnEvaluateSymbolProc );
-
 	bool EvaluateConditional( const char *pExpressionString, GetSymbolProc_t pfnEvaluateSymbolProc );
 
 	uint32 m_iKeyName : 24;	// keyname is a symbol defined in KeyValuesSystem
@@ -499,6 +497,8 @@ inline bool  KeyValues::IsEmpty( int keySymbol )
 	KeyValues *dat = FindKey( keySymbol );
 	return dat ? dat->IsEmpty( ) : true;
 }
+
+bool EvaluateConditional( const char *str );
 
 
 //

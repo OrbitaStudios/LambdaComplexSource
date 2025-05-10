@@ -518,7 +518,7 @@ bool CSoundEmitterSystemBase::GetParametersForSound( const char *soundname, CSou
 		static CUtlSymbolTable soundWarnings;
 		char key[ 256 ];
 		Q_snprintf( key, sizeof( key ), "%s:%s", soundname, params.soundname );
-		if ( !soundWarnings.Find( key ).IsValid() )
+		if ( UTL_INVAL_SYMBOL == soundWarnings.Find( key ) )
 		{
 			soundWarnings.AddString( key );
 
@@ -1739,7 +1739,7 @@ bool CSoundEmitterSystemBase::GetParametersForSoundEx( const char *soundname, HS
 			static CUtlSymbolTable soundWarnings;
 			char key[ 256 ];
 			Q_snprintf( key, sizeof( key ), "%s:%s", soundname, params.soundname );
-			if ( !soundWarnings.Find( key ).IsValid() )
+			if ( UTL_INVAL_SYMBOL == soundWarnings.Find( key ) )
 			{
 				soundWarnings.AddString( key );
 			

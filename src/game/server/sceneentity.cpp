@@ -543,7 +543,7 @@ public:
 	float					m_flAutomationDelay;
 	float					m_flAutomationTime;
 
-	// A pause from an input require	s another input to unpause (it's a hard pause)
+	// A pause from an input requires another input to unpause (it's a hard pause)
 	bool					m_bPausedViaInput;
 
 // Moved for cache [9/22/2010 tom]
@@ -2353,16 +2353,16 @@ void CSceneEntity::InputInterjectResponse( inputdata_t &inputdata )
 		char modifiers[ 512 ];
 		Q_snprintf( modifiers, sizeof( modifiers ), "scene:%s", STRING( GetEntityName() ) );
 
-		AIConcept_t AIconcept(inputdata.value.String());
+		AIConcept_t concept(inputdata.value.String());
 		for ( int i = 0; i < c; i++ )
 		{
 			CAI_BaseActor *npc = candidates[ i ];
 			Assert( npc );
 
 			AI_CriteriaSet set; 
-			npc->GatherCriteria( &set, AIconcept, modifiers );
+			npc->GatherCriteria( &set, concept, modifiers );
 			AI_Response response;
-			if ( !npc->FindResponse( response, AIconcept, &set ) )
+			if ( !npc->FindResponse( response, concept, &set ) )
 				continue;
 
 			float duration = npc->GetResponseDuration( &response );
@@ -3538,7 +3538,7 @@ void MissingSceneWarning( char const *scenename )
 	static CUtlSymbolTable missing;
 
 	// Make sure we only show the message once
-	if ( !missing.Find( scenename ).IsValid() )
+	if ( UTL_INVAL_SYMBOL == missing.Find( scenename ) )
 	{
 		missing.AddString( scenename );
 
@@ -4836,7 +4836,7 @@ END_DATADESC()
 int SceneNameAutocomplete( char const *partial, char commands[ COMMAND_COMPLETION_MAXITEMS ][ COMMAND_COMPLETION_ITEM_LENGTH ] )
 {
 	// chop the command off the begining of the string
-	const char *commandName = "scene_playvcd";
+	char *commandName = "scene_playvcd";
 	int numMatches = 0;
 	partial += Q_strlen( commandName ) + 1;
 	int partialLength = Q_strlen( partial );

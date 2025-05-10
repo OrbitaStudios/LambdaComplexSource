@@ -36,6 +36,7 @@ $Project
 		$File	"cvar.cpp"
 		$File	"jobthread.cpp"
 		$File	"keyvaluessystem.cpp"
+		$File	"osversion.cpp"
 		$File	"processutils.cpp"			[$WINDOWS]
 		$File	"random.cpp"
 		$File	"vcover.cpp"
@@ -54,6 +55,7 @@ $Project
 		$File	"$SRCDIR\public\vstdlib\ikeyvaluessystem.h"
 		$File	"$SRCDIR\public\vstdlib\iprocessutils.h"
 		$File	"$SRCDIR\public\tier1\mempool.h"
+		$File	"$SRCDIR\public\vstdlib\osversion.h"
 		$File	"$SRCDIR\public\vstdlib\random.h"
 		$File	"$SRCDIR\public\vstdlib\vcover.h"
 		$File	"$SRCDIR\public\vstdlib\vstdlib.h"

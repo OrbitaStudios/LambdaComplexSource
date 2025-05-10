@@ -18,6 +18,11 @@
 #include "tier1/strtools.h"
 #include <stddef.h>
 
+#ifdef LINUX
+#undef offsetof
+#define offsetof(s,m)	(size_t)&(((s *)0)->m)
+#endif
+
 // Max number of properties in a datatable and its children.
 #define MAX_DATATABLES		1024	// must be a power of 2.
 #define MAX_DATATABLE_PROPS	4096
@@ -181,7 +186,7 @@ public:
 	{
 		float	m_Float;
 		long	m_Int;
-		const char	*m_pString;
+		char	*m_pString;
 		void	*m_pData;	// For DataTables.
 #if 0 // We can't ship this since it changes the size of DTVariant to be 20 bytes instead of 16 and that breaks MODs!!!
 		float	m_Vector[4];

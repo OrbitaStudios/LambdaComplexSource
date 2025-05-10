@@ -10,8 +10,6 @@
 #pragma once
 #endif
 
-// Protobuf headers interfere with the valve min/max/malloc overrides. so we need to do all
-// this funky wrapping to make the include happy.
 #include "google/protobuf/descriptor.h"
 #include "gcsdk/jobtime.h"
 

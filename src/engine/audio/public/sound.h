@@ -100,7 +100,10 @@ struct StartSoundParams_t
 		opStackElapsedTime( 0.0f ),
 		opStackElapsedStopTime( 0.0f ),
 		m_bDelayedStart( false ),
-		m_bInEyeSound( false )
+		m_bInEyeSound( false ),
+		m_bHRTFFollowEntity( false ),
+		m_bHRTFBilinear( false ),
+		m_bHRTFLock( false )
 	{
 		origin.Init();
 		direction.Init();
@@ -134,6 +137,9 @@ struct StartSoundParams_t
 		destParams.m_bIsScriptHandle = m_bIsScriptHandle;
 		destParams.m_bDelayedStart = m_bDelayedStart;
 		destParams.m_bInEyeSound = m_bInEyeSound;
+		destParams.m_bHRTFFollowEntity = m_bHRTFFollowEntity;
+		destParams.m_bHRTFBilinear = m_bHRTFBilinear;
+		destParams.m_bHRTFLock = m_bHRTFLock;
 	}
 	void CopyNewFromParams( StartSoundParams_t &destParams )
 	{
@@ -163,7 +169,11 @@ struct StartSoundParams_t
 		destParams.bToolSound = bToolSound;
 		destParams.m_bIsScriptHandle =m_bIsScriptHandle;
 		destParams.m_bInEyeSound = m_bInEyeSound;
-		//		destParams.m_bDelayedStart = m_bDelayedStart;
+		destParams.m_bHRTFFollowEntity = m_bHRTFFollowEntity;
+		destParams.m_bHRTFBilinear = m_bHRTFBilinear;
+		destParams.m_bHRTFLock = m_bHRTFLock;
+
+		/*		destParams.m_bDelayedStart = m_bDelayedStart;*/
 	}
 	int				userdata;
     int				soundsource;
@@ -193,6 +203,9 @@ struct StartSoundParams_t
 	bool			m_bIsScriptHandle : 1;
 	bool			m_bDelayedStart : 1;
 	bool			m_bInEyeSound : 1;
+	bool			m_bHRTFFollowEntity : 1;
+	bool			m_bHRTFBilinear : 1;
+	bool			m_bHRTFLock : 1;
 
 	static const int	UNINT_GUID = -1;
 	static const int	GENERATE_GUID = -2;		// Generate GUID regardless of the other vol and pitch flags.

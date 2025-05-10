@@ -1,4 +1,4 @@
-//====== Copyright 1996-2005, Valve Corporation, All rights reserved. =======
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -17,7 +17,7 @@
 
 
 using namespace vgui;
-#ifndef LINUX
+
 USING_BUILD_FACTORY( Button );
 USING_BUILD_FACTORY( EditablePanel );
 USING_BUILD_FACTORY( ImagePanel );
@@ -49,11 +49,10 @@ USING_BUILD_FACTORY( ScalableImagePanel );
 USING_BUILD_FACTORY_ALIAS( ScrollBar, ScrollBar_Vertical );
 USING_BUILD_FACTORY_ALIAS( ScrollBar, ScrollBar_Horizontal );
 USING_BUILD_FACTORY( ScrollBar );
+USING_BUILD_FACTORY( Slider );
 USING_BUILD_FACTORY( TextEntry );
 USING_BUILD_FACTORY( TreeView );
 USING_BUILD_FACTORY( CTreeViewListControl );
 USING_BUILD_FACTORY( URLLabel );
-
-#endif // LINUX
 
 int g_nYou_Must_Add_Public_Vgui_Controls_Vgui_ControlsCpp_To_Your_Project = 0;

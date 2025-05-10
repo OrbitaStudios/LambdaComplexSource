@@ -25,7 +25,6 @@
 #include "cmatnullrendercontext.h"
 #include "datacache/iresourceaccesscontrol.h"
 #include "filesystem/IQueuedLoader.h"
-#include "filesystem/IXboxInstaller.h"
 #include "cdll_int.h"
 #include "vjobs_interface.h"
 #include "ps3/ps3_sn.h"
@@ -101,6 +100,10 @@ ADD_LOGGING_CHANNEL_TAG( "Console" );
 END_DEFINE_LOGGING_CHANNEL();
 
 IMaterialInternal *g_pErrorMaterial = NULL;
+
+#if defined( INCLUDE_SCALEFORM )
+extern IScaleformUI* g_pScaleformUI;
+#endif
 
 CreateInterfaceFn g_fnMatSystemConnectCreateInterface = NULL;  
 
@@ -852,6 +855,10 @@ bool CMaterialSystem::Connect( CreateInterfaceFn factory )
 	// Remember the factory for connect
 	g_fnMatSystemConnectCreateInterface = factory;
 
+#if defined( INCLUDE_SCALEFORM )
+	g_pScaleformUI = ( IScaleformUI* ) factory( SCALEFORMUI_INTERFACE_VERSION, 0 );
+#endif
+
 	return g_pShaderDeviceMgr->Connect( ShaderFactory );	
 }
 
@@ -873,6 +880,10 @@ void CMaterialSystem::Disconnect()
 	g_pHWConfig = NULL;
 	g_pShaderShadow = NULL;
 	g_pShaderDevice = NULL;
+#endif
+
+#if defined( INCLUDE_SCALEFORM )
+	g_pScaleformUI = NULL;
 #endif
 
 	BaseClass::Disconnect();
@@ -4394,6 +4405,9 @@ void CMaterialSystem::EndFrame( void )
 				Assert( m_QueuedRenderContexts[i].IsInitialized() );
 				m_QueuedRenderContexts[i].Shutdown();
 			}
+#if defined( INCLUDE_SCALEFORM )
+			g_pScaleformUI->SetSingleThreadedMode(true);
+#endif
 			break;
 
 		case MATERIAL_QUEUED_SINGLE_THREADED:
@@ -4411,6 +4425,9 @@ void CMaterialSystem::EndFrame( void )
 			if ( m_ThreadMode == MATERIAL_QUEUED_SINGLE_THREADED )
 			{
 				g_pShaderAPI->SetDisallowAccess( true );
+#if defined( INCLUDE_SCALEFORM )
+				g_pScaleformUI->SetSingleThreadedMode(true);
+#endif
 			}
 			else
 			{
@@ -4419,6 +4436,9 @@ void CMaterialSystem::EndFrame( void )
 #else
 				g_pShaderAPI->ReleaseThreadOwnership();
 				m_QueuedRenderContexts[m_iCurQueuedContext].GetCallQueueInternal()->QueueCall( g_pShaderAPI, &IShaderAPI::AcquireThreadOwnership );
+#endif
+#if defined( INCLUDE_SCALEFORM )
+				g_pScaleformUI->SetSingleThreadedMode(false);
 #endif
 			}
 			break;

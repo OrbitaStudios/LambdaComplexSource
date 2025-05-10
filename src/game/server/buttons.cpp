@@ -821,7 +821,7 @@ int CBaseButton::DrawDebugTextOverlays()
 
 	if (m_debugOverlays & OVERLAY_TEXT_BIT) 
 	{
-		static const char *pszStates[] =
+		static char *pszStates[] =
 		{
 			"Pressed",
 			"Unpressed",

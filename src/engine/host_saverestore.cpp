@@ -207,11 +207,6 @@ void DispatchAsyncSave()
 	g_bAutoSaveInProgress = bValid && ( V_stristr( pLastSavePath, "autosave" ) != NULL );
 	g_bAutoSaveDangerousInProgress = bValid && ( V_stristr( pLastSavePath, "autosavedangerous" ) != NULL );
 
-	if ( !IsGameConsole() && !g_bAutoSaveDangerousInProgress && !g_bAutoSaveInProgress )
-	{
-		g_ClientDLL->Hud_SaveStarted();
-	}
-
 	if ( save_async.GetBool() )
 	{
 		g_pSaveThread->QueueCall( saverestore, &ISaveRestore::FinishAsyncSave );

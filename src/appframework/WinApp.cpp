@@ -152,8 +152,6 @@ bool CSteamApplication::Create()
 	char pFileSystemDLL[MAX_PATH];
 	if ( !GetFileSystemDLLName( pFileSystemDLL, MAX_PATH, m_bSteam ) )
 		return false;
-	
-	FileSystem_SetupSteamInstallPath();
 
 	// Add in the cvar factory
 	AppModule_t cvarModule = LoadModule( VStdLib_GetICVarFactory() );

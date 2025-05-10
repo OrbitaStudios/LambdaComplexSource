@@ -3545,8 +3545,6 @@ void CViewRender::RenderView( const CViewSetup &view, const CViewSetup &hudViewS
 			// which is potentially only half the screen
 			if ( GET_ACTIVE_SPLITSCREEN_SLOT() == 0 )
 			{
-				vecHudPanels.AddToTail( VGui_GetFullscreenRootVPANEL() );
-
 #if defined( TOOLFRAMEWORK_VGUI_REFACTOR )
 				vecHudPanels.AddToTail( enginevgui->GetPanel( PANEL_GAMEUIDLL ) );
 #endif

@@ -6,6 +6,12 @@
 //
 //=============================================================================//
 
+#undef PROTECTED_THINGS_ENABLE
+#undef PROTECT_FILEIO_FUNCTIONS
+#ifndef POSIX
+#undef fopen
+#endif
+
 #include "host.h"
 #include <ctype.h>
 #include "draw.h"
@@ -877,6 +883,30 @@ const char *COM_GetModDirectory()
 	return modDir;
 }
 
+
+/*
+================
+Return if we should load content from the _hd folder for this mod
+This logic needs to match with the gameui/OptionsSubVideo.cpp code
+================
+*/
+bool BLoadHDContent( const char *pchModDir, const char *pchBaseDir )
+{
+	char szModSteamInfPath[ 1024 ];
+	V_ComposeFileName( pchModDir, "game_hd.txt", szModSteamInfPath, sizeof( szModSteamInfPath ) );
+	char szFullPath[ 1024 ];
+	V_MakeAbsolutePath( szFullPath, sizeof( szFullPath ), szModSteamInfPath, pchBaseDir );
+
+	FILE *fp = fopen( szFullPath, "rb" );
+	if ( fp )
+	{
+		fclose(fp);
+		return true;
+	}
+	return false;
+}
+
+
 /*
 ================
 COM_InitFilesystem
@@ -954,6 +984,9 @@ void COM_InitFilesystem( const char *pFullModPath )
 	{
 		initInfo.m_pDirectoryName = GetCurrentGame();
 	}
+
+	initInfo.m_bLowViolence = g_bLowViolence;
+	initInfo.m_bMountHDContent = BLoadHDContent( initInfo.m_pDirectoryName, GetBaseDirectory() );
 
 	// Load gameinfo.txt and setup all the search paths, just like the tools do.
 	FileSystem_LoadSearchPaths( initInfo );

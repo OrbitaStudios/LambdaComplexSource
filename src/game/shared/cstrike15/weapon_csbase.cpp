@@ -69,6 +69,10 @@
 // NOTE: This has to be the last file included!
 #include "tier0/memdbgon.h"
 
+#ifndef VIEWPUNCH_COMPENSATE_MAGIC_SCALAR
+#define VIEWPUNCH_COMPENSATE_MAGIC_SCALAR 0.65
+#endif
+
 #if defined( CSTRIKE15 )
 
 extern ConVar crosshair;
@@ -137,8 +141,8 @@ void TE_DynamicLight( IRecipientFilter& filter, float delay,
 
 struct WeaponAliasTranslationInfoStruct
 {
-	const char* alias;
-	const char* translatedAlias;
+	char* alias;
+	char* translatedAlias;
 };
 
 static const WeaponAliasTranslationInfoStruct s_WeaponAliasTranslationInfo[] = 
@@ -403,7 +407,7 @@ LINK_ENTITY_TO_CLASS_ALIASED( weapon_cs_base, WeaponCSBase );
 	ConVar cl_crosshairgap_useweaponvalue( "cl_crosshairgap_useweaponvalue", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE | FCVAR_SS, "If set to 1, the gap will update dynamically based on which weapon is currently equipped" );
 	ConVar cl_crosshairsize( "cl_crosshairsize", "5", FCVAR_CLIENTDLL | FCVAR_ARCHIVE  | FCVAR_SS );
 	ConVar cl_crosshairthickness( "cl_crosshairthickness", "0.5", FCVAR_CLIENTDLL | FCVAR_ARCHIVE  | FCVAR_SS );
-	ConVar cl_crosshairdot( "cl_crosshairdot", "0", FCVAR_CLIENTDLL | FCVAR_ARCHIVE  | FCVAR_SS );
+	ConVar cl_crosshairdot( "cl_crosshairdot", "1", FCVAR_CLIENTDLL | FCVAR_ARCHIVE  | FCVAR_SS );
 	ConVar cl_crosshaircolor_r( "cl_crosshaircolor_r", "50", FCVAR_CLIENTDLL | FCVAR_ARCHIVE  | FCVAR_SS );
 	ConVar cl_crosshaircolor_g( "cl_crosshaircolor_g", "250", FCVAR_CLIENTDLL | FCVAR_ARCHIVE  | FCVAR_SS );
 	ConVar cl_crosshaircolor_b( "cl_crosshaircolor_b", "50", FCVAR_CLIENTDLL | FCVAR_ARCHIVE  | FCVAR_SS );
@@ -1653,15 +1657,9 @@ void CWeaponCSBase::RemoveUnownedWeaponThink()
 #endif
 
 ConVar mp_weapon_prev_owner_touch_time( "mp_weapon_prev_owner_touch_time", "1.5", FCVAR_CHEAT | FCVAR_REPLICATED );
-#if defined ( CLIENT_DLL )
-CEG_NOINLINE void CWeaponCSBase::Drop( const Vector &vecVelocity )
-#else
 void CWeaponCSBase::Drop( const Vector &vecVelocity )
-#endif
 {
 #ifdef CLIENT_DLL
-	CEG_PROTECT_VIRTUAL_FUNCTION( CWeaponCSBase_Drop );
-
 	BaseClass::Drop( vecVelocity );
 
 	CBaseHudWeaponSelection *pHudSelection = GetHudWeaponSelection();
@@ -2096,7 +2094,6 @@ void CWeaponCSBase::DrawCrosshair()
 	float flAngleToScreenPixel = 0;
 
 #ifdef CLIENT_DLL
-#if defined( INCLUDE_SCALEFORM )
 	// subtract a ratio of cam driver motion from crosshair according to cl_cam_driver_compensation_scale
 	if ( cl_cam_driver_compensation_scale.GetFloat() != 0 )
 	{
@@ -2116,7 +2113,6 @@ void CWeaponCSBase::DrawCrosshair()
 			}
 		}
 	}
-#endif
 #endif
 
 /*

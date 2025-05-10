@@ -333,7 +333,7 @@ void CSNavMesh::MaintainDMSpawnPopulation( void )
 
 			int need = m_desiredDMSpawns - actualCount;
 
-			int spawnsToTry = MAX( 10, need );
+			int spawnsToTry = max( 10, need );
 
 			for( int k=0; k < spawnsToTry; k++ )
 			{

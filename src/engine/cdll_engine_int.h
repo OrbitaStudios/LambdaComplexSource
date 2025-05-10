@@ -39,7 +39,6 @@ ClientClass *ClientDLL_GetAllClasses( void );
 CreateInterfaceFn ClientDLL_GetFactory( void );
 void ClientDLL_OnActiveSplitscreenPlayerChanged( int slot );
 void ClientDLL_OnSplitScreenStateChanged();
-vgui::VPANEL ClientDLL_GetFullscreenClientDLLVPanel( void );
 
 //-----------------------------------------------------------------------------
 // slow routine to draw a physics model

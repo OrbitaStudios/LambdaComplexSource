@@ -27,7 +27,7 @@ public:
 	virtual ~CAudioSourceMP3();
 
 	// Create an instance (mixer) of this audio source
-	virtual CAudioMixer			*CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError ) = 0;
+	virtual CAudioMixer			*CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError, struct hrtf_info_t* pHRTFVec ) = 0;
 	
 	virtual int					GetType( void );
 	virtual void				GetCacheData( CAudioSourceCachedInfo *info );
@@ -131,8 +131,8 @@ public:
 	~CAudioSourceStreamMP3() {}
 
 	bool			IsStreaming( void ) { return true; }
-	bool			IsStereoWav( void ) { return false; }
-	CAudioMixer		*CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError );
+	bool			IsStereoWav(void) { return false; }
+	CAudioMixer		*CreateMixer(int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError, struct hrtf_info_t* pHRTFVec);
 	int				GetOutputData( void **pData, int64 samplePosition, int sampleCount, char copyBuf[AUDIOSOURCE_COPYBUF_SIZE] );
 
 	// IWaveStreamSource
@@ -165,7 +165,7 @@ public:
 	void					CacheUnload( void );
 	// NOTE: "samples" are bytes for MP3
 	int						GetOutputData( void **pData, int64 samplePosition, int sampleCount, char copyBuf[AUDIOSOURCE_COPYBUF_SIZE] );
-	CAudioMixer				*CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError );
+	CAudioMixer				*CreateMixer( int initialStreamPosition, int skipInitialSamples, bool bUpdateDelayForChoreo, SoundError &soundError, struct hrtf_info_t* pHRTFVec );
 
 	virtual void			Prefetch() {}
 

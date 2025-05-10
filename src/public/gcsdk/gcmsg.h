@@ -1,4 +1,4 @@
-//========= Copyright Valve Corporation, All rights reserved. ============//
+//====== Copyright (c), Valve Corporation, All rights reserved. =======
 //
 // Purpose: This file defines all of the Game Coordinator messages for the
 //			current IS-embedded implementation of the GC
@@ -25,9 +25,10 @@ namespace GCSDK
 struct GCMsgHdr_t
 {
 	MsgType_t	m_eMsg;					// The message type
-	uint64	m_ulSteamID;				// User's SteamID
+	uint32		m_nSrcGCDirIndex;		// The GC index that this message was sent from (set to the same as the current GC if not routed through another GC)
+	uint64		m_ulSteamID;			// User's SteamID
 
-	CUtlString GetHeaderDescription();
+	const char *GetHeaderDescription( );
 	const char *PchMsgName( ) const { return PchMsgNameFromEMsg( m_eMsg ); }
 };
 
@@ -39,13 +40,17 @@ struct GCMsgHdr_t
 //-----------------------------------------------------------------------------
 struct GCMsgHdrEx_t
 {
-	MsgType_t	m_eMsg;					// The message type
-	uint64	m_ulSteamID;				// User's SteamID
+	//NOTE: The following fields must be binary equivalent with GCMsgHdr_t above
+	MsgType_t	m_eMsg;			
+	uint32		m_nSrcGCDirIndex;	
+	uint64		m_ulSteamID;	
+	// ----
+
 	uint16  m_nHdrVersion;
 	JobID_t m_JobIDTarget;
 	JobID_t m_JobIDSource;
 
-	CUtlString GetHeaderDescription();
+	const char *GetHeaderDescription( );
 	const char *PchMsgName( ) const { return PchMsgNameFromEMsg( m_eMsg ); }
 };
 
@@ -130,7 +135,7 @@ struct GCMsgInterHdr_t
 	JobID_t m_JobIDTarget;
 	JobID_t m_JobIDSource;
 
-	CUtlString GetHeaderDescription();
+	const char *GetHeaderDescription( );
 	const char *PchMsgName( ) const { return PchMsgNameFromEMsg( m_eMsg ); }
 };
 

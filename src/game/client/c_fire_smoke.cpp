@@ -162,8 +162,6 @@ void C_FireSmoke::Start( void )
 	const char *lpszEffectName;
 	int nSize = (int) floor( m_flStartScale / 36.0f );
 
-	RANDOM_CEG_TEST_SECRET_PERIOD( 36, 67 );
-
 	switch ( nSize )
 	{
 	case 0:

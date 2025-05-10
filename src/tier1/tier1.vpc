@@ -84,6 +84,15 @@ $Project "tier1"
 
 	}
 
+	// Select bits from the LZMA SDK to support lzmaDecoder.h
+	// Encoding support requires the full lzma project
+	$Folder "LZMA Decompression Support"
+	{
+		$File	"$SRCDIR\utils\lzma\C\LzmaDec.h"
+		$File	"$SRCDIR\utils\lzma\C\LzmaDec.c"
+		$File	"$SRCDIR\utils\lzma\C\7zTypes.h"
+	}
+
 	$Folder	"Header Files"
 	{
 		$File	"$SRCDIR\public\tier1\appinstance.h"

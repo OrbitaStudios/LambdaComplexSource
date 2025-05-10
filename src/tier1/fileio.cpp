@@ -11,8 +11,6 @@
 #define _WIN32_WINNT 0x0502		// ReadDirectoryChangesW
 #endif
 
-#include "platform.h"
-
 #include <sys/stat.h>
 
 #if defined(OSX)

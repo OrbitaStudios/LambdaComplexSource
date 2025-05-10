@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2001, Valve LLC, All rights reserved. ============
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -17,7 +17,7 @@
 // Input  : *buffername - 
 //			*ef - 
 //-----------------------------------------------------------------------------
-CMsgBuffer::CMsgBuffer( const char *buffername, void (*ef)( PRINTF_FORMAT_STRING const char *fmt, ... ) /*= NULL*/ )
+CMsgBuffer::CMsgBuffer( const char *buffername, void (*ef)( const char *fmt, ... ) /*= NULL*/ )
 {
 	m_pszBufferName		= buffername;
 	m_pfnErrorFunc		= ef;

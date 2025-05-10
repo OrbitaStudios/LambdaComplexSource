@@ -1,4 +1,4 @@
-//====== Copyright (c) 1996-2005, Valve Corporation, All rights reserved. =======
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -6,7 +6,7 @@
 
 #include "filesystem.h"
 #include "matsys_controls/baseassetpicker.h"
-#include "tier1/keyvalues.h"
+#include "tier1/KeyValues.h"
 #include "tier1/utlntree.h"
 #include "tier1/utlrbtree.h"
 #include "vgui_controls/ListPanel.h"
@@ -21,10 +21,6 @@
 #include "vgui/IInput.h"
 #include "vgui/IVGui.h"
 #include "vgui/Cursor.h"
-#include "tier2/fileutils.h"
-
-// NOTE: This has to be the last file included!
-#include "tier0/memdbgon.h"
 
 
 using namespace vgui;
@@ -161,7 +157,7 @@ DirHandle_t CAssetTreeView::AddSubDirectory( DirHandle_t hParent, const char *pD
 {
 	DirHandle_t hSubdir = m_DirectoryStructure.Alloc();
 	m_DirectoryStructure[hSubdir] = pDirName;
-	Q_strlower( m_DirectoryStructure[hSubdir].Get() );
+	m_DirectoryStructure[hSubdir].ToLower();
 
 	DirHandle_t hChild = m_DirectoryStructure.FirstChild( hParent );
 	m_DirectoryStructure.LinkChildBefore( hParent, hChild, hSubdir );
@@ -260,7 +256,7 @@ DirHandle_t CAssetTreeView::RefreshTreeViewItem( int nItemIndex )
 
 	// Check all children + build a list of children we've already got
 	int nChildCount = GetNumChildren( nItemIndex );
-	DirHandle_t *pFoundHandles = (DirHandle_t*)stackalloc( nChildCount * sizeof(DirHandle_t) );
+	DirHandle_t *pFoundHandles = (DirHandle_t*)_alloca( nChildCount * sizeof(DirHandle_t) );
 	memset( pFoundHandles, 0xFF, nChildCount * sizeof(DirHandle_t) );
 	for ( int i = 0; i < nChildCount; ++i )
 	{
@@ -372,27 +368,36 @@ DECLARE_POINTER_HANDLE( AssetList_t );
 class CAssetCache
 {
 public:
+	struct CachedAssetInfo_t
+	{
+		CUtlString m_AssetName;
+		int m_nModIndex;
+	};
+
+	struct ModInfo_t
+	{
+		CUtlString m_ModName;
+		CUtlString m_Path;
+	};
 
 	CAssetCache();
 
 	// Mod iteration
 	int ModCount() const;
-	const CacheModInfo_t& ModInfo( int nIndex ) const;
+	const ModInfo_t& ModInfo( int nIndex ) const;
 	
 	// Building the mod list
-	void BuildModList( const char *pSearchPath );
+	void BuildModList();
 
 	AssetList_t FindAssetList( const char *pAssetType, const char *pSubDir, int nExtCount, const char **ppExt );
-	bool BeginAssetScan( AssetList_t hList, bool bForceRescan = false ); // return true if finished
+	bool BeginAssetScan( AssetList_t hList, bool bForceRescan = false );
 	CAssetTreeView* GetFileTree( AssetList_t hList );
 	int GetAssetCount( AssetList_t hList ) const;
 	const CachedAssetInfo_t& GetAsset( AssetList_t hList, int nIndex ) const;
 
 	void AddAsset( AssetList_t hList, const CachedAssetInfo_t& info );
 
-	bool ContinueSearchForAssets( AssetList_t hList, float flDuration ); // return true if finished
-
-	void SetUsedAssetList( CUtlVector< AssetUsageInfo_t > &usedAssets );
+	bool ContinueSearchForAssets( AssetList_t hList, float flDuration );
 
 private:
 	struct DirToCheck_t
@@ -428,23 +433,14 @@ private:
 private:
 	bool AddFilesInDirectory( CachedAssetList_t& list, const char *pStartingFile, const char *pFilePath, DirHandle_t hDirHandle, float flStartTime, float flDuration );
 	bool DoesExtensionMatch( CachedAssetList_t& list, const char *pFileName );
-	void AddAssetToList( CachedAssetList_t& list, const char *pAssetName, int nModIndex, int nTimesUsed );
+	void AddAssetToList( CachedAssetList_t& list, const char *pAssetName, int nModIndex );
 
 private:
-
-	int GetAssetUsageCount( const char *assetName );
-
 	// List of known mods
-	CUtlVector< CacheModInfo_t > m_ModList;
-
-	// List of assets in use in the current context (such as the Hammer map), provided by the invoker of the asset picker
-	CUtlVector< AssetUsageInfo_t > m_usedAssets;
+	CUtlVector< ModInfo_t > m_ModList;
 
 	// List of cached assets
 	CUtlRBTree< CachedAssetList_t > m_CachedAssets;
-
-	// Search path
-	const char *m_pAssetSearchPath;
 
 	// Have we built the mod list?
 	bool m_bBuiltModList;
@@ -501,7 +497,7 @@ int CAssetCache::ModCount() const
 	return m_ModList.Count();
 }
 
-const CacheModInfo_t& CAssetCache::ModInfo( int nIndex ) const
+const CAssetCache::ModInfo_t& CAssetCache::ModInfo( int nIndex ) const
 {
 	return m_ModList[nIndex];
 }
@@ -510,20 +506,19 @@ const CacheModInfo_t& CAssetCache::ModInfo( int nIndex ) const
 //-----------------------------------------------------------------------------
 // Building the mod list
 //-----------------------------------------------------------------------------
-void CAssetCache::BuildModList( const char *pSearchPathName )
+void CAssetCache::BuildModList()
 {
 	if ( m_bBuiltModList )
 		return;
 
-	m_pAssetSearchPath = pSearchPathName;
 	m_bBuiltModList = true;
 
 	m_ModList.RemoveAll();
 
 	// Add all mods
-	int nLen = g_pFullFileSystem->GetSearchPath( m_pAssetSearchPath, false, NULL, 0 );
+	int nLen = g_pFullFileSystem->GetSearchPath( "GAME", false, NULL, 0 );
 	char *pSearchPath = (char*)stackalloc( nLen * sizeof(char) );
-	g_pFullFileSystem->GetSearchPath( m_pAssetSearchPath, false, pSearchPath, nLen );
+	g_pFullFileSystem->GetSearchPath( "GAME", false, pSearchPath, nLen );
 	char *pPath = pSearchPath;
 	while( pPath )
 	{
@@ -554,37 +549,14 @@ void CAssetCache::BuildModList( const char *pSearchPathName )
 
 
 //-----------------------------------------------------------------------------
-// Returns true if we should add the asset. Fills in timesUsed with the # of
-// times this asset is used.
-//-----------------------------------------------------------------------------
-int CAssetCache::GetAssetUsageCount( const char *assetName )
-{
-	if ( !m_usedAssets.Count() )
-		return 0;
-
-	for ( int i = 0; i < m_usedAssets.Count(); i++ )
-	{
-		// FIXME: deal with stripped path
-		if ( Q_stristr( m_usedAssets[i].m_assetName.Get(), assetName ) )
-		{
-			return m_usedAssets[i].m_nTimesUsed;
-		}
-	}
-
-	return 0;
-}
-
-
-//-----------------------------------------------------------------------------
 // Adds an asset to the list of assets of this type
 //-----------------------------------------------------------------------------
-void CAssetCache::AddAssetToList( CachedAssetList_t& list, const char *pAssetName, int nModIndex, int nTimesUsed )
+void CAssetCache::AddAssetToList( CachedAssetList_t& list, const char *pAssetName, int nModIndex )
 {
 	int i = list.m_AssetList.AddToTail( );
 	CachedAssetInfo_t& info = list.m_AssetList[i];
 	info.m_AssetName.Set( pAssetName );
 	info.m_nModIndex = nModIndex;
-	info.m_nTimesUsed = nTimesUsed;
 }
 
 
@@ -594,14 +566,6 @@ void CAssetCache::AddAssetToList( CachedAssetList_t& list, const char *pAssetNam
 bool CAssetCache::DoesExtensionMatch( CachedAssetList_t& info, const char *pFileName )
 {
 	char pChildExt[MAX_PATH];
-	
-	// We want to ignore any compiled assest for other platforms, like .360. or .ps3. etc.
-	if ( Q_stristr( pFileName, ".360." ) != NULL ||
-		 Q_stristr( pFileName, ".ps3." ) != NULL )
-	{
-			 return false;
-	}
-
 	Q_ExtractFileExtension( pFileName, pChildExt, sizeof(pChildExt) );
 
 	// Check the extension matches
@@ -658,7 +622,7 @@ bool CAssetCache::AddFilesInDirectory( CachedAssetList_t& list, const char *pSta
 			if ( DoesExtensionMatch( list, pszFileName ) )
 			{
 				char pFullAssetPath[MAX_PATH];
-				g_pFullFileSystem->RelativePathToFullPath( pRelativeChildPath, m_pAssetSearchPath, pFullAssetPath, sizeof(pFullAssetPath) );
+				g_pFullFileSystem->RelativePathToFullPath( pRelativeChildPath, "GAME", pFullAssetPath, sizeof(pFullAssetPath) );
 
 				int nModIndex = -1;
 				for ( int i = 0; i < nModCount; ++i )
@@ -686,8 +650,7 @@ bool CAssetCache::AddFilesInDirectory( CachedAssetList_t& list, const char *pSta
 					}
 					strlwr( pAssetName );
 
-					int nTimesUsed = GetAssetUsageCount( pAssetName );
-					AddAssetToList( list, pAssetName, nModIndex, nTimesUsed );
+					AddAssetToList( list, pAssetName, nModIndex );
 				}
 			}
 		}
@@ -702,12 +665,13 @@ bool CAssetCache::AddFilesInDirectory( CachedAssetList_t& list, const char *pSta
 	return true;
 }
 
+
 //-----------------------------------------------------------------------------
 // Recursively add all files matching the wildcard under this directory
 //-----------------------------------------------------------------------------
 bool CAssetCache::ContinueSearchForAssets( AssetList_t hList, float flDuration )
 {
-	CachedAssetList_t& list = m_CachedAssets[ (intp)hList ];
+	CachedAssetList_t& list = m_CachedAssets[ (int)hList ];
 
 	float flStartTime = Plat_FloatTime();
 	while ( list.m_DirectoriesToCheck.Count() )
@@ -722,7 +686,7 @@ bool CAssetCache::ContinueSearchForAssets( AssetList_t hList, float flDuration )
 			Q_snprintf( pSearchString, MAX_PATH, "%s\\*", pFilePath );
 
 			// get the list of files
-			pStartingFile = g_pFullFileSystem->FindFirstEx( pSearchString, m_pAssetSearchPath, &list.m_hFind );
+			pStartingFile = g_pFullFileSystem->FindFirstEx( pSearchString, "GAME", &list.m_hFind );
 		}
 		else
 		{
@@ -746,7 +710,7 @@ bool CAssetCache::ContinueSearchForAssets( AssetList_t hList, float flDuration )
 //-----------------------------------------------------------------------------
 bool CAssetCache::BeginAssetScan( AssetList_t hList, bool bForceRescan )
 {
-	CachedAssetList_t& list = m_CachedAssets[ (intp)hList ];
+	CachedAssetList_t& list = m_CachedAssets[ (int)hList ];
 	if ( bForceRescan )
 	{
 		list.m_bAssetScanComplete = false;
@@ -759,11 +723,11 @@ bool CAssetCache::BeginAssetScan( AssetList_t hList, bool bForceRescan )
 	}
 
 	if ( list.m_bAssetScanComplete )
-		return true;
+		return false;
 
 	// This case occurs if we stopped the picker previously while in the middle of a scan
 	if ( list.m_hFind != FILESYSTEM_INVALID_FIND_HANDLE )
-		return false;
+		return true;
 
 	list.m_AssetList.RemoveAll();
 	list.m_pFileTree->ClearDirectories();
@@ -772,24 +736,7 @@ bool CAssetCache::BeginAssetScan( AssetList_t hList, bool bForceRescan )
 	int i = list.m_DirectoriesToCheck.AddToTail();
 	list.m_DirectoriesToCheck[i].m_DirName = list.m_pSubDir;
 	list.m_DirectoriesToCheck[i].m_hDirHandle = list.m_pFileTree->GetRootDirectory();
-	return false;
-}
-
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-void CAssetCache::SetUsedAssetList( CUtlVector<AssetUsageInfo_t> &usedAssets )
-{
-	m_usedAssets.RemoveAll();
-	m_usedAssets.AddVectorToTail( usedAssets );
-
-	for ( int cache = m_CachedAssets.FirstInorder(); cache != m_CachedAssets.InvalidIndex(); cache = m_CachedAssets.NextInorder( cache ) )
-	{
-		for ( int i = 0; i < m_CachedAssets.Element( cache ).m_AssetList.Count(); i++ )
-		{
-			m_CachedAssets.Element( cache ).m_AssetList.Element( i ).m_nTimesUsed = GetAssetUsageCount( m_CachedAssets.Element( cache ).m_AssetList.Element( i ).m_AssetName.Get() );
-		}
-	}
+	return true;
 }
 
 
@@ -811,28 +758,29 @@ AssetList_t CAssetCache::FindAssetList( const char *pAssetType, const char *pSub
 		list.m_pFileTree = new CAssetTreeView( NULL, "FolderFilter", pAssetType, pSubDir );
 	}
 
-	return (AssetList_t)(intp)nIndex;
+	return (AssetList_t)nIndex;
 }
 
 CAssetTreeView* CAssetCache::GetFileTree( AssetList_t hList )
 {
 	if ( hList == ASSET_LIST_INVALID )
 		return NULL;
-	return m_CachedAssets[ (intp)hList ].m_pFileTree;
+	return m_CachedAssets[ (int)hList ].m_pFileTree;
 }
 
 int CAssetCache::GetAssetCount( AssetList_t hList ) const
 {
 	if ( hList == ASSET_LIST_INVALID )
 		return 0;
-	return m_CachedAssets[ (intp)hList ].m_AssetList.Count();
+	return m_CachedAssets[ (int)hList ].m_AssetList.Count();
 }
 
-const CachedAssetInfo_t& CAssetCache::GetAsset( AssetList_t hList, int nIndex ) const
+const CAssetCache::CachedAssetInfo_t& CAssetCache::GetAsset( AssetList_t hList, int nIndex ) const
 {
 	Assert( nIndex < GetAssetCount(hList) );
-	return m_CachedAssets[ (intp)hList ].m_AssetList[ nIndex ];
+	return m_CachedAssets[ (int)hList ].m_AssetList[ nIndex ];
 }
+
 
 
 //-----------------------------------------------------------------------------
@@ -865,21 +813,12 @@ static int __cdecl AssetBrowserModSortFunc( vgui::ListPanel *pPanel, const ListP
 	return AssetBrowserSortFunc( pPanel, item1, item2 );
 }
 
-static int __cdecl AssetBrowserTimesUsedSortFunc( vgui::ListPanel *pPanel, const ListPanelItem &item1, const ListPanelItem &item2 )
-{
-	int nMod1 = item1.kv->GetInt("timesused", -1);
-	int nMod2 = item2.kv->GetInt("timesused", -1);
-	if ( nMod1 != nMod2 )
-		return nMod1 - nMod2;
-	return AssetBrowserSortFunc( pPanel, item1, item2 );
-}
-
 
 //-----------------------------------------------------------------------------
 // Purpose: Constructor
 //-----------------------------------------------------------------------------
 CBaseAssetPicker::CBaseAssetPicker( vgui::Panel *pParent, const char *pAssetType, 
-	const char *pExt, const char *pSubDir, const char *pTextType, const char *pAssetSearchPath ) : 
+	const char *pExt, const char *pSubDir, const char *pTextType ) : 
 	BaseClass( pParent, "AssetPicker" )
 {
 	m_bBuiltAssetList = false;
@@ -887,14 +826,11 @@ CBaseAssetPicker::CBaseAssetPicker( vgui::Panel *pParent, const char *pAssetType
 	m_pAssetTextType = pTextType;
 	m_pAssetExt = pExt;
 	m_pAssetSubDir = pSubDir;
-	m_pAssetSearchPath = pAssetSearchPath;
 	m_bFinishedAssetListScan = false;
 	m_bFirstAssetScan = false;
 	m_nMatchingAssets = 0;
 	m_bSubDirCheck = true;
-	m_bOnlyUsedAssetsCheck = false;
 	m_hAssetList = ASSET_LIST_INVALID;
-	m_pInsertHelper = new KeyValues( "node" );
 }
 
 
@@ -909,10 +845,6 @@ CBaseAssetPicker::~CBaseAssetPicker()
 	m_pFileTree->RemoveActionSignalTarget( this );
 	m_pFileTree->SetParent( (Panel*)NULL );
 	m_pFileTree = NULL;
-	if ( m_pInsertHelper )
-	{
-		m_pInsertHelper->deleteThis();
-	}
 }
 
 
@@ -922,7 +854,7 @@ CBaseAssetPicker::~CBaseAssetPicker()
 void CBaseAssetPicker::CreateStandardControls( vgui::Panel *pParent, bool bAllowMultiselect )
 {
 	int nExtCount = 1 + m_ExtraAssetExt.Count();
-	const char **ppExt = (const char **)stackalloc( nExtCount * sizeof(const char *) );
+	const char **ppExt = (const char **)_alloca( nExtCount * sizeof(const char *) );
 	ppExt[0] = m_pAssetExt;
 	if ( nExtCount > 1 )
 	{
@@ -932,8 +864,6 @@ void CBaseAssetPicker::CreateStandardControls( vgui::Panel *pParent, bool bAllow
 	m_hAssetList = s_AssetCache.FindAssetList( m_pAssetType, m_pAssetSubDir, nExtCount, ppExt );
 
 	m_pAssetSplitter = new vgui::Splitter( pParent, "AssetSplitter", SPLITTER_MODE_HORIZONTAL, 1 );
-	m_pAssetSplitter->SetAutoResize( PIN_TOPLEFT, AUTORESIZE_DOWNANDRIGHT, 0, 0, 0, 0 );
-
 	vgui::Panel *pSplitterTopSide = m_pAssetSplitter->GetChild( 0 );
 	vgui::Panel *pSplitterBottomSide = m_pAssetSplitter->GetChild( 1 );
 
@@ -943,7 +873,6 @@ void CBaseAssetPicker::CreateStandardControls( vgui::Panel *pParent, bool bAllow
 
 	// Rescan button
 	m_pRescanButton = new Button( pSplitterTopSide, "RescanButton", "Rescan", this, "AssetRescan" );
-	m_pRescanButton->SetWide(75);
 
 	// file browser tree controls
 	m_pFileTree = s_AssetCache.GetFileTree( m_hAssetList );
@@ -961,7 +890,6 @@ void CBaseAssetPicker::CreateStandardControls( vgui::Panel *pParent, bool bAllow
 	m_pAssetBrowser = new vgui::ListPanel( pSplitterBottomSide, "AssetBrowser" );
  	m_pAssetBrowser->AddColumnHeader( 0, "mod", "Mod", 52, 0 );
 	m_pAssetBrowser->AddColumnHeader( 1, "asset", m_pAssetType, 128, ListPanel::COLUMN_RESIZEWITHWINDOW );
-	m_pAssetBrowser->AddColumnHeader( 2, "timesused", "Times Used", 128, ListPanel::COLUMN_RESIZEWITHWINDOW );
     m_pAssetBrowser->SetSelectIndividualCells( false );
     m_pAssetBrowser->SetMultiselectEnabled( bAllowMultiselect );
 	m_pAssetBrowser->SetEmptyListText( pTemp );
@@ -969,72 +897,20 @@ void CBaseAssetPicker::CreateStandardControls( vgui::Panel *pParent, bool bAllow
 	m_pAssetBrowser->AddActionSignalTarget( this );
 	m_pAssetBrowser->SetSortFunc( 0, AssetBrowserModSortFunc );
 	m_pAssetBrowser->SetSortFunc( 1, AssetBrowserSortFunc );
-	m_pAssetBrowser->SetSortFunc( 2, AssetBrowserTimesUsedSortFunc );
 	m_pAssetBrowser->SetSortColumn( 1 );
-
-	vgui::Panel *pSplitterBottomLeftSide = m_pAssetSplitter->GetChild( 1 );
 						 
 	// filter selection
-	m_pFilter = new TextEntry( pSplitterBottomLeftSide, "FilterList" );
+	m_pFilter = new TextEntry( pSplitterBottomSide, "FilterList" );
 	m_pFilter->AddActionSignalTarget( this );
 
-	m_pOnlyUsedCheck = new CheckButton( pSplitterBottomLeftSide, "OnlyUsedCheck", "Show used assets only" );
-	m_pOnlyUsedCheck->SetSelected( m_bOnlyUsedAssetsCheck );
-	m_pOnlyUsedCheck->AddActionSignalTarget( this );
-
 	// full path
-	m_pFullPath = new TextEntry( pSplitterBottomLeftSide, "FullPath" );
+	m_pFullPath = new TextEntry( pSplitterBottomSide, "FullPath" );
 	m_pFullPath->SetEnabled( false );
 	m_pFullPath->SetEditable( false );
-
-	// Rescan button
-	m_pFindAssetButton = new Button( pSplitterBottomLeftSide, "FindButton", "Find Asset", this, "FindAsset" );
-	//m_pFindAssetButton->SetWide(75);
 
 	m_nCurrentModFilter = -1;
 }
 
-void CBaseAssetPicker::AutoLayoutStandardControls(  )
-{
-	vgui::Panel *pSplitterTopLeftSide = m_pAssetSplitter->GetChild( 0 );
-	CBoxSizer* pTopLeftSplitterLayout = new CBoxSizer(ESLD_VERTICAL);
-	{
-		CBoxSizer* pRow = new CBoxSizer(ESLD_HORIZONTAL);
-		pRow->AddPanel( new Label(pSplitterTopLeftSide,"ModFilterLabel","Mod Filter"), SizerAddArgs_t() );
-		pRow->AddPanel( m_pModSelector, SizerAddArgs_t().Expand( 1.0f ) );
-		pRow->AddPanel( m_pRescanButton, SizerAddArgs_t() );
-		pTopLeftSplitterLayout->AddSizer( pRow, SizerAddArgs_t() );
-	}
-	m_pSubDirCheck->SetEnabled( true );
-	m_pSubDirCheck->SetVisible( true );
-	pTopLeftSplitterLayout->AddPanel( m_pSubDirCheck, SizerAddArgs_t() );
-	pTopLeftSplitterLayout->AddPanel( m_pFileTree, SizerAddArgs_t().Expand( 1.0f ) );
-	pSplitterTopLeftSide->SetSizer(pTopLeftSplitterLayout);
-
-	vgui::Panel *pSplitterBottomLeftSide = m_pAssetSplitter->GetChild( 1 );
-	CBoxSizer* pBottomLeftSplitterLayout = new CBoxSizer(ESLD_VERTICAL);
-	pBottomLeftSplitterLayout->AddPanel( m_pAssetBrowser, SizerAddArgs_t().Expand( 1.0f ) );
-	{
-		CBoxSizer* pRow = new CBoxSizer(ESLD_HORIZONTAL);
-		pRow->AddPanel( new Label(pSplitterBottomLeftSide,"FullPathLabel","Full Path"), SizerAddArgs_t() );
-		pRow->AddPanel( m_pFullPath, SizerAddArgs_t().Expand( 1.0f ) );
-		pRow->AddPanel( m_pFindAssetButton, SizerAddArgs_t().Expand( 1.0f ) );
-		pBottomLeftSplitterLayout->AddSizer( pRow, SizerAddArgs_t() );
-	}
-	{
-		CBoxSizer* pRow = new CBoxSizer(ESLD_HORIZONTAL);
-		pRow->AddPanel( new Label(pSplitterBottomLeftSide,"FilterLabel","Filter"), SizerAddArgs_t() );
-		pRow->AddPanel( m_pFilter, SizerAddArgs_t().Expand( 1.0f ) );
-		pBottomLeftSplitterLayout->AddSizer( pRow, SizerAddArgs_t() );
-	}
-	{
-		CBoxSizer* pRow = new CBoxSizer( ESLD_HORIZONTAL );
-		pRow->AddPanel( m_pOnlyUsedCheck, SizerAddArgs_t().Expand( 1.0f ) );
-		pRow->AddPanel( new Label( pSplitterBottomLeftSide, "OnlyUsedLabel", "Show used assets only" ), SizerAddArgs_t() );
-		pBottomLeftSplitterLayout->AddSizer( pRow, SizerAddArgs_t() );
-	}
-	pSplitterBottomLeftSide->SetSizer(pBottomLeftSplitterLayout);
-}
 
 //-----------------------------------------------------------------------------
 // Reads user config settings
@@ -1056,7 +932,7 @@ void CBaseAssetPicker::ApplyUserConfigSettings( KeyValues *pUserConfig )
 		int nCount = s_AssetCache.ModCount();
 		for ( int i = 0; i < nCount; ++i )
 		{
-			const CacheModInfo_t& modInfo = s_AssetCache.ModInfo( i );
+			const CAssetCache::ModInfo_t& modInfo = s_AssetCache.ModInfo( i );
 			if ( Q_stricmp( pMod, modInfo.m_ModName ) )
 				continue;
 
@@ -1088,8 +964,7 @@ void CBaseAssetPicker::GetUserConfigSettings( KeyValues *pUserConfig )
 	pUserConfig->SetString( "filter", m_Filter );
 	pUserConfig->SetString( "folderfilter", m_FolderFilter );
 	pUserConfig->SetString( "mod", ( m_nCurrentModFilter >= 0 ) ? 
-
-	s_AssetCache.ModInfo( m_nCurrentModFilter ).m_ModName : "" );
+		s_AssetCache.ModInfo( m_nCurrentModFilter ).m_ModName : "" );
 }
 
 
@@ -1119,37 +994,35 @@ bool CBaseAssetPicker::IsMultiselectEnabled() const
 	return m_pAssetBrowser->IsMultiselectEnabled(); 
 }
 
-void CBaseAssetPicker::SetAllowMultiselect( bool bAllowMultiselect )
-{
-	m_pAssetBrowser->SetMultiselectEnabled( bAllowMultiselect );
-}
 
 //-----------------------------------------------------------------------------
 // Sets the initial selected asset
 //-----------------------------------------------------------------------------
 void CBaseAssetPicker::SetInitialSelection( const char *pAssetName )
 {
-	SetSelection( pAssetName, true );
-}
-
-void CBaseAssetPicker::SetSelection( const char *pAssetName, bool bInitialSelection )
-{
-	if( bInitialSelection )
-	{
-		// This makes it so the background list filling code will automatically select this asset when it gets to it.
-		m_SelectedAsset = pAssetName;		
-	}
+	// This makes it so the background list filling code will automatically select this asset when it gets to it.
+	m_SelectedAsset = pAssetName;		
 								   
 	if ( pAssetName )
 	{	
 		// Sometimes we've already refreshed our list with a bunch of cached resources and the item is already in the list,
 		// so in that case just select it here.
-		int i = m_pAssetBrowser->GetItem( pAssetName );
-
-		if ( i != -1 )
+		int cnt = m_pAssetBrowser->GetItemCount();
+		for ( int i=0; i < cnt; i++ )
 		{
-			m_pAssetBrowser->SetSelectedCell( i, 0 );
-			m_pAssetBrowser->ScrollToItem( i );
+			KeyValues *kv = m_pAssetBrowser->GetItem( i );
+			if ( !kv )
+				continue;
+			
+			const char *pTestAssetName = kv->GetString( "asset" );
+			if ( !pTestAssetName )
+				continue;
+				
+			if ( Q_stricmp( pTestAssetName, pAssetName ) == 0 )
+			{
+				m_pAssetBrowser->SetSelectedCell( i, 0 );
+				break;
+			}			
 		}
 	}
 }
@@ -1177,44 +1050,33 @@ void CBaseAssetPicker::Activate()
 {
 	RefreshAssetList();
 	RequestFilterFocus();
-	// Keep scanning...
-	if ( !m_bFinishedAssetListScan )
-	{
-		vgui::ivgui()->AddTickSignal( GetVPanel(), 10 );
-	}
 }
 
 
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CBaseAssetPicker::OnKeyCodeTyped( KeyCode code )
+void CBaseAssetPicker::OnKeyCodePressed( KeyCode code )
 {
 	if (( code == KEY_UP ) || ( code == KEY_DOWN ) || ( code == KEY_PAGEUP ) || ( code == KEY_PAGEDOWN ))
 	{
-		KeyValues *pMsg = new KeyValues("KeyCodeTyped", "code", code);
+		KeyValues *pMsg = new KeyValues("KeyCodePressed", "code", code);
 		vgui::ipanel()->SendMessage( m_pAssetBrowser->GetVPanel(), pMsg, GetVPanel());
 		pMsg->deleteThis();
 	}
 	else
 	{
-		BaseClass::OnKeyCodeTyped( code );
+		BaseClass::OnKeyCodePressed( code );
 	}
 }
 
 
-const CachedAssetInfo_t& CBaseAssetPicker::GetCachedAsset( int nAssetIndex )
-{
-	return s_AssetCache.GetAsset( m_hAssetList, nAssetIndex );
-}
-
 //-----------------------------------------------------------------------------
 // Is a particular asset visible?
 //-----------------------------------------------------------------------------
-
 bool CBaseAssetPicker::IsAssetVisible( int nAssetIndex )
 {
-	const CachedAssetInfo_t& info = GetCachedAsset( nAssetIndex );
+	const CAssetCache::CachedAssetInfo_t& info = s_AssetCache.GetAsset( m_hAssetList, nAssetIndex );
 
 	// Filter based on active mod
 	int nModIndex = info.m_nModIndex;
@@ -1236,31 +1098,8 @@ bool CBaseAssetPicker::IsAssetVisible( int nAssetIndex )
 	// Filter based on subdirectory check
 	if ( !m_bSubDirCheck && strchr( pAssetName + m_FolderFilter.Length(), '\\' ) )
 		return false;
-		
-	// Skip this asset if it's never used and we are only looking at used assets.
-	if ( m_bOnlyUsedAssetsCheck && !info.m_nTimesUsed )
-		return false;
 
 	return true;
-}
-
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-void CBaseAssetPicker::SetUsedAssetList( CUtlVector<AssetUsageInfo_t> &usedAssets )
-{
-	s_AssetCache.SetUsedAssetList( usedAssets );
-	
-	bool bEnabled = ( usedAssets.Count() > 0 );
-
-	m_pOnlyUsedCheck->SetEnabled( bEnabled );
-	if ( !bEnabled )
-	{
-		m_pOnlyUsedCheck->SetSelected( false );
-		m_bOnlyUsedAssetsCheck = false;
-	}
-	
-	m_pFindAssetButton->SetEnabled( bEnabled );
 }
 		
 
@@ -1269,24 +1108,16 @@ void CBaseAssetPicker::SetUsedAssetList( CUtlVector<AssetUsageInfo_t> &usedAsset
 //-----------------------------------------------------------------------------
 void CBaseAssetPicker::AddAssetToList( int nAssetIndex )
 {
-	const CachedAssetInfo_t& info = GetCachedAsset( nAssetIndex );
+	const CAssetCache::CachedAssetInfo_t& info = s_AssetCache.GetAsset( m_hAssetList, nAssetIndex );
 
 	bool bInRootDir = !strchr( info.m_AssetName, '\\' ) && !strchr( info.m_AssetName, '/' );
 
-	Assert( m_pInsertHelper );
-	KeyValues *kv = m_pInsertHelper;
-	kv->SetName( info.m_AssetName );
-	kv->SetString( "asset", info.m_AssetName );
+	KeyValues *kv = new KeyValues( "node", "asset", info.m_AssetName );
 	kv->SetString( "mod", s_AssetCache.ModInfo( info.m_nModIndex ).m_ModName );
 	kv->SetInt( "modIndex", info.m_nModIndex );
 	kv->SetInt( "root", bInRootDir );
-	kv->SetInt( "assetIndex", nAssetIndex );
-
-	// NOTE: properties which may change between browser invocations also need
-	// to be updated in RefreshAssetList!
-	kv->SetInt( "timesused", info.m_nTimesUsed );
-
 	int nItemID = m_pAssetBrowser->AddItem( kv, 0, false, false );
+	kv->deleteThis();
 	
 	if ( m_pAssetBrowser->GetSelectedItemsCount() == 0 && !Q_strcmp( m_SelectedAsset, info.m_AssetName ) )
 	{
@@ -1312,32 +1143,6 @@ void CBaseAssetPicker::AddAssetToList( int nAssetIndex )
 	}
 }
 
-int CBaseAssetPicker::GetCachedAssetCount()
-{
-	return s_AssetCache.GetAssetCount( m_hAssetList );
-}
-
-// overriden functionality
-bool CBaseAssetPicker::IncrementalCacheAssets( float flTimeAllowed )
-{
-	bool bFinished = s_AssetCache.ContinueSearchForAssets( m_hAssetList, flTimeAllowed );
-
-	if ( m_bFirstAssetScan )
-	{
-		m_pFileTree->OpenRoot();
-	}
-
-	return bFinished;
-}
-
-// common functionality
-bool CBaseAssetPicker::DoIncrementalCache( )
-{
-	float flTimeAllowed = m_bFirstAssetScan ? ASSET_LIST_DIRECTORY_INITIAL_SEARCH_TIME : ASSET_LIST_DIRECTORY_SEARCH_TIME;
-	bool bFinished = IncrementalCacheAssets( flTimeAllowed );
-	m_bFirstAssetScan = false;
-	return bFinished;
-}
 
 //-----------------------------------------------------------------------------
 // Continues to build the asset list
@@ -1346,10 +1151,19 @@ void CBaseAssetPicker::OnTick()
 {
 	BaseClass::OnTick();
 
-	int nPreAssetCount = GetCachedAssetCount( );
-	bool bFinished = DoIncrementalCache( );
-	int nPostAssetCount = GetCachedAssetCount( );
+	int nPreAssetCount = s_AssetCache.GetAssetCount( m_hAssetList );
 
+	// Stop getting called back once all assets have been found
+	float flTime = m_bFirstAssetScan ? ASSET_LIST_DIRECTORY_INITIAL_SEARCH_TIME : ASSET_LIST_DIRECTORY_SEARCH_TIME;
+	bool bFinished = s_AssetCache.ContinueSearchForAssets( m_hAssetList, flTime );
+
+	if ( m_bFirstAssetScan )
+	{
+		m_pFileTree->OpenRoot();
+	}
+	m_bFirstAssetScan = false;
+
+	int nPostAssetCount = s_AssetCache.GetAssetCount( m_hAssetList );
 	for ( int i = nPreAssetCount; i < nPostAssetCount; ++i )
 	{
 		AddAssetToList( i );
@@ -1373,11 +1187,7 @@ void CBaseAssetPicker::OnTick()
 	UpdateAssetColumnHeader();
 }
 
-bool CBaseAssetPicker::BeginCacheAssets( bool bForceRecache )
-{
-	return s_AssetCache.BeginAssetScan( m_hAssetList, bForceRecache );
-}
-
+	
 //-----------------------------------------------------------------------------
 // Builds the Bsp name list
 //-----------------------------------------------------------------------------
@@ -1391,7 +1201,7 @@ void CBaseAssetPicker::BuildAssetNameList( )
 	m_nCurrentModFilter = -1;
 
 	// Build the list of known mods if we haven't 
-	s_AssetCache.BuildModList( m_pAssetSearchPath );
+	s_AssetCache.BuildModList();
 
 	m_pModSelector->RemoveAll();
 	m_pModSelector->AddItem( "All Mods", new KeyValues( "Mod", "mod", -1 ) );
@@ -1404,7 +1214,7 @@ void CBaseAssetPicker::BuildAssetNameList( )
 	m_pModSelector->ActivateItemByRow( 0 );
 
 	// If we've already read in
-	if ( !BeginCacheAssets(false) )
+	if ( s_AssetCache.BeginAssetScan( m_hAssetList ) )
 	{
 		m_bFirstAssetScan = true;
 		m_bFinishedAssetListScan = false;
@@ -1416,7 +1226,7 @@ void CBaseAssetPicker::BuildAssetNameList( )
 		m_bFinishedAssetListScan = true;
 	}
 
-	int nAssetCount = GetCachedAssetCount();
+	int nAssetCount = s_AssetCache.GetAssetCount( m_hAssetList );
 	for ( int i = 0; i < nAssetCount; ++i )
 	{
 		AddAssetToList( i );
@@ -1431,7 +1241,7 @@ void CBaseAssetPicker::RescanAssets()
 {
 	m_pAssetBrowser->RemoveAll();
 	m_AssetList.RemoveAll();
-	BeginCacheAssets( true );
+	s_AssetCache.BeginAssetScan( m_hAssetList, true );
 	m_bFirstAssetScan = true;
 	m_nMatchingAssets = 0;
 
@@ -1461,25 +1271,6 @@ void CBaseAssetPicker::OnCommand( const char *pCommand )
 	{
 		RescanAssets();
 		return;
-	}
-
-	if ( !Q_stricmp( pCommand, "FindAsset" ) )
-	{
-		KeyValues *pKeyValues = new KeyValues( "AssetPickerFind" );
-
-		int nLength = m_pFullPath->GetTextLength();
-		char *pPath = (char *)stackalloc( ( nLength + 1 ) * sizeof( char ) );
-		if ( nLength > 0 )
-		{
-			m_pFullPath->GetText( pPath, nLength + 1 );
-		}
-		else
-		{
-			pPath[0] = '\0';
-		}
-
-		pKeyValues->SetString( "asset", pPath );
-		PostActionSignal( pKeyValues );
 	}
 
 	BaseClass::OnCommand( pCommand );
@@ -1525,18 +1316,6 @@ void CBaseAssetPicker::RefreshAssetList( )
 	{
 		// Filter based on active mod
 		bool bIsVisible = IsAssetVisible( i );
-
-		// Update any fields that can change between invocations of the browser
-		const CachedAssetInfo_t &info = GetCachedAsset( i );
-		ListPanelItem *pItem = m_pAssetBrowser->GetItemData( m_AssetList[i].m_nItemId );
-
-		int oldTimesUsed = pItem->kv->GetInt( "timesused" );
-		if ( oldTimesUsed != info.m_nTimesUsed )
-		{
-			pItem->kv->SetInt( "timesused", info.m_nTimesUsed );
-			m_pAssetBrowser->ApplyItemChanges( m_AssetList[i].m_nItemId );
-		}
-
 		m_pAssetBrowser->SetItemVisible( m_AssetList[i].m_nItemId, bIsVisible );
 		if ( bIsVisible )
 		{
@@ -1556,8 +1335,6 @@ void CBaseAssetPicker::RefreshAssetList( )
 	}
 
 	m_pFileTree->RefreshFileList();
-
-	OnAssetListChanged();
 }
 
 
@@ -1604,7 +1381,7 @@ void CBaseAssetPicker::OnTextChanged( KeyValues *pKeyValues )
 	if ( pSource == m_pFilter )
 	{
 		int nLength = m_pFilter->GetTextLength();
-		char *pNewFilter = (char*)stackalloc( (nLength+1) * sizeof(char) );
+		char *pNewFilter = (char*)_alloca( (nLength+1) * sizeof(char) );
 		if ( nLength > 0 )
 		{
 			m_pFilter->GetText( pNewFilter, nLength+1 );
@@ -1624,29 +1401,16 @@ void CBaseAssetPicker::OnTextChanged( KeyValues *pKeyValues )
 
 	if ( pSource == m_pModSelector )
 	{
-		KeyValues *pKeyValues = m_pModSelector->GetActiveItemUserData();
-		if ( pKeyValues )
+		KeyValues *pKeyValuesActive = m_pModSelector->GetActiveItemUserData();
+		if ( pKeyValuesActive )
 		{
-			m_nCurrentModFilter = pKeyValues->GetInt( "mod", -1 ); 
+			m_nCurrentModFilter = pKeyValuesActive->GetInt( "mod", -1 );
 			RefreshAssetList();
 		}
 		return;
 	}
 }
 
-
-CUtlString CBaseAssetPicker::GetSelectedAssetFullPath( int nIndex )
-{
-	const char *pSelectedAsset = GetSelectedAsset( nIndex - 1 );
-	int nModIndex = GetSelectedAssetModIndex();
-
-	char pBuf[MAX_PATH];
-	Q_snprintf( pBuf, sizeof(pBuf), "%s\\%s\\%s", 
-		s_AssetCache.ModInfo( nModIndex ).m_Path.Get(), m_pAssetSubDir, pSelectedAsset );
-	Q_FixSlashes( pBuf );
-
-	return CUtlString(pBuf);
-}
 
 //-----------------------------------------------------------------------------
 // Purpose: Updates preview when an item is selected
@@ -1660,7 +1424,13 @@ void CBaseAssetPicker::OnItemSelected( KeyValues *kv )
 		Assert( nCount > 0 );
 		const char *pSelectedAsset = GetSelectedAsset( nCount - 1 );
 
-		m_pFullPath->SetText( GetSelectedAssetFullPath( nCount - 1 ) );
+		// Fill in the full path
+		int nModIndex = GetSelectedAssetModIndex();
+		char pBuf[MAX_PATH];
+		Q_snprintf( pBuf, sizeof(pBuf), "%s\\%s\\%s", 
+			s_AssetCache.ModInfo( nModIndex ).m_Path.Get(), m_pAssetSubDir, pSelectedAsset );
+		Q_FixSlashes( pBuf );
+		m_pFullPath->SetText( pBuf );
 
 		surface()->SetCursor( dc_waitarrow );
 		OnSelectedAssetPicked( pSelectedAsset );
@@ -1668,28 +1438,12 @@ void CBaseAssetPicker::OnItemSelected( KeyValues *kv )
 	}
 }
 
-void CBaseAssetPicker::OnItemDeselected( KeyValues *kv )
-{
-	Panel *pPanel = (Panel *)kv->GetPtr( "panel", NULL );
-	if ( pPanel == m_pAssetBrowser )
-	{
-		OnSelectedAssetPicked( "" );
-		return;
-	}
-}
-
-
 void CBaseAssetPicker::OnCheckButtonChecked( KeyValues *kv )
 {
 	vgui::Panel *pSource = (vgui::Panel*)kv->GetPtr( "panel" );
 	if ( pSource == m_pSubDirCheck )
 	{
 		m_bSubDirCheck = m_pSubDirCheck->IsSelected();
-		RefreshAssetList();
-	}
-	else if ( pSource == m_pOnlyUsedCheck )
-	{
-		m_bOnlyUsedAssetsCheck = m_pOnlyUsedCheck->IsSelected();
 		RefreshAssetList();
 	}
 }
@@ -1707,56 +1461,21 @@ int CBaseAssetPicker::GetSelectedAssetCount()
 //-----------------------------------------------------------------------------
 // Returns the selceted asset name
 //-----------------------------------------------------------------------------
-const char *CBaseAssetPicker::GetSelectedAsset( int nSelectionIndex )
+const char *CBaseAssetPicker::GetSelectedAsset( int nAssetIndex )
 {
 	int nSelectedAssetCount = m_pAssetBrowser->GetSelectedItemsCount();
-	if ( nSelectionIndex < 0 )
+	if ( nAssetIndex < 0 )
 	{
-		nSelectionIndex = nSelectedAssetCount - 1;
+		nAssetIndex = nSelectedAssetCount - 1;
 	}
-	if ( nSelectedAssetCount <= nSelectionIndex || nSelectionIndex < 0 )
+	if ( nSelectedAssetCount <= nAssetIndex || nAssetIndex < 0 )
 		return NULL;
 
-	int nIndex = m_pAssetBrowser->GetSelectedItem( nSelectionIndex );
+	int nIndex = m_pAssetBrowser->GetSelectedItem( nAssetIndex );
 	KeyValues *pItemKeyValues = m_pAssetBrowser->GetItem( nIndex );
 	return pItemKeyValues->GetString( "asset" );
 }
 
-//-----------------------------------------------------------------------------
-// Returns the selected asset index (in the list of all cached assets)
-//-----------------------------------------------------------------------------
-int CBaseAssetPicker::GetSelectedAssetIndex( int nSelectionIndex )
-{
-	int nSelectedAssetCount = m_pAssetBrowser->GetSelectedItemsCount();
-	if ( nSelectionIndex < 0 )
-	{
-		nSelectionIndex = nSelectedAssetCount - 1;
-	}
-	if ( nSelectedAssetCount <= nSelectionIndex || nSelectionIndex < 0 )
-		return -1;
-
-	int nIndex = m_pAssetBrowser->GetSelectedItem( nSelectionIndex );
-	KeyValues *pItemKeyValues = m_pAssetBrowser->GetItem( nIndex );
-	return pItemKeyValues->GetInt( "assetIndex" );
-}
-
-//-----------------------------------------------------------------------------
-// Returns the total filtered asset count
-//-----------------------------------------------------------------------------
-int CBaseAssetPicker::GetAssetCount()
-{
-	return m_AssetList.Count();
-}
-
-//-----------------------------------------------------------------------------
-// Returns the specified asset name
-//-----------------------------------------------------------------------------
-const char *CBaseAssetPicker::GetAssetName( int nAssetIndex )
-{
-	int cacheIndex = m_AssetList[nAssetIndex].m_nAssetIndex;
-	const CachedAssetInfo_t& assetInfo = s_AssetCache.GetAsset( m_hAssetList, cacheIndex );
-	return assetInfo.m_AssetName;
-}
 	
 //-----------------------------------------------------------------------------
 // Returns the selceted asset mod index
@@ -1764,28 +1483,13 @@ const char *CBaseAssetPicker::GetAssetName( int nAssetIndex )
 int CBaseAssetPicker::GetSelectedAssetModIndex( )
 {
 	if ( m_pAssetBrowser->GetSelectedItemsCount() == 0 )
-		return NULL;
+		return 0;
 
 	int nIndex = m_pAssetBrowser->GetSelectedItem( 0 );
 	KeyValues *pItemKeyValues = m_pAssetBrowser->GetItem( nIndex );
 	return pItemKeyValues->GetInt( "modIndex" );
 }
 
-int CBaseAssetPicker::ModCount() const
-{
-	return s_AssetCache.ModCount();
-}
-
-const CacheModInfo_t& CBaseAssetPicker::ModInfo( int nIndex ) const
-{
-	return s_AssetCache.ModInfo( nIndex );
-}
-
-void CBaseAssetPicker::CloseModal()
-{
-	// Stop refreshing if close before finished loading
-	vgui::ivgui()->RemoveTickSignal( GetVPanel() );
-}
 
 //-----------------------------------------------------------------------------
 //
@@ -1861,10 +1565,6 @@ void CBaseAssetPickerFrame::DoModal( KeyValues *pKeyValues )
 {
 	BaseClass::DoModal();
 	CleanUpMessage();
-	if ( m_pContextKeyValues )
-	{
-		m_pContextKeyValues->deleteThis();
-	}
 	m_pContextKeyValues = pKeyValues;
 	m_pPicker->Activate();
 }
@@ -1909,8 +1609,6 @@ void CBaseAssetPickerFrame::OnCommand( const char *pCommand )
 				pAssetKeys->SetString( pBuf, m_pPicker->GetSelectedAsset( i ) );
 			}
 		}
-
-		m_pPicker->CustomizeSelectionMessage( pActionKeys );
 		PostMessageAndClose( pActionKeys );
 		return;
 	}
@@ -1924,13 +1622,4 @@ void CBaseAssetPickerFrame::OnCommand( const char *pCommand )
 	BaseClass::OnCommand( pCommand );
 }
 
-void CBaseAssetPickerFrame::CloseModal()
-{
-	GetAssetPicker()->CloseModal();
-	BaseClass::CloseModal();
-}
-
-void CBaseAssetPickerFrame::SetAllowMultiselect( bool bAllowMultiselect )
-{
-	GetAssetPicker()->SetAllowMultiselect( bAllowMultiselect );
-}
+	

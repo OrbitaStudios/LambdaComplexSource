@@ -1,4 +1,4 @@
-//====== Copyright © 1996-2005, Valve Corporation, All rights reserved. =======
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // This is a helper class designed to help with the chains of modal dialogs
 // encountered when trying to open or save a particular file
@@ -6,7 +6,7 @@
 //=============================================================================
 
 #include "vgui_controls/FileOpenStateMachine.h"
-#include "tier1/keyvalues.h"
+#include "tier1/KeyValues.h"
 #include "vgui_controls/FileOpenDialog.h"
 #include "vgui_controls/MessageBox.h"
 #include "vgui_controls/perforcefilelistframe.h"
@@ -76,7 +76,7 @@ void FileOpenStateMachine::SetCompletionState( FileOpenStateMachine::CompletionS
 
 	KeyValues *kv = new KeyValues( "FileStateMachineFinished" );
 	kv->SetInt( "completionState", m_CompletionState );
-	kv->SetBool( "wroteFile", m_bWroteFile );
+	kv->SetInt( "wroteFile", m_bWroteFile );
 	kv->SetString( "fullPath", m_FileName.Get() );
 	kv->SetString( "fileType", m_bIsOpeningFile ? m_OpenFileType.Get() : m_SaveFileType.Get() );
 	if ( m_pContextKeyValues )
@@ -332,6 +332,7 @@ void FileOpenStateMachine::OnSaveFile()
 
 		FileOpenDialog *pDialog = new FileOpenDialog( GetParent(), "Save As", false );
 		m_pClient->SetupFileOpenDialog( pDialog, false, m_SaveFileType, m_pContextKeyValues );
+		pDialog->SetDeleteSelfOnClose( true );
 		pDialog->AddActionSignalTarget( this );
 		pDialog->DoModal( );
 		return;
@@ -382,7 +383,7 @@ void FileOpenStateMachine::SaveFile( KeyValues *pContextKeyValues, const char *p
 	m_OpenFileName = NULL;
 
 	// Clear the P4 dialog flag for SDK users and licensees without Perforce
-	if ( g_pFullFileSystem->IsSteam() || CommandLine()->FindParm( "-nop4" ) )
+	if ( CommandLine()->FindParm( "-nop4" ) )
 	{
 		nFlags &= ~FOSM_SHOW_PERFORCE_DIALOGS;
 	}
@@ -429,6 +430,7 @@ void FileOpenStateMachine::OpenFileDialog( )
 	{
 		FileOpenDialog *pDialog = new FileOpenDialog( GetParent(), "Open", true );
 		m_pClient->SetupFileOpenDialog( pDialog, true, m_OpenFileType, m_pContextKeyValues );
+		pDialog->SetDeleteSelfOnClose( true );
 		pDialog->AddActionSignalTarget( this );
 		pDialog->DoModal( );
 	}

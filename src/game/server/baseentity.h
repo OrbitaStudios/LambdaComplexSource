@@ -927,7 +927,7 @@ public:
 	bool					IsWorld() const { extern CWorld *g_WorldEntity; return (void *)this == (void *)g_WorldEntity; }
 	virtual char const		*DamageDecal( int bitsDamageType, int gameMaterial );
 	virtual void			DecalTrace( trace_t *pTrace, char const *decalName );
-	virtual void			ImpactTrace( trace_t *pTrace, int iDamageType, const char *pCustomImpactName = NULL );
+	virtual void			ImpactTrace( trace_t *pTrace, int iDamageType, char *pCustomImpactName = NULL );
 
 	void			AddPoints( int score, bool bAllowNegativeScore );
 	void			AddPointsToTeam( int score, bool bAllowNegativeScore );
@@ -1084,17 +1084,17 @@ public:
 
 	// Ugly code to lookup all functions to make sure they are in the table when set.
 	// Turn this off in 64-bit builds because OSX-64 fails to compile.
-#if defined( _DEBUG )
+#if defined( _DEBUG ) 
 	void FunctionCheck( inputfunc_t pFunction, const char *name );
-	ENTITYFUNCPTR TouchSet( ENTITYFUNCPTR func, char *name )
+
+	ENTITYFUNCPTR TouchSet( ENTITYFUNCPTR func, char *name ) 
 	{ 
 #if defined( __clang__ ) 
 		COMPILE_TIME_ASSERT( sizeof( func ) == sizeof( m_pfnTouch ) );
 #elif defined( GNUC ) || defined( PLATFORM_WINDOWS_PC64 )
-        //lwss update: newer compilers will make class member pointers 2x the size of a pointer
-	    COMPILE_TIME_ASSERT( sizeof(func) == 8 || sizeof(func) == 16 );
+		COMPILE_TIME_ASSERT( sizeof(func) == 8 );
 #elif !defined( _PS3 )
-		COMPILE_TIME_ASSERT( sizeof(func) == 4 || sizeof(func) == 8 );
+		COMPILE_TIME_ASSERT( sizeof(func) == 4 );
 #endif
 		m_pfnTouch = func; 
 		FunctionCheck( reinterpret_cast<inputfunc_t>(m_pfnTouch), name ); 
@@ -1105,10 +1105,9 @@ public:
 #if defined( __clang__ ) 
 		COMPILE_TIME_ASSERT( sizeof( func ) == sizeof( m_pfnTouch ) );
 #elif defined( GNUC ) || defined( PLATFORM_WINDOWS_PC64 )
-        //lwss update: newer compilers will make class member pointers 2x the size of a pointer
-	    COMPILE_TIME_ASSERT( sizeof(func) == 8 || sizeof(func) == 16 );
+		COMPILE_TIME_ASSERT( sizeof(func) == 8 );
 #elif !defined( _PS3 )
-		COMPILE_TIME_ASSERT( sizeof(func) == 4 || sizeof(func) == 8 );
+		COMPILE_TIME_ASSERT( sizeof(func) == 4 );
 #endif
 		m_pfnUse = func; 
 		FunctionCheck( reinterpret_cast<inputfunc_t>(m_pfnUse), name ); 
@@ -1119,10 +1118,9 @@ public:
 #if defined( __clang__ ) 
 		COMPILE_TIME_ASSERT( sizeof( func ) == sizeof( m_pfnTouch ) );
 #elif defined( GNUC ) || defined( PLATFORM_WINDOWS_PC64 )
-        //lwss update: newer compilers will make class member pointers 2x the size of a pointer
-	    COMPILE_TIME_ASSERT( sizeof(func) == 8 || sizeof(func) == 16 );
+		COMPILE_TIME_ASSERT( sizeof(func) == 8 );
 #elif !defined( _PS3 )
-		COMPILE_TIME_ASSERT( sizeof(func) == 4 || sizeof(func) == 8 );
+		COMPILE_TIME_ASSERT( sizeof(func) == 4 );
 #endif
 		m_pfnBlocked = func; 
 		FunctionCheck( reinterpret_cast<inputfunc_t>(m_pfnBlocked), name ); 

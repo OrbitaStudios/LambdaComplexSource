@@ -789,7 +789,7 @@ void CNavArea::ConnectTo( CNavArea *area, NavDirType dir )
 	}	
 	
 	//static char *dirName[] = { "NORTH", "EAST", "SOUTH", "WEST" };
-	//Msg( "  Connected area #%d to #%d, %s\n", m_id, area->m_id, dirName[ dir ] );
+	//CONSOLE_ECHO( "  Connected area #%d to #%d, %s\n", m_id, area->m_id, dirName[ dir ] );
 }
 
 

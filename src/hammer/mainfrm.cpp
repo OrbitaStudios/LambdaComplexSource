@@ -1151,12 +1151,6 @@ void CMainFrame::OnModelBrowser()
 	CModelBrowser *pModelBrowser = GetModelBrowser();
 	pModelBrowser->Show();
 
-	CMapDoc *pDoc = CMapDoc::GetActiveMapDoc();
-	CUtlVector<AssetUsageInfo_t> usedModels;
-	pDoc->GetUsedModels( usedModels );
-
-	pModelBrowser->SetUsedModelList( usedModels );
-
 	int nRet = pModelBrowser->DoModal();
 	pModelBrowser->Hide();
 
@@ -1170,6 +1164,7 @@ void CMainFrame::OnModelBrowser()
 		EntityReportFilterParms_t filter;
 		filter.FilterByKeyValue( "model", szModelName );
 
+		CMapDoc* pDoc = CMapDoc::GetActiveMapDoc();
 		CEntityReportDlg::ShowEntityReport( pDoc, this, &filter );
 	}
 }

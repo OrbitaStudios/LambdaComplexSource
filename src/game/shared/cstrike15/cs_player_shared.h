@@ -44,7 +44,7 @@ public:
 
 struct HalloweenMaskModelStruct
 {
-	const char* model;
+	char* model;
 };
 
 static const HalloweenMaskModelStruct s_HalloweenMaskModels[] =

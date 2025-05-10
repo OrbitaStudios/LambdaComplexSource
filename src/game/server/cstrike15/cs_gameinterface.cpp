@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -24,8 +24,6 @@
 
 #include "netmessages.h"
 #include "usermessages.h"
-
-#include "cstrike15_gcmessages.pb.h"
 
 // NOTE: This has to be the last file included!
 #include "tier0/memdbgon.h"
@@ -519,7 +517,7 @@ void CServerGameDLL::ApplyGameSettings( KeyValues *pKV )
 
 		// For team games we add the prefix "team" to the game type. This is to
 		// eliminate team game lobbies from searches for QuickMatch and Custom Match
-		const char *teamStr = "team";
+		char *teamStr = "team";
 		const char *pTeamPrefix = Q_strstr( pGameType, teamStr);
 		if ( pTeamPrefix == pGameType )
 		{

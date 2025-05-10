@@ -1,4 +1,4 @@
-//====== Copyright 1996-2005, Valve Corporation, All rights reserved. =======//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -6,12 +6,11 @@
 //=============================================================================//
 
 #include "basefilesystem.h"
-#include "SteamCommon.h"
+#include "steamcommon.h"
 #include "SteamInterface.h"
 #include "tier0/dbg.h"
 #include "tier0/icommandline.h"
 #include "steam/steam_api.h"
-#include "tier0/vprof.h"
 #ifdef POSIX
 #include <fcntl.h>
 #ifdef LINUX
@@ -24,18 +23,12 @@
 #define FILE_ATTRIBUTE_OFFLINE 0x1000
 #endif
 
-// NOTE: This has to be the last file included!
-#include "tier0/memdbgon.h"
-
 #ifdef _WIN32
-DECLSPEC_IMPORT BOOL WINAPI IsDebuggerPresent(void);
-#else
-static bool IsDebuggerPresent( void )
-{
-	return false;
-}
+	extern "C"
+	{
+		__declspec(dllimport) int __stdcall IsDebuggerPresent();
+	}
 #endif
-
 
 ISteamInterface *steam = NULL;
 static SteamHandle_t	g_pLastErrorFile; 
@@ -141,7 +134,7 @@ protected:
 	virtual int FS_ferror( FILE *fp );
 	virtual int FS_fflush( FILE *fp );
 	virtual char *FS_fgets( char *dest, int destSize, FILE *fp );
-	virtual int FS_stat( const char *path, struct _stat *buf );
+	virtual int FS_stat( const char *path, struct _stat *buf, bool *pbLoadedFromSteamCache=NULL );
 	virtual int FS_chmod( const char *path, int pmode );
 	virtual HANDLE FS_FindFirstFile(const char *findname, WIN32_FIND_DATA *dat);
 	virtual bool FS_FindNextFile(HANDLE handle, WIN32_FIND_DATA *dat);
@@ -367,11 +360,9 @@ void CFileSystem_Steam::LoadAndStartSteam()
 		{
 			char szSteamDLLPath[ MAX_PATH ];
 #ifdef WIN32
-			V_ComposeFileName( pchSteamInstallPath, "steam.dll", szSteamDLLPath, Q_ARRAYSIZE(szSteamDLLPath) );
-#elif defined(OSX)
-			V_ComposeFileName( pchSteamInstallPath, "libsteam.dylib", szSteamDLLPath, Q_ARRAYSIZE(szSteamDLLPath) );			
-#elif defined(LINUX)
-			V_ComposeFileName( pchSteamInstallPath, "libsteam.so", szSteamDLLPath, Q_ARRAYSIZE(szSteamDLLPath) );
+			V_ComposeFileName( pchSteamInstallPath, "steam" DLL_EXT_STRING, szSteamDLLPath, Q_ARRAYSIZE(szSteamDLLPath) );
+#elif defined(POSIX)
+			V_ComposeFileName( pchSteamInstallPath, "libsteam" DLL_EXT_STRING, szSteamDLLPath, Q_ARRAYSIZE(szSteamDLLPath) );			
 #else
 #error
 #endif
@@ -381,11 +372,9 @@ void CFileSystem_Steam::LoadAndStartSteam()
 
 		if ( !m_hSteamDLL )
 #ifdef WIN32			
-			m_hSteamDLL = (HMODULE)Sys_LoadModule( "steam.dll" );
-#elif defined(OSX)
-			m_hSteamDLL = (HMODULE)Sys_LoadModule( "libsteam.dylib" );
-#elif defined(LINUX)
-			m_hSteamDLL = (HMODULE)Sys_LoadModule( "libsteam.so" );
+			m_hSteamDLL = (HMODULE)Sys_LoadModule( "steam" DLL_EXT_STRING );
+#elif defined(POSIX)
+			m_hSteamDLL = (HMODULE)Sys_LoadModule( "libsteam" DLL_EXT_STRING );
 #else
 #error
 #endif
@@ -511,8 +500,12 @@ FilesystemMountRetval_t CFileSystem_Steam::MountSteamContent( int nExtraAppId )
 //-----------------------------------------------------------------------------
 // Purpose: low-level filesystem wrapper
 //-----------------------------------------------------------------------------
-FILE *CFileSystem_Steam::FS_fopen( const char *filename, const char *options, unsigned flags, int64 *size, CFileLoadInfo *pInfo )
+FILE *CFileSystem_Steam::FS_fopen( const char *filenameT, const char *options, unsigned flags, int64 *size, CFileLoadInfo *pInfo )
 {
+	char filename[MAX_PATH];
+
+	FixUpPath ( filenameT, filename, sizeof( filename ) );
+
 	// make sure the file is immediately available
 	if (m_bAssertFilesImmediatelyAvailable && !m_bCurrentlyLoading)
 	{
@@ -666,8 +659,6 @@ WaitForResourcesHandle_t CFileSystem_Steam::WaitForResources( const char *resour
 //-----------------------------------------------------------------------------
 bool CFileSystem_Steam::GetWaitForResourcesProgress( WaitForResourcesHandle_t handle, float *progress /* out */ , bool *complete /* out */ )
 {
-	VPROF_BUDGET( "GetWaitForResourcesProgress (steam)", VPROF_BUDGETGROUP_STEAM );
-
 	// clear the input
 	*progress = 0.0f;
 	*complete = true;
@@ -917,7 +908,7 @@ size_t CFileSystem_Steam::FS_fwrite( const void *src, size_t size, FILE *fp )
 			
 			while ( remaining > 0 )
 			{
-				size_t bytesToCopy = MIN(remaining, WRITE_CHUNK);
+				size_t bytesToCopy = min(remaining, WRITE_CHUNK);
 				
 				total += fwrite(current, 1, bytesToCopy, fp);
 				
@@ -1115,10 +1106,13 @@ char *CFileSystem_Steam::FS_fgets( char *dest, int destSize, FILE *fp )
 //-----------------------------------------------------------------------------
 // Purpose: low-level filesystem wrapper
 //-----------------------------------------------------------------------------
-int CFileSystem_Steam::FS_stat( const char *path, struct _stat *buf )
+int CFileSystem_Steam::FS_stat( const char *path, struct _stat *buf, bool *pbLoadedFromSteamCache )
 {
 	TSteamElemInfo Info;
 	TSteamError steamError;
+
+	if ( pbLoadedFromSteamCache )
+		*pbLoadedFromSteamCache = false;
 
 	if ( !steam )
 	{
@@ -1142,6 +1136,9 @@ int CFileSystem_Steam::FS_stat( const char *path, struct _stat *buf )
 		}
 		else
 		{
+			if ( pbLoadedFromSteamCache )
+				*pbLoadedFromSteamCache = ( Info.bIsLocal == 0 );
+
 			// Now we want to know if it's writable or not. First see if there is a local copy.
 			struct _stat testBuf;
 			int rt = _stat( path, &testBuf );
@@ -1276,6 +1273,8 @@ void CFileSystem_Steam::GetLocalCopy( const char *pFileName )
 {
 	// Now try to find the dll under Steam so we can do a GetLocalCopy() on it
 	TSteamError steamError;
+
+/*
 #ifdef WIN32
 	struct _stat StatBuf;
 	if ( FS_stat(pFileName, &StatBuf) == -1 )
@@ -1309,7 +1308,7 @@ void CFileSystem_Steam::GetLocalCopy( const char *pFileName )
 		char* pStart = pPath;
 		char* pEnd = 0;
 		bool bSearch = true;
-		while ( pStart && bSearch )
+		while ( bSearch )
 		{
 #ifdef WIN32
 #define PATH_SEP ";"
@@ -1317,24 +1316,34 @@ void CFileSystem_Steam::GetLocalCopy( const char *pFileName )
 #define PATH_SEP ":"
 #endif			
 			pEnd = strstr( pStart, PATH_SEP );
-			if ( !pEnd )
-				bSearch = false;
-
 			int nSize = pEnd - pStart;
-			
-			// Is this path even in the base directory?
+			if ( !pEnd )
+			{
+				bSearch = false;
+				// If pEnd is NULL then nSize will be rubbish, so calculate
+				// it sensibly.
+				nSize = strlen( pStart );
+			}
+		
+			// Is this path even potentially in the base directory?
 			if ( nSize > nBaseLen )
 			{
-				// Create a new path (relative to the base directory)
+				// Create a new path (relative to the base directory) by stripping off
+				// nBaseLen characters and therefore doing FS_stat relative to the current
+				// directory, which should be the base directory.
 				Assert( sizeof(srchPath) > nBaseLen + strlen(pFileName) + 2 );
 				nSize -= nBaseLen+1;
 				memcpy( srchPath, pStart+nBaseLen+1, nSize );
 				memcpy( srchPath+nSize, pFileName, strlen(pFileName)+1 );
-	
-				if ( FS_stat(srchPath, &StatBuf) == 0 )
+				// If the path starts with a directory separator then we won't get a
+				// relative path, so skip the check.
+				if ( srchPath[0] != CORRECT_PATH_SEPARATOR )
 				{
-					steam->GetLocalFileCopy(srchPath, &steamError);
-					break;
+					if ( FS_stat(srchPath, &StatBuf) == 0 )
+					{
+						steam->GetLocalFileCopy(srchPath, &steamError);
+						break;
+					}
 				}
 			}
 			pStart = pEnd+1;
@@ -1342,7 +1351,30 @@ void CFileSystem_Steam::GetLocalCopy( const char *pFileName )
 	}
 	else
 #endif
+*/
 	{
+		// Convert _srv.so to .so...
+		const char *pDllStringExtension = V_GetFileExtension( DLL_EXT_STRING );
+		const char *pModuleExtension = pDllStringExtension ? ( pDllStringExtension - 1 ) : DLL_EXT_STRING;
+
+		// If we got an extension, and this filename has it, then check if it's loaded.
+		if( pModuleExtension && V_stristr( pFileName, pModuleExtension ) )
+		{
+			// We can't be copying files over the top of .so files if they're already loaded
+			//	in memory. mmap2( ... MAP_PRIVATE ... ) says "it is unspecified whether changes
+			//	made to the file after the mmap() call are visible in the mapped region." Testing
+			//	and lots of debugging (thanks Pierre-Loup!) has shown that they are, in fact,
+			//	blasted right over your nicely loaded and fixed up object.
+			CSysModule *module = Sys_LoadModule( pFileName, SYS_NOLOAD );
+
+			if( module )
+			{
+				// Sys_LoadModule( SYS_NOLOAD ) increments the refcount, so bump that back down.
+				Sys_UnloadModule( module );
+				return;
+			}
+		}
+
 		steam->GetLocalFileCopy(pFileName, &steamError);
 	}	
 }
@@ -1398,8 +1430,10 @@ CSysModule * CFileSystem_Steam::LoadModule( const char *pFileName, const char *p
 
 			if ( m_bSDKToolMode )
 				bGetLocalCopy = false;
+#ifdef _WIN32
 			if ( IsDebuggerPresent() )
 				bGetLocalCopy = false;
+#endif
 			if ( bGetLocalCopy )
 				GetLocalCopy( newPathName );
 

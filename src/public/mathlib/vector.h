@@ -9,9 +9,9 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-//#ifdef _WIN32
+#ifdef _WIN32
 #pragma once
-//#endif
+#endif
 
 #include <math.h>
 #include <float.h>
@@ -26,15 +26,9 @@
 #include "mathlib/math_pfns.h"
 #endif
 
-#if defined( __aarch64__ )
-#include <sse2neon.h>
-#elif !defined( PLATFORM_PPC ) // we want our linux with xmm support
+#ifndef PLATFORM_PPC // we want our linux with xmm support
 // For MMX intrinsics
-#ifndef EMSCRIPTEN
 #include <xmmintrin.h>
-#else
-#include <wasm_simd128.h>
-#endif
 #endif
 
 #ifndef ALIGN16_POST
@@ -43,17 +37,13 @@
 
 #include "tier0/dbg.h"
 #include "tier0/platform.h"
+#if !defined( __SPU__ )
+#include "tier0/threadtools.h"
+#endif
 #include "mathlib/vector2d.h"
 #include "mathlib/math_pfns.h"
 #include "tier0/memalloc.h"
 #include "vstdlib/random.h"
-
-
-#include "tier0/threadtools.h"
-
-#if defined(__EMSCRIPTEN__)
-extern inline void ThreadPause();
-#endif
 
 // Uncomment this to add extra Asserts to check for NANs, uninitialized vecs, etc.
 //#define VECTOR_PARANOIA	1
@@ -261,9 +251,7 @@ private:
 // Zero the object -- necessary for CNetworkVar and possibly other cases.
 inline void EnsureValidValue( Vector &x ) { x.Zero(); }
 
-#if defined( PLATFORM_WINDOWS_PC )
-#define USE_M64S 1
-#endif
+#define USE_M64S defined( PLATFORM_WINDOWS_PC )
 
 
 
@@ -1328,12 +1316,8 @@ inline Vector VectorLerp(const Vector& src1, const Vector& src2, vec_t t )
 inline Vector &AllocTempVector()
 {
 	static Vector s_vecTemp[128];
-	//class CInterlockedInt;
-//#if defined(__EMSCRIPTEN__)
-//	extern typedef CInterlockedIntT<int> CInterlockedInt;
-//#endif
-
 	static CInterlockedInt s_nIndex;
+
 	int nIndex;
 	for (;;)
 	{

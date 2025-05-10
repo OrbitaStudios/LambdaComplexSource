@@ -1,4 +1,4 @@
-//========= Copyright Valve Corporation, All rights reserved. ============//
+//========= Copyright ©, Valve LLC, All rights reserved. ============
 //
 // Purpose: header for Web API key
 //

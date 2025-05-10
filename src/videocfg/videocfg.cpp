@@ -6,7 +6,7 @@
 
 #include "tier2/fileutils.h"
 #include "tier2/tier2.h"
-#include "videocfg/videocfg.h"
+#include "videocfg.h"
 #include "tier1/tier1.h"
 #include "tier1/strtools.h"
 #include "filesystem.h"

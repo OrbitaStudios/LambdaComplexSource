@@ -1,4 +1,4 @@
-//====== Copyright © 1996-2004, Valve Corporation, All rights reserved. =======
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -19,6 +19,7 @@
 class IManipulator
 {
 public:
+	virtual ~IManipulator(){}
 	virtual void OnBeginManipulation( void ) = 0;
 	virtual void OnAcceptManipulation( void ) = 0;
 	virtual void OnCancelManipulation( void ) = 0;

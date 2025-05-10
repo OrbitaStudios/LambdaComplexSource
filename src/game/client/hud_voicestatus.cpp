@@ -16,7 +16,6 @@
 #include "voice_common.h"
 #include "bitvec.h"
 #include "vgui_avatarimage.h"
-#include "engineinterface.h"
 #include "steam/steam_api.h"
 
 #include "tier0/memdbgon.h"

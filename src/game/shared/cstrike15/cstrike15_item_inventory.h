@@ -88,7 +88,7 @@ protected:
 	virtual void		OnHasNewItems();
 	virtual void		ValidateInventoryPositions( void );
 	
-	virtual void		SOCacheSubscribed( GCSDK::SOID_t owner, GCSDK::ESOCacheEvent eEvent );
+	virtual void		SOCacheSubscribed( GCSDK::SOID_t owner, GCSDK::ESOCacheEvent eEvent ) OVERRIDE;
 
 	// Extracts the position that should be used to sort items in the inventory from the backend position.
 	// Necessary if your inventory packs a bunch of info into the position instead of using it just as a position.
@@ -100,9 +100,9 @@ protected:
 		return ExtractBackpackPositionFromBackend(iBackendPosition); 
 	}
 
-	virtual void SOCreated( GCSDK::SOID_t owner, const GCSDK::CSharedObject *pObject, GCSDK::ESOCacheEvent eEvent );
-	virtual void SOUpdated( GCSDK::SOID_t owner, const GCSDK::CSharedObject *pObject, GCSDK::ESOCacheEvent eEvent );
-	virtual void SODestroyed( GCSDK::SOID_t owner, const GCSDK::CSharedObject *pObject, GCSDK::ESOCacheEvent eEvent );
+	virtual void SOCreated( GCSDK::SOID_t owner, const GCSDK::CSharedObject *pObject, GCSDK::ESOCacheEvent eEvent )	OVERRIDE;
+	virtual void SOUpdated( GCSDK::SOID_t owner, const GCSDK::CSharedObject *pObject, GCSDK::ESOCacheEvent eEvent )   OVERRIDE;
+	virtual void SODestroyed( GCSDK::SOID_t owner, const GCSDK::CSharedObject *pObject, GCSDK::ESOCacheEvent eEvent )	OVERRIDE;
 
 protected:
 	// Global indices of the items in our inventory in the loadout slots

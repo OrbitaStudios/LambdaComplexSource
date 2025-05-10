@@ -16,6 +16,7 @@
 #include <tier0/dbg.h>
 #include <vgui/ISurface.h>
 #include <utlbuffer.h>
+#include <fontconfig/fontconfig.h>
 #include "materialsystem/imaterialsystem.h"
 
 #include "vgui_surfacelib/fontmanager.h"
@@ -97,6 +98,128 @@ CLinuxFont::~CLinuxFont()
 }
 
 
+//-----------------------------------------------------------------------------
+// Purpose: build a map of friendly (char *) name to crazy ATSU bytestream, so we can ask for "Tahoma" and actually load it
+//-----------------------------------------------------------------------------
+void CLinuxFont::CreateFontList()
+{
+	if ( m_FriendlyNameCache.Count() > 0 ) 
+		return;
+
+	if(!FcInit()) 
+		return;
+    FcConfig *config;
+    FcPattern *pat;
+    FcObjectSet *os;
+    FcFontSet *fontset;
+    int i;
+    char *file;
+	const char *name;
+
+    config = FcConfigGetCurrent();
+	FcConfigAppFontAddDir(config, "platform/vgui/fonts");
+    pat = FcPatternCreate();
+    os = FcObjectSetCreate();
+    FcObjectSetAdd(os, FC_FILE);
+    FcObjectSetAdd(os, FC_FULLNAME);
+    FcObjectSetAdd(os, FC_FAMILY);
+    FcObjectSetAdd(os, FC_SCALABLE);
+    fontset = FcFontList(config, pat, os);
+    if(!fontset) 
+		return;
+    for(i = 0; i < fontset->nfont; i++) 
+	{
+        FcBool scalable;
+
+        if ( FcPatternGetBool(fontset->fonts[i], FC_SCALABLE, 0, &scalable) == FcResultMatch && !scalable )
+            continue;
+
+
+        if ( FcPatternGetString(fontset->fonts[i], FC_FAMILY, 0, (FcChar8**)&name) != FcResultMatch )
+			continue;
+		if ( FcPatternGetString(fontset->fonts[i], FC_FILE, 0, (FcChar8**)&file) != FcResultMatch )
+			continue;
+		
+		font_name_entry entry;
+        entry.m_pchFile = (char *)malloc( Q_strlen(file) + 1 );
+        entry.m_pchFriendlyName = (char *)malloc( Q_strlen(name) +1);
+        Q_memcpy( entry.m_pchFile, file, Q_strlen(file) + 1 );
+        Q_memcpy( entry.m_pchFriendlyName, name, Q_strlen(name) +1);
+        m_FriendlyNameCache.Insert( entry );
+
+		// substitute Vera Sans for Tahoma on X
+		if ( !V_stricmp( name, "Bitstream Vera Sans" ) )
+		{
+			name = "Tahoma";
+			entry.m_pchFile = (char *)malloc( Q_strlen(file) + 1 );
+			entry.m_pchFriendlyName = (char *)malloc( Q_strlen(name) +1);
+			Q_memcpy( entry.m_pchFile, file, Q_strlen(file) + 1 );
+			Q_memcpy( entry.m_pchFriendlyName, name, Q_strlen(name) +1);
+			m_FriendlyNameCache.Insert( entry );
+
+			name = "Verdana";
+			entry.m_pchFile = (char *)malloc( Q_strlen(file) + 1 );
+			entry.m_pchFriendlyName = (char *)malloc( Q_strlen(name) +1);
+			Q_memcpy( entry.m_pchFile, file, Q_strlen(file) + 1 );
+			Q_memcpy( entry.m_pchFriendlyName, name, Q_strlen(name) +1);
+			m_FriendlyNameCache.Insert( entry );
+
+			name = "Lucidia Console";
+			entry.m_pchFile = (char *)malloc( Q_strlen(file) + 1 );
+			entry.m_pchFriendlyName = (char *)malloc( Q_strlen(name) +1);
+			Q_memcpy( entry.m_pchFile, file, Q_strlen(file) + 1 );
+			Q_memcpy( entry.m_pchFriendlyName, name, Q_strlen(name) +1);
+			m_FriendlyNameCache.Insert( entry );
+		}
+    }
+
+    FcFontSetDestroy(fontset);
+    FcObjectSetDestroy(os);
+    FcPatternDestroy(pat);
+}
+
+static FcPattern* FontMatch(const char* type, FcType vtype, const void* value,
+                            ...)
+{
+    va_list ap;
+    va_start(ap, value);
+
+    FcPattern* pattern = FcPatternCreate();
+
+    for (;;) {
+        FcValue fcvalue;
+        fcvalue.type = vtype;
+        switch (vtype) {
+            case FcTypeString:
+                fcvalue.u.s = (FcChar8*) value;
+                break;
+            case FcTypeInteger:
+                fcvalue.u.i = (int) value;
+                break;
+            default:
+                Assert(!"FontMatch unhandled type");
+        }
+        FcPatternAdd(pattern, type, fcvalue, 0);
+
+        type = va_arg(ap, const char *);
+        if (!type)
+            break;
+        // FcType is promoted to int when passed through ...
+        vtype = static_cast<FcType>(va_arg(ap, int));
+        value = va_arg(ap, const void *);
+    };
+    va_end(ap);
+
+    FcConfigSubstitute(0, pattern, FcMatchPattern);
+    FcDefaultSubstitute(pattern);
+
+    FcResult result;
+    FcPattern* match = FcFontMatch(0, pattern, &result);
+    FcPatternDestroy(pattern);
+
+    return match;
+}
+
 bool CLinuxFont::CreateFromMemory(const char *windowsFontName, void *data, int size, int tall, int weight, int blur, int scanlines, int flags)
 {
 	// setup font properties
@@ -146,38 +269,60 @@ bool CLinuxFont::Create(const char *windowsFontName, int tall, int weight, int b
 	m_bRotary = flags & FONTFLAG_ROTARY;
 	m_bAdditive = flags & FONTFLAG_ADDITIVE;
 
+	CreateFontList();
+
 	const char *pchFontName = windowsFontName;
 	if ( !Q_stricmp( pchFontName, "Tahoma" ) )
 		pchFontName = "Bitstream Vera Sans";
+    const int italic = flags & FONTFLAG_ITALIC ? FC_SLANT_ITALIC : FC_SLANT_ROMAN;
+    FcPattern* match = FontMatch(FC_FAMILY, FcTypeString, pchFontName,
+                                 FC_WEIGHT, FcTypeInteger, FC_WEIGHT_NORMAL,
+                                 FC_SLANT, FcTypeInteger, italic,
+                                 NULL);
 
-	const char *filename;
-
-	if( FONTFLAG_ITALIC )
-		filename = "csgo/linux-fonts/LiberationSans-Italic.ttf";
+ 	if (!match)
+    {
+		AssertMsg1( false, "Unable to find font named %s\n", windowsFontName );
+        m_szName = "";
+        return false;
+    }
 	else
-		filename = "csgo/linux-fonts/LiberationSans-Regular.ttf";
-
-	FT_Error error = FT_New_Face( FontManager().GetFontLibraryHandle(), filename, 0, &face );
-
-	if ( error == FT_Err_Unknown_File_Format )
 	{
-		return false;
-	} 
-	else if ( error ) 
-	{ 
-		return false;
-	} 
-
-	if ( face->charmap == nullptr )
-	{
-		FT_Error error = FT_Select_Charmap( face, FT_ENCODING_APPLE_ROMAN );
-		if ( error )
+		FcChar8* filename;
+		if ( FcPatternGetString(match, FC_FILE, 0, &filename) != FcResultMatch )
 		{
-			FT_Done_Face( face );
-			face = NULL;
+			AssertMsg1( false, "Unable to find font named %s\n", windowsFontName );
+		    m_szName = "";
+		    FcPatternDestroy(match);
+		    return false;
+		}
+	
+		FT_Error error = FT_New_Face( FontManager().GetFontLibraryHandle(), (const char *)filename, 0, &face );
 
-			Msg( "Font %s has no valid charmap\n", windowsFontName );
+		// Only destroy the pattern at this point so that "filename" is pointing
+		// to valid memory
+		FcPatternDestroy(match);
+
+		if ( error == FT_Err_Unknown_File_Format )
+		{
 			return false;
+		} 
+		else if ( error ) 
+		{ 
+			return false;
+		} 
+
+		if ( face->charmap == nullptr )
+		{
+			FT_Error error = FT_Select_Charmap( face, FT_ENCODING_APPLE_ROMAN );
+			if ( error )
+			{
+				FT_Done_Face( face );
+				face = NULL;
+	
+				Msg( "Font %s has no valid charmap\n", windowsFontName );
+				return false;
+			}
 		}
 	}
 

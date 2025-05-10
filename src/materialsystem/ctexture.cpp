@@ -2401,7 +2401,7 @@ int CTexture::ComputeActualSize( bool bIgnorePicmip, IVTFTexture *pVTFTexture )
 			{
 				s_nMaxDimensionLimit = 256;
 			}
-			else if ( g_pFullFileSystem->IsDVDHosted() || bNo1024 )
+			else if ( bNo1024 )
 			{
 				s_nMaxDimensionLimit = 512;
 			}

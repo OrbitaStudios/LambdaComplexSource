@@ -54,7 +54,7 @@ private:
 };
 
 
-// DECLARE_HUDELEMENT( CHudRoundTimer );
+DECLARE_HUDELEMENT( CHudRoundTimer );
 
 
 CHudRoundTimer::CHudRoundTimer( const char *pName ) :
@@ -110,6 +110,9 @@ void CHudRoundTimer::Think()
 		// in freeze period countdown to round start time
 		timer = (int)ceil(pRules->GetRoundStartTime()-gpGlobals->curtime);
 	}
+
+	//If the bomb is planted don't draw -- the timer is irrelevant
+	SetVisible(g_PlantedC4s.Count() == 0);
 
 	if(timer > 30)
 	{
@@ -197,11 +200,6 @@ void CHudRoundTimer::Paint()
 		return;
 
 	int timer = (int)ceil( pRules->GetRoundRemainingTime() );
-
-	//If the bomb is planted and the timer is 0, don't draw
-	// EDIT: In CZ the timer is turned off as soon as the bomb is planted, so emulate that behavior here.
-	if( g_PlantedC4s.Count() > 0 )
-		return;
 
 	if ( pRules->IsFreezePeriod() )
 	{

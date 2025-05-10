@@ -487,7 +487,6 @@ COP_Entity::COP_Entity()
 
 	m_pInstanceVar = NULL;
 	m_pModelBrowser = NULL;
-	m_pParticleBrowser = NULL;
 
 	m_bCustomColorsLoaded = false; //Make sure they get loaded!
 	memset(CustomColors, 0, sizeof(CustomColors));
@@ -503,9 +502,6 @@ COP_Entity::~COP_Entity(void)
 
 	delete m_pModelBrowser;
 	m_pModelBrowser = NULL;
-
-	delete m_pParticleBrowser;
-	m_pParticleBrowser = NULL;
 }
 
 
@@ -3234,14 +3230,6 @@ bool COP_Entity::BrowseModels( char *szModelName, int length, int &nSkin )
 	CModelBrowser *pModelBrowser = GetMainWnd()->GetModelBrowser();
 	pModelBrowser->Show();
 
-	CUtlVector<AssetUsageInfo_t> usedModels;
-	CMapDoc *pDoc = CMapDoc::GetActiveMapDoc();
-	if ( pDoc )
-	{
-		pDoc->GetUsedModels( usedModels );
-	}
-
-	pModelBrowser->SetUsedModelList( usedModels );
 	pModelBrowser->SetModelName( szModelName );
 	pModelBrowser->SetSkin( nSkin );
 
@@ -3261,36 +3249,11 @@ bool COP_Entity::BrowseModels( char *szModelName, int length, int &nSkin )
 		EntityReportFilterParms_t filter;
 		filter.FilterByKeyValue( "model", szModelName );
 
+		CMapDoc* pDoc = CMapDoc::GetActiveMapDoc();
 		CEntityReportDlg::ShowEntityReport( pDoc, this, &filter );
 	}
 
 	pModelBrowser->Hide();
-
-	return bChanged;
-}
-
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-bool COP_Entity::BrowseParticles( char *szParticleSysName, int length )
-{
-	bool bChanged = false;
-
-	if (m_pParticleBrowser == NULL)
-	{
-		m_pParticleBrowser = new CParticleBrowser( GetMainWnd() );
-	}
-
-	m_pParticleBrowser->SetParticleSysName( szParticleSysName );
-
-	if (m_pParticleBrowser->DoModal() == IDOK)
-	{
-		m_pParticleBrowser->GetParticleSysName( szParticleSysName, length );
-		bChanged = true;
-	}
-
-	delete m_pParticleBrowser;
-	m_pParticleBrowser = NULL;
 
 	return bChanged;
 }
@@ -3675,12 +3638,7 @@ void LoadFileSystemDialogModule()
 	Assert( !g_pFSDialogModule );
 
 	// Load the module with the file system open dialog.
-#if !defined(POSIX)
 	const char *pDLLName = "FileSystemOpenDialog.dll";
-#elif !defined(EMSCRIPTEN)
-	const char* pDLLName = "FileSystemOpenDialog.so";
-#else
-	const char* pDLLName = "FileSystemOpenDialog.wasm";
 	g_pFSDialogModule = Sys_LoadModule( pDLLName );
 	if ( !g_pFSDialogModule || 
 		 (g_FSDialogFactory = Sys_GetFactory( g_pFSDialogModule )) == NULL
@@ -3736,20 +3694,6 @@ void COP_Entity::OnBrowse(void)
 			// model was changed
 			m_pSmartControl->SetWindowText( szCurrentModel );
 			UpdateKeyValue("skin", itoa( nSkin, szCurrentSkin, 10 ));			
-		}
-		return;
-	}
-
-	if ( m_eEditType == ivParticleSystem )
-	{
-		char szCurrentParticleSys[512];
-
-		m_pSmartControl->GetWindowText( szCurrentParticleSys, sizeof(szCurrentParticleSys) );
-
-		if ( BrowseParticles( szCurrentParticleSys, sizeof(szCurrentParticleSys) ) )
-		{
-			// model was changed
-			m_pSmartControl->SetWindowText( szCurrentParticleSys );
 		}
 		return;
 	}

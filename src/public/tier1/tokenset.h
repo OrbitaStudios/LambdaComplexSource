@@ -7,8 +7,6 @@
 #pragma once
 #endif
 
-#include "tier1/strtools_inlines.h"
-
 //-----------------------------------------------------------------------------
 // 
 // This class is a handy way to match a series of values to stings and vice
@@ -56,7 +54,7 @@ inline _T tokenset_t< _T >::GetToken( const char *s ) const
 			continue; // Loop to the last NULL value
 		}
 
-		if ( _V_stricmp_inline( s, c->name ) == 0 )
+		if ( Q_strcmp( s, c->name ) == 0 )
 		{
 			return c->token;
 		}
@@ -77,7 +75,7 @@ inline _T tokenset_t< _T >::GetTokenI( const char *s ) const
 			continue; // Loop to the last NULL value
 		}
 
-		if ( _V_stricmp_inline( s, c->name ) == 0 )
+		if ( Q_stricmp( s, c->name ) == 0 )
 		{
 			return c->token;
 		}

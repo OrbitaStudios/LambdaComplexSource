@@ -15,7 +15,6 @@
 
 #include "tier0/dbg.h"
 #include "bitvec.h"
-//#include "tier1/murmurhash3.h"
 #include "murmurhash3.h"
 
 // fast mod for power of 2 numbers
@@ -97,7 +96,7 @@ struct CaseSensitiveStrEquals
 //
 //-----------------------------------------------------------------------------
 template <typename K, typename T, typename L = CDefEquals<K>, typename H = MurmurHash3Functor<K> > 
-class CUtlHashMapLarge
+class CUtlHashMapLarge : public base_utlmap_t
 {
 public:
 	// This enum exists so that FOR_EACH_MAP and FOR_EACH_MAP_FAST cannot accidentally

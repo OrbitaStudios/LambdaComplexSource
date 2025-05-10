@@ -84,9 +84,6 @@ bool FileSystem_Init_Normal( const char *pFilename, FSInitType_t initType, bool 
 		if ( FileSystem_GetFileSystemDLLName( fileSystemDLLName, MAX_PATH, bSteam ) != FS_OK )
 			return false;
 
-		// If we're under Steam we need extra setup to let us find the proper modules
-		FileSystem_SetupSteamInstallPath();
-
 		// Next, load the module, call Connect/Init.
 		CFSLoadModuleInfo loadModuleInfo;
 		loadModuleInfo.m_pFileSystemDLLName = fileSystemDLLName;
@@ -206,18 +203,5 @@ CreateInterfaceFn FileSystem_GetFactory()
 		return VMPI_FileSystem_GetFactory();
 #endif
 	return Sys_GetFactory( g_pFullFileSystemModule );
-}
-
-
-bool FileSystem_SetGame( const char *szModDir )
-{
-	g_pFullFileSystem->RemoveAllSearchPaths();
-	if ( FileSystem_SetBasePaths( g_pFullFileSystem ) != FS_OK )
-		return false;
-
-	CFSSearchPathsInit fsInit;
-	fsInit.m_pDirectoryName = szModDir;
-	fsInit.m_pFileSystem = g_pFullFileSystem;
-	return ( FileSystem_LoadSearchPaths( fsInit ) == FS_OK );
 }
 

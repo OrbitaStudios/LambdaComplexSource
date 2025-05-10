@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -114,7 +114,7 @@ void CWeaponM3::PrimaryAttack()
 	// player "shoot" animation
 	pPlayer->SetAnimation( PLAYER_ATTACK1 );
 
-    uint16 nItemDefIndex = GetEconItemView()->GetItemIndex();
+	uint16 nItemDefIndex = GetEconItemView()->GetItemIndex();
 
 	// Dispatch the FX right away with full accuracy.
 	float flCurAttack = CalculateNextAttackTime( flCycleTime );

@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -9,7 +9,7 @@
 #include <vgui/ISurface.h>
 #include <vgui/ISystem.h>
 #include <vgui/IVGui.h>
-#include <keyvalues.h>
+#include <KeyValues.h>
 #include <vgui_controls/AnimationController.h>
 #include "filesystem.h"
 #include "filesystem_helpers.h"
@@ -20,7 +20,6 @@
 #include "utldict.h"
 #include "mathlib/mathlib.h"
 #include "characterset.h"
-#include "exprevaluator.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include <tier0/dbg.h>
@@ -68,6 +67,8 @@ AnimationController::AnimationController(Panel *parent) : BaseClass(parent, NULL
 	m_sYPos = g_ScriptSymbols.AddString("ypos");
 	m_sWide = g_ScriptSymbols.AddString("wide");
 	m_sTall = g_ScriptSymbols.AddString("tall");
+
+	m_sModelPos = g_ScriptSymbols.AddString( "model_pos" );
 
 	m_flCurrentTime = 0.0f;
 }
@@ -148,6 +149,10 @@ bool AnimationController::LoadScriptFile(const char *fileName)
 	int size = g_pFullFileSystem->Size(f);
 	// read into temporary memory block
 	int nBufSize = size+1;
+	if ( IsX360() )
+	{
+		nBufSize = AlignValue( nBufSize, 512 );
+	}
 	char *pMem = (char *)malloc(nBufSize);
 	int bytesRead = g_pFullFileSystem->ReadEx(pMem, nBufSize, size, f);
 	Assert(bytesRead <= size);
@@ -292,8 +297,6 @@ bool AnimationController::ParseScriptFile(char *pMem, int length)
 	int screenWide = m_nScreenBounds[ 2 ];
 	int screenTall = m_nScreenBounds[ 3 ];
 
-	CExpressionEvaluator ExpressionHandler;
-
 	// start by getting the first token
 	char token[512];
 	pMem = ParseFile(pMem, token, NULL);
@@ -329,7 +332,7 @@ bool AnimationController::ParseScriptFile(char *pMem, int length)
 		pMem = ParseFile(pMem, token, NULL);
 		if ( Q_stristr( token, "[$" ) )
 		{
-			ExpressionHandler.Evaluate( bAccepted, token );
+			bAccepted = EvaluateConditional( token );
 
 			// now get the open brace
 			pMem = ParseFile(pMem, token, NULL);
@@ -342,7 +345,7 @@ bool AnimationController::ParseScriptFile(char *pMem, int length)
 		}
 
 		// walk the commands
-		while (token && token[0])
+		while (token[0])
 		{
 			// get the command type
 			pMem = ParseFile(pMem, token, NULL);
@@ -472,6 +475,20 @@ bool AnimationController::ParseScriptFile(char *pMem, int length)
 					pMem = ParseFile(pMem, token, NULL);
 					cmdAnimate.interpolationParameter = (float)atof(token);
 				}
+				else if (!stricmp(token,"Bias"))
+				{
+					cmdAnimate.interpolationFunction = INTERPOLATOR_BIAS;
+					// bias
+					pMem = ParseFile(pMem, token, NULL);
+					cmdAnimate.interpolationParameter = (float)atof(token);
+				}
+				else if (!stricmp(token,"Gain"))
+				{
+					cmdAnimate.interpolationFunction = INTERPOLATOR_GAIN;
+					// bias
+					pMem = ParseFile(pMem, token, NULL);
+					cmdAnimate.interpolationParameter = (float)atof(token);
+				}
 				else if ( !stricmp( token, "Flicker"))
 				{
 					cmdAnimate.interpolationFunction = INTERPOLATOR_FLICKER;
@@ -504,6 +521,52 @@ bool AnimationController::ParseScriptFile(char *pMem, int length)
 				animCmd.commandType = CMD_RUNEVENT;
 				pMem = ParseFile(pMem, token, NULL);
 				animCmd.cmdData.runEvent.event = g_ScriptSymbols.AddString(token);
+				pMem = ParseFile(pMem, token, NULL);
+				animCmd.cmdData.runEvent.timeDelay = (float)atof(token);
+			}
+			else if (!stricmp(token, "runeventchild"))
+			{
+				animCmd.commandType = CMD_RUNEVENTCHILD;
+				pMem = ParseFile(pMem, token, NULL);
+				animCmd.cmdData.runEvent.variable = g_ScriptSymbols.AddString(token);
+				pMem = ParseFile(pMem, token, NULL);
+				animCmd.cmdData.runEvent.event = g_ScriptSymbols.AddString(token);
+				pMem = ParseFile(pMem, token, NULL);
+				animCmd.cmdData.runEvent.timeDelay = (float)atof(token);
+			}
+			else if (!stricmp(token, "firecommand"))
+			{
+				animCmd.commandType = CMD_FIRECOMMAND;
+				pMem = ParseFile(pMem, token, NULL);
+				animCmd.cmdData.runEvent.timeDelay = (float)atof(token);
+				pMem = ParseFile(pMem, token, NULL);
+				animCmd.cmdData.runEvent.variable = g_ScriptSymbols.AddString(token);
+			}
+			else if ( !stricmp(token, "playsound") )
+			{
+				animCmd.commandType = CMD_PLAYSOUND;
+				pMem = ParseFile(pMem, token, NULL);
+				animCmd.cmdData.runEvent.timeDelay = (float)atof(token);
+				pMem = ParseFile(pMem, token, NULL);
+				animCmd.cmdData.runEvent.variable = g_ScriptSymbols.AddString(token);
+			}
+			else if (!stricmp(token, "setvisible"))
+			{
+				animCmd.commandType = CMD_SETVISIBLE;
+				pMem = ParseFile(pMem, token, NULL);
+				animCmd.cmdData.runEvent.variable = g_ScriptSymbols.AddString(token);
+				pMem = ParseFile(pMem, token, NULL);
+				animCmd.cmdData.runEvent.variable2 = atoi(token);
+				pMem = ParseFile(pMem, token, NULL);
+				animCmd.cmdData.runEvent.timeDelay = (float)atof(token);
+			}
+			else if (!stricmp(token, "setinputenabled"))
+			{
+				animCmd.commandType = CMD_SETINPUTENABLED;
+				pMem = ParseFile(pMem, token, NULL);
+				animCmd.cmdData.runEvent.variable = g_ScriptSymbols.AddString(token);
+				pMem = ParseFile(pMem, token, NULL);
+				animCmd.cmdData.runEvent.variable2 = atoi(token);
 				pMem = ParseFile(pMem, token, NULL);
 				animCmd.cmdData.runEvent.timeDelay = (float)atof(token);
 			}
@@ -594,9 +657,7 @@ bool AnimationController::ParseScriptFile(char *pMem, int length)
 			char *peek = ParseFile(pMem, token, NULL);
 			if ( Q_stristr( token, "[$" ) )
 			{
-				bool bCondition = false;
-				ExpressionHandler.Evaluate( bCondition, token );
-				if ( !bCondition )
+				if ( !EvaluateConditional( token ) )
 				{
 					seq.cmdList.Remove( cmdIndex );
 				}
@@ -642,6 +703,10 @@ void AnimationController::UpdatePostedMessages(bool bRunToCompletion)
 	for (int i = 0; i < m_PostedMessages.Count(); i++)
 	{
 		PostedMessage_t &msgRef = m_PostedMessages[i];
+
+		if ( !msgRef.canBeCancelled && bRunToCompletion )
+			continue;
+
 		if (m_flCurrentTime < msgRef.startTime && !bRunToCompletion)
 			continue;
 
@@ -654,15 +719,20 @@ void AnimationController::UpdatePostedMessages(bool bRunToCompletion)
 		// reset the count, start the whole queue again
 		i = -1;
 
+		if ( msg.parent.Get() == NULL )
+			continue;
+
 		// handle the event
 		switch (msg.commandType)
 		{
 		case CMD_RUNEVENT:
 			{
 				RanEvent_t curEvent;
+				curEvent.pParent = NULL;
 				curEvent.event = msg.event;
-				curEvent.pParent = msg.parent.Get();
 
+				curEvent.pParent = msg.parent.Get();
+				
 				// run the event, but only if we haven't already run it this frame, for this parent
 				if (!eventsRanThisFrame.HasElement(curEvent))
 				{
@@ -670,6 +740,52 @@ void AnimationController::UpdatePostedMessages(bool bRunToCompletion)
 					RunCmd_RunEvent(msg);
 				}
 			}	
+			break;
+		case CMD_RUNEVENTCHILD:
+			{
+				RanEvent_t curEvent;
+				curEvent.pParent = NULL;
+				curEvent.event =  msg.event;
+
+				curEvent.pParent = msg.parent.Get()->FindChildByName( g_ScriptSymbols.String(msg.variable), true );
+				msg.parent = curEvent.pParent;
+		
+				// run the event, but only if we haven't already run it this frame, for this parent
+				if (!eventsRanThisFrame.HasElement(curEvent))
+				{
+					eventsRanThisFrame.AddToTail(curEvent);
+					RunCmd_RunEvent(msg);
+				}
+			}
+			break;
+		case CMD_FIRECOMMAND:
+			{
+				msg.parent->OnCommand( g_ScriptSymbols.String(msg.variable) );
+			}
+			break;
+		case CMD_PLAYSOUND:
+			{
+				vgui::surface()->PlaySound( g_ScriptSymbols.String(msg.variable) );
+			}
+			break;
+		case CMD_SETVISIBLE:
+			{
+				Panel* pPanel = msg.parent.Get()->FindChildByName( g_ScriptSymbols.String(msg.variable), true );
+				if ( pPanel )
+				{
+					pPanel->SetVisible( msg.variable2 == 1 );
+				}
+			}
+			break;
+		case CMD_SETINPUTENABLED:
+			{
+				Panel* pPanel = msg.parent.Get()->FindChildByName( g_ScriptSymbols.String(msg.variable), true );
+				if ( pPanel )
+				{
+					pPanel->SetMouseInputEnabled( msg.variable2 == 1 );
+					pPanel->SetKeyBoardInputEnabled( msg.variable2 == 1 );
+				}
+			}
 			break;
 		case CMD_STOPEVENT:
 			RunCmd_StopEvent(msg);
@@ -702,6 +818,9 @@ void AnimationController::UpdateActiveAnimations(bool bRunToCompletion)
 	for (int i = 0; i < m_ActiveAnimations.Count(); i++)
 	{
 		ActiveAnimation_t &anim = m_ActiveAnimations[i];
+
+		if ( !anim.canBeCancelled && bRunToCompletion )
+			continue;
 
 		// see if the anim is ready to start
 		if (m_flCurrentTime < anim.startTime && !bRunToCompletion)
@@ -812,8 +931,17 @@ void AnimationController::CancelAllAnimations()
 {
 	// Msg( "AnimationController::CancelAllAnimations()\n" );
 
-	m_ActiveAnimations.RemoveAll();
-	m_PostedMessages.RemoveAll();
+	FOR_EACH_VEC_BACK( m_ActiveAnimations, i )
+	{
+		if ( m_ActiveAnimations[i].canBeCancelled )
+			m_ActiveAnimations.Remove( i );
+	}
+
+	FOR_EACH_VEC_BACK(m_PostedMessages, i)
+	{
+		if (m_PostedMessages[i].canBeCancelled)
+			m_PostedMessages.Remove(i);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -839,6 +967,12 @@ AnimationController::Value_t AnimationController::GetInterpolatedValue(int inter
 	case INTERPOLATOR_PULSE:
 		// Make sure we end at 1.0, so use cosine
 		pos = 0.5f + 0.5f * ( cos( pos * 2.0f * M_PI * interpolatorParam ) );
+		break;
+	case INTERPOLATOR_BIAS:
+		pos = Bias( pos, interpolatorParam );
+		break;
+	case INTERPOLATOR_GAIN:
+		pos = Gain( pos, interpolatorParam );
 		break;
 	case INTERPOLATOR_FLICKER:
 		if ( RandomFloat( 0.0f, 1.0f ) < interpolatorParam )
@@ -897,18 +1031,18 @@ void AnimationController::SetAutoReloadScript(bool state)
 //-----------------------------------------------------------------------------
 // Purpose: starts an animation sequence script
 //-----------------------------------------------------------------------------
-bool AnimationController::StartAnimationSequence(const char *sequenceName)
+bool AnimationController::StartAnimationSequence(const char *sequenceName, bool bCanBeCancelled )
 {
 	// We support calling an animation on elements that are not the calling 
 	// panel's children. Use the base parent to start the search.
 
-	return StartAnimationSequence( GetParent(), sequenceName );
+	return StartAnimationSequence( GetParent(), sequenceName, bCanBeCancelled );
 }
 
 //-----------------------------------------------------------------------------
 // Purpose: starts an animation sequence script
 //-----------------------------------------------------------------------------
-bool AnimationController::StartAnimationSequence(Panel *pWithinParent, const char *sequenceName)
+bool AnimationController::StartAnimationSequence(Panel *pWithinParent, const char *sequenceName, bool bCanBeCancelled )
 {
 	Assert( pWithinParent );
 
@@ -941,10 +1075,67 @@ bool AnimationController::StartAnimationSequence(Panel *pWithinParent, const cha
 	// execute the sequence
 	for (int cmdIndex = 0; cmdIndex < m_Sequences[i].cmdList.Count(); cmdIndex++)
 	{
-		ExecAnimationCommand(seqName, m_Sequences[i].cmdList[cmdIndex], pWithinParent);
+		ExecAnimationCommand(seqName, m_Sequences[i].cmdList[cmdIndex], pWithinParent, bCanBeCancelled);
 	}
 
 	return true;	
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: stops an animation sequence script
+//-----------------------------------------------------------------------------
+bool AnimationController::StopAnimationSequence( Panel *pWithinParent, const char *sequenceName )
+{
+	Assert( pWithinParent );
+
+	// lookup the symbol for the name
+	UtlSymId_t seqName = g_ScriptSymbols.Find( sequenceName );
+	if (seqName == UTL_INVAL_SYMBOL)
+		return false;
+
+	// remove the existing command from the queue
+	RemoveQueuedAnimationCommands( seqName, pWithinParent );
+
+	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Runs a custom command from code, not from a script file
+//-----------------------------------------------------------------------------
+void AnimationController::CancelAnimationsForPanel( Panel *pWithinParent )
+{
+	// Msg("Removing queued anims for sequence %s\n", g_ScriptSymbols.String(seqName));
+
+	// remove messages posted by this sequence
+	// if pWithinParent is specified, remove only messages under that parent
+	{
+		for (int i = 0; i < m_PostedMessages.Count(); i++)
+		{
+			if ( m_PostedMessages[i].parent == pWithinParent )
+			{
+				m_PostedMessages.Remove(i);
+				--i;
+			}
+		}
+	}
+
+	// remove all animations
+	// if pWithinParent is specified, remove only animations under that parent
+	for (int i = 0; i < m_ActiveAnimations.Count(); i++)
+	{
+		Panel *animPanel = m_ActiveAnimations[i].panel;
+
+		if ( !animPanel )
+			continue;
+
+		Panel *foundPanel = pWithinParent->FindChildByName(animPanel->GetName(),true);
+
+		if ( foundPanel != animPanel )
+			continue;
+
+		m_ActiveAnimations.Remove(i);
+		--i;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -968,7 +1159,7 @@ void AnimationController::RunAnimationCommand(vgui::Panel *panel, const char *va
 	animateCmd.duration = duration;
 
 	// start immediately
-	StartCmd_Animate(panel, 0, animateCmd);
+	StartCmd_Animate(panel, 0, animateCmd, true);
 }
 
 //-----------------------------------------------------------------------------
@@ -995,7 +1186,7 @@ void AnimationController::RunAnimationCommand(vgui::Panel *panel, const char *va
 	animateCmd.duration = duration;
 
 	// start immediately
-	StartCmd_Animate(panel, 0, animateCmd);
+	StartCmd_Animate(panel, 0, animateCmd, true);
 }
 
 //-----------------------------------------------------------------------------
@@ -1086,11 +1277,11 @@ void AnimationController::RemoveQueuedAnimationByType(vgui::Panel *panel, UtlSym
 //-----------------------------------------------------------------------------
 // Purpose: runs a single line of the script
 //-----------------------------------------------------------------------------
-void AnimationController::ExecAnimationCommand(UtlSymId_t seqName, AnimCommand_t &animCommand, Panel *pWithinParent)
+void AnimationController::ExecAnimationCommand(UtlSymId_t seqName, AnimCommand_t &animCommand, Panel *pWithinParent, bool bCanBeCancelled)
 {
 	if (animCommand.commandType == CMD_ANIMATE)
 	{
-		StartCmd_Animate(seqName, animCommand.cmdData.animate, pWithinParent);
+		StartCmd_Animate(seqName, animCommand.cmdData.animate, pWithinParent, bCanBeCancelled);
 	}
 	else
 	{
@@ -1103,13 +1294,14 @@ void AnimationController::ExecAnimationCommand(UtlSymId_t seqName, AnimCommand_t
 		msg.variable2 = animCommand.cmdData.runEvent.variable2;
 		msg.startTime = m_flCurrentTime + animCommand.cmdData.runEvent.timeDelay;
 		msg.parent = pWithinParent;
+		msg.canBeCancelled = bCanBeCancelled;
 	}
 }
 
 //-----------------------------------------------------------------------------
 // Purpose: starts a variable animation
 //-----------------------------------------------------------------------------
-void AnimationController::StartCmd_Animate(UtlSymId_t seqName, AnimCmdAnimate_t &cmd, Panel *pWithinParent)
+void AnimationController::StartCmd_Animate(UtlSymId_t seqName, AnimCmdAnimate_t &cmd, Panel *pWithinParent, bool bCanBeCancelled)
 {
 	Assert( pWithinParent );
 	if ( !pWithinParent )
@@ -1129,13 +1321,13 @@ void AnimationController::StartCmd_Animate(UtlSymId_t seqName, AnimCmdAnimate_t 
 	if (!panel)
 		return;
 
-	StartCmd_Animate(panel, seqName, cmd);
+	StartCmd_Animate(panel, seqName, cmd, bCanBeCancelled);
 }
 
 //-----------------------------------------------------------------------------
 // Purpose: Starts an animation command for the specified panel
 //-----------------------------------------------------------------------------
-void AnimationController::StartCmd_Animate(Panel *panel, UtlSymId_t seqName, AnimCmdAnimate_t &cmd)
+void AnimationController::StartCmd_Animate(Panel *panel, UtlSymId_t seqName, AnimCmdAnimate_t &cmd, bool bCanBeCancelled)
 {
 	// build a command to add to the animation queue
 	ActiveAnimation_t &anim = m_ActiveAnimations[m_ActiveAnimations.AddToTail()];
@@ -1151,6 +1343,8 @@ void AnimationController::StartCmd_Animate(Panel *panel, UtlSymId_t seqName, Ani
 	anim.started = false;
 	anim.endValue = cmd.target;
 
+	anim.canBeCancelled = bCanBeCancelled;
+
 	anim.align = cmd.align;
 }
 
@@ -1159,7 +1353,7 @@ void AnimationController::StartCmd_Animate(Panel *panel, UtlSymId_t seqName, Ani
 //-----------------------------------------------------------------------------
 void AnimationController::RunCmd_RunEvent(PostedMessage_t &msg)
 {
-	StartAnimationSequence(msg.parent.Get(), g_ScriptSymbols.String(msg.event));
+	StartAnimationSequence(msg.parent.Get(), g_ScriptSymbols.String(msg.event), msg.canBeCancelled);
 }
 
 //-----------------------------------------------------------------------------
@@ -1582,8 +1776,7 @@ void CPanelAnimationDictionary::PanelAnimationDumpMap( PanelAnimationMap *map, b
 	int c = map->entries.Count();
 	for ( int i = 0; i < c; i++ )
 	{
-		PanelAnimationMapEntry *e;
-		e = &map->entries[ i ];
+		PanelAnimationMapEntry *e = &map->entries[ i ];
 		Msg( "  %s %s\n", e->type(), e->name() );
 	}
 
@@ -1598,7 +1791,6 @@ void CPanelAnimationDictionary::PanelAnimationDumpMap( PanelAnimationMap *map, b
 //-----------------------------------------------------------------------------
 void CPanelAnimationDictionary::PanelAnimationDumpVars( char const *className )
 {
-#if !defined( _CERT )
 	if ( className == NULL )
 	{
 		for ( int i = 0; i < (int)m_AnimationMaps.Count(); i++ )
@@ -1618,7 +1810,6 @@ void CPanelAnimationDictionary::PanelAnimationDumpVars( char const *className )
 			Msg( "No such Panel Animation class %s\n", className );
 		}
 	}
-#endif // _CERT
 }
 
 //-----------------------------------------------------------------------------

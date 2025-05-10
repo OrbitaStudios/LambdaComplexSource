@@ -1,4 +1,4 @@
-//===== Copyright � 1996-2005, Valve Corporation, All rights reserved. ======//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: Contains a list of files, determines their perforce status
 //
@@ -9,7 +9,7 @@
 #include <vgui_controls/ListPanel.h>
 #include <vgui_controls/Label.h>
 #include <vgui_controls/ImageList.h>
-#include "tier1/keyvalues.h"
+#include "tier1/KeyValues.h"
 #include <vgui/ISurface.h>
 #include "filesystem.h"
 #include "p4lib/ip4.h"
@@ -485,7 +485,7 @@ void PerforceFileList::Refresh()
 		// Retrives files, uses faster method to avoid finding clientspec
 		CUtlVector<P4File_t> &fileList = p4->GetFileListUsingClientSpec( pDirectory, pInfo->m_ClientSpec );
 		int nFileCount = fileList.Count();
-		bool *pFound = (bool*)stackalloc( nFileCount * sizeof(bool) );
+		bool *pFound = (bool*)_alloca( nFileCount * sizeof(bool) );
 		memset( pFound, 0, nFileCount * sizeof(bool) );
 
 		int nItemCount = pInfo->m_ItemIDs.Count();

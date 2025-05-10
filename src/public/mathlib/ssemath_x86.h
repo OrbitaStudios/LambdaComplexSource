@@ -8,9 +8,7 @@
 #include "mathlib/math_pfns.h"
 #endif
 
-#if defined( __aarch64__ )
-#include <sse2neon.h>
-#elif defined( PLATFORM_WINDOWS_PC )
+#if defined( PLATFORM_WINDOWS_PC )
 #include <intrin.h>
 #else
 #include <xmmintrin.h>

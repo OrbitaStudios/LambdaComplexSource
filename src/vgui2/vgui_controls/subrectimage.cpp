@@ -1,4 +1,4 @@
-//====== Copyright © 1996-2005, Valve Corporation, All rights reserved. =======
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -15,6 +15,10 @@
 
 using namespace vgui;
 
+// Officially the invalid texture ID is zero, but -1 is used in many
+// places, and changing it carries some risk. Adding a named constant
+// for this file avoids warnings and makes future changes easier.
+const HTexture SUBRECT_INVALID_TEXTURE = (HTexture)-1;
 
 //-----------------------------------------------------------------------------
 // Constructor, destructor
@@ -37,7 +41,7 @@ CSubRectImage::CSubRectImage( const char *filename, bool hardwareFiltered, int s
 
 	Q_snprintf( _filename, size, "vgui/%s", filename );
 
-	_id = 0;
+	_id = SUBRECT_INVALID_TEXTURE;
 	_uploaded = false;
 	_color = Color(255, 255, 255, 255);
 	_pos[0] = _pos[1] = 0;
@@ -49,6 +53,12 @@ CSubRectImage::CSubRectImage( const char *filename, bool hardwareFiltered, int s
 
 CSubRectImage::~CSubRectImage()
 {
+	if ( vgui::surface() && _id != SUBRECT_INVALID_TEXTURE )
+	{
+		vgui::surface()->DestroyTextureID( _id );
+		_id = SUBRECT_INVALID_TEXTURE;
+	}
+
 	if ( _filename )
 	{
 		free( _filename );
@@ -75,7 +85,10 @@ void CSubRectImage::GetContentSize(int &wide, int &tall)
 	if (!_valid)
 		return;
 
-	surface()->DrawGetTextureSize(_id, wide, tall);
+	if ( _id != SUBRECT_INVALID_TEXTURE )
+	{
+		surface()->DrawGetTextureSize(_id, wide, tall);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -122,7 +135,7 @@ void CSubRectImage::Paint()
 		return;
 
 	// if we don't have an _id then lets make one
-	if ( !_id )
+	if ( _id == SUBRECT_INVALID_TEXTURE )
 	{
 		_id = surface()->CreateNewTextureID();
 	}
@@ -171,7 +184,7 @@ void CSubRectImage::ForceUpload()
 	if ( !_valid || _uploaded )
 		return;
 
-	if ( !_id )
+	if ( _id == SUBRECT_INVALID_TEXTURE )
 	{
 		_id = surface()->CreateNewTextureID( false );
 	}

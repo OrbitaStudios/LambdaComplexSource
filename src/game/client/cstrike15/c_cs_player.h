@@ -1,4 +1,4 @@
-//========= Copyright ï¿½ 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -223,7 +223,7 @@ public:
 	CStartOfRoundAudioPlayback() { m_NextAvailableTime = 1.0f; m_bPlaybackEnabled = false; }
 
 	// Adds a sound event to be played at the next round restart
-	void	AddSound( CBaseEntity* pEntityPlayingSound, const char* pName, float fDelayTime );
+	void	AddSound( CBaseEntity* pEntityPlayingSound, char* pName, float fDelayTime );
 
 	// Play all the queued sounds
 	void	PlaySounds( void );
@@ -391,7 +391,7 @@ public:
 	
 	virtual void TeamChange( int iNewTeam );
 
-	void ImpactTrace( trace_t *pTrace, int iDamageType, const char *pCustomImpactName );
+	void ImpactTrace( trace_t *pTrace, int iDamageType, char *pCustomImpactName );
 
 	// Have this player play the sounds from his view model's reload animation.
 	void PlayReloadEffect( int iActAnimID, const Vector *pOrigin = NULL );
@@ -800,7 +800,7 @@ public:
 
 	float GetLastSmokeOverlayAlpha( void ) const { return m_flLastSmokeOverlayAlpha; }
 
-	const char *GetHalloweenMaskModelAddon( C_CSPlayer *pPlayer );
+	char *GetHalloweenMaskModelAddon( C_CSPlayer *pPlayer );
 
 	uint32 GetActiveQuestID( void ) const;
 	QuestProgress::Reason GetQuestProgressReason( void ) const;
@@ -1210,7 +1210,7 @@ public:
 	void GetRagdollInitBoneArraysYawMode( matrix3x4a_t *pDeltaBones0, matrix3x4a_t *pDeltaBones1, matrix3x4a_t *pCurrentBones, float boneDt );
 
 	void ApplyRandomTaserForce( void );
-	void ImpactTrace( trace_t *pTrace, int iDamageType, const char *pCustomImpactName );
+	void ImpactTrace( trace_t *pTrace, int iDamageType, char *pCustomImpactName );
 	bool IsInitialized() { return m_bInitialized; }
 	virtual void ValidateModelIndex( void );
 

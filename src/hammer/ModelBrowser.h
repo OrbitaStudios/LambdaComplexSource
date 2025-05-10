@@ -28,8 +28,6 @@ public:
 	CModelBrowser(CWnd* pParent = NULL);   // standard constructor
 	virtual ~CModelBrowser();
 
-	void SetUsedModelList( CUtlVector<AssetUsageInfo_t> &usedModels );
-
 	void	SetModelName( const char *pModelName );
 	void	GetModelName( char *pModelName, int length );
 	void	GetSkin( int &nSkin );

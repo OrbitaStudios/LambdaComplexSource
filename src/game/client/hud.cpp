@@ -39,7 +39,7 @@ static 	CClassMemoryPool< CHudTexture >	 g_HudTextureMemoryPool( 128 );
 //-----------------------------------------------------------------------------
 // Purpose: Parses the weapon txt files to get the sprites needed.
 //-----------------------------------------------------------------------------
-void LoadHudTextures( CUtlDict< CHudTexture *, int >& list, const char *szFilenameWithoutExtension, const unsigned char *pICEKey )
+void LoadHudTextures( CUtlDict< CHudTexture *, int >& list, char *szFilenameWithoutExtension, const unsigned char *pICEKey )
 {
 	KeyValues *pTemp, *pTextureSection;
 
@@ -82,9 +82,7 @@ void LoadHudTextures( CUtlDict< CHudTexture *, int >& list, const char *szFilena
 	}
 
 	// Failed for some reason. Delete the Key data and abort.
-	// lwss - fix null deref
-	// pKeyValuesData->deleteThis();
-	// lwss end
+	pKeyValuesData->deleteThis();
 }
 
 //-----------------------------------------------------------------------------
@@ -1284,7 +1282,7 @@ void CHudIcons::SetupNewHudTexture( CHudTexture *t )
 {
 	if ( t->bRenderUsingFont )
 	{
-		vgui::HScheme scheme = vgui::scheme()->GetScheme( "basemodui_scheme" );
+		vgui::HScheme scheme = vgui::scheme()->GetScheme( "ClientScheme" );
 		t->hFont = vgui::scheme()->GetIScheme( scheme )->GetFont( t->szTextureFile, true );
 		t->rc.top = 0;
 		t->rc.left = 0;
@@ -1362,7 +1360,7 @@ void CHudIcons::RefreshHudTextures()
 	FreeHudTextureList( textureList );
 
 	// fixup all the font icons
-	vgui::HScheme scheme = vgui::scheme()->GetScheme( "basemodui_scheme" );
+	vgui::HScheme scheme = vgui::scheme()->GetScheme( "ClientScheme" );
 	for ( int i = m_Icons.First(); m_Icons.IsValidIndex( i ); i = m_Icons.Next( i ))
 	{
 		CHudTexture *icon = m_Icons[i];

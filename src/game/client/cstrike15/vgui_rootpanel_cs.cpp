@@ -16,7 +16,6 @@
 using namespace vgui;
 
 static C_CSRootPanel *g_pCSRootPanel[ MAX_SPLITSCREEN_PLAYERS ];
-static C_CSRootPanel *g_pFullscreenRootPanel;
 
 void VGui_GetPanelList( CUtlVector< Panel * > &list )
 {
@@ -35,9 +34,6 @@ void VGUI_CreateClientDLLRootPanel( void )
 	{
 		g_pCSRootPanel[ i ] = new C_CSRootPanel( enginevgui->GetPanel( PANEL_CLIENTDLL ), i );
 	}
-
-	g_pFullscreenRootPanel = new C_CSRootPanel( enginevgui->GetPanel( PANEL_CLIENTDLL ), 0, "Fullscreen Root Panel" );
-	g_pFullscreenRootPanel->SetZPos( 1 );
 }
 
 //-----------------------------------------------------------------------------
@@ -50,9 +46,6 @@ void VGUI_DestroyClientDLLRootPanel( void )
 		delete g_pCSRootPanel[ i ];
 		g_pCSRootPanel[ i ] = NULL;
 	}
-
-	delete g_pFullscreenRootPanel;
-	g_pFullscreenRootPanel = NULL;
 }
 
 //-----------------------------------------------------------------------------
@@ -63,20 +56,6 @@ vgui::VPANEL VGui_GetClientDLLRootPanel( void )
 {
 	ASSERT_LOCAL_PLAYER_RESOLVABLE();
 	return g_pCSRootPanel[ GET_ACTIVE_SPLITSCREEN_SLOT() ]->GetVPanel();
-}
-
-//-----------------------------------------------------------------------------
-// Purpose: Fullscreen root panel for shared hud elements during splitscreen
-// Output : vgui::Panel
-//-----------------------------------------------------------------------------
-vgui::Panel *VGui_GetFullscreenRootPanel( void )
-{
-	return g_pFullscreenRootPanel;
-}
-
-vgui::VPANEL VGui_GetFullscreenRootVPANEL( void )
-{
-	return g_pFullscreenRootPanel->GetVPanel();
 }
 
 //-----------------------------------------------------------------------------

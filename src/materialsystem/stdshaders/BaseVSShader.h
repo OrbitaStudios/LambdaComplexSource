@@ -236,7 +236,7 @@ FORCEINLINE bool IsSRGBDecalTexture( int nMode )
 	return	(nMode == DECAL_BLEND_MODE_DECAL_ALPHA);
 }
 
-FORCEINLINE const char * GetFlashlightTextureFilename()
+FORCEINLINE char * GetFlashlightTextureFilename()
 {
 	//if ( !IsX360() && ( g_pHardwareConfig->SupportsBorderColor() ) )
 	//{

@@ -1,4 +1,4 @@
-//===== Copyright © 1996-2005, Valve Corporation, All rights reserved. ======//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -12,12 +12,11 @@
 #pragma once
 #endif
 
-#include <vgui/vgui.h>
+#include <vgui/VGUI.h>
 #include <vgui/Dar.h>
-#include <color.h>
+#include <Color.h>
 #include <vgui_controls/Label.h>
 #include "vgui/MouseCode.h"
-#include "dmxloader/dmxelement.h"
 
 namespace vgui
 {
@@ -28,7 +27,6 @@ namespace vgui
 class Button : public Label
 {
 	DECLARE_CLASS_SIMPLE( Button, Label );
-	DECLARE_DMXELEMENT_UNPACK_NAMESPACE(vgui);
 
 public:
 	// You can optionally pass in the panel to send the click message to and the name of the command to send to that panel.
@@ -109,6 +107,8 @@ public:
 	virtual void SetDefaultColor(Color fgColor, Color bgColor);
 	// Set armed button colors
 	virtual void SetArmedColor(Color fgColor, Color bgColor);
+	// Set selected button colors
+	virtual void SetSelectedColor(Color fgColor, Color bgColor);
 	// Set depressed button colors
 	virtual void SetDepressedColor(Color fgColor, Color bgColor);
 	// Set blink button color
@@ -119,8 +119,14 @@ public:
 	// Get button background color
 	virtual Color GetButtonBgColor();
 
+	Color		  GetButtonDefaultFgColor() { return _defaultFgColor; }
+	Color		  GetButtonDefaultBgColor() { return _defaultBgColor; }
+
 	Color		  GetButtonArmedFgColor() { return _armedFgColor; }
 	Color		  GetButtonArmedBgColor() { return _armedBgColor; }
+
+	Color		  GetButtonSelectedFgColor() { return _selectedFgColor; }
+	Color		  GetButtonSelectedBgColor() { return _selectedBgColor; }
 
 	Color		  GetButtonDepressedFgColor() { return _depressedFgColor; }
 	Color		  GetButtonDepressedBgColor() { return _depressedBgColor; }
@@ -160,12 +166,9 @@ public:
 	bool ShouldPaint(){ return _paint; }
 	void SetShouldPaint( bool paint ){ _paint = paint; }
 
+	virtual void ApplySettings( KeyValues *inResourceData );
 	virtual void NavigateTo();
 	virtual void NavigateFrom();
-
-	virtual void ApplySettings( KeyValues *inResourceData );
-
-	virtual void GetSizerMinimumSize(int &wide, int &tall);
 
 protected:
 	virtual void DrawFocusBorder(int tx0, int ty0, int tx1, int ty1);
@@ -191,7 +194,7 @@ protected:
 	KeyValues *GetActionMessage();
 	void PlayButtonReleasedSound();
 
-private:
+protected:
 	enum ButtonFlags_t
 	{
 		ARMED					= 0x0001,
@@ -207,8 +210,6 @@ private:
 		ALL_FLAGS				= 0xFFFF,
 	};
 
-	static inline int MouseCodeToMask( MouseCode code );
-
 	CUtlFlags< unsigned short > _buttonFlags;	// see ButtonFlags_t
 	int                _mouseClickMask;
 	KeyValues		  *_actionMessage;
@@ -220,6 +221,7 @@ private:
 
 	Color			   _defaultFgColor, _defaultBgColor;
 	Color			   _armedFgColor, _armedBgColor;
+	Color			   _selectedFgColor, _selectedBgColor;
 	Color              _depressedFgColor, _depressedBgColor;
 	Color              _keyboardFocusColor;
 	Color			   _blinkFgColor;
@@ -228,6 +230,8 @@ private:
 
 	unsigned short	   m_sArmedSoundName, m_sDepressedSoundName, m_sReleasedSoundName;
 	bool m_bSelectionStateSaved;
+	bool m_bStaySelectedOnClick;
+	bool m_bStayArmedOnClick;
 };
 
 } // namespace vgui

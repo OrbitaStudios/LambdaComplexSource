@@ -96,11 +96,6 @@ CModelBrowser::~CModelBrowser()
 	delete m_pButtonCancel;
 }
 
-void CModelBrowser::SetUsedModelList( CUtlVector<AssetUsageInfo_t> &usedModels )
-{
-	m_pPicker->SetUsedAssetList( usedModels );
-}
-
 void CModelBrowser::SetModelName( const char *pModelName )
 {
 	char pszTempModelName[255];

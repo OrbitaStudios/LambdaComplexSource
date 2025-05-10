@@ -68,6 +68,5 @@ public:
 };
 
 extern IViewPort *GetViewPortInterface();
-extern IViewPort *GetFullscreenViewPortInterface();
 
 #endif // IVIEWPORT_H

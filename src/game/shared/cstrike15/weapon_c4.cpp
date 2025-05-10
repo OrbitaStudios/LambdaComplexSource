@@ -1281,6 +1281,7 @@ void CC4::WeaponReset( void )
 	void CC4::UpdateOnRemove( void )
 	{
 		BaseClass::UpdateOnRemove();
+
 #if defined( INCLUDE_SCALEFORM )
 		// when a c4 is removed, force the local player to update thier inventory screen
 		if ( !C_BasePlayer::GetLocalPlayer() || !engine->IsLocalPlayerResolvable() )
@@ -1635,18 +1636,10 @@ void CC4::PrimaryAttack()
 				if ( !pPlayer->m_bInBombZone )
 				{
 					ClientPrint( pPlayer, HUD_PRINTCENTER, "#SFUI_Notice_C4_Plant_At_Bomb_Spot");
-
-#if defined( CLIENT_DLL )
-					STEAMWORKS_TESTSECRET_AMORTIZE(5);
-#endif
 				}
 				else
 				{
 					ClientPrint( pPlayer, HUD_PRINTCENTER, "#SFUI_Notice_C4_Plant_Must_Be_On_Ground");
-
-#if defined( CLIENT_DLL )
-					STEAMWORKS_TESTSECRET_AMORTIZE(7);
-#endif
 				}
 			}
 
@@ -1665,10 +1658,6 @@ void CC4::PrimaryAttack()
 			else
 			{
 				ClientPrint( pPlayer, HUD_PRINTCENTER, "#SFUI_Notice_C4_Plant_Must_Be_On_Ground" );
-
-#if defined( CLIENT_DLL )
-				STEAMWORKS_TESTSECRET_AMORTIZE(9);
-#endif
 			}
 
 			AbortBombPlant();
@@ -2073,10 +2062,6 @@ void CC4::Drop( const Vector &vecVelocity )
 			}
 		}
 	}
-#endif
-
-#if defined( CLIENT_DLL )
-	STEAMWORKS_TESTSECRET_AMORTIZE( 13 );
 #endif
 
 	if ( m_bStartedArming )

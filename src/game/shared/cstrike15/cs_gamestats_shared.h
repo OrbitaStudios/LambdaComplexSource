@@ -1,4 +1,4 @@
-//====== Copyright ï¿½ 1996-2004, Valve Corporation, All rights reserved. =======
+//====== Copyright © 1996-2004, Valve Corporation, All rights reserved. =======
 //
 // Purpose:
 //
@@ -630,7 +630,7 @@ struct WeaponName_StatId
 
 struct MapName_MapStatId
 {
-	const char* szMapName;
+	char* szMapName;
 	CSStatType_t statWinsId;
 	CSStatType_t statRoundsId;
 	CSStatType_t matchesWonId;

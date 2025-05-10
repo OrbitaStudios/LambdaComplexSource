@@ -659,7 +659,15 @@ int main( int argc, char *argv[] )
 
 int main( int argc, char *argv[] )
 {
-	const char *pLauncherPath = "bin/liblauncher" DLL_EXT_STRING;
+#ifdef PLATFORM_64BITS
+	#ifdef OSX
+		const char *pLauncherPath = "bin/osx64/launcher" DLL_EXT_STRING;
+	#else
+		const char *pLauncherPath = "bin/linux64/launcher" DLL_EXT_STRING;
+	#endif
+#else
+	const char *pLauncherPath = "bin/launcher" DLL_EXT_STRING;
+#endif
 
 	void *launcher = dlopen( pLauncherPath, RTLD_NOW );
 	

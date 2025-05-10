@@ -22,7 +22,6 @@ $Project "matsys_controls"
 		$File	"mdlpanel.cpp"
 		$File	"mdlpicker.cpp"
 		$File	"mdlsequencepicker.cpp"
-		$File	"particlepicker.cpp"
 		$File	"picker.cpp"
 		$File	"potterywheelpanel.cpp"
 		$File	"proceduraltexturepanel.cpp"
@@ -49,7 +48,6 @@ $Project "matsys_controls"
 		$File	"$SRCDIR\public\matsys_controls\mdlpanel.h"
 		$File	"$SRCDIR\public\matsys_controls\mdlpicker.h"
 		$File	"$SRCDIR\public\matsys_controls\mdlsequencepicker.h"
-		$File	"$SRCDIR\public\matsys_controls\particlepicker.h"
 		$File	"$SRCDIR\public\matsys_controls\picker.h"
 		$File	"$SRCDIR\public\matsys_controls\potterywheelpanel.h"
 		$File	"$SRCDIR\public\matsys_controls\proceduraltexturepanel.h"
@@ -65,8 +63,8 @@ $Project "matsys_controls"
 		$File	"$SRCDIR\public\matsys_controls\vmtpanel.h"
 	}
 
-	$Folder	"Link Libraries" [$WINDOWS]
+	$Folder	"Link Libraries"
 	{
-		$Lib	bitmap
+		$Lib bitmap [$WIN32]
 	}
 }

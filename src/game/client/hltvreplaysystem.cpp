@@ -23,16 +23,10 @@ ConVar spec_replay_autostart( "spec_replay_autostart", "1", FCVAR_CLIENTDLL | FC
 ConVar spec_replay_autostart_delay( "spec_replay_autostart_delay", "1.5", FCVAR_CLIENTDLL, "Time in freeze panel before switching to Killer Replay automatically" ); // original tuning: 2.4; MattWood 12/3/15: 1.5
 ConVar spec_replay_victim_pov( "spec_replay_victim_pov", "0", FCVAR_CLIENTDLL, "Killer Replay - replay from victim's point of view (1); the default is killer's (0). Experimental." );
 CHltvReplaySystem g_HltvReplaySystem;
+#if defined( INCLUDE_SCALEFORM )
 extern void CS_FreezePanel_OnHltvReplayButtonStateChanged();
-void CS_FreezePanel_OnHltvReplayButtonStateChanged()
-{
-    /*
-    SFHudFreezePanel *pPanel = GET_HUDELEMENT( SFHudFreezePanel );
-    if ( pPanel )
-    {
-        pPanel->OnHltvReplayButtonStateChanged();
-    }*/
-}
+#endif
+
 CHltvReplaySystem::CHltvReplaySystem()
 {
 	m_nHltvReplayDelay = 0;
@@ -205,7 +199,9 @@ void CHltvReplaySystem::OnHltvReplayTick()
 	m_bWaitingForHltvReplayTick = false;
 	m_nHltvReplayBeginTick = gpGlobals->tickcount;
 	Update();
+#if defined( INCLUDE_SCALEFORM )
 	CS_FreezePanel_OnHltvReplayButtonStateChanged();
+#endif
 }
 
 
@@ -331,7 +327,9 @@ void CHltvReplaySystem::Update()
 	bool bHltvReplayButtonTimeOutChanged = UpdateHltvReplayButtonTimeOutState();
 	if ( bLocalPlayerChanged || bHltvReplayButtonTimeOutChanged )
 	{
+#if defined( INCLUDE_SCALEFORM )
 		CS_FreezePanel_OnHltvReplayButtonStateChanged();
+#endif
 		if ( m_LocalPlayer.m_bLastSeenAlive && !m_nHltvReplayDelay ) // || m_bHltvReplayButtonTimedOut would cancel pending replay start, but we already don't allow replays right before time-out events
 			CancelDelayedHltvReplay(); // we can't have a replay if we see the player alive in real-time timeline
 	}
@@ -633,7 +631,9 @@ void CHltvReplaySystem::CancelDelayedHltvReplay()
 	if ( m_DelayedReplay.IsValid() )
 	{
 		m_DelayedReplay.Stop();
+#if defined( INCLUDE_SCALEFORM )
 		CS_FreezePanel_OnHltvReplayButtonStateChanged();
+#endif
 	}
 }
 
@@ -791,8 +791,10 @@ void CHltvReplaySystem::OnPlayerDeath( IGameEvent *event )
 					{
 						// we're dead anyway... request a replay, it may be interesting
 						m_DelayedReplay.nRequest = REPLAY_EVENT_GENERIC;
-						//extern void CS_FreezePanel_ResetDamageText( int iPlayerIndexKiller, int iPlayerIndexVictim );
-						//CS_FreezePanel_ResetDamageText( iPlayerIndexKiller, iPlayerIndexVictim );
+#if defined( INCLUDE_SCALEFORM )
+						extern void CS_FreezePanel_ResetDamageText( int iPlayerIndexKiller, int iPlayerIndexVictim );
+						CS_FreezePanel_ResetDamageText( iPlayerIndexKiller, iPlayerIndexVictim );
+#endif
 					}
 				}
 			}
@@ -835,7 +837,9 @@ bool CHltvReplaySystem::PrepareHltvReplayCountdown()
 			}
 			// DevMsg( "%.2f Replay: starting to fade out\n", gpGlobals->curtime ); // replayfade
 		}
+#if defined( INCLUDE_SCALEFORM )
 		CS_FreezePanel_OnHltvReplayButtonStateChanged();
+#endif
 	}
 	return bCountdownStarted;
 }

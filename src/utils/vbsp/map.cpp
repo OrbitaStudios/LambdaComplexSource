@@ -2233,6 +2233,35 @@ void CMapFile::ForceFuncAreaPortalWindowContents()
 
 static GameData	GD;
 
+//-----------------------------------------------------------------------------
+// Purpose: this function will read in a standard key / value file
+// Input  : pFilename - the absolute name of the file to read
+// Output : returns the KeyValues of the file, NULL if the file could not be read.
+//-----------------------------------------------------------------------------
+static KeyValues *ReadKeyValuesFile( const char *pFilename )
+{
+	// Read in the gameinfo.txt file and null-terminate it.
+	FILE *fp = fopen( pFilename, "rb" );
+	if ( !fp )
+		return NULL;
+	CUtlVector<char> buf;
+	fseek( fp, 0, SEEK_END );
+	buf.SetSize( ftell( fp ) + 1 );
+	fseek( fp, 0, SEEK_SET );
+	fread( buf.Base(), 1, buf.Count()-1, fp );
+	fclose( fp );
+	buf[buf.Count()-1] = 0;
+
+	KeyValues *kv = new KeyValues( "" );
+	if ( !kv->LoadFromBuffer( pFilename, buf.Base() ) )
+	{
+		kv->deleteThis();
+		return NULL;
+	}
+
+	return kv;
+}
+
 
 //-----------------------------------------------------------------------------
 // Purpose: this function will set a secondary lookup path for instances.

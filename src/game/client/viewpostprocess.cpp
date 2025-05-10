@@ -2480,7 +2480,7 @@ static ConVar r_queued_post_processing( "r_queued_post_processing", "0" );
 // This has really marginal effects, but 4x1 does seem vaguely better for post-processing
 static ConVar mat_postprocess_x( "mat_postprocess_x", "4" );
 static ConVar mat_postprocess_y( "mat_postprocess_y", "1" );
-static ConVar mat_postprocess_enable( "mat_postprocess_enable", "0" );
+static ConVar mat_postprocess_enable( "mat_postprocess_enable", "1", FCVAR_CHEAT );
 
 bool DoEnginePostProcessing( int x, int y, int w, int h, bool bFlashlightIsOn, bool bPostVGui )
 {
@@ -2703,7 +2703,7 @@ bool DoEnginePostProcessing( int x, int y, int w, int h, bool bFlashlightIsOn, b
 		// acquired the Boomer vomit particle system by way of my actions.
 		// -Ted
 		C_Portal_Player::RenderLocalScreenSpaceEffect( PAINT_SCREEN_SPACE_EFFECT, pRenderContext, x, y, w, h );
-		#elif CSTRIKE15
+		#else if CSTRIKE15
 		C_CSPlayer::RenderLocalScreenSpaceEffect( AR_LEADER_SCREEN_SPACE_EFFECT, pRenderContext, x, y, w, h );
 		#endif
 

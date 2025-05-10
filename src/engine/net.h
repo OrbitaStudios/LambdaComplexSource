@@ -19,6 +19,8 @@
 #include "inetchannel.h"
 #include "networksystem/inetworksystem.h"
 
+class ISteamDatagramTransportClient;
+
 // Flow control bytes per second limits:
 // 16,000 bytes per second = 128kbps
 // default rate: 192kbytes per second = 1.5mbps
@@ -89,6 +91,8 @@ extern	double		net_time;
 
 class INetChannelHandler;
 class IConnectionlessPacketHandler;
+class CMsgSteamDatagramGameServerAuthTicket;
+class ISteamDatagramTransportClient;
 
 // Start up networking
 void		NET_Init( bool bDedicated );
@@ -169,6 +173,16 @@ void NET_SleepUntilMessages( int nMilliseconds );
 // If net_public_adr convar is set then returns that, otherwise, checks with steam if we are a dedicated server (eventually will work for the client) and returns that
 // Returns false if not able to deduce address
 bool NET_GetPublicAdr( netadr_t &adr );
+
+/// Start listening for Steam datagram, if the convar tells us to
+void NET_SteamDatagramServerListen();
+
+/// Called when we receive a ticket to play on a particular gameserver
+#ifndef DEDICATED
+
+/// Make sure we are setup to talk to this gameserver
+bool NET_InitSteamDatagramProxiedGameserverConnection( const ns_address &adr );
+#endif
 
 //============================================================================
 //

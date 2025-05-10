@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -29,7 +29,7 @@ class BaseInputDialog : public Frame
 	DECLARE_CLASS_SIMPLE( BaseInputDialog, Frame );
 
 public:
-	BaseInputDialog( vgui::Panel *parent, const char *title, bool bShowCancelButton = true );
+	BaseInputDialog( vgui::Panel *parent, const char *title );
 	~BaseInputDialog();
 
 	void DoModal( KeyValues *pContextKeyValues = NULL );
@@ -40,7 +40,6 @@ protected:
 
 	// command buttons
 	virtual void OnCommand( const char *command );
-	virtual void WriteDataToKeyValues( KeyValues *pKV, bool bOk ) {}
 
 	void CleanUpContextKeyValues();
 	KeyValues		*m_pContextKeyValues;
@@ -92,7 +91,7 @@ protected:
 	virtual void PerformLayout( int x, int y, int w, int h );
 
 	// command buttons
-	virtual void WriteDataToKeyValues( KeyValues *pKV, bool bOk );
+	virtual void OnCommand(const char *command);
 
 private:
 	vgui::Label			*m_pPrompt;
@@ -145,7 +144,7 @@ private:
 	int				m_nCurrentTabPosition;
 };
 
-
 } // namespace vgui
+
 
 #endif // INPUTDIALOG_H

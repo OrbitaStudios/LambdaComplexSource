@@ -537,6 +537,9 @@ inline CUtlString CUtlString::operator+( const char *pOther )const
 typedef	CUtlConstStringBase<char>		CUtlConstString;
 typedef	CUtlConstStringBase<wchar_t>	CUtlConstWideString;
 
+// Helper function for CUtlMaps with a CUtlString key
+inline bool UtlStringLessFunc( const CUtlString &lhs, const CUtlString &rhs ) { return V_strcmp( lhs.Get(), rhs.Get() ) < 0; } 
+
 //-----------------------------------------------------------------------------
 // Purpose: General purpose string class good for when it
 //			is rarely expected to be empty, and/or will undergo

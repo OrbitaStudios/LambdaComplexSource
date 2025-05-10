@@ -722,6 +722,9 @@ template< typename T, typename U > inline int V_UTF8ToUCS2( const char *pUTF8, T
 	return _V_UTF8ToUCS2( pUTF8, static_cast<int>(cubSrcInBytes), pUCS2, static_cast<int>(cubDestSizeInBytes) );
 }
 
+// strips leading and trailing whitespace; returns true if any characters were removed. UTF-8 and UTF-16 versions.
+bool Q_StripPrecedingAndTrailingWhitespace( char *pch );
+
 // Functions for converting hexidecimal character strings back into binary data etc.
 //
 // e.g., 

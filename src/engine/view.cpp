@@ -133,7 +133,17 @@ void V_RenderVGuiOnly_NoSwap()
 		   
 	pRenderContext->ClearBuffers( true, true );
 
+#if defined( INCLUDE_SCALEFORM )
+	// Render scaleform before vgui
+	pRenderContext->AdvanceAndRenderScaleformSlot( SF_FULL_SCREEN_SLOT );
+#endif
+
 	EngineVGui()->Paint( PAINT_UIPANELS );
+
+#if defined( INCLUDE_SCALEFORM )
+	// Render cursor after vgui
+	pRenderContext->AdvanceAndRenderScaleformCursor();
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -146,9 +156,12 @@ void V_RenderVGuiOnly( void )
 {
 	materials->BeginFrame( host_frametime );
 
+#if defined( INCLUDE_SCALEFORM )
 	CMatRenderContextPtr pRenderContext;
 	pRenderContext.GetFrom( materials );
+	pRenderContext->RenderScaleformSlot(SF_RESERVED_BEGINFRAME_SLOT);
 	pRenderContext.SafeRelease();
+#endif
 
 	EngineVGui()->Simulate();
 
@@ -162,8 +175,11 @@ void V_RenderVGuiOnly( void )
 
 	g_EngineRenderer->FrameEnd( );
 
+#if defined( INCLUDE_SCALEFORM )
 	pRenderContext.GetFrom( materials );
+	pRenderContext->RenderScaleformSlot(SF_RESERVED_ENDFRAME_SLOT);
 	pRenderContext.SafeRelease();
+#endif
 
 	materials->EndFrame();
 
@@ -201,8 +217,6 @@ void V_RenderView( void )
 	MDLCACHE_COARSE_LOCK_(g_pMDLCache);
 
 	bool bCanRenderWorld = ( host_state.worldmodel != NULL ) && GetBaseLocalClient().IsActive();
-
-	bCanRenderWorld = bCanRenderWorld && !EngineVGui()->IsPlayingFullScreenVideo();
 
 	bCanRenderWorld = bCanRenderWorld && toolframework->ShouldGameRenderView();
 

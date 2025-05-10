@@ -558,6 +558,85 @@ CCSPlayerInventory * C_CS_PlayerResource::GetInventory( int index )
 }
 #endif
 
+#if !defined( INCLUDE_SCALEFORM )
+static const wchar_t *g_pCharsToBeReplaced = L"\\<>&\'\"$#";
+
+static const wchar_t *g_pReplacementStrings[] = {
+	L"&#92;",
+	L"&lt;",
+	L"&gt;",
+	L"&amp;",
+	L"&apos;",
+	L"&quot;",
+	L"&#36;",
+	L"&#35;"
+};
+
+void MakeStringSafe( const wchar_t* oldName, wchar_t* newName, int destBufferSize )
+{
+	const wchar_t* pfound;
+	wchar_t* pout = newName;
+	int charsLeft = ( destBufferSize / sizeof(wchar_t) ) - 1;
+	bool bEncounteredIllegalCharacters = false;
+
+	// throw a zero at the end just in case
+	newName[charsLeft] = L'\0';
+
+	for( const wchar_t *p=oldName; *p != 0 && charsLeft > 0; p++ )
+	{
+		// If we are about to write first character and it is a hash then skip it because it is reserved for localization
+		if ( ( pout == newName ) && ( *p == L'#' ) )
+		{
+			bEncounteredIllegalCharacters = true;
+			continue;
+		}
+
+		// Check the character for replacement sequences
+		pfound = wcschr( g_pCharsToBeReplaced, *p );
+
+		if ( pfound )
+		{
+			int index = pfound - g_pCharsToBeReplaced;
+			int replacementLength = wcslen( g_pReplacementStrings[index] );
+			if ( replacementLength <= charsLeft )
+			{
+				V_wcsncpy( pout, g_pReplacementStrings[index], charsLeft * sizeof( wchar_t ) );
+				charsLeft -= replacementLength;
+				pout += replacementLength;
+			}
+			else
+				break;
+		}
+		else
+		{
+#if 1
+			if ( *p )
+#else
+			if ( iswprint( *p ) || ( *p == L'\t' ) )
+#endif
+			{
+				*pout++ = *p;
+				charsLeft--;
+			}
+			else
+			{
+				bEncounteredIllegalCharacters = true;
+			}
+		}
+	}
+
+	// If we didn't write any safe characters, but encountered illegal characters then write at least a question-mark
+	if ( ( pout == newName ) && ( charsLeft > 0 ) && bEncounteredIllegalCharacters )
+	{
+		*pout++ = L'?';
+		charsLeft--;
+	}
+
+	if ( charsLeft >= 0 ) // 0 is okay because we started charsLeft off as one too small
+		*pout = 0;
+}
+#endif
+
 const wchar_t* C_CS_PlayerResource::GetDecoratedPlayerName( int index, wchar_t* buffer, int buffsize, EDecoratedPlayerNameFlag_t flags )
 {
 	if ( IsConnected( index ) )
@@ -664,13 +743,15 @@ const wchar_t* C_CS_PlayerResource::GetDecoratedPlayerName( int index, wchar_t* 
 		safe_wide_name[0] = L'\0';
 		wchar_t *pSafeWideName = wide_name;
 
-#if defined( INCLUDE_SCALEFORM )
-        if ( bMakeStringSafe )
+		if ( bMakeStringSafe )
 		{
+#if defined( INCLUDE_SCALEFORM )
 			g_pScaleformUI->MakeStringSafe( wide_name, safe_wide_name, sizeof( safe_wide_name ) );
+#else
+			MakeStringSafe( wide_name, safe_wide_name, sizeof( safe_wide_name ) );
+#endif
 			pSafeWideName = safe_wide_name;
 		}
-#endif
 
 
 		if ( !nBotControlStringType ) // normal name

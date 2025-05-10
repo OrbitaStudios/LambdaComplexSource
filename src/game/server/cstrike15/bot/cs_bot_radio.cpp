@@ -366,8 +366,8 @@ bool CCSBot::SpeakAudioResponseRules( const char *pConcept, AI_CriteriaSet *crit
 	if ( !criteria )
 		criteria = &local;
 
-	AIConcept_t AIconcept( pConcept );
-	if ( Speak( AIconcept, criteria, NULL, 0, &filter ) )
+	AIConcept_t concept( pConcept );
+	if ( Speak( concept, criteria, NULL, 0, &filter ) )
 	{
 		GetChatter()->ResetRadioSilenceDuration();
 		m_voiceEndTimestamp = gpGlobals->curtime + duration;

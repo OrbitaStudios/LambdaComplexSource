@@ -1,4 +1,4 @@
-//====== Copyright © 1996-2005, Valve Corporation, All rights reserved. =======
+//========= Copyright Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -11,7 +11,7 @@
 #include "vgui/ILocalize.h"
 #include "vgui/IInput.h"
 #include "vgui/ISystem.h"
-#include "keyvalues.h"
+#include "KeyValues.h"
 #include "vgui/Cursor.h"
 #include "tier1/utldict.h"
 #include "vgui_controls/KeyBoardEditorDialog.h"
@@ -249,9 +249,9 @@ void CKeyBindingHelpDialog::PopulateList()
 			}
 			if ( k == c )
 			{
-				int k = maps.AddToTail( );
-				maps[k].m_pMap = map;
-				maps[k].m_pPanel = pPanel;
+				int iMap = maps.AddToTail( );
+				maps[iMap].m_pMap = map;
+				maps[iMap].m_pPanel = pPanel;
 			}
 			map = map->baseMap;
 		}
@@ -268,7 +268,7 @@ void CKeyBindingHelpDialog::PopulateList()
 	for ( i = 0; i < c; ++i )
 	{
 		PanelKeyBindingMap *m = maps[ i ].m_pMap;
-		Panel *pPanel = maps[i].m_pPanel;
+		pPanel = maps[i].m_pPanel;
 		Assert( m );
 
 		int bindings = m->boundkeys.Count();
